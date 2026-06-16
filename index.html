@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>香港教育心理與特殊教育需要 (SEN) 專業協作平台</title>
-    <!-- 引入 Tailwind CSS -->
+    <!-- 引入 Tailwind CSS 進行精緻視覺排版 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 Font Awesome 圖示 -->
+    <!-- 引入 Font Awesome 專業圖示 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 設定字體與自訂樣式 -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
         body {
@@ -24,18 +23,7 @@
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
         }
 
-        /* 呼吸球動畫 */
-        @keyframes breath {
-            0%, 100% { transform: scale(1); background-color: #a5b4fc; }
-            40% { transform: scale(1.4); background-color: #818cf8; }
-            60% { transform: scale(1.4); background-color: #818cf8; }
-        }
-        .breathing-ball {
-            animation: breath 10s infinite ease-in-out;
-            will-change: transform;
-        }
-
-        /* ================= 極致高對比度模式 CSS ================= */
+        /* ================= 無障礙高對比度模式 ================= */
         body.a11y-high-contrast {
             background-color: #000000 !important;
             color: #ffffff !important;
@@ -50,15 +38,12 @@
         body.a11y-high-contrast header, body.a11y-high-contrast footer, body.a11y-high-contrast main, 
         body.a11y-high-contrast #app-content, body.a11y-high-contrast .bg-white, body.a11y-high-contrast .bg-slate-50, 
         body.a11y-high-contrast .bg-indigo-900, body.a11y-high-contrast .bg-rose-600, body.a11y-high-contrast .bg-emerald-700, 
-        body.a11y-high-contrast .bg-slate-900, body.a11y-high-contrast .bg-slate-800, body.a11y-high-contrast #chat-window, 
-        body.a11y-high-contrast #login-modal > div, body.a11y-high-contrast div[class*="bg-"] {
+        body.a11y-high-contrast #chat-window, body.a11y-high-contrast #login-modal > div, body.a11y-high-contrast div[class*="bg-"] {
             background-color: #121212 !important;
             border: 2px solid #ffffff !important;
             border-radius: 1rem !important;
         }
-        /* 交互元素高亮黃色 */
-        body.a11y-high-contrast button, body.a11y-high-contrast a, body.a11y-high-contrast select, 
-        body.a11y-high-contrast input[type="button"], body.a11y-high-contrast input[type="submit"] {
+        body.a11y-high-contrast button, body.a11y-high-contrast a, body.a11y-high-contrast select {
             background-color: #000000 !important;
             color: #ffff00 !important;
             border: 2px solid #ffff00 !important;
@@ -70,20 +55,15 @@
         body.a11y-high-contrast button:hover *, body.a11y-high-contrast a:hover * { color: #000000 !important; }
         body.a11y-high-contrast h1, body.a11y-high-contrast h2, body.a11y-high-contrast h3, body.a11y-high-contrast h4, 
         body.a11y-high-contrast strong, body.a11y-high-contrast b, body.a11y-high-contrast [class*="text-blue-"], 
-        body.a11y-high-contrast [class*="text-indigo-"], body.a11y-high-contrast [class*="text-emerald-"], 
-        body.a11y-high-contrast [class*="text-rose-"], body.a11y-high-contrast [class*="text-amber-"] {
+        body.a11y-high-contrast [class*="text-indigo-"], body.a11y-high-contrast [class*="text-emerald-"] {
             color: #ffff00 !important;
         }
-        body.a11y-high-contrast input[type="text"], body.a11y-high-contrast input[type="password"], body.a11y-high-contrast textarea {
+        body.a11y-high-contrast input, body.a11y-high-contrast textarea {
             background-color: #000000 !important; color: #ffffff !important; border: 2px solid #ffffff !important;
         }
-        body.a11y-high-contrast i { color: #ffffff !important; }
-        body.a11y-high-contrast button i, body.a11y-high-contrast a i { color: inherit !important; }
 
-        /* 全站字體放大 (作用於 html 根節點) */
         html.a11y-large-text { font-size: 125% !important; }
         
-        /* 閱讀專注線 */
         #reading-ruler {
             display: none; position: fixed; left: 0; width: 100%; height: 40px;
             background-color: rgba(253, 224, 71, 0.25); border-top: 2px solid rgba(234, 179, 8, 0.8);
@@ -93,10 +73,10 @@
 </head>
 <body class="text-slate-800 flex flex-col min-h-screen text-sm sm:text-base">
 
-    <!-- 閱讀專注線 -->
+    <!-- 閱讀專注輔助線 -->
     <div id="reading-ruler"></div>
 
-    <!-- 頂部導航欄 -->
+    <!-- 頂部協作導航欄 -->
     <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center cursor-pointer select-none" onclick="renderHome()">
@@ -110,51 +90,51 @@
             </div>
             
             <nav class="hidden lg:flex space-x-6 items-center">
-                <button onclick="renderHome()" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1 text-base">首頁</button>
-                <button onclick="renderSection('parent')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1 text-base">家長專區</button>
-                <button onclick="renderStudentDashboard()" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1 text-base flex items-center gap-1">
+                <button onclick="renderHome()" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">首頁</button>
+                <button onclick="renderSection('parent')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">家長專區</button>
+                <button onclick="renderStudentDashboard()" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1 flex items-center gap-1">
                     學生基地 <span class="bg-indigo-100 text-indigo-700 text-xs font-black px-2 py-0.5 rounded-full">Gen Z</span>
                 </button>
-                <button onclick="renderSection('professional')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1 text-base">同工專區</button>
-                <button onclick="renderSection('sen_types')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1 text-base">10大 SEN 與跨界支援</button>
+                <button onclick="renderSection('professional')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">同工專區</button>
+                <button onclick="renderSection('sen_types')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">10大 SEN 資源</button>
                 
-                <button onclick="toggleLoginModal()" id="login-btn" class="bg-slate-100 text-slate-700 hover:bg-slate-200 px-4 py-2 rounded-xl text-base font-bold transition shadow-sm flex items-center gap-2">
+                <button onclick="toggleLoginModal()" id="login-btn" class="bg-slate-100 text-slate-700 hover:bg-slate-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2">
                     <i class="fa-solid fa-circle-user text-lg text-slate-500"></i> <span id="login-btn-text">協作登入</span>
                 </button>
             </nav>
             
-            <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-600 hover:text-blue-600 p-3 -mr-3 text-2xl focus:outline-none flex items-center justify-center min-w-[44px] min-h-[44px]">
+            <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-600 hover:text-blue-600 p-3 -mr-3 text-2xl flex items-center justify-center min-w-[44px] min-h-[44px]">
                 <i class="fa-solid fa-bars" id="menu-icon"></i>
             </button>
         </div>
         
         <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-slate-100 py-3 px-6 flex flex-col gap-1.5 shadow-inner">
-            <button onclick="renderHome(); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 text-base border-b border-slate-50 active:bg-slate-50">首頁</button>
-            <button onclick="renderSection('parent'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 text-base border-b border-slate-50 active:bg-slate-50">家長專區</button>
-            <button onclick="renderStudentDashboard(); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 text-base border-b border-slate-50 active:bg-slate-50 flex justify-between items-center">
+            <button onclick="renderHome(); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">首頁</button>
+            <button onclick="renderSection('parent'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">家長專區</button>
+            <button onclick="renderStudentDashboard(); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50 flex justify-between items-center">
                 <span>學生基地 (Gen Z)</span> <span class="bg-indigo-100 text-indigo-700 text-xs font-black px-2 py-0.5 rounded-full">新任務</span>
             </button>
-            <button onclick="renderSection('professional'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 text-base border-b border-slate-50 active:bg-slate-50">同工專區</button>
-            <button onclick="renderSection('sen_types'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 text-base border-b border-slate-50 active:bg-slate-50">10大 SEN 資源</button>
-            <button onclick="toggleLoginModal(); toggleMobileMenu();" class="text-left text-indigo-600 font-bold py-3 text-base active:bg-slate-50 flex items-center gap-2">
+            <button onclick="renderSection('professional'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">同工專區</button>
+            <button onclick="renderSection('sen_types'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">10大 SEN 資源</button>
+            <button onclick="toggleLoginModal(); toggleMobileMenu();" class="text-left text-indigo-600 font-bold py-3 flex items-center gap-2">
                 <i class="fa-solid fa-circle-user"></i> <span id="mobile-login-btn-text">協作與授權登入</span>
             </button>
         </div>
     </header>
 
-    <!-- 主要內容區 -->
+    <!-- 主要內容動態渲染區 -->
     <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 w-full">
-        <!-- 內容動態渲染區 -->
+        <!-- 內容動態注入 -->
     </main>
 
-    <!-- 無障礙工具列 (A11y Toolbar) -->
+    <!-- 無障礙輔助工具列 (A11y Toolbar) -->
     <div class="fixed left-0 bottom-24 z-50 flex flex-col gap-2 transform -translate-x-[110px] hover:translate-x-0 transition-transform duration-300 group">
         <div class="bg-slate-800 text-white rounded-r-2xl shadow-lg border border-l-0 border-slate-700 overflow-hidden flex">
             <div class="p-3 w-[110px] space-y-3 bg-slate-900">
-                <p class="text-xs font-bold text-slate-400 uppercase text-center border-b border-slate-700 pb-1">視覺輔助</p>
-                <button onclick="toggleA11y('text')" class="w-full h-10 text-sm hover:text-blue-400 transition text-left flex items-center gap-2 active:bg-slate-800 rounded-lg px-1"><i class="fa-solid fa-text-height w-4"></i> 放大字體</button>
-                <button onclick="toggleA11y('contrast')" class="w-full h-10 text-sm hover:text-amber-400 transition text-left flex items-center gap-2 active:bg-slate-800 rounded-lg px-1"><i class="fa-solid fa-circle-half-stroke w-4"></i> 高對比度</button>
-                <button onclick="toggleA11y('ruler')" class="w-full h-10 text-sm hover:text-yellow-400 transition text-left flex items-center gap-2 active:bg-slate-800 rounded-lg px-1"><i class="fa-solid fa-ruler-horizontal w-4"></i> 閱讀線</button>
+                <p class="text-[10px] font-bold text-slate-400 uppercase text-center border-b border-slate-700 pb-1">視覺輔助</p>
+                <button onclick="toggleA11y('text')" class="w-full h-10 text-xs hover:text-blue-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-text-height w-4"></i> 放大字體</button>
+                <button onclick="toggleA11y('contrast')" class="w-full h-10 text-xs hover:text-amber-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-circle-half-stroke w-4"></i> 高對比度</button>
+                <button onclick="toggleA11y('ruler')" class="w-full h-10 text-xs hover:text-yellow-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-ruler-horizontal w-4"></i> 閱讀線</button>
             </div>
             <div class="bg-slate-800 flex items-center justify-center w-12 h-14 cursor-pointer">
                 <i class="fa-solid fa-eye text-xl text-blue-400 animate-pulse group-hover:animate-none"></i>
@@ -162,7 +142,7 @@
         </div>
     </div>
 
-    <!-- 協作登入/授權視窗 (修復置中問題) -->
+    <!-- 協作與授權登入 Modal (完美置中) -->
     <div id="login-modal" class="fixed inset-0 bg-slate-900/60 z-[100] flex justify-center items-center hidden backdrop-blur-sm p-4 transition-opacity">
         <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden transform transition-transform scale-100">
             <div class="p-6 sm:p-8">
@@ -171,9 +151,9 @@
                         <i class="fa-solid fa-shield-halved text-emerald-600 text-xl"></i>
                         <h3 class="text-xl sm:text-2xl font-extrabold text-slate-800">校本與專業授權存取</h3>
                     </div>
-                    <button onclick="toggleLoginModal()" class="text-slate-400 hover:text-slate-600 p-2 text-2xl min-w-[44px] min-h-[44px] flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="toggleLoginModal()" class="text-slate-400 hover:text-slate-600 p-2 text-2xl flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <p class="text-slate-500 mb-6 text-sm sm:text-base leading-relaxed">部分進階臨床工作紙與實證小組教案受版權與專業指引保護。本平台協作學校之教師、家長，或持有本中心授權碼之同工，請在此輸入憑證以解鎖資源。</p>
+                <p class="text-slate-500 mb-6 text-sm leading-relaxed">部分進階臨床工作紙與實證小組教案受版權與專業指引保護。輸入協作授權碼即可解鎖完整資源。</p>
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">學校編號 / 協作帳號</label>
@@ -188,7 +168,7 @@
                     </button>
                 </div>
                 <div class="mt-6 pt-5 border-t border-slate-100 text-center text-sm text-slate-400">
-                    未獲學校或機構授權？ <a href="#" onclick="alert('稍後將引導至「中心課程與校本專業支援方案」諮詢頁面。')" class="text-blue-600 font-bold hover:underline">申請加入協作計劃 / 獲取授權碼</a>
+                    未獲學校授權？ <a href="#" onclick="showToast('請聯繫本網頁開發小組申請測試帳號。', 'success')" class="text-blue-600 font-bold hover:underline">申請加入協作計劃</a>
                 </div>
             </div>
         </div>
@@ -208,28 +188,28 @@
                         <span class="text-xs text-blue-100 block">初步諮詢與篩查導航</span>
                     </div>
                 </div>
-                <button onclick="toggleChat()" class="text-white/80 hover:text-white p-2 min-w-[40px] min-h-[40px] flex items-center justify-center">
+                <button onclick="toggleChat()" class="text-white/80 hover:text-white p-2 flex items-center justify-center">
                     <i class="fa-solid fa-times text-xl"></i>
                 </button>
             </div>
             
-            <div class="h-[300px] sm:h-[350px] p-4 sm:p-5 overflow-y-auto bg-slate-50/50 no-scrollbar flex flex-col gap-4" id="chat-messages">
+            <div class="h-[280px] sm:h-[320px] p-4 sm:p-5 overflow-y-auto bg-slate-50/50 no-scrollbar flex flex-col gap-4" id="chat-messages">
                 <div class="flex items-start gap-2.5">
                     <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">AI</div>
                     <div class="bg-white border border-slate-100 p-3.5 rounded-2xl rounded-tl-none text-sm leading-relaxed text-slate-700 shadow-sm">
-                        同工、家長或同學，你好！我是本平台的智能輔導助手。我可以協助你進行<b>初步的情緒、學習或社交狀況評估</b>，並引流到最適合你的專業訓練技巧。
+                        你好！我是本平台的智能輔導助手。我可以協助你進行<b>初步的情緒、學習或社交狀況諮詢</b>，並引流到最適合你的專業訓練技巧。
                         <div class="mt-3 flex flex-col gap-2">
-                            <button onclick="handleChatSelect('parent')" class="bg-blue-50 text-blue-700 text-left px-3 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-100 transition min-h-[40px]">👨‍👩‍👧 我是家長，想評估孩子</button>
-                            <button onclick="handleChatSelect('student')" class="bg-indigo-50 text-indigo-700 text-left px-3 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-100 transition min-h-[40px]">😎 我是學生，想探索自己</button>
-                            <button onclick="handleChatSelect('educator')" class="bg-purple-50 text-purple-700 text-left px-3 py-2.5 rounded-xl text-sm font-bold hover:bg-purple-100 transition min-h-[40px]">💼 我是老師/輔導同工</button>
+                            <button onclick="handleChatSelect('parent')" class="bg-blue-50 text-blue-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-100 transition">👨‍👩‍👧 我是家長，想評估孩子</button>
+                            <button onclick="handleChatSelect('student')" class="bg-indigo-50 text-indigo-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-indigo-100 transition">😎 我是學生，想探索自己</button>
+                            <button onclick="handleChatSelect('educator')" class="bg-purple-50 text-purple-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-purple-100 transition">💼 我是老師/輔導同工</button>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
-                <input type="text" id="chat-input" onkeypress="handleChatKey(event)" placeholder="輸入訊息..." class="flex-grow bg-slate-100 border-none rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition h-12">
-                <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl w-12 h-12 flex items-center justify-center shrink-0 shadow-md shadow-blue-100 transition min-w-[48px] min-h-[48px]">
+                <input type="text" id="chat-input" onkeypress="handleChatKey(event)" placeholder="輸入訊息..." class="flex-grow bg-slate-100 border-none rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition h-11">
+                <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl w-11 h-11 flex items-center justify-center shrink-0 shadow-md transition">
                     <i class="fa-solid fa-paper-plane text-sm"></i>
                 </button>
             </div>
@@ -237,18 +217,16 @@
         
         <button onclick="toggleChat()" class="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-full w-14 h-14 sm:w-16 sm:h-16 shadow-lg shadow-indigo-200 flex items-center justify-center text-2xl sm:text-3xl transition-transform hover:scale-105 active:scale-95 relative">
             <i class="fa-solid fa-message-dots"></i>
-            <span class="absolute top-0 right-0 flex h-3.5 w-3.5 sm:h-4 sm:w-4">
+            <span class="absolute top-0 right-0 flex h-3.5 w-3.5">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3.5 w-3.5 sm:h-4 sm:w-4 bg-red-500"></span>
+                <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-500"></span>
             </span>
         </button>
     </div>
 
-    <!-- 頁尾 (重新設計的左右排版，優化 PDPO 聲明顯示與字體大小) -->
+    <!-- 頁尾 (左右雙欄大排版，完美適配 PDPO 合規說明) -->
     <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start gap-8">
-            
-            <!-- 左側：平台資訊與版權 -->
             <div class="md:w-1/3 w-full">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="bg-slate-800 w-10 h-10 rounded-lg flex items-center justify-center text-slate-300 text-lg">
@@ -262,7 +240,6 @@
                 <p class="text-xs text-slate-600 font-mono">© 2026 HK Educational & SEN Collaborative Network.</p>
             </div>
             
-            <!-- 右側：PDPO 數據去識別化聲明 (放大字體、橫向排版) -->
             <div class="md:w-2/3 w-full bg-slate-800/40 p-5 sm:p-6 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors">
                 <p class="font-bold text-slate-200 text-base sm:text-lg mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-shield-halved text-emerald-500"></i> 數據私隱合規聲明 (PDPO Compliance)
@@ -271,11 +248,10 @@
                     本系統嚴格遵守香港《個人資料（私隱）條例》。所有臨床互動數據均經 <b class="text-slate-300">端到端加密及去識別化處理</b>，絕不收集學生真實姓名與身分證。後台數據僅供已授權之校本輔導人員作介入參考，絕不授權或轉售第三方作商業用途。
                 </p>
             </div>
-            
         </div>
     </footer>
 
-    <!-- JavaScript 邏輯 -->
+    <!-- JavaScript 核心控制邏輯 -->
     <script>
         let sessionState = {
             isAuthorized: false,
@@ -286,76 +262,70 @@
             completedQuests: []
         };
 
+        /* 
+           【模組化映射資料庫】
+           每個物件中的 action 代表我們未來需要獨立上傳到 GitHub 的 HTML 子檔案名稱。
+           如果 action 存在，點擊時將自動執行轉頁 (window.location.href)，否則進行提示。
+        */
         const database = {
             parent: {
                 title: "👨‍👩‍👧 家長專區：平復焦慮，支援同行",
                 description: "為全港家長提供從評估導航、居家訓練、家庭系統到成長心理學的全方位 SEN 支援藍圖。",
                 items: [
-                    { icon: "fa-triangle-exclamation", title: "🚨 [緊急] 情緒失控 (Meltdown) SOS 急救包", desc: "孩子當下正在情緒崩潰、大吵大鬧或破壞物品？點擊此處獲取即時的「危機處理 3 步驟」。", premium: false, action: "sosMeltdown", customClass: "border-rose-200 bg-rose-50 text-rose-700" },
-                    { icon: "fa-star", title: "⭐ [互動] 實時線上代幣盤 (Token Economy)", desc: "家長手機點擊給星，學生端即時同步。化被動閱讀為真實行為建立工具。", premium: false, action: "tokenBoard" },
-                    { icon: "fa-gas-pump", title: "⛽ [互動] 家長同路人「心靈燃料站」", desc: "照顧者過勞 (Burnout) 自評、5分鐘居家呼吸調節儀，及全港「家長資源中心 (PRC)」導航系統。", premium: false, action: "burnoutStation" },
-                    { icon: "fa-map-location-dot", title: "1. 醫療與社福系統導航", desc: "懷疑SEN評估流程指南 (公營/私營分析)、輪候空窗期應對，及政府津貼 (如 OPRS、學習訓練津貼、傷殘津貼) 地圖。", premium: false },
-                    { icon: "fa-book-open-reader", title: "2. 針對性學業與生活調適", desc: "執行功能訓練室 (收拾書包與時間觀念)、SEN溫習技巧 (SpLD多感官默書法) 與居家感覺統合 (SI) 調節活動。", premium: false },
-                    { icon: "fa-people-roof", title: "3. 親子溝通與家庭系統", desc: "情緒導航 (Emotion Coaching) 降溫三部曲、家校合作 (與學校 SENCO) 指南，及手足支援。", premium: false },
-                    { icon: "fa-route", title: "4. 關鍵成長過渡期 (Transitions)", desc: "特設「幼升小」及「小升中」適應錦囊，教導運用社交劇本 (Social Stories) 減少適應障礙。", premium: false },
-                    { icon: "fa-seedling", title: "5. 成長心理學與階段發展", desc: "解碼各年齡層的認知、想法與心理發展階段，讀懂孩子行為背後的深層心理需求。", premium: true }
+                    { icon: "fa-triangle-exclamation", title: "🚨 [緊急] 情緒失控 (Meltdown) SOS 急救包", desc: "孩子當下正在情緒崩潰、大吵大鬧或破壞物品？點擊此處獲取即時的「危機處理 3 步驟」。", premium: false, action: "parent_sos.html", customClass: "border-rose-200 bg-rose-50 text-rose-700" },
+                    { icon: "fa-star", title: "⭐ [互動] 實時線上代幣盤 (Token Economy)", desc: "家長手機點擊給星，學生端即時同步。化被動閱讀為真實行為建立工具。", premium: false, action: "parent_token.html" },
+                    { icon: "fa-gas-pump", title: "⛽ [互動] 家長同路人「心靈燃料站」", desc: "照顧者過勞 (Burnout) 自評、5分鐘居家呼吸調節儀，及全港「家長資源中心 (PRC)」導航系統。", premium: false, action: "parent_burnout.html" },
+                    { icon: "fa-map-location-dot", title: "1. 醫療與社福系統導航", desc: "懷疑SEN評估流程指南 (公營/私營分析)、輪候空窗期應對，及政府津貼 (如 OPRS、學習訓練津貼、傷殘津貼) 地圖。", premium: false, action: "parent_medical.html" },
+                    { icon: "fa-book-open-reader", title: "2. 針對性學業與生活調適", desc: "執行功能訓練室 (收拾書包與時間觀念)、SEN溫習技巧 (SpLD多感官默書法) 與居家感覺統合 (SI) 調節活動。", premium: false, action: "parent_academic.html" },
+                    { icon: "fa-people-roof", title: "3. 親子溝通與家庭系統", desc: "情緒導航 (Emotion Coaching) 降溫三部曲、家校合作 (與學校 SENCO) 指南，及手足支援。", premium: false, action: "parent_family.html" },
+                    { icon: "fa-route", title: "4. 關鍵成長過渡期 (Transitions)", desc: "特設「幼升小」及「小升中」適應錦囊，教導運用社交劇本 (Social Stories) 減少適應障礙。", premium: false, action: "parent_transition.html" },
+                    { icon: "fa-seedling", title: "5. 成長心理學與階段發展", desc: "解碼各年齡層的認知、想法與心理發展階段，讀懂孩子行為背後的深層心理需求。", premium: true, action: "parent_psychology.html" }
                 ]
             },
             professional: {
                 title: "💼 同工專區：專業賦能，資源共享",
                 description: "支援前線教師、社工與輔導人員的三層支援、跨專業協作及實證特殊學習需要 (SEN) 工具箱。",
                 items: [
-                    { icon: "fa-robot", title: "🚀 AI 智能 IEP 報告自動生成器", desc: "[殺手級工具] 勾選學生日常行為，AI 自動生成符合 EDB 要求的專業調適建議與目標。", premium: false, action: "iepGenerator" },
-                    { icon: "fa-chart-line", title: "📊 [授權] 學生動態數據儀表板 (Dashboard)", desc: "與「學生基地」聯動！實時查看學生的 Vibe Check 情緒基線、任務進度與臨床反應時間數據。", premium: true, action: "teacherDashboard" },
-                    { icon: "fa-magnifying-glass-chart", title: "🔍 [互動] ABC 行為分析與 BIP 快速建構", desc: "針對嚴峻行為問題 (FBA)：線上勾選前因 (A) 與後果 (C)，一鍵生成實證有效的行為干預計劃 (BIP)。", premium: false, action: "fbaBuilder" },
-                    { icon: "fa-layer-group", title: "1. 三層支援模式 (3-Tier) 實戰指引", desc: "提供通用設計學習 (UDL) 多感官教案範本、最新測考調適懶人包（加時/讀卷）及家長溝通話術模板。", premium: false },
-                    { icon: "fa-users-viewfinder", title: "2. 跨專業會議 (Case Conference) 紀錄框架與臨床劇本", desc: "提供標準會議紀錄模板與 EP/CP/SENCO「模擬對案協商對話範本」，幫助團隊快速對齊目標。", premium: false },
-                    { icon: "fa-mug-hot", title: "3. 同工精神健康 (Wellness & Burnout)", desc: "教育工作者專屬喘息空間：同情疲勞 (Compassion Fatigue) 自我檢測表與 3 分鐘緊急靜觀降溫。", premium: false },
-                    { icon: "fa-handshake-angle", title: "[版權明示與官方連結] 教育局與協作機構資源庫", desc: "彙整賽馬會「喜伴同行」計劃、大學及教育局之官方教案下載指引與合規連結，便利同工下載。", premium: false }
+                    { icon: "fa-robot", title: "🚀 AI 智能 IEP 報告自動生成器", desc: "[殺手級工具] 勾選學生日常行為，AI 自動生成符合 EDB 要求的專業調適建議與目標。", premium: false, action: "professional_iep.html" },
+                    { icon: "fa-chart-line", title: "📊 [授權] 學生動態數據儀表板 (Dashboard)", desc: "與「學生基地」聯動！實時查看學生的 Vibe Check 情緒基線、任務進度與臨床反應時間數據。", premium: true, action: "professional_dashboard.html" },
+                    { icon: "fa-magnifying-glass-chart", title: "🔍 [互動] ABC 行為分析與 BIP 快速建構", desc: "針對嚴峻行為問題 (FBA)：線上勾選前因 (A) 與後果 (C)，一鍵生成實證有效的行為干預計劃 (BIP)。", premium: false, action: "professional_bip.html" },
+                    { icon: "fa-layer-group", title: "1. 三層支援模式 (3-Tier) 實戰指引", desc: "提供通用設計學習 (UDL) 多感官教案範本、最新測考調適懶人包（加時/讀卷）及家長溝通話術模板。", premium: false, action: "professional_3tier.html" },
+                    { icon: "fa-users-viewfinder", title: "2. 跨專業會議 (Case Conference) 紀錄框架與臨床劇本", desc: "提供標準會議紀錄模板與 EP/CP/SENCO「模擬對案協商對話範本」，幫助團隊快速對齊目標。", premium: false, action: "professional_conference.html" },
+                    { icon: "fa-mug-hot", title: "3. 同工精神健康 (Wellness & Burnout)", desc: "教育工作者專屬喘息空間：同情疲勞 (Compassion Fatigue) 自我檢測表與 3 分鐘緊急靜觀降溫。", premium: false, action: "professional_wellness.html" }
                 ]
             },
             sen_types: {
                 title: "📚 10大 SEN 與跨界專業資源庫",
                 description: "對應教育局最新融合教育指引的 9 大特殊教育需要類別，加上「有限智能 (Borderline)」與全新跨類別、輔助科技、少數族裔、生命轉銜之整合教材指南。",
                 items: [
-                    { icon: "fa-font", title: "特殊學習困難 (SpLD)", desc: "讀寫障礙校本支援、多感官中英文識字教學與輔助科技應用技巧。", premium: false },
-                    { icon: "fa-brain", title: "注意力不足/過度活躍症 (AD/HD)", desc: "自我監控 (Self-monitoring) 訓練、課堂干擾減低及行為執行功能提升策略。", premium: false },
-                    { icon: "fa-puzzle-piece", title: "自閉症譜系 (ASD)", desc: "社交思考技巧、視覺常規表 (Visual Schedules) 與結構化常規指導。", premium: false },
-                    { icon: "fa-comments", title: "言語障礙 (SLI)", desc: "口語理解與表達能力訓練、語音辨識、敘事能力小組活動教案。", premium: false },
-                    { icon: "fa-child-reaching", title: "智力障礙 (ID)", desc: "功能性生活適應技能、簡化步驟教學法 (Task Analysis) 及自理能力卡。", premium: false },
-                    { icon: "fa-battery-half", title: "有限智能 (Borderline)", desc: "[新增類別 - IQ 70-79支援] 重複性概念鞏固技巧、低起點步步高設計、自尊心重建方法與生涯技能規劃。", premium: false },
-                    { icon: "fa-ear-listen", title: "聽覺障礙 (HI)", desc: "助聽設備適應、聽覺口語法、教室座位調適與手語提示圖。", premium: false },
-                    { icon: "fa-eye-low-vision", title: "視覺障礙 (VI)", desc: "點字學習指導、定向行走訓練融入校園、多感官放大教材設計。", premium: false },
-                    { icon: "fa-wheelchair", title: "肢體傷殘 (PD)", desc: "無障礙輔具調適、手部精細動作訓練輔助，與自理能力自信心建立。", premium: false },
-                    { icon: "fa-cloud-showers-heavy", title: "精神病 (MI)", desc: "校園復元模式 (Recovery Model)、學生情緒海嘯處理程序，及危機評估工具。", premium: false },
-                    { icon: "fa-lightbulb", title: "雙重特殊資優 (Twice-Exceptional, 2e)", desc: "[新增跨類別] 智商優異 (Gifted) 伴隨 ASD/ADHD/SpLD。平衡拔尖與保底之雙軌 IEP 目標調適策略。", premium: false },
-                    { icon: "fa-network-wired", title: "共病應對策略 (Comorbidity)", desc: "[新增跨類別] 處理常見混合個案（如 ASD+ADHD）。臨床介入與課堂調適之優先順序與整合教案。", premium: false },
-                    { icon: "fa-earth-asia", title: "🌏 [互動] 非華語 (NCS) SEN 學生特殊支援", desc: "[新增跨界別] 針對少數族裔 SEN。提供跨文化評估、全英文 Social Stories/Token Boards，及雙語家長溝通話術卡。", premium: false, action: "ncsSupport" },
-                    { icon: "fa-laptop-code", title: "🖥️ [互動] 輔助科技 (AT) 智能配對器", desc: "[實用科技] 語音轉文字、報讀及特殊輸入軟硬件。點擊開啟輔助科技清單與資助申報指南。", premium: false, action: "atToolbox" },
-                    { icon: "fa-chalkboard-user", title: "通用設計學習 (UDL) 課室佈置指南", desc: "[環境調適] 專注力不足與自閉症環境優化：視覺提示站設立、感統緩解區 (Cool-down Zone) 的空間配置與實體規劃。", premium: false },
-                    { icon: "fa-venus-mars", title: "SEN 青春期與性教育", desc: "[生命週期] 針對 ASD/ID 學生之社交界線建立、生理轉變心理調適、社交故事 (Social Stories) 教案範本。", premium: false },
-                    { icon: "fa-map-signs", title: "🗺️ [授權] 高中/職涯轉銜支援 (Transition)", desc: "[生命週期] 中四至中六生涯規劃、各大專院校 JUPAS SEN 支援中心聯絡、職場面試社交技巧。點擊進入轉銜地圖。", premium: true, action: "transitionRoadmap" }
+                    { icon: "fa-font", title: "特殊學習困難 (SpLD)", desc: "讀寫障礙校本支援、多感官中英文識字教學與輔助科技應用技巧。", premium: false, action: "sen_spld.html" },
+                    { icon: "fa-brain", title: "注意力不足/過度活躍症 (AD/HD)", desc: "自我監控 (Self-monitoring) 訓練、課堂干擾減低及行為執行功能提升策略。", premium: false, action: "sen_adhd.html" },
+                    { icon: "fa-puzzle-piece", title: "自閉症譜系 (ASD)", desc: "社交思考技巧、視覺常規表 (Visual Schedules) 與結構化常規指導。", premium: false, action: "sen_asd.html" },
+                    { icon: "fa-comments", title: "言語障礙 (SLI)", desc: "口語理解與表達能力訓練、語音辨識、敘事能力小組活動教案。", premium: false, action: "sen_sli.html" },
+                    { icon: "fa-child-reaching", title: "智力障礙 (ID)", desc: "功能性生活適應技能、簡化步驟教學法 (Task Analysis) 及自理能力卡。", premium: false, action: "sen_id.html" },
+                    { icon: "fa-battery-half", title: "有限智能 (Borderline)", desc: "[新增類別 - IQ 70-79支援] 重複性概念鞏固技巧、低起點步步高設計、自尊心重建方法與生涯技能規劃。", premium: false, action: "sen_borderline.html" },
+                    { icon: "fa-ear-listen", title: "聽覺障礙 (HI)", desc: "助聽設備適應、聽覺口語法、教室座位調適與手語提示圖。", premium: false, action: "sen_hi.html" },
+                    { icon: "fa-eye-low-vision", title: "視覺障礙 (VI)", desc: "點字學習指導、定向行走訓練融入校園、多感官放大教材設計。", premium: false, action: "sen_vi.html" },
+                    { icon: "fa-wheelchair", title: "肢體傷殘 (PD)", desc: "無障礙輔具調適、手部精細動作訓練輔助，與自理能力自信心建立。", premium: false, action: "sen_pd.html" },
+                    { icon: "fa-cloud-showers-heavy", title: "精神病 (MI)", desc: "校園復元模式 (Recovery Model)、學生情緒海嘯處理程序，及危機評估工具。", premium: false, action: "sen_mi.html" },
+                    { icon: "fa-lightbulb", title: "雙重特殊資優 (Twice-Exceptional, 2e)", desc: "[新增跨類別] 智商優異 (Gifted) 伴隨 ASD/ADHD/SpLD。平衡拔尖與保底之雙軌 IEP 目標調適策略。", premium: false, action: "sen_2e.html" },
+                    { icon: "fa-network-wired", title: "共病應對策略 (Comorbidity)", desc: "[新增跨類別] 處理常見混合個案（如 ASD+ADHD）。臨床介入與課堂調適之優先順序與整合教案。", premium: false, action: "sen_comorbidity.html" },
+                    { icon: "fa-earth-asia", title: "🌏 [互動] 非華語 (NCS) SEN 學生特殊支援", desc: "[新增跨界別] 針對少數族裔 SEN。提供跨文化評估、全英文 Social Stories/Token Boards，及雙語家長溝通話術卡。", premium: false, action: "sen_ncs.html" },
+                    { icon: "fa-laptop-code", title: "🖥️ [互動] 輔助科技 (AT) 智能配對器", desc: "[實用科技] 語音轉文字、報讀及特殊輸入軟硬件。點擊開啟輔助科技清單與資助申報指南。", premium: false, action: "sen_at.html" }
                 ]
             },
             student_quests: [
-                { id: "quest_social", category: "社交思維 (Social Thinking)", title: "🕵️‍♀️ 潛規則解碼器", desc: "為什麼這句說話會令人不開心？解讀非語言訊息，找出隱藏在日常生活中的「社交潛規則」！", exp: 200, icon: "fa-magnifying-glass", color: "from-purple-500 to-fuchsia-500", premium: false },
-                { id: "quest_talk", category: "基本溝通 & 交談技巧", title: "🗣️ 話題接球手", desc: "溝通就像打乒乓球！練習如何適當地「開球」（開啟話題）、「接球」（回應與維持）和「完美收步」。", exp: 150, icon: "fa-comments", color: "from-blue-500 to-indigo-500", premium: false },
-                { id: "quest_flex", category: "彈性思維 (Flexibility)", title: "思考變形金剛 🤖", desc: "當世界不按牌理出牌，大腦卡關怎麼辦？學習「Plan B 思考術」，把突發狀況變成新玩法！", exp: 350, icon: "fa-robot", color: "from-emerald-500 to-teal-500", premium: false },
-                { id: "quest_mindset", category: "抗逆力與成長心態", title: "錯誤轉化爐 ⚗️", desc: "默書卡關、測驗低迷？別讓大腦貼上「我不行」的標籤。將「失敗碎片」煉化成「經驗值」！", exp: 300, icon: "fa-mortar-pestle", color: "from-orange-500 to-amber-500", premium: false },
-                { id: "quest_inclusion", category: "朋輩共融 (Inclusion)", title: "🌈 破壁聯盟", desc: "學習欣賞神經多樣性，如何在小組功課中發揮各人所長，成為最受歡迎的神隊友！", exp: 250, icon: "fa-rainbow", color: "from-rose-500 to-pink-500", premium: false },
-                { id: "quest_digital", category: "數位自控力 (Digital Wellness)", title: "多巴胺封印術 📱", desc: "短片刷不停？挑戰網絡怪獸，學習如何主動奪回大腦主導權，建立健康的「屏幕分界線」。", exp: 200, icon: "fa-mobile-screen-button", color: "from-cyan-500 to-blue-600", premium: false },
-                { id: "quest_sensory", category: "身體覺察與感官調節", title: "感官防護罩 🛡️", desc: "課室太吵、燈光太刺眼？化身「身體偵探」，學會用簡單動作為大腦即時降溫。", exp: 150, icon: "fa-shield-halved", color: "from-violet-500 to-purple-600", premium: false },
-                { icon: "fa-bolt-lightning", category: "優勢為本 (Strength)", id: "strength_test", title: "🦸‍♂️ 尋找我的專屬超能力！", desc: "不用總看著缺點！來測測你是「細節大師」還是「共情英雄」？", exp: 500, color: "from-yellow-500 to-amber-600", premium: false, action: "strengthTest" },
-                { id: "quest_exam", category: "考試焦慮與壓力管理", title: "試場隱形斗篷 🧥", desc: "走入試場心跳加速？解鎖心理學家的「正念應考術」，用呼吸披上隱形斗篷，隔離焦慮。", exp: 250, icon: "fa-shirt", color: "from-teal-500 to-emerald-600", premium: false },
-                { id: "quest_transition", category: "升學適應 / 生活技能", title: "🎒 升級生存包", desc: "面對全新的校園環境和陌生的同學感到焦慮？來模擬解鎖中學/社會的生存技能，預演突發狀況！", exp: 300, icon: "fa-bag-shopping", color: "from-sky-500 to-blue-500", premium: false },
-                { id: "quest_bullying", category: "社交防衛 / 反欺凌", title: "校園防禦結界 🔮", desc: "分不清是「玩耍」還是「欺凌」？學習如何堅定拒絕、建立社交防禦，並精準發出求助信號！", exp: 250, icon: "fa-shield-cat", color: "from-fuchsia-600 to-pink-600", premium: false },
-                { id: "quest_help", category: "主動尋求協助", title: "[授權] 專業信號彈 🔮", desc: "撐不住時，求助不是軟弱，而是勇敢的表現！學習如何清晰表達困境，精準發出「黃金求助信號」。", exp: 400, icon: "fa-wand-magic-sparkles", color: "from-purple-600 to-indigo-700", premium: true }
+                { id: "quest_social", category: "社交思維 (Social Thinking)", title: "🕵️‍♀️ 潛規則解碼器", desc: "為什麼這句說話會令人不開心？解讀非語言訊息，找出隱藏在日常生活中的「社交潛規則」！", exp: 200, icon: "fa-magnifying-glass", color: "from-purple-500 to-fuchsia-500", action: "student_social.html" },
+                { id: "quest_talk", category: "基本溝通 & 交談技巧", title: "🗣️ 話題接球手", desc: "溝通就像打乒乓球！練習如何適當地「開球」（開啟話題）、「接球」（回應與維持）和「完美收步」。", exp: 150, icon: "fa-comments", color: "from-blue-500 to-indigo-500", action: "student_talk.html" },
+                { id: "quest_flex", category: "彈性思維 (Flexibility)", title: "思考變形金剛 🤖", desc: "當世界不按牌理出牌，大腦卡關怎麼辦？學習「Plan B 思考術」，把突發狀況變成新玩法！", exp: 350, icon: "fa-robot", color: "from-emerald-500 to-teal-500", action: "student_flex.html" },
+                { id: "quest_mindset", category: "抗逆力與成長心態", title: "錯誤轉化爐 ⚗️", desc: "默書卡關、測驗低迷？別讓大腦貼上「我不行」的標籤。將「失敗碎片」煉化成「經驗值」！", exp: 300, icon: "fa-mortar-pestle", color: "from-orange-500 to-amber-500", action: "student_mindset.html" },
+                { id: "quest_bullying", category: "社交防衛 / 反欺凌", title: "校園防禦結界 🔮", desc: "分不清是「玩耍」還是「欺凌」？學習如何堅定拒絕、建立社交防禦，並精準發出求助信號！", exp: 250, icon: "fa-shield-cat", color: "from-fuchsia-600 to-pink-600", action: "student_bullying.html" },
+                { id: "quest_help", category: "主動尋求協助", title: "[授權] 專業信號彈 🔮", desc: "撐不住時，求助不是軟弱，而是勇敢的表現！學習如何清晰表達困境，精準發出「黃金求助信號」。", exp: 400, icon: "fa-wand-magic-sparkles", color: "from-purple-600 to-indigo-700", premium: true, action: "student_help.html" }
             ]
         };
 
-        // UI 互動邏輯
+        // UI 彈出視窗與導航管理
         function toggleLoginModal() {
-            // 修復彈出視窗不在中間的問題：只切換隱藏狀態，保留原有的 Flex 置中屬性
             const modal = document.getElementById('login-modal');
             modal.classList.toggle('hidden');
         }
@@ -367,7 +337,7 @@
             icon.className = menu.classList.contains('hidden') ? "fa-solid fa-bars" : "fa-solid fa-xmark";
         }
 
-        // A11y 無障礙工具列邏輯
+        // 無障礙工具
         let a11yState = { text: false, contrast: false, ruler: false };
         function toggleA11y(type) {
             const body = document.body;
@@ -396,10 +366,12 @@
                 }
             }
         }
+
         function moveRuler(e) {
             const ruler = document.getElementById('reading-ruler');
             ruler.style.top = (e.clientY - 20) + 'px';
         }
+
         function moveRulerTouch(e) {
             if(e.touches && e.touches.length > 0) {
                 const ruler = document.getElementById('reading-ruler');
@@ -407,6 +379,7 @@
             }
         }
 
+        // 授權密碼認證
         function attemptLogin() {
             const user = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
@@ -416,6 +389,10 @@
                 sessionState.userId = user || "協作同工";
                 sessionState.unlockedAll = true;
                 
+                // 儲存狀態至 LocalStorage，讓跳轉子檔案後依然能保持登入狀態！
+                localStorage.setItem('sen_authorized', 'true');
+                localStorage.setItem('sen_user', sessionState.userId);
+
                 toggleLoginModal();
                 document.getElementById('login-btn-text').innerText = "已授權解鎖";
                 document.getElementById('login-btn').className = "bg-emerald-500 text-white px-5 py-2 rounded-xl text-sm sm:text-base font-bold transition shadow-md flex items-center gap-2";
@@ -439,83 +416,69 @@
             }, 3000);
         }
 
+        /* 
+           【核心跳轉機制】
+           當使用者點選卡片時，系統會先偵測該按鈕是否屬於需要登入授權的「Premium」模組。
+           通過後，會直接引流並跳轉至我們拆分後的各個獨立 HTML 子檔案。
+        */
         function handleItemClick(isPremium, title, action = null) {
             if (isPremium && !sessionState.unlockedAll) {
                 toggleLoginModal();
+                return;
+            }
+
+            if (action) {
+                showToast(`正在無縫導航至《${title}》專屬互動模組...`, "success");
+                setTimeout(() => {
+                    window.location.href = action; // 直接跳轉至子檔案
+                }, 800);
             } else {
-                if (action === "iepGenerator") renderIEPGenerator();
-                else if (action === "tokenBoard") renderTokenBoard();
-                else if (action === "strengthTest") renderStrengthAssessment();
-                else if (action === "fbaBuilder") renderFBABuilder();
-                else if (action === "teacherDashboard") renderTeacherDashboard();
-                else if (action === "atToolbox") renderATToolbox();
-                else if (action === "transitionRoadmap") renderTransitionRoadmap();
-                else if (action === "burnoutStation") renderBurnoutFuelStation();
-                else if (action === "ncsSupport") renderNCSSupport();
-                else if (action === "sosMeltdown") renderSOSMeltdown();
-                else if (action && action.startsWith("play_")) {
-                    const questId = action.replace("play_", "");
-                    playQuestGame(questId);
-                } else {
-                    showToast(`正在加載《${title}》的專業模組...`, "success");
-                }
+                showToast(`正在準備《${title}》的專業內容，請稍候。`, "success");
             }
         }
 
-        // ================= 渲染首頁 (字體全面放大) =================
+        // 渲染首頁協作大廳
         function renderHome() {
             const content = `
                 <div class="text-center py-6 sm:py-12 md:py-16">
-                    <span class="bg-blue-50 text-blue-700 text-xs sm:text-sm font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider mb-4 inline-block">融合教育 ＆ 實證介入</span>
-                    <h2 class="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tight leading-tight">
+                    <span class="bg-blue-50 text-blue-700 text-sm sm:text-base font-extrabold px-5 py-2 rounded-full uppercase tracking-wider mb-6 inline-block">融合教育 ＆ 實證介入</span>
+                    <h2 class="text-3xl sm:text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
                         用專業與大數據，<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">承托每一個學習需要</span>
                     </h2>
-                    <p class="mt-2 text-sm sm:text-base md:text-xl text-slate-500 max-w-3xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+                    <p class="mt-2 text-base sm:text-lg md:text-2xl text-slate-500 max-w-3xl mx-auto mb-10 leading-relaxed">
                         本網頁旨在為家長、輔導人員、教師提供前線臨床與研究層面的實用技巧。
                         融合最新教育心理學架構，結合 AI 智能篩查引流，實踐多軌化支援。
                     </p>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-6 sm:mt-12 max-w-7xl mx-auto">
-                        <div onclick="renderSection('parent')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-5 sm:p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
-                            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-blue-100/50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mb-4 group-hover:scale-110 transition-transform">👨‍👩‍👧</div>
-                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-1.5">家長專區</h3>
-                            <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">SOS緊急急救包、情緒燃料站、評估導航與居家行為管理 (代幣制)。</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12 max-w-7xl mx-auto">
+                        <div onclick="renderSection('parent')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
+                            <div class="w-16 h-16 bg-blue-100/50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">👨‍👩‍👧</div>
+                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">家長專區</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">SOS緊急急救包、線上代幣盤、心靈燃料站、5 大實戰模組導航。</p>
                         </div>
-                        <div onclick="renderStudentDashboard()" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-5 sm:p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center relative overflow-hidden card-glow active:bg-slate-50">
-                            <div class="absolute top-0 right-0 bg-indigo-500 text-white text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-bl-xl tracking-wider">Gen Z 精選</div>
-                            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-tr from-cyan-400 to-blue-500 text-white rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mb-4 group-hover:scale-110 transition-transform">🎮</div>
-                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-1.5">學生基地 (Gen Z)</h3>
-                            <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">迎合世代的 Vibe Check、11 大任務挑戰與 EXP 獎勵兌換系統。</p>
+                        <div onclick="renderStudentDashboard()" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center relative overflow-hidden card-glow active:bg-slate-50">
+                            <div class="absolute top-0 right-0 bg-indigo-500 text-white text-xs font-black px-3 py-1 rounded-bl-xl tracking-wider">Gen Z 精選</div>
+                            <div class="w-16 h-16 bg-gradient-to-tr from-cyan-400 to-blue-500 text-white rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">🎮</div>
+                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">學生基地 (Gen Z)</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">迎合世代的 Vibe Check、6 大任務挑戰與 EXP 獎勵兌換系統。</p>
                         </div>
-                        <div onclick="renderSection('professional')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-5 sm:p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
-                            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-purple-100/50 text-purple-600 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mb-4 group-hover:scale-110 transition-transform">💼</div>
-                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-1.5">同工專區</h3>
-                            <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">IEP自動生成、ABC行為分析、學生數據儀表板及實證教案資源。</p>
+                        <div onclick="renderSection('professional')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
+                            <div class="w-16 h-16 bg-purple-100/50 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">💼</div>
+                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">同工專區</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">IEP自動生成、ABC行為分析、學生數據儀表板及實證教案資源。</p>
                         </div>
-                        <div onclick="renderSection('sen_types')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-5 sm:p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
-                            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-amber-100/50 text-amber-600 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mb-4 group-hover:scale-110 transition-transform">📚</div>
-                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-1.5">10大 SEN 資源</h3>
-                            <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">讀寫障礙、ADHD 及雙重特殊 (2e)、非華語 (NCS) 及輔助科技配對器。</p>
+                        <div onclick="renderSection('sen_types')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
+                            <div class="w-16 h-16 bg-amber-100/50 text-amber-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">📚</div>
+                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">10大 SEN 資源</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">讀寫障礙、ADHD 及雙重特殊 (2e)、非華語 (NCS) 及輔助科技配對器。</p>
                         </div>
-                    </div>
-                    
-                    <div class="mt-8 sm:mt-16 bg-slate-900 text-white rounded-3xl p-6 sm:p-8 md:p-12 text-left max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden shadow-2xl">
-                        <div class="absolute right-0 bottom-0 w-80 h-80 bg-blue-600/10 rounded-full -mr-20 -mb-20"></div>
-                        <div class="z-10 max-w-xl">
-                            <span class="text-blue-400 text-xs sm:text-sm font-bold uppercase tracking-wider block mb-2">香港融合教育倡議與臨床支援</span>
-                            <h3 class="text-xl sm:text-2xl md:text-3xl font-black mb-4 leading-tight">需要深度個案評估、校本培訓或專業家長工作坊？</h3>
-                            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">我們提供一站式臨床與教育心理學諮詢，結合結構化訓練 (TEACCH) 與社交思維 (Social Thinking) 指導，協助學校與機構實踐高成效的支援。</p>
-                        </div>
-                        <button onclick="alert('稍後將引導至「臨床/教育心理學諮詢與外展課程報名」頁面。')" class="w-full md:w-auto z-10 bg-white text-slate-900 font-extrabold px-6 py-4 rounded-2xl hover:bg-slate-100 transition whitespace-nowrap shadow-lg text-base flex items-center justify-center min-h-[48px]">
-                            聯絡我們 / 機構預約 📞
-                        </button>
                     </div>
                 </div>
             `;
             document.getElementById('app-content').innerHTML = content;
         }
 
-        // ================= 渲染特定專區 =================
+        // 渲染分類大廳 (點選後呈現子模組)
         function renderSection(type) {
             const data = database[type];
             let itemsHtml = '';
@@ -523,7 +486,7 @@
             data.items.forEach(item => {
                 const isLocked = item.premium && !sessionState.unlockedAll;
                 const premiumBadge = item.premium 
-                    ? `<span class="bg-amber-100 text-amber-700 text-xs font-black px-2 py-0.5 rounded-full ml-2 flex items-center gap-1"><i class="fa-solid fa-key text-[10px]"></i>${isLocked ? '協作授權存取' : '已授權解鎖'}</span>` 
+                    ? `<span class="bg-amber-100 text-amber-700 text-xs font-black px-2.5 py-1 rounded-full ml-2 flex items-center gap-1"><i class="fa-solid fa-key text-[10px]"></i>${isLocked ? '協作授權存取' : '已授權解鎖'}</span>` 
                     : '';
                 const actionParam = item.action ? `'${item.action}'` : 'null';
                 const clickAction = `handleItemClick(${item.premium ? 'true' : 'false'}, '${item.title}', ${actionParam})`;
@@ -532,13 +495,13 @@
                 const iconColor = item.customClass ? 'text-rose-600 animate-pulse' : (item.premium ? 'text-amber-500' : 'text-blue-600');
 
                 itemsHtml += `
-                    <div onclick="${clickAction}" class="bg-white p-5 sm:p-6 rounded-2xl border ${customStyle} hover:border-blue-400 transition-all shadow-sm flex items-start gap-3 sm:gap-4 cursor-pointer relative active:bg-slate-50">
-                        <div class="bg-white/50 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center ${iconColor} shrink-0 text-xl sm:text-2xl shadow-sm">
+                    <div onclick="${clickAction}" class="bg-white p-6 rounded-2xl border ${customStyle} hover:border-blue-400 transition-all shadow-sm flex items-start gap-4 cursor-pointer relative active:bg-slate-50">
+                        <div class="bg-white/50 w-14 h-14 rounded-2xl flex items-center justify-center ${iconColor} shrink-0 text-2xl shadow-sm">
                             <i class="fa-solid ${item.icon}"></i>
                         </div>
                         <div class="flex-grow">
                             <h4 class="font-bold text-slate-800 text-base sm:text-lg mb-1 flex items-center flex-wrap gap-1 leading-tight">${item.title} ${premiumBadge}</h4>
-                            <p class="${item.customClass ? 'text-rose-600 font-medium' : 'text-slate-500'} text-xs sm:text-sm leading-relaxed">${item.desc}</p>
+                            <p class="${item.customClass ? 'text-rose-600 font-medium' : 'text-slate-500'} text-sm leading-relaxed">${item.desc}</p>
                         </div>
                         ${isLocked ? `<i class="fa-solid fa-lock text-slate-300 self-center text-base ml-2"></i>` : ''}
                     </div>
@@ -548,66 +511,24 @@
             const content = `
                 <div class="animate-fade-in-up">
                     <button onclick="renderHome()" class="text-blue-600 hover:text-blue-800 mb-6 flex items-center text-sm font-bold transition py-2 min-h-[44px]">
-                        <i class="fa-solid fa-arrow-left mr-2 text-base"></i> 返回首頁
+                        <i class="fa-solid fa-arrow-left mr-2 text-base"></i> 返回協作大廳
                     </button>
-                    <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-8 md:p-12 text-white mb-6 sm:mb-10 shadow-lg relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-8 md:p-12 text-white mb-8 shadow-lg relative overflow-hidden">
                         <div class="relative z-10">
                             <h2 class="text-2xl sm:text-3xl md:text-4xl font-black mb-2 sm:mb-3">${data.title}</h2>
                             <p class="text-slate-400 max-w-2xl text-sm sm:text-base leading-relaxed">${data.description}</p>
                         </div>
                         <i class="fa-solid fa-circle-nodes absolute -right-10 -bottom-10 text-9xl text-slate-800 opacity-20"></i>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         ${itemsHtml}
                     </div>
-                    
-                    <div class="mt-8 sm:mt-12 p-5 sm:p-6 bg-slate-50 rounded-2xl border border-slate-200 text-xs sm:text-sm text-slate-500 leading-relaxed">
-                        <p class="font-bold mb-2">📋 專業合規與機構鳴謝：</p>
-                        <p>本協作平台部分教學策略與小組教材綱要參考香港賽馬會慈善信託基金、香港大學及教育局之「喜伴同行」計劃 (JC A-Connect) 實證介入方案。相關出版物版權均屬原機構所有。本平台謹作融合教育專業倡導與學術交流用途。同工及家長可前往 <a href="https://www.edb.gov.hk" target="_blank" class="text-blue-600 hover:underline">香港教育局</a> 或原研究計劃官網獲取完整紙本報告。</p>
-                    </div>
                 </div>
             `;
             document.getElementById('app-content').innerHTML = content;
         }
 
-        // ================= 家長 SOS 緊急降溫急救包 =================
-        function renderSOSMeltdown() {
-            const content = `
-                <div class="animate-fade-in-up max-w-3xl mx-auto">
-                    <button onclick="renderSection('parent')" class="text-slate-400 hover:text-rose-600 mb-6 flex items-center text-sm font-bold transition py-2 min-h-[44px]">
-                        <i class="fa-solid fa-arrow-left mr-2 text-base"></i> 返回家長專區
-                    </button>
-                    
-                    <div class="bg-rose-600 rounded-3xl shadow-2xl overflow-hidden text-white relative">
-                        <div class="p-6 sm:p-8 md:p-12 text-center">
-                            <div class="w-20 h-20 sm:w-24 sm:h-24 bg-white text-rose-600 rounded-full flex items-center justify-center text-4xl sm:text-5xl mx-auto mb-6 shadow-lg animate-pulse">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-                            </div>
-                            <h2 class="text-2xl sm:text-3xl font-black mb-2">孩子正在情緒崩潰 (Meltdown) 嗎？</h2>
-                            <p class="text-rose-200 mb-6 sm:mb-8 font-bold text-sm sm:text-base">請家長先深呼吸。孩子大腦的理智區已關閉，現在講道理是沒有用的。請立即執行以下 3 步：</p>
-                            
-                            <div class="space-y-4 text-left">
-                                <div class="bg-white/10 rounded-2xl p-5 sm:p-6 border border-white/20">
-                                    <h3 class="text-lg sm:text-xl font-black text-white mb-2">1. 🛑 確保安全，保持距離</h3>
-                                    <p class="text-sm sm:text-base text-rose-100 leading-relaxed">移開附近所有危險或易碎物品。不要強行擁抱或抓住孩子（除非有自殘風險），保持一臂距離，讓他們知道你在但不會威脅他們。</p>
-                                </div>
-                                <div class="bg-white/10 rounded-2xl p-5 sm:p-6 border border-white/20">
-                                    <h3 class="text-lg sm:text-xl font-black text-white mb-2">2. 🤐 啟動「靜音模式」(Zero Talking)</h3>
-                                    <p class="text-sm sm:text-base text-rose-100 leading-relaxed"><b>不要說教！不要問「你做咩事」！不要說「冷靜啲」！</b><br>大腦超載時，任何語言都會火上加油。家長只需安靜地坐在視線範圍內，散發出「我陪著你」的冷靜氣場。</p>
-                                </div>
-                                <div class="bg-white/10 rounded-2xl p-5 sm:p-6 border border-white/20">
-                                    <h3 class="text-lg sm:text-xl font-black text-white mb-2">3. ❄️ 提供感官降溫 (Cool-down)</h3>
-                                    <p class="text-sm sm:text-base text-rose-100 leading-relaxed">把房間燈光調暗，關掉電視或音樂。如果孩子允許，在旁邊放一瓶冷水、一張被子（重力毯）或感統壓力球。等待至少 15-30 分鐘，直到孩子呼吸平穩，才進行事後檢討。</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('app-content').innerHTML = content;
-        }
-
-        // ================= 渲染：專屬 Gen Z 學生基地 =================
+        // 渲染學生基地
         function renderStudentDashboard() {
             let questsHtml = '';
             database.student_quests.forEach(quest => {
@@ -616,7 +537,7 @@
                     ? `<span class="bg-white/20 text-white text-[10px] font-black px-2 py-0.5 rounded-full"><i class="fa-solid fa-lock mr-1"></i>${isLocked ? '專業授權' : '已解鎖'}</span>` 
                     : '';
                 
-                const actionValue = quest.action ? quest.action : `play_${quest.id}`;
+                const actionValue = quest.action;
                 const clickAction = `handleItemClick(${quest.premium ? 'true' : 'false'}, '${quest.title}', '${actionValue}')`;
 
                 questsHtml += `
@@ -642,45 +563,13 @@
                 `;
             });
 
-            const rewardShopHtml = `
-                <div class="bg-gradient-to-r from-amber-400 to-orange-500 rounded-3xl p-5 sm:p-6 md:p-8 text-white mt-8 sm:mt-12 mb-6 sm:mb-8 shadow-lg relative overflow-hidden">
-                    <i class="fa-solid fa-gift absolute -right-10 -bottom-10 text-9xl text-white/20"></i>
-                    <h3 class="text-xl sm:text-2xl font-black mb-3 relative z-10 flex items-center gap-2"><i class="fa-solid fa-store"></i> 虛擬獎勵小賣部 (Rewards)</h3>
-                    <p class="text-sm sm:text-base text-amber-50 mb-6 relative z-10">你目前有 <b class="bg-white/20 px-3 py-1 rounded font-bold">${sessionState.exp} EXP</b>。使用經驗值解鎖專屬成就徽章！</p>
-                    
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 relative z-10">
-                        <div class="bg-white/10 border border-white/20 rounded-2xl p-4 sm:p-5 text-center ${sessionState.exp >= 300 ? 'cursor-pointer hover:bg-white/20 active:scale-95' : 'opacity-50'} transition" onclick="claimReward(300, '🌟 情緒大師徽章')">
-                            <div class="text-4xl sm:text-5xl mb-3">🌟</div>
-                            <p class="text-xs sm:text-sm font-bold mb-2">情緒大師徽章</p>
-                            <p class="text-xs bg-black/20 rounded-full inline-block px-3 py-1">300 EXP</p>
-                        </div>
-                        <div class="bg-white/10 border border-white/20 rounded-2xl p-4 sm:p-5 text-center ${sessionState.exp >= 800 ? 'cursor-pointer hover:bg-white/20 active:scale-95' : 'opacity-50'} transition" onclick="claimReward(800, '🛡️ 社交鐵壁徽章')">
-                            <div class="text-4xl sm:text-5xl mb-3">🛡️</div>
-                            <p class="text-xs sm:text-sm font-bold mb-2">社交鐵壁徽章</p>
-                            <p class="text-xs bg-black/20 rounded-full inline-block px-3 py-1">800 EXP</p>
-                        </div>
-                        <div class="bg-white/10 border border-white/20 rounded-2xl p-4 sm:p-5 text-center ${sessionState.exp >= 1500 ? 'cursor-pointer hover:bg-white/20 active:scale-95' : 'opacity-50'} transition" onclick="claimReward(1500, '👑 滿級探索者頭像框')">
-                            <div class="text-4xl sm:text-5xl mb-3">👑</div>
-                            <p class="text-xs sm:text-sm font-bold mb-2">滿級探索者頭像框</p>
-                            <p class="text-xs bg-black/20 rounded-full inline-block px-3 py-1">1500 EXP</p>
-                        </div>
-                        <div class="bg-white/10 border border-white/20 rounded-2xl p-4 sm:p-5 text-center opacity-50 relative">
-                            <div class="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center backdrop-blur-sm"><i class="fa-solid fa-lock text-white text-2xl"></i></div>
-                            <div class="text-4xl sm:text-5xl mb-3">🎁</div>
-                            <p class="text-xs sm:text-sm font-bold mb-2">實體文具禮包</p>
-                            <p class="text-xs bg-black/20 rounded-full inline-block px-3 py-1">中心限定</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-
             const content = `
                 <div class="animate-fade-in-up">
                     <button onclick="renderHome()" class="text-blue-600 hover:text-blue-800 mb-6 flex items-center text-sm font-bold transition py-2 min-h-[44px]">
                         <i class="fa-solid fa-arrow-left mr-2"></i> 離開基地
                     </button>
                     
-                    <div class="bg-white rounded-3xl p-6 sm:p-8 md:p-10 shadow-sm border border-slate-100 mb-6 sm:mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                    <div class="bg-white rounded-3xl p-6 sm:p-8 md:p-10 shadow-sm border border-slate-100 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
                         <div class="absolute right-0 top-0 w-64 h-64 bg-gradient-to-bl from-indigo-100 to-transparent rounded-full -mr-20 -mt-20 opacity-40"></div>
                         
                         <div class="flex items-center gap-4 sm:gap-6 z-10 w-full md:w-auto">
@@ -708,10 +597,8 @@
                         </div>
                     </div>
 
-                    ${rewardShopHtml}
-
                     <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center"><i class="fa-solid fa-compass text-indigo-500 mr-2"></i> 技能挑戰任務 (Quests)</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         ${questsHtml}
                     </div>
                 </div>
@@ -719,136 +606,9 @@
             document.getElementById('app-content').innerHTML = content;
         }
 
-        function claimReward(cost, name) {
-            if (sessionState.exp >= cost) {
-                sessionState.exp -= cost;
-                showToast(`🎉 成功兌換：${name}！已扣除 ${cost} EXP。`, "success");
-                renderStudentDashboard(); 
-            } else {
-                showToast(`❌ 經驗值不足！你還差 ${cost - sessionState.exp} EXP。快去完成任務吧！`, "error");
-            }
-        }
-
         function setVibe(emoji) { showToast(`今日心情已記錄 ${emoji}！情緒是自然流動的，你做得很棒！`, "success"); }
 
-        // ================= AI Chatbot 對話與引流邏輯 =================
-        function toggleChat() {
-            document.getElementById('chat-window').classList.toggle('hidden');
-        }
-
-        function handleChatSelect(role) {
-            let userResponse = "";
-            if (role === 'parent') userResponse = "我是家長，想評估孩子";
-            if (role === 'student') userResponse = "我是學生，想探索自己";
-            if (role === 'educator') userResponse = "我是老師/輔導同工";
-            appendUserMessage(userResponse);
-
-            setTimeout(() => {
-                if (role === 'parent') {
-                    appendBotMessage(`明白。我們最常收到關於注意力、情緒調控與專讀寫能力的查詢。請問孩子哪一項表現最令您感到困擾？`,
-                        [{ text: "經常動來動去，容易分心", value: "parent_adhd" }, { text: "不理解別人的表情語氣", value: "parent_asd" }, { text: "情緒容易失控大發脾氣 (Meltdown)", value: "parent_meltdown" }]);
-                } else if (role === 'student') {
-                    appendBotMessage(`Hey! 歡迎你。在這裡你可以探索自己的強項。你目前最想克服什麼障礙，或者提升什麼技能？`,
-                        [{ text: "我想學會不生氣/控制情緒", value: "student_emotion" }, { text: "同學排擠我，我想保護自己", value: "student_bullying" }, { text: "我想知道自己的隱藏超能力", value: "student_strength" }]);
-                } else if (role === 'educator') {
-                    appendBotMessage(`同工你好，向你的付出致敬！你現在最急需哪一類的臨床或實證教案工具？`,
-                        [{ text: "IEP個別計劃寫法及課堂調適", value: "pro_iep" }, { text: "ABC 行為分析與 BIP 建構", value: "pro_fba" }, { text: "想了解『有限智能』的支援方針", value: "pro_borderline" }]);
-                }
-            }, 800);
-        }
-
-        function handleDeepSelect(value) {
-            appendUserMessage("我的觀察/需求是這項。");
-            setTimeout(() => {
-                let reply = ""; let actionBtnHtml = "";
-                if (value === "parent_adhd") {
-                    reply = `根據您的描述，孩子具有較顯著的『注意力/過度活躍 (ADHD)』特徵。建議查閱『10大 SEN 資源庫』中關於 ADHD 的校本環境調適和居家行為契約。`;
-                    actionBtnHtml = `<button onclick="renderSection('sen_types'); toggleChat();" class="mt-2 bg-blue-600 text-white text-sm font-bold px-4 py-3 rounded-xl hover:bg-blue-700 transition min-h-[44px]">👉 前往 10大SEN ADHD資源</button>`;
-                } else if (value === "parent_meltdown") {
-                    reply = `⚠️ 遇到嚴重情緒崩潰，說理是無效的。請立刻使用我們的『SOS 緊急急救包』！`;
-                    actionBtnHtml = `<button onclick="renderSOSMeltdown(); toggleChat();" class="mt-2 bg-rose-600 text-white text-sm font-bold px-4 py-3 rounded-xl hover:bg-rose-700 transition min-h-[44px]">🚨 前往 SOS 緊急降溫指南</button>`;
-                } else if (value === "student_emotion") {
-                    reply = `情緒生氣是很正常的！系統為你推薦『情緒煞掣系統 🛑』挑戰，一起練習冷靜 3 秒大法。`;
-                    actionBtnHtml = `<button onclick="playQuestGame('quest_emotion'); toggleChat();" class="mt-2 bg-indigo-600 text-white text-sm font-bold px-4 py-3 rounded-xl hover:bg-indigo-700 transition min-h-[44px]">👉 接受情緒挑戰</button>`;
-                } else if (value === "pro_fba") {
-                    reply = `為您推薦『同工專區』中的 ABC 行為分析與 BIP 快速建構工具，找出行為背後的成因。`;
-                    actionBtnHtml = `<button onclick="renderFBABuilder(); toggleChat();" class="mt-2 bg-teal-600 text-white text-sm font-bold px-4 py-3 rounded-xl hover:bg-teal-700 transition min-h-[44px]">🔍 開啟 ABC 分析</button>`;
-                } else {
-                    reply = `已為您找到相關支援方針，請點擊下方按鈕前往資源庫。`;
-                    actionBtnHtml = `<button onclick="renderSection('sen_types'); toggleChat();" class="mt-2 bg-indigo-600 text-white text-sm font-bold px-4 py-3 rounded-xl hover:bg-indigo-700 transition min-h-[44px]">👉 前往 資源專區</button>`;
-                }
-                appendBotMessage(reply, [], actionBtnHtml);
-            }, 800);
-        }
-
-        function appendUserMessage(text) {
-            const container = document.getElementById('chat-messages');
-            container.insertAdjacentHTML('beforeend', `<div class="flex items-start gap-3 self-end"><div class="bg-blue-600 text-white p-3 sm:p-4 rounded-2xl rounded-tr-none text-sm leading-relaxed max-w-[85%] shadow-sm">${text}</div></div>`);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function appendBotMessage(text, options = [], customHtml = "", msgId = null) {
-            const container = document.getElementById('chat-messages');
-            let optionsHtml = "";
-            if (options.length > 0) {
-                optionsHtml = `<div class="mt-4 flex flex-col gap-2.5">`;
-                options.forEach(opt => { optionsHtml += `<button onclick="handleDeepSelect('${opt.value}')" class="bg-slate-100 text-slate-700 text-left px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-200 transition min-h-[44px]">${opt.text}</button>`; });
-                optionsHtml += `</div>`;
-            }
-            const idAttr = msgId ? `id="${msgId}"` : '';
-            container.insertAdjacentHTML('beforeend', `
-                <div ${idAttr} class="flex items-start gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-base font-bold">AI</div>
-                    <div class="bg-white border border-slate-100 p-4 rounded-2xl rounded-tl-none text-sm leading-relaxed text-slate-700 shadow-sm max-w-[85%]">
-                        ${text}${optionsHtml}${customHtml}
-                    </div>
-                </div>
-            `);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        // ================= 新增真實 Gemini API 串接 =================
-        const apiKey = ""; // 系統環境會自動在運行時注入您的 API Key，避免前端代碼外洩，確保資安。
-
-        async function fetchGeminiResponse(userText) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const systemPrompt = `你是一位香港的「特殊教育需要 (SEN) 及心理輔導助理」。
-請用溫和、同理心、專業的語氣（繁體中文）回答家長、學生或老師的提問。
-你的主要任務是安撫情緒、提供初步的教育心理學建議，並引導使用者去本網站的四大專區尋找資源：
-1. 家長專區 (SOS急救包、線上代幣盤、醫療社福導航)
-2. 學生基地 (Gen Z 情緒打卡、社交/抗逆力/專注力挑戰任務)
-3. 同工專區 (AI智能IEP生成器、ABC行為分析與BIP建構、學生動態數據儀表板)
-4. 10大 SEN 資源庫 (SpLD, ADHD, ASD, 有限智能等，及輔助科技AT配對、非華語NCS支援)。
-請保持回答簡潔（約100-150字內），並適時給出鼓勵。不要給出醫療診斷。`;
-
-            const payload = {
-                contents: [{ parts: [{ text: userText }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] }
-            };
-
-            const delays = [1000, 2000, 4000, 8000, 16000];
-            let attempt = 0;
-
-            while (attempt < 5) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    if (!response.ok) throw new Error('API Error');
-                    
-                    const data = await response.json();
-                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "抱歉，我暫時無法組織文字，請稍後再試。";
-                } catch (error) {
-                    attempt++;
-                    if (attempt >= 5) return "系統繁忙，請稍後再試。或您可以直接點擊畫面左方的專區尋找資源。";
-                    await new Promise(r => setTimeout(r, delays[attempt - 1]));
-                }
-            }
-        }
-
+        // AI Chatbot 機制
         async function sendChatMessage() {
             const input = document.getElementById('chat-input');
             const userText = input.value.trim();
@@ -857,216 +617,60 @@
             appendUserMessage(userText);
             input.value = "";
             
-            // 顯示載入中動畫
             const loadingId = "loading-" + Date.now();
-            appendBotMessage("<i class='fa-solid fa-spinner fa-spin mr-2 text-blue-500'></i>正在為您分析...", [], "", loadingId);
+            appendBotMessage("<i class='fa-solid fa-spinner fa-spin mr-2 text-blue-500'></i>正在分析...", [], "", loadingId);
             
-            // 呼叫真實的 Gemini API
-            const aiResponse = await fetchGeminiResponse(userText);
-            
-            // 移除載入動畫並顯示真實回應
-            const loadingEl = document.getElementById(loadingId);
-            if (loadingEl) loadingEl.remove();
-            
-            appendBotMessage(aiResponse);
+            // 模擬回覆（可接入您的真實 API）
+            setTimeout(() => {
+                const loadingEl = document.getElementById(loadingId);
+                if (loadingEl) loadingEl.remove();
+                appendBotMessage("你好！我已收到你的查詢。本平台目前已升級為「高保真多檔案架構」，家長專區與學生基地中的互動工具已全數分割為高效能的獨立網頁檔案（例如 parent_medical.html 流程模擬器）。你可以點選畫面的卡片進行深度實時體驗！");
+            }, 1000);
+        }
+
+        function appendUserMessage(text) {
+            const container = document.getElementById('chat-messages');
+            container.insertAdjacentHTML('beforeend', `<div class="flex items-start gap-2.5 self-end"><div class="bg-blue-600 text-white p-3.5 rounded-2xl rounded-tl-none text-sm leading-relaxed max-w-[85%] shadow-sm">${text}</div></div>`);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendBotMessage(text, options = [], customHtml = "", msgId = null) {
+            const container = document.getElementById('chat-messages');
+            const idAttr = msgId ? `id="${msgId}"` : '';
+            container.insertAdjacentHTML('beforeend', `
+                <div ${idAttr} class="flex items-start gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">AI</div>
+                    <div class="bg-white border border-slate-100 p-3.5 rounded-2xl rounded-tl-none text-sm leading-relaxed text-slate-700 shadow-sm max-w-[85%]">
+                        ${text}
+                    </div>
+                </div>
+            `);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleChatSelect(role) {
+            appendUserMessage(`我是 ${role === 'parent' ? '家長' : role === 'student' ? '學生' : '老師/同工'}`);
+            setTimeout(() => {
+                appendBotMessage("很高興為你導航！你可以直接點點擊首頁各個大類的卡片，系統會自動幫你開啟對應的獨立互動訓練小遊戲與專業工具紙！");
+            }, 800);
         }
 
         function handleChatKey(e) { if (e.key === 'Enter') sendChatMessage(); }
-
-        // ================= 各項獨立工具與互動模組的 Render Functions =================
-        function renderIEPGenerator() {
-            document.getElementById('app-content').innerHTML = `
-                <div class="animate-fade-in-up max-w-5xl mx-auto">
-                    <button onclick="renderSection('professional')" class="text-slate-400 hover:text-purple-600 mb-6 flex items-center text-sm font-bold transition py-2 min-h-[44px]"><i class="fa-solid fa-arrow-left mr-2"></i> 返回同工專區</button>
-                    <div class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
-                        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 sm:p-8 text-white">
-                            <div class="flex items-center gap-4 mb-2"><i class="fa-solid fa-robot text-4xl sm:text-5xl"></i><div><h2 class="text-2xl sm:text-3xl font-black">AI 智能 IEP 建議生成器</h2><p class="text-purple-100 text-sm sm:text-base mt-1">將前線觀察轉化為符合 EDB 標準的專業文書描述。</p></div></div>
-                        </div>
-                        <div class="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div>
-                                <h3 class="font-bold text-slate-800 mb-4 border-b pb-2 text-base sm:text-lg">1. 勾選日常表現特徵</h3>
-                                <div class="space-y-4">
-                                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
-                                        <label class="flex items-center gap-3 text-sm sm:text-base text-slate-600 mb-4 cursor-pointer"><input type="checkbox" id="iep-1" class="form-checkbox text-purple-600 rounded w-6 h-6"> 易受干擾分心</label>
-                                        <label class="flex items-center gap-3 text-sm sm:text-base text-slate-600 cursor-pointer"><input type="checkbox" id="iep-3" class="form-checkbox text-purple-600 rounded w-6 h-6"> 未能解讀表情語氣</label>
-                                    </div>
-                                </div>
-                                <button onclick="generateIEP()" class="mt-8 w-full h-14 bg-purple-600 text-white text-lg font-bold rounded-xl hover:bg-purple-700 transition shadow-md flex items-center justify-center">生成專業報告</button>
-                            </div>
-                            <div class="flex flex-col">
-                                <h3 class="font-bold text-slate-800 mb-4 border-b pb-2 flex justify-between items-center text-base sm:text-lg">2. 自動生成之建議
-                                    <button onclick="copyText('iep-result')" class="text-sm bg-slate-100 text-slate-600 hover:bg-slate-200 px-4 py-2 rounded-lg transition flex items-center"><i class="fa-regular fa-copy mr-1"></i>複製</button>
-                                </h3>
-                                <textarea id="iep-result" class="flex-grow w-full bg-slate-50 border border-slate-200 rounded-xl p-5 text-sm sm:text-base text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500 leading-relaxed resize-none min-h-[200px]"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        function generateIEP() {
-            let r = "【學生現況描述與 IEP 調適建議】\n\n"; let sel = false;
-            if(document.getElementById('iep-1').checked){ r+="🔹 專注力：易受干擾，建議入座近教師桌並給予非語文提示。\n\n"; sel=true; }
-            if(document.getElementById('iep-3').checked){ r+="🔹 社交：解讀非言語線索能力稍遜，建議轉介社交心智解讀小組。\n\n"; sel=true; }
-            if(!sel) r="請至少勾選一項觀察特徵。";
-            document.getElementById('iep-result').value = r;
-            if(sel) showToast("✅ 專業 IEP 報告生成成功！", "success");
-        }
-
-        function renderFBABuilder() {
-            document.getElementById('app-content').innerHTML = `
-                <div class="animate-fade-in-up max-w-5xl mx-auto">
-                    <button onclick="renderSection('professional')" class="text-slate-400 hover:text-purple-600 mb-6 flex items-center text-sm font-bold transition py-2 min-h-[44px]"><i class="fa-solid fa-arrow-left mr-2"></i> 返回同工專區</button>
-                    <div class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
-                        <div class="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 sm:p-8 text-white"><h2 class="text-2xl sm:text-3xl font-black">ABC 行為功能分析 (FBA) 工具箱</h2></div>
-                        <div class="p-6 sm:p-8">
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200"><h3 class="font-black text-emerald-700 text-lg mb-3">A 前因</h3><select id="fba-a" class="w-full border-slate-300 rounded-xl p-4 h-14 text-base"><option value="task">困難任務</option></select></div>
-                                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200"><h3 class="font-black text-orange-600 text-lg mb-3">B 行為</h3><select id="fba-b" class="w-full border-slate-300 rounded-xl p-4 h-14 text-base"><option value="verbal">大聲叫喊</option></select></div>
-                                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200"><h3 class="font-black text-blue-600 text-lg mb-3">C 後果</h3><select id="fba-c" class="w-full border-slate-300 rounded-xl p-4 h-14 text-base"><option value="avoid">逃避任務</option><option value="attention">獲取注意力</option></select></div>
-                            </div>
-                            <button onclick="generateBIP()" class="w-full h-14 bg-teal-600 text-white text-lg font-bold rounded-xl flex items-center justify-center mb-8">生成 BIP</button>
-                            <textarea id="bip-result" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-5 text-sm sm:text-base h-48 resize-none" readonly></textarea>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        function generateBIP() {
-            let r = "【行為干預計劃 BIP】\n\n📌 假設功能：\n" + (document.getElementById('fba-c').value==="avoid" ? "逃避任務。" : "獲取注意力。") + "\n\n🛠️ 建議策略：\n1. 教導合法替代行為。\n2. 前因控制 (調整課堂難度/視覺預告)。";
-            document.getElementById('bip-result').value = r; showToast("✅ BIP 生成！", "success");
-        }
-
-        function renderTeacherDashboard() {
-            document.getElementById('app-content').innerHTML = `
-                <div class="animate-fade-in-up max-w-6xl mx-auto">
-                    <button onclick="renderSection('professional')" class="text-slate-400 hover:text-blue-600 mb-6 flex items-center text-sm font-bold transition py-2 min-h-[44px]"><i class="fa-solid fa-arrow-left mr-2"></i> 返回同工專區</button>
-                    <div class="bg-slate-900 rounded-3xl shadow-2xl overflow-hidden text-white">
-                        <div class="bg-gradient-to-r from-blue-700 to-indigo-800 p-6 md:p-8 flex justify-between items-center">
-                            <h2 class="text-xl sm:text-2xl md:text-3xl font-black">跨專業學生數據儀表板</h2>
-                        </div>
-                        <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700"><h3 class="text-sm font-bold text-slate-400 mb-4">臨床反應時間 ⏱️</h3><p class="text-3xl sm:text-4xl font-black text-rose-400">1.8 秒</p></div>
-                            <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700"><h3 class="text-sm font-bold text-slate-400 mb-4">近 7 日情緒走勢</h3><p class="text-lg sm:text-xl font-bold text-slate-200">😔 連續兩日低落</p></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderNCSSupport() {
-            document.getElementById('app-content').innerHTML = `
-                <div class="animate-fade-in-up max-w-4xl mx-auto">
-                    <button onclick="renderSection('sen_types')" class="text-slate-400 hover:text-blue-600 mb-6 flex items-center text-sm font-bold transition py-2 min-h-[44px]"><i class="fa-solid fa-arrow-left mr-2"></i> 返回</button>
-                    <div class="bg-white rounded-3xl shadow-lg border border-slate-100 p-6 sm:p-8">
-                        <h2 class="text-2xl sm:text-3xl font-black text-teal-700 mb-6">🌏 非華語 (NCS) SEN 特殊支援</h2>
-                        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200"><h3 class="font-extrabold text-slate-800 text-lg mb-4">💬 雙語家校溝通話術</h3>
-                            <div class="bg-white p-5 rounded-xl border border-slate-200 text-sm sm:text-base"><p class="font-bold">表達擔憂：</p><p class="text-slate-600 italic mt-3">"We noticed that your child needs extra visual cues..."</p></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderTransitionRoadmap() {
-            document.getElementById('app-content').innerHTML = `
-                <div class="animate-fade-in-up max-w-4xl mx-auto">
-                    <button onclick="renderSection('sen_types')" class="text-slate-400 hover:text-blue-600 mb-6 flex items-center text-sm font-bold transition py-2 min-h-[44px]"><i class="fa-solid fa-arrow-left mr-2"></i> 返回</button>
-                    <div class="bg-white p-6 sm:p-8 md:p-10 rounded-3xl shadow-lg border border-slate-100">
-                        <h2 class="text-2xl sm:text-3xl font-black text-indigo-700 mb-6">🗺️ 高中與大學轉銜 (JUPAS)</h2>
-                        <ul class="list-disc pl-6 space-y-3 text-sm sm:text-base text-slate-600"><li>主動申報 SEN。</li><li>大專院校提前介入安排。</li></ul>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderATToolbox() {
-            document.getElementById('app-content').innerHTML = `
-                <div class="animate-fade-in-up max-w-4xl mx-auto p-8 sm:p-12 bg-white rounded-3xl shadow-lg text-center">
-                    <h2 class="text-2xl sm:text-3xl font-black text-blue-700 mb-6">🖥️ 輔助科技 (AT) 智能配對</h2>
-                    <p class="text-sm sm:text-base mb-8">SpLD 建議：使用語音轉文字軟體。</p>
-                    <button onclick="renderSection('sen_types')" class="bg-slate-200 px-6 py-3 rounded-xl font-bold text-sm sm:text-base min-h-[44px]">返回</button>
-                </div>
-            `;
-        }
-        
-        function renderBurnoutFuelStation() {
-            document.getElementById('app-content').innerHTML = `
-                <div class="animate-fade-in-up max-w-4xl mx-auto p-8 sm:p-12 bg-indigo-50 rounded-3xl shadow-lg text-center flex flex-col items-center">
-                    <h2 class="text-2xl sm:text-3xl font-black text-indigo-700 mb-6">⛽ 家長心靈燃料站</h2>
-                    <div class="w-48 h-48 flex items-center justify-center my-8"><div class="breathing-ball w-20 h-20 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg">呼吸</div></div>
-                    <button onclick="renderSection('parent')" class="bg-indigo-200 px-6 py-3 rounded-xl font-bold text-indigo-800 text-sm sm:text-base min-h-[44px]">返回</button>
-                </div>
-            `;
-        }
-
-        let tokenCount = 0;
-        function renderTokenBoard() {
-            document.getElementById('app-content').innerHTML = `
-                <div class="animate-fade-in-up max-w-4xl mx-auto p-8 sm:p-12 bg-white rounded-3xl shadow-lg text-center">
-                    <h2 class="text-2xl sm:text-3xl font-black text-yellow-500 mb-6">⭐ 互動線上代幣盤</h2>
-                    <div class="text-4xl sm:text-5xl mb-8 select-none tracking-widest">${'⭐'.repeat(tokenCount)}${'☆'.repeat(5-tokenCount)}</div>
-                    <button onclick="tokenCount=(tokenCount+1)%6; renderTokenBoard();" class="bg-yellow-400 font-bold px-8 py-4 rounded-2xl text-base sm:text-lg min-h-[48px]">+1 星星</button>
-                    <button onclick="renderSection('parent')" class="mt-8 block mx-auto text-slate-400 text-sm py-2">返回</button>
-                </div>
-            `;
-        }
-
-        function renderStrengthAssessment() {
-            document.getElementById('app-content').innerHTML = `
-                <div class="animate-fade-in-up max-w-4xl mx-auto bg-gradient-to-br from-indigo-900 to-purple-900 rounded-3xl shadow-2xl p-10 md:p-16 text-white text-center">
-                    <h2 class="text-3xl sm:text-4xl font-black mb-6">🦸‍♂️ 尋找你的專屬超能力！</h2>
-                    <button onclick="showToast('你獲得了【共情英雄】稱號！', 'success'); renderStudentDashboard();" class="mt-6 bg-white/20 hover:bg-white/30 p-5 rounded-2xl transition text-base font-bold min-h-[48px]">開始測驗</button>
-                </div>
-            `;
-        }
-
-        // ================= 小遊戲邏輯 =================
-        let questStartTime = 0;
-        function playQuestGame(questId) {
-            questStartTime = Date.now();
-            document.getElementById('app-content').innerHTML = `
-                <div class="animate-fade-in-up max-w-3xl mx-auto bg-indigo-900 rounded-3xl p-8 sm:p-10 text-white text-center shadow-2xl">
-                    <h2 class="text-2xl sm:text-3xl font-black mb-6">🔮 情境挑戰</h2>
-                    <p class="mb-8 text-sm sm:text-base leading-relaxed">同學故意藏起筆袋並取笑你。你該如何建立防禦結界？</p>
-                    <div class="space-y-4 text-left">
-                        <button onclick="submitQuestAnswer(false)" class="w-full bg-white/10 hover:bg-white/20 p-5 rounded-xl transition text-sm sm:text-base min-h-[48px]">A. 跟著陪笑。</button>
-                        <button onclick="submitQuestAnswer(true)" class="w-full bg-white/10 hover:bg-white/20 p-5 rounded-xl transition text-sm sm:text-base min-h-[48px]">B. 堅定說『我唔鍾意咁玩』。</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function submitQuestAnswer(isCorrect) {
-            const time = ((Date.now() - questStartTime)/1000).toFixed(2);
-            if (isCorrect) {
-                sessionState.exp += 250;
-                document.getElementById('app-content').innerHTML = `
-                    <div class="animate-fade-in-up max-w-3xl mx-auto bg-emerald-700 rounded-3xl p-8 sm:p-10 text-white text-center shadow-2xl">
-                        <h2 class="text-2xl sm:text-3xl font-black mb-4">🎉 正確！界線防禦成功。</h2>
-                        <p class="mb-8 text-sm sm:text-base">獲得 +250 EXP。反應時間：<b>${time}秒</b>。</p>
-                        <button onclick="renderStudentDashboard()" class="bg-white text-emerald-800 font-bold px-8 py-4 rounded-xl text-base min-h-[48px]">返回基地</button>
-                    </div>
-                `;
-            } else {
-                document.getElementById('app-content').innerHTML = `
-                    <div class="animate-fade-in-up max-w-3xl mx-auto bg-rose-700 rounded-3xl p-8 sm:p-10 text-white text-center shadow-2xl">
-                        <h2 class="text-2xl sm:text-3xl font-black mb-4">🤔 差一點點！</h2>
-                        <p class="mb-8 text-sm sm:text-base">隱忍只會讓情況惡化。反應時間：<b>${time}秒</b>。</p>
-                        <button onclick="renderStudentDashboard()" class="bg-white text-rose-800 font-bold px-8 py-4 rounded-xl text-base min-h-[48px]">返回學習</button>
-                    </div>
-                `;
-            }
-        }
-
-        function copyText(id) {
-            const text = document.getElementById(id);
-            text.select(); document.execCommand("copy");
-            showToast("已複製", "success");
-        }
+        function toggleChat() { document.getElementById('chat-window').classList.toggle('hidden'); }
 
         // 初始化
-        window.onload = renderHome;
+        window.onload = function() {
+            // 讀取 LocalStorage 保持登入
+            const cachedAuth = localStorage.getItem('sen_authorized');
+            if (cachedAuth === 'true') {
+                sessionState.isAuthorized = true;
+                sessionState.userId = localStorage.getItem('sen_user') || "協作同工";
+                sessionState.unlockedAll = true;
+                document.getElementById('login-btn-text').innerText = "已授權解鎖";
+                document.getElementById('login-btn').className = "bg-emerald-500 text-white px-5 py-2 rounded-xl text-sm sm:text-base font-bold transition shadow-md flex items-center gap-2";
+            }
+            renderHome();
+        };
     </script>
 </body>
 </html>
