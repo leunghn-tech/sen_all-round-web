@@ -19,7 +19,11 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
+        .card-glow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         .card-glow:hover {
+            transform: translateY(-4px);
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
         }
 
@@ -82,6 +86,9 @@
     <!-- 閱讀專注輔助線 -->
     <div id="reading-ruler"></div>
 
+    <!-- Toast 通知容器 -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
     <!-- 頂部協作導航欄 -->
     <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -130,7 +137,7 @@
 
     <!-- 主要內容動態渲染區 -->
     <main id="app-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 w-full">
-        <!-- 內容動態注入 -->
+        <!-- 內容由 JS 動態注入 -->
     </main>
 
     <!-- 無障礙輔助工具列 (A11y Toolbar - 含語音導讀) -->
@@ -175,7 +182,7 @@
                     </button>
                 </div>
                 <div class="mt-6 pt-5 border-t border-slate-100 text-center text-sm text-slate-400">
-                    未獲學校授權？ <a href="#" onclick="showToast('請聯繫本網頁開發小組申請測試帳號。', 'success')" class="text-blue-600 font-bold hover:underline">申請加入協作計劃</a>
+                    未獲學校授權？ <a href="#" onclick="showToast('請聯繫本網頁開發小組申請測試帳號。', 'info')" class="text-blue-600 font-bold hover:underline">申請加入協作計劃</a>
                 </div>
             </div>
         </div>
@@ -208,7 +215,7 @@
                         <div class="mt-3 flex flex-col gap-2">
                             <button onclick="handleChatSelect('parent')" class="bg-blue-50 text-blue-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-100 transition">👨‍👩‍👧 我是家長，想評估孩子</button>
                             <button onclick="handleChatSelect('student')" class="bg-indigo-50 text-indigo-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-indigo-100 transition">😎 我是學生，想探索自己</button>
-                            <button onclick="handleChatSelect('educator')" class="bg-purple-50 text-purple-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-purple-100 transition">💼 我是老師/輔導同工</button>
+                            <button onclick="handleChatSelect('educator')" class="bg-purple-50 text-purple-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-purple-100 transition">💼 我是老師/同工專區</button>
                         </div>
                     </div>
                 </div>
@@ -231,7 +238,7 @@
         </button>
     </div>
 
-    <!-- 頁尾 (左右雙欄大排版，完美適配 PDPO 合規說明) -->
+    <!-- 頁尾 -->
     <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start gap-8">
             <div class="md:w-1/3 w-full">
@@ -291,7 +298,7 @@
                 items: [
                     { icon: "fa-robot", title: "🚀 AI 智能 IEP 報告自動生成器", desc: "[殺手級工具] 勾選學生日常行為，AI 自動生成符合 EDB 要求的專業調適建議與目標。", premium: false, action: "professional_iep.html" },
                     { icon: "fa-chart-line", title: "📊 [授權] 學生動態數據儀表板 (Dashboard)", desc: "與「學生基地」聯動！實時查看學生的 Vibe Check 情緒基線、任務進度與臨床反應時間數據。", premium: true, action: "professional_dashboard.html" },
-                    { icon: "fa-magnifying-glass-chart", title: "🔍 [互動] ABC 行為分析與 BIP 快速建構", desc: "針對嚴峻行為問題 (FBA)：線上勾選前因 (A) 與後果 (C)，一鍵生成實證有效的行為干預計劃 (BIP)。", premium: false, action: "professional_bip.html" },
+                    { icon: "fa-magnifying-glass-chart", title: "🔍 [互動] ABC 行為分析與 BIP 快速建構", desc: "針對嚴峻行為問題 (FBA)：線上勾選前因 (A) 與後果 (C)，一鍵生成實證有效的行為干優計劃 (BIP)。", premium: false, action: "professional_bip.html" },
                     { icon: "fa-layer-group", title: "1. 三層支援模式 (3-Tier) 實戰指引與素材", desc: "提供 UDL 教案、最新測考調適懶人包。", premium: false, action: "professional_3tier.html" },
                     { icon: "fa-users-viewfinder", title: "2. 跨專業會議 (Case Conference) 紀錄框架與臨床劇本", desc: "提供標準會議紀錄模板與 EP/CP/SENCO「模擬對案協商對話範本」，幫助團隊快速對齊目標。", premium: false, action: "professional_conference.html" },
                     { icon: "fa-mug-hot", title: "3. 同工精神健康 (Wellness & Burnout)", desc: "教育工作者專屬喘息空間：同情疲勞 (Compassion Fatigue) 自我檢測表與 3 分鐘緊急靜觀降溫。", premium: false, action: "professional_wellness.html" },
@@ -312,7 +319,7 @@
                     { icon: "fa-eye-low-vision", title: "視覺障礙 (VI)", desc: "點字學習指導、定向行走訓練融入校園、多感官放大教材設計。", premium: false, action: "sen_vi.html" },
                     { icon: "fa-wheelchair", title: "肢體傷殘 (PD)", desc: "無障礙輔具調適、手部精細動作訓練輔助，與自理能力自信心建立。", premium: false, action: "sen_pd.html" },
                     { icon: "fa-cloud-showers-heavy", title: "精神病 (MI)", desc: "校園復元模式 (Recovery Model)、學生情緒海嘯處理程序，及危機評估工具。", premium: false, action: "sen_mi.html" },
-                    { icon: "fa-lightbulb", title: "雙重特殊資優 (Twice-Exceptional, 2e)", desc: "[新增跨類別] 智商優異 (Gifted) 伴隨 ASD/ADHD/SpLD。平衡拔尖與保底之雙軌 IEP 目標調適策略。", premium: false, action: "sen_2e.html" },
+                    { icon: "fa-lightbulb", title: "雙重特殊資優 (2e)", desc: "[新增跨類別] 智商優異 (Gifted) 伴隨 ASD/ADHD/SpLD。平衡拔尖與保底之雙軌 IEP 目標調適策略。", premium: false, action: "sen_2e.html" },
                     { icon: "fa-network-wired", title: "共病應對策略 (Comorbidity)", desc: "[新增跨類別] 處理常見混合個案（如 ASD+ADHD）。臨床介入與課堂調適之優先順序與整合教案。", premium: false, action: "sen_comorbidity.html" },
                     { icon: "fa-earth-asia", title: "🌏 非華語 (NCS) SEN 學生特殊支援", desc: "[新增跨界別] 針對少數族裔 SEN。提供跨文化評估、全英文 Social Stories/Token Boards，及雙語家長溝通話術卡。", premium: false, action: "sen_ncs.html" },
                     { icon: "fa-laptop-code", title: "🖥️ 輔助科技 (AT) 智能配對器", desc: "[實用科技] 語音轉文字、報讀及特殊輸入軟硬件。點擊開啟輔助科技清單與資助申報指南。", premium: false, action: "sen_at.html" }
@@ -324,7 +331,7 @@
                 { id: "quest_flex", category: "彈性思維 (Flexibility)", title: "思考變形金剛 🤖", desc: "當世界不按牌理出牌，大腦卡關怎麼辦？學習「Plan B 思考術」，把突發狀況變成新玩法！", exp: 350, icon: "fa-robot", color: "from-emerald-500 to-teal-500", action: "student_flex.html" },
                 { id: "quest_mindset", category: "抗逆力與成長心態", title: "錯誤轉化爐 ⚗️", desc: "默書卡關、測驗低迷？別讓大腦貼上「我不行」的標籤。將「失敗碎片」煉化成「經驗值」！", exp: 300, icon: "fa-mortar-pestle", color: "from-orange-500 to-amber-500", action: "student_mindset.html" },
                 { id: "quest_bullying", category: "社交防衛 / 反欺凌", title: "校園防禦結界 🔮", desc: "分不清是「玩耍」還是「欺凌」？學習如何堅定拒絕、建立社交防禦，並精準發出求助信號！", exp: 250, icon: "fa-shield-cat", color: "from-fuchsia-600 to-pink-600", action: "student_bullying.html" },
-                { id: "quest_interview", category: "職涯過渡與生涯規劃", title: "👨‍💼 職場生存預演 (ASD 模擬面試)", desc: "面對上司的「弦外之音」與同事的眼神，你能做出最適當的職場反應並成功通過模擬面試嗎？", exp: 400, icon: "fa-user-tie", color: "from-blue-600 to-sky-500", action: "student_interview.html" },
+                { id: "quest_interview", category: "職涯過渡與生涯規劃", title: "👨‍💼 職場生存預演 (模擬面試)", desc: "面對上司的「弦外之音」與同事的眼神，你能做出最適當的職場反應並成功通過模擬面試嗎？", exp: 400, icon: "fa-user-tie", color: "from-blue-600 to-sky-500", action: "student_interview.html" },
                 { id: "quest_college_social", category: "大專與社會適應", title: "🎓 大專社交潛規則", desc: "沒有了班主任，面對大專 Group Project (組員合作) 與 Ocamp，要如何發揮優勢、避免誤區？", exp: 300, icon: "fa-building-columns", color: "from-teal-600 to-emerald-500", action: "student_college_social.html" }
             ]
         };
@@ -343,7 +350,7 @@
             } else if (type === 'contrast') {
                 a11yState.contrast = !a11yState.contrast;
                 a11yState.contrast ? body.classList.add('a11y-high-contrast') : body.classList.remove('a11y-high-contrast');
-                showToast(a11yState.contrast ? "✅ 已開啟極致高對比度模式" : "復原標準配色", "success");
+                showToast(a11yState.contrast ? "✅ 已開啟高對比度模式" : "復原標準配色", "success");
             } else if (type === 'ruler') {
                 a11yState.ruler = !a11yState.ruler;
                 const ruler = document.getElementById('reading-ruler');
@@ -363,7 +370,7 @@
                 const btn = document.getElementById('btn-a11y-tts');
                 if (a11yState.tts) {
                     btn.className = "w-full h-10 text-xs text-emerald-400 font-bold hover:text-emerald-300 transition text-left flex items-center gap-2 rounded-lg px-1 bg-emerald-950/40 border border-emerald-500/30";
-                    showToast("🔊 語音導讀模式已開啟！隨意點按各項卡片即可播放粵語語音。", "success");
+                    showToast("🔊 語音導讀已開啟！點按各卡片即可播放粵語語音。", "success");
                     setupTTSListeners();
                 } else {
                     btn.className = "w-full h-10 text-xs hover:text-emerald-400 transition text-left flex items-center gap-2 rounded-lg px-1";
@@ -404,7 +411,7 @@
         function moveRuler(e) { document.getElementById('reading-ruler').style.top = (e.clientY - 20) + 'px'; }
         function moveRulerTouch(e) { if(e.touches && e.touches.length > 0) document.getElementById('reading-ruler').style.top = (e.touches[0].clientY - 20) + 'px'; }
 
-        // ================= 權限驗證 =================
+        // ================= 權限驗證邏輯 =================
         function toggleLoginModal() { document.getElementById('login-modal').classList.toggle('hidden'); }
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
@@ -414,8 +421,8 @@
         }
 
         function attemptLogin() {
-            const user = document.getElementById('login-user').value;
-            const pass = document.getElementById('login-pass').value;
+            const user = document.getElementById('login-user').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
 
             if (pass === "co-create2026") {
                 sessionState.isAuthorized = true;
@@ -426,302 +433,399 @@
                 localStorage.setItem('sen_user', sessionState.userId);
 
                 toggleLoginModal();
-                document.getElementById('login-btn-text').innerText = "已授權解鎖";
-                document.getElementById('login-btn').className = "bg-emerald-500 text-white px-5 py-2 rounded-xl font-bold transition shadow-md flex items-center gap-2";
+                showToast("🎉 成功解鎖專業同工進階資源！", "success");
                 
+                // 更新登入按鈕 UI
+                document.getElementById('login-btn-text').innerText = "已授權解鎖";
+                document.getElementById('login-btn').className = "bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2";
+                
+                // 重新渲染當前頁面以刷新鎖定狀態
                 renderHome();
-                showToast("🔓 系統已成功驗證授權！所有專業/校本教材已解鎖。", "success");
             } else {
-                showToast("❌ 憑證或授權碼無效，請聯繫研究主任或中心獲取憑證。", "error");
+                showToast("❌ 授權碼不正確，請重新輸入", "error");
             }
         }
 
-        function showToast(message, type) {
-            const toast = document.createElement("div");
-            toast.className = `fixed top-20 right-6 z-[100] px-6 py-4 rounded-2xl shadow-xl text-white font-bold text-sm sm:text-base transition-all transform translate-y-0 ${type === 'success' ? 'bg-emerald-600' : 'bg-rose-600'}`;
-            toast.innerHTML = message;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-[-10px]');
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
+        // ================= 整合動態渲染引擎 =================
+
+        // 首頁渲染
+        function renderHome() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const content = document.getElementById('app-content');
+            
+            content.innerHTML = `
+                <!-- Hero Section Banner -->
+                <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 rounded-3xl p-6 sm:p-10 md:p-12 text-white shadow-xl relative overflow-hidden mb-10">
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none"></div>
+                    <div class="relative z-10 max-w-3xl">
+                        <span class="bg-white/20 text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block backdrop-blur-md">動態實證資源庫 v2.5</span>
+                        <h2 class="text-2xl sm:text-4xl font-black tracking-tight mb-4 leading-tight">打通家校屏障，<br>為孩子織起全方位守護網</h2>
+                        <p class="text-blue-100 text-sm sm:text-base leading-relaxed mb-6">整合醫學、社福、教育三方資源。首創針對自閉、讀寫、過度活躍等十大 SEN 類別之互動代幣盤、AI 行為擬定，以及專屬 Gen Z 的抗逆探索任務系統。</p>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="renderSection('parent')" class="bg-white text-indigo-700 hover:bg-blue-50 font-black px-5 py-3 rounded-xl transition shadow-md">👨‍👩‍👧 進入家長專區</button>
+                            <button onclick="renderStudentDashboard()" class="bg-indigo-500/30 text-white hover:bg-indigo-500/50 border border-indigo-400/50 font-bold px-5 py-3 rounded-xl transition">😎 學生基地</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 角色分流大按鈕網格 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div onclick="renderSection('parent')" class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer flex items-start gap-4">
+                        <div class="bg-blue-50 text-blue-600 w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-xl"><i class="fa-solid fa-people-roof"></i></div>
+                        <div>
+                            <h3 class="font-extrabold text-slate-800 text-lg mb-1">家長專區</h3>
+                            <p class="text-slate-500 text-xs sm:text-sm">居家訓練、SOS急救包、代幣盤及同路人心靈充電。</p>
+                        </div>
+                    </div>
+                    <div onclick="renderSection('professional')" class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer flex items-start gap-4">
+                        <div class="bg-emerald-50 text-emerald-600 w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-xl"><i class="fa-solid fa-user-doctor"></i></div>
+                        <div>
+                            <h3 class="font-extrabold text-slate-800 text-lg mb-1">同工專區</h3>
+                            <p class="text-slate-500 text-xs sm:text-sm">AI IEP 報告、ABC行為分析及教案海報下載。</p>
+                        </div>
+                    </div>
+                    <div onclick="renderSection('sen_types')" class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer flex items-start gap-4">
+                        <div class="bg-purple-50 text-purple-600 w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-xl"><i class="fa-solid fa-brain"></i></div>
+                        <div>
+                            <h3 class="font-extrabold text-slate-800 text-lg mb-1">10大 SEN 類別</h3>
+                            <p class="text-slate-500 text-xs sm:text-sm">對應教育局指引，覆蓋 SpLD、ADHD、ASD 及共病策略。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 亮點精選推薦 -->
+                <div class="mb-6 flex justify-between items-center">
+                    <h3 class="text-xl font-black text-slate-800 flex items-center gap-2">🎯 實用熱門工具推介</h3>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- SOS 急救卡 -->
+                    <div onclick="handleAction('parent_sos.html', false)" class="bg-rose-50 border border-rose-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between h-48">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">緊急應對</span>
+                                <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i>
+                            </div>
+                            <h4 class="font-black text-rose-800 text-base mb-1">Meltdown SOS 急救包</h4>
+                            <p class="text-rose-700/80 text-xs leading-relaxed">孩子當下正在情緒崩潰？點擊此處獲取即時的「危機處理 3 步驟」。</p>
+                        </div>
+                        <span class="text-xs font-bold text-rose-800 flex items-center gap-1">開啟急救包 <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+
+                    <!-- AI IEP -->
+                    <div onclick="handleAction('professional_iep.html', false)" class="bg-indigo-50 border border-indigo-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between h-48">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="bg-indigo-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">高效省時</span>
+                                <i class="fa-solid fa-robot text-indigo-500 text-lg"></i>
+                            </div>
+                            <h4 class="font-black text-indigo-800 text-base mb-1">AI 智能 IEP 報告生成器</h4>
+                            <p class="text-indigo-700/80 text-xs leading-relaxed">線上勾選學生日常表現，AI 自動輸出符合教育局格式的專業調適目標。</p>
+                        </div>
+                        <span class="text-xs font-bold text-indigo-800 flex items-center gap-1">開啟生成器 <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+
+                    <!-- 遊戲化學習 -->
+                    <div onclick="renderStudentDashboard()" class="bg-purple-50 border border-purple-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between h-48">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="bg-purple-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md">學生基地</span>
+                                <i class="fa-solid fa-gamepad text-purple-500 text-lg"></i>
+                            </div>
+                            <h4 class="font-black text-purple-800 text-base mb-1">Gen Z 潛規則解碼器</h4>
+                            <p class="text-purple-700/80 text-xs leading-relaxed">用偵探探索小遊戲形式，帶領學生解讀朋輩社交生活中的隱藏情境。</p>
+                        </div>
+                        <span class="text-xs font-bold text-purple-800 flex items-center gap-1">開始探索 <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            `;
         }
 
-        // ================= 路由跳轉邏輯 =================
-        function handleItemClick(isPremium, title, action = null, sectionOrigin = null) {
-            if (isPremium && !sessionState.unlockedAll) {
+        // 渲染主要三大板塊頁面 (家長 / 同工 / 10大 SEN)
+        function renderSection(sectionKey) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const section = database[sectionKey];
+            if (!section) return;
+
+            const content = document.getElementById('app-content');
+            
+            let cardHtml = '';
+            section.items.forEach(item => {
+                const borderClass = item.customClass || 'border-slate-100 bg-white text-slate-700';
+                const isLocked = item.premium && !sessionState.isAuthorized;
+                const lockBadge = isLocked 
+                    ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-lock mr-1"></i>學校專屬</span>` 
+                    : ``;
+                
+                // 動態注入用於無障礙語音導讀 (TTS) 的字串
+                const ttsContent = `${item.title}。${item.desc}`;
+
+                cardHtml += `
+                    <div onclick="handleAction('${item.action}', ${item.premium})" data-tts="${ttsContent}" class="border rounded-2xl p-5 sm:p-6 card-glow flex flex-col justify-between cursor-pointer ${borderClass}">
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-black/5 flex items-center justify-center text-lg">
+                                    <i class="fa-solid ${item.icon}"></i>
+                                </div>
+                                ${lockBadge}
+                            </div>
+                            <h4 class="font-black text-slate-800 text-base mb-2 leading-tight">${item.title}</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">${item.desc}</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100/10 flex justify-between items-center text-xs font-bold">
+                            <span class="hover:underline flex items-center gap-1 text-blue-600">
+                                點擊進入互動 <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            content.innerHTML = `
+                <div class="mb-8">
+                    <button onclick="renderHome()" class="text-xs font-bold text-blue-600 hover:underline mb-4 flex items-center gap-1">
+                        <i class="fa-solid fa-chevron-left"></i> 返回首頁
+                    </button>
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-800 mb-2">${section.title}</h2>
+                    <p class="text-slate-500 text-sm max-w-3xl">${section.description}</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${cardHtml}
+                </div>
+            `;
+        }
+
+        // 渲染學生基地 (Gamified Student Dashboard)
+        function renderStudentDashboard() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const content = document.getElementById('app-content');
+            
+            // 計算進度條百分比
+            const progressPercent = (sessionState.exp / 1000) * 100;
+
+            let questCardsHtml = '';
+            database.student_quests.forEach(quest => {
+                const ttsContent = `${quest.title}，分類為${quest.category}。任務目標是：${quest.desc}。完成後可獲得${quest.exp}經驗值。`;
+
+                questCardsHtml += `
+                    <div onclick="handleAction('${quest.action}', false)" data-tts="${ttsContent}" class="bg-white border border-slate-100 rounded-3xl p-5 sm:p-6 card-glow flex flex-col justify-between cursor-pointer shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-3 -top-3 w-16 h-16 bg-gradient-to-br ${quest.color} opacity-10 rounded-full blur-sm"></div>
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="bg-slate-100 text-slate-600 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider">${quest.category}</span>
+                                <span class="text-amber-500 text-xs font-black flex items-center gap-1"><i class="fa-solid fa-star"></i> +${quest.exp} EXP</span>
+                            </div>
+                            <h4 class="font-black text-slate-800 text-base mb-2 flex items-center gap-2">
+                                <span class="bg-gradient-to-r ${quest.color} text-white w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs"><i class="fa-solid ${quest.icon}"></i></span>
+                                ${quest.title}
+                            </h4>
+                            <p class="text-slate-500 text-xs leading-relaxed mb-4">${quest.desc}</p>
+                        </div>
+                        <div class="pt-3 border-t border-slate-50 flex justify-between items-center">
+                            <span class="text-xs font-bold text-indigo-600 flex items-center gap-1">接受挑戰 <i class="fa-solid fa-gamepad"></i></span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            content.innerHTML = `
+                <!-- 學生等級資訊欄 (元宇宙 Gen Z 風格) -->
+                <div class="bg-slate-950 text-white rounded-3xl p-6 md:p-8 shadow-xl mb-10 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-indigo-600/30 rounded-full blur-2xl"></div>
+                    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-3xl shadow-lg border border-white/20">🕵️</div>
+                            <div>
+                                <h2 class="text-xl sm:text-2xl font-black tracking-tight flex items-center gap-2">
+                                    大腦探索者基地 <span class="bg-indigo-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Level ${sessionState.level}</span>
+                                </h2>
+                                <p class="text-slate-400 text-xs mt-0.5">解鎖日常生活、社交、與抗逆力潛規則</p>
+                            </div>
+                        </div>
+                        <div class="flex-grow max-w-md">
+                            <div class="flex justify-between text-xs font-bold text-slate-400 mb-2">
+                                <span>大腦經驗值 (EXP)</span>
+                                <span>${sessionState.exp} / 1000 EXP</span>
+                            </div>
+                            <div class="w-full bg-slate-800 h-3.5 rounded-full overflow-hidden p-0.5 border border-slate-700">
+                                <div class="bg-gradient-to-r from-indigo-500 to-fuchsia-500 h-full rounded-full transition-all duration-1000" style="width: ${progressPercent}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6 flex justify-between items-center">
+                    <h3 class="text-xl font-black text-slate-800 flex items-center gap-2">🕹️ 可執行的日常冒險任務</h3>
+                    <span class="text-xs text-slate-400 font-bold">每週自動更新</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${questCardsHtml}
+                </div>
+            `;
+        }
+
+        // 安全跳轉與控制
+        function handleAction(action, isPremium) {
+            if (isPremium && !sessionState.isAuthorized) {
+                showToast("🔒 該板塊為同工授權專屬資源，請先進行授權登入。", "info");
                 toggleLoginModal();
                 return;
             }
 
-            if (action) {
-                showToast(`正在導航至《${title}》模組...`, "success");
-                setTimeout(() => {
-                    // 自動帶上 section 參數，讓子頁面在返回時知道回到哪一區！
-                    const connector = action.includes('?') ? '&' : '?';
-                    let targetUrl = `${action}${connector}origin=${sectionOrigin || 'home'}`;
-                    window.location.href = targetUrl;
-                }, 800);
-            }
-        }
-
-        // ================= 渲染：首頁大廳 =================
-        function renderHome() {
-            const content = `
-                <div class="text-center py-6 sm:py-12 md:py-16">
-                    <span class="bg-indigo-50 text-indigo-700 font-extrabold px-5 py-2 rounded-full uppercase tracking-wider mb-6 inline-block">融合教育 ＆ 實證介入</span>
-                    <h2 class="text-3xl sm:text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
-                        用專業與大數據，<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">承托每一個學習需要</span>
-                    </h2>
-                    <p class="mt-2 text-base sm:text-lg md:text-2xl text-slate-500 max-w-3xl mx-auto mb-10 leading-relaxed">
-                        整合最新教育心理學架構，結合 AI 智能篩查與 UDL 語音無障礙導讀。
-                        提供實體化代幣盤、CBT 喘息室及一鍵課室素材列印。
-                    </p>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12 max-w-7xl mx-auto">
-                        <div onclick="renderSection('parent')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
-                            <div class="w-16 h-16 bg-blue-100/50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">👨‍👩‍👧</div>
-                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">家長專區</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed">SOS緊急急救包、線上代幣盤、心靈燃料站、5 大實戰模組導航與微學習 Podcast。</p>
-                        </div>
-                        <div onclick="renderStudentDashboard()" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center relative overflow-hidden card-glow active:bg-slate-50">
-                            <div class="absolute top-0 right-0 bg-indigo-500 text-white text-xs font-black px-3 py-1 rounded-bl-xl tracking-wider">A11y TTS</div>
-                            <div class="w-16 h-16 bg-gradient-to-tr from-cyan-400 to-blue-500 text-white rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">🎮</div>
-                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">學生基地 (Gen Z)</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed">迎合世代的 Vibe Check、任務挑戰與 ASD 職涯預演、大專社交潛規則。</p>
-                        </div>
-                        <div onclick="renderSection('professional')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
-                            <div class="w-16 h-16 bg-purple-100/50 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">💼</div>
-                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">同工專區</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed">IEP自動生成、ABC行為分析、學生數據儀表板及「一鍵列印」課室情緒海報素材。</p>
-                        </div>
-                        <div onclick="renderSection('sen_types')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
-                            <div class="w-16 h-16 bg-amber-100/50 text-amber-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">📚</div>
-                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">10大 SEN 資源</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed">讀寫障礙、ADHD 及雙重特殊 (2e)、非華語 (NCS) 雙語評估與輔助科技配對器。</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('app-content').innerHTML = content;
-        }
-
-        // ================= 渲染：各大列表專區 (乾淨的卡片列表) =================
-        function renderSection(type) {
-            const data = database[type];
-            let itemsHtml = '';
-            
-            data.items.forEach(item => {
-                const isLocked = item.premium && !sessionState.unlockedAll;
-                const premiumBadge = item.premium 
-                    ? `<span class="bg-amber-100 text-amber-700 text-xs font-black px-2.5 py-1 rounded-full ml-2 flex items-center gap-1"><i class="fa-solid fa-key text-[10px]"></i>${isLocked ? '協作授權存取' : '已授權解鎖'}</span>` 
-                    : '';
-                const actionParam = item.action ? `'${item.action}'` : 'null';
-                const clickAction = `handleItemClick(${item.premium ? 'true' : 'false'}, '${item.title}', ${actionParam}, '${type}')`;
-                
-                const customStyle = item.customClass || (item.premium ? 'border-amber-100 bg-amber-50/20 text-blue-600' : 'border-slate-100 text-blue-600');
-                const iconColor = item.customClass ? 'text-rose-600' : (item.premium ? 'text-amber-500' : 'text-blue-600');
-
-                itemsHtml += `
-                    <div onclick="${clickAction}" data-tts="模組：${item.title}。內容：${item.desc}" class="bg-white p-6 rounded-2xl border ${customStyle} hover:border-blue-400 transition-all shadow-sm flex items-start gap-4 cursor-pointer relative active:bg-slate-50 group">
-                        <div class="bg-white/50 w-14 h-14 rounded-2xl flex items-center justify-center ${iconColor} shrink-0 text-2xl shadow-sm group-hover:scale-105 transition-transform">
-                            <i class="fa-solid ${item.icon}"></i>
-                        </div>
-                        <div class="flex-grow">
-                            <h4 class="font-bold text-slate-800 text-base sm:text-lg mb-1 flex items-center flex-wrap gap-1 leading-tight">${item.title} ${premiumBadge}</h4>
-                            <p class="${item.customClass ? 'text-rose-600 font-medium' : 'text-slate-500'} text-sm leading-relaxed">${item.desc}</p>
-                        </div>
-                        ${isLocked ? `<i class="fa-solid fa-lock text-slate-300 self-center text-base ml-2"></i>` : ''}
-                    </div>
-                `;
-            });
-
-            const content = `
-                <div class="animate-fade-in-up">
-                    <button onclick="renderHome()" class="text-blue-600 hover:text-blue-800 mb-6 flex items-center font-bold transition py-2 min-h-[44px]">
-                        <i class="fa-solid fa-arrow-left mr-2"></i> 返回協作大廳
-                    </button>
-                    <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-8 md:p-12 text-white mb-8 shadow-lg relative overflow-hidden">
-                        <div class="relative z-10">
-                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-black mb-2 sm:mb-3">${data.title}</h2>
-                            <p class="text-slate-400 max-w-2xl leading-relaxed">${data.description}</p>
-                        </div>
-                        <i class="fa-solid fa-circle-nodes absolute -right-10 -bottom-10 text-9xl text-slate-800 opacity-20"></i>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        ${itemsHtml}
-                    </div>
-                </div>
-            `;
-            document.getElementById('app-content').innerHTML = content;
-
-            if (a11yState.tts) setupTTSListeners();
-        }
-
-        // ================= 渲染：專屬 Gen Z 學生基地 =================
-        function renderStudentDashboard() {
-            let questsHtml = '';
-            database.student_quests.forEach(quest => {
-                const isLocked = quest.premium && !sessionState.unlockedAll;
-                const lockBadge = quest.premium 
-                    ? `<span class="bg-white/20 text-white text-[10px] font-black px-2 py-0.5 rounded-full"><i class="fa-solid fa-lock mr-1"></i>${isLocked ? '專業授權' : '已解鎖'}</span>` 
-                    : '';
-                
-                const actionValue = quest.action;
-                const clickAction = `handleItemClick(${quest.premium ? 'true' : 'false'}, '${quest.title}', '${actionValue}', 'student')`;
-
-                questsHtml += `
-                    <div onclick="${clickAction}" data-tts="任務分類：${quest.category}。任務標題：${quest.title}。任務描述：${quest.desc}" class="bg-white rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all cursor-pointer overflow-hidden transform hover:-translate-y-1 relative active:bg-slate-50 group">
-                        <div class="bg-gradient-to-r ${quest.color} p-4 flex justify-between items-center text-white">
-                            <span class="font-bold text-xs bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">${quest.category}</span>
-                            <div class="flex items-center gap-1.5">
-                                ${lockBadge}
-                                <span class="font-bold text-xs bg-black/20 px-3 py-1 rounded-full"><i class="fa-solid fa-star text-yellow-300 mr-1"></i>+${quest.exp} EXP</span>
-                            </div>
-                        </div>
-                        <div class="p-5 sm:p-6">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-xl shrink-0 group-hover:scale-105 transition-transform"><i class="fa-solid ${quest.icon} text-slate-600"></i></div>
-                                <h4 class="font-extrabold text-lg text-slate-800 leading-tight">${quest.title}</h4>
-                            </div>
-                            <p class="text-slate-500 text-sm leading-relaxed mb-5">${quest.desc}</p>
-                            <button class="w-full h-12 bg-slate-50 hover:bg-indigo-50 text-indigo-600 font-extrabold rounded-xl transition flex items-center justify-center">
-                                ${isLocked ? '需協作授權解鎖 🔒' : '接受挑戰 (Accept Quest)'}
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            const content = `
-                <div class="animate-fade-in-up">
-                    <button onclick="renderHome()" class="text-blue-600 hover:text-blue-800 mb-6 flex items-center font-bold transition py-2 min-h-[44px]">
-                        <i class="fa-solid fa-arrow-left mr-2"></i> 離開基地
-                    </button>
-                    
-                    <div class="bg-white rounded-3xl p-6 sm:p-8 md:p-10 shadow-sm border border-slate-100 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 w-64 h-64 bg-gradient-to-bl from-indigo-100 to-transparent rounded-full -mr-20 -mt-20 opacity-40"></div>
-                        
-                        <div class="flex items-center gap-4 sm:gap-6 z-10 w-full md:w-auto" data-tts="歡迎來到自我成長探索基地！你目前是等級 4 社交挑戰探險家，擁有 850 經驗值。">
-                            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 shrink-0">
-                                <div class="w-full h-full bg-white rounded-2xl flex items-center justify-center text-4xl sm:text-5xl">😎</div>
-                            </div>
-                            <div>
-                                <h2 class="text-xl sm:text-2xl font-black text-slate-800 mb-2 leading-snug">同學，歡迎來到自我成長探索基地！</h2>
-                                <p class="text-slate-500 font-bold text-sm mb-2">Level ${sessionState.level} 社交挑戰探險家</p>
-                                <div class="w-48 sm:w-64 bg-slate-100 rounded-full h-3 mb-2">
-                                    <div class="bg-indigo-600 h-3 rounded-full" style="width: 55%"></div>
-                                </div>
-                                <p class="text-xs text-slate-400 font-bold">目前經驗值: <span id="dashboard-exp" class="text-indigo-600">${sessionState.exp}</span> EXP</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-50/50 rounded-2xl p-5 border border-slate-100 z-10 w-full md:w-auto">
-                            <p class="font-bold text-slate-700 mb-3 text-center md:text-left text-sm">今日 Vibe Check (心情打卡)</p>
-                            <div class="flex gap-3 justify-center">
-                                <button onclick="setVibe('😊')" class="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl hover:bg-green-50 hover:scale-110 active:scale-95 transition">😊</button>
-                                <button onclick="setVibe('😐')" class="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl hover:bg-yellow-50 hover:scale-110 active:scale-95 transition">😐</button>
-                                <button onclick="setVibe('😔')" class="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl hover:bg-blue-50 hover:scale-110 active:scale-95 transition">😔</button>
-                                <button onclick="setVibe('😡')" class="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl hover:bg-red-50 hover:scale-110 active:scale-95 transition">😡</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center"><i class="fa-solid fa-compass text-indigo-500 mr-2"></i> 技能挑戰任務 (Quests)</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        ${questsHtml}
-                    </div>
-                </div>
-            `;
-            document.getElementById('app-content').innerHTML = content;
-
-            if (a11yState.tts) setupTTSListeners();
-        }
-
-        function setVibe(emoji) { showToast(`今日心情已記錄 ${emoji}！情緒是自然流動的，你做得很棒！`, "success"); }
-
-        // ================= AI Chatbot 虛擬邏輯 =================
-        async function sendChatMessage() {
-            const input = document.getElementById('chat-input');
-            const userText = input.value.trim();
-            if (!userText) return;
-            
-            appendUserMessage(userText);
-            input.value = "";
-            
-            const loadingId = "loading-" + Date.now();
-            appendBotMessage("<i class='fa-solid fa-spinner fa-spin mr-2 text-blue-500'></i>正在分析...", [], "", loadingId);
-            
+            // 在本範例與 Github 多檔案部署下，直接跳轉外部對應的 HTML 檔案
+            // 例如：parent_sos.html
+            showToast(`正在進入：${action}...`, "success");
             setTimeout(() => {
-                const loadingEl = document.getElementById(loadingId);
-                if (loadingEl) loadingEl.remove();
-                appendBotMessage("你好！我已收到你的查詢。本平台目前已升級為「高保真多檔案架構」，所有工具已全數分割為高效能的獨立網頁檔案。你可以點選畫面的卡片進行深度實時體驗！");
-            }, 1000);
-        }
-
-        function appendUserMessage(text) {
-            const container = document.getElementById('chat-messages');
-            container.insertAdjacentHTML('beforeend', `<div class="flex items-start gap-2.5 self-end"><div class="bg-blue-600 text-white p-3.5 rounded-2xl rounded-tl-none text-sm leading-relaxed max-w-[85%] shadow-sm">${text}</div></div>`);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function appendBotMessage(text, options = [], customHtml = "", msgId = null) {
-            const container = document.getElementById('chat-messages');
-            const idAttr = msgId ? `id="${msgId}"` : '';
-            let optionsHtml = "";
-            if (options.length > 0) {
-                optionsHtml = `<div class="mt-4 flex flex-col gap-2.5">`;
-                options.forEach(opt => { optionsHtml += `<button onclick="handleDeepSelect('${opt.value}')" class="bg-slate-100 text-slate-700 text-left px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-200 transition min-h-[44px]">${opt.text}</button>`; });
-                optionsHtml += `</div>`;
-            }
-            container.insertAdjacentHTML('beforeend', `
-                <div ${idAttr} class="flex items-start gap-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">AI</div>
-                    <div class="bg-white border border-slate-100 p-3.5 rounded-2xl rounded-tl-none text-sm leading-relaxed text-slate-700 shadow-sm max-w-[85%]">
-                        ${text}${optionsHtml}${customHtml}
-                    </div>
-                </div>
-            `);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function handleChatSelect(role) {
-            appendUserMessage(`我是 ${role === 'parent' ? '家長' : role === 'student' ? '學生' : '老師/同工'}`);
-            setTimeout(() => {
-                appendBotMessage("很高興為你導航！你可以直接點點擊首頁各個大類的卡片，系統會自動幫你開啟對應的獨立互動訓練小遊戲與專業工具紙！");
+                window.location.href = action;
             }, 800);
         }
 
-        function handleChatKey(e) { if (e.key === 'Enter') sendChatMessage(); }
-        function toggleChat() { document.getElementById('chat-window').classList.toggle('hidden'); }
+        // ================= 免費的純 HTML Toast 替代 Alert =================
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0";
+            
+            let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+            let borderClass = 'border-emerald-100 shadow-emerald-50/50';
+            if (type === 'error') {
+                icon = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
+                borderClass = 'border-rose-100 shadow-rose-50/50';
+            } else if (type === 'info') {
+                icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
+                borderClass = 'border-blue-100 shadow-blue-50/50';
+            }
+            
+            toast.className += ` ${borderClass}`;
+            toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            // 進場動畫
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+            
+            // 退場與銷毀
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
 
-        // ================= 網頁載入時的動態路由偵測 =================
+        // ================= 智能諮詢 Chatbot 輔導助理對談 =================
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.classList.toggle('hidden');
+        }
+
+        function handleChatKey(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            appendMessage("user", text);
+            input.value = '';
+
+            // 智能關鍵字規則配對與分流
+            setTimeout(() => {
+                let response = "收到你的查詢！該範疇我們有非常專業的覆蓋。建議你點擊選單上的「家長專區」、「學生基地」或「同工專區」深入看詳情，或者點選下方功能：";
+                let showButtons = true;
+
+                if (text.includes("sos") || text.includes("崩潰") || text.includes("發脾氣") || text.includes("情緒")) {
+                    response = "⚠️ <b>偵測到情緒危機信號：</b> 點擊下方的「Meltdown SOS 急救包」，獲取香港註冊心理學家推薦的 3 步驟，可即時幫孩子降低感官過載和冷靜。";
+                    appendMessage("ai", response, 'parent_sos.html', '🚨Meltdown SOS 急救包');
+                } else if (text.includes("老師") || text.includes("同工") || text.includes("IEP") || text.includes("目標")) {
+                    response = "💼 <b>教師與專業人士：</b> 建議使用「AI 智能 IEP 報告生成器」或「ABC行為分析與BIP建構」，幫你一鍵產生符合教育局要求的調適計畫。";
+                    appendMessage("ai", response, 'professional_iep.html', '🚀 開啟 AI IEP 生成器');
+                } else if (text.includes("遊戲") || text.includes("學生") || text.includes("規則") || text.includes("社交")) {
+                    response = "🕹️ <b>學生基地探索：</b> 推薦你到「學生基地」解開「潛規則解碼器」和「話題接球手」任務，讓學生在互動解謎中自主學習。";
+                    appendMessage("ai", response, 'student_quests', '😎 開啟學生基地任務');
+                } else {
+                    appendMessage("ai", response);
+                }
+            }, 800);
+        }
+
+        function handleChatSelect(profile) {
+            let response = "";
+            let btnAction = "";
+            let btnText = "";
+
+            if (profile === 'parent') {
+                response = "👨‍👩‍👧 <b>家長指南：</b> 我推薦你先查閱「SOS急救包」，以及適合建立日常生活好行為的「代幣盤」互動工具！";
+                btnAction = "parent_sos.html";
+                btnText = "🚨 Meltdown SOS 急救包";
+            } else if (profile === 'student') {
+                response = "😎 <b>同學探索：</b> 點擊進入學生基地！完成「潛規則解碼器」可以累積經驗值(EXP)，提升大腦探索等級！";
+                btnAction = "student_quests";
+                btnText = "🕹️ 開始大腦探索任務";
+            } else if (profile === 'educator') {
+                response = "💼 <b>同工資源：</b> 需要一秒解鎖 IEP 目標嗎？試試我們的智能 IEP 生成器！測試帳號可體驗全部。";
+                btnAction = "professional_iep.html";
+                btnText = "🚀 AI 智能 IEP 生成器";
+            }
+
+            appendMessage("ai", response, btnAction, btnText);
+        }
+
+        function appendMessage(sender, text, btnAction = null, btnText = null) {
+            const box = document.getElementById('chat-messages');
+            const msg = document.createElement('div');
+            
+            if (sender === 'user') {
+                msg.className = "flex items-start gap-2.5 justify-end";
+                msg.innerHTML = `
+                    <div class="bg-blue-600 text-white p-3.5 rounded-2xl rounded-tr-none text-sm leading-relaxed max-w-[80%] shadow-sm">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                msg.className = "flex items-start gap-2.5";
+                let actionBtnHtml = '';
+                if (btnAction) {
+                    if (btnAction === 'student_quests') {
+                        actionBtnHtml = `<button onclick="renderStudentDashboard(); toggleChat();" class="mt-3 bg-indigo-50 text-indigo-700 text-left px-3 py-2 rounded-xl text-xs font-bold hover:bg-indigo-100 transition block w-full text-center">${btnText}</button>`;
+                    } else {
+                        actionBtnHtml = `<button onclick="handleAction('${btnAction}', false); toggleChat();" class="mt-3 bg-blue-50 text-blue-700 text-left px-3 py-2 rounded-xl text-xs font-bold hover:bg-blue-100 transition block w-full text-center">${btnText}</button>`;
+                    }
+                }
+                msg.innerHTML = `
+                    <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">AI</div>
+                    <div class="bg-white border border-slate-100 p-3.5 rounded-2xl rounded-tl-none text-sm leading-relaxed text-slate-700 shadow-sm max-w-[80%]">
+                        ${text}
+                        ${actionBtnHtml}
+                    </div>
+                `;
+            }
+            
+            box.appendChild(msg);
+            box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
+        }
+
+        // ================= 頁面初始化 =================
         window.onload = function() {
-            // 讀取本地授權狀態
+            // 初始化登入狀態快取
             const cachedAuth = localStorage.getItem('sen_authorized');
+            const cachedUser = localStorage.getItem('sen_user');
             if (cachedAuth === 'true') {
                 sessionState.isAuthorized = true;
-                sessionState.userId = localStorage.getItem('sen_user') || "協作同工";
+                sessionState.userId = cachedUser || "協作同工";
                 sessionState.unlockedAll = true;
+                
                 document.getElementById('login-btn-text').innerText = "已授權解鎖";
-                document.getElementById('login-btn').className = "bg-emerald-500 text-white px-5 py-2 rounded-xl font-bold transition shadow-md flex items-center gap-2";
+                document.getElementById('login-btn').className = "bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2";
             }
             
-            // 讀取 URL 參數，進行分頁路由
-            const urlParams = new URLSearchParams(window.location.search);
-            const section = urlParams.get('section');
-            
-            if (section === 'parent') {
-                renderSection('parent');
-            } else if (section === 'student') {
-                renderStudentDashboard();
-            } else if (section === 'professional') {
-                renderSection('professional');
-            } else if (section === 'sen_types') {
-                renderSection('sen_types');
-            } else {
-                renderHome(); // 預設載入大廳
-            }
+            // 預設渲染首頁
+            renderHome();
         };
     </script>
 </body>
