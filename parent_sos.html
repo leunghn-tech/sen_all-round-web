@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>情緒失控 (Meltdown) SOS 急救包</title>
+    <title>🚨 Meltdown SOS 情緒崩潰即時急救包</title>
     <!-- 引入 Tailwind CSS 進行精緻視覺排版 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入 Font Awesome 專業圖示 -->
@@ -12,494 +12,805 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
         body {
             font-family: 'Noto Sans HK', sans-serif;
-            background-color: #fcfcfd;
+            background-color: #fff1f2; /* 預設淡粉紅色溫和背景，緩和緊張情緒 */
+            transition: all 0.3s ease;
             -webkit-tap-highlight-color: transparent;
         }
-        /* 呼吸球動畫 */
-        @keyframes breathScale {
-            0%, 100% { transform: scale(1); background-color: #fca5a5; }
-            40% { transform: scale(1.4); background-color: #f87171; }
-            60% { transform: scale(1.4); background-color: #f87171; }
+
+        /* 呼吸球起動畫邏輯 */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); background-color: #fecdd3; }
+            40% { transform: scale(1.6); background-color: #fda4af; }
+            60% { transform: scale(1.6); background-color: #fda4af; }
         }
-        .breathing-bubble {
-            animation: breathScale 8s infinite ease-in-out;
-            will-change: transform;
+        .breathing-ball {
+            transition: all 0.5s ease-in-out;
+        }
+        .breathing-active {
+            animation: breathe 10s infinite ease-in-out; /* 4秒吸氣 - 2秒憋氣 - 4秒呼氣 */
+        }
+
+        /* 無障礙高對比度樣式 */
+        body.a11y-high-contrast {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+        body.a11y-high-contrast * {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border-color: #ffffff !important;
+            box-shadow: none !important;
+        }
+        body.a11y-high-contrast .bg-white, body.a11y-high-contrast .bg-rose-50, body.a11y-high-contrast .bg-rose-100 {
+            background-color: #121212 !important;
+            border: 2px solid #ffffff !important;
+        }
+        body.a11y-high-contrast button, body.a11y-high-contrast a {
+            background-color: #000000 !important;
+            color: #ffff00 !important;
+            border: 2px solid #ffff00 !important;
+        }
+        body.a11y-high-contrast button:hover {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+        }
+        body.a11y-high-contrast .text-rose-800, body.a11y-high-contrast .text-rose-600 {
+            color: #ffff00 !important;
+        }
+
+        html.a11y-large-text { font-size: 125% !important; }
+
+        .tts-highlight {
+            background-color: rgba(253, 224, 71, 0.4) !important;
+            transition: background-color 0.3s ease;
         }
     </style>
 </head>
-<body class="text-slate-800 p-4 sm:p-6 md:p-8 min-h-screen flex flex-col justify-between">
+<body class="text-slate-800 flex flex-col min-h-screen text-sm sm:text-base pb-12">
 
-    <!-- 頂部導航 -->
-    <div class="max-w-5xl mx-auto w-full mb-6">
-        <div class="flex items-center justify-between mb-4 sm:mb-6">
-            <a href="index.html" class="inline-flex items-center text-rose-600 hover:text-rose-800 font-bold transition text-base py-2 min-h-[44px]">
-                <i class="fa-solid fa-arrow-left mr-2"></i> 返回協作大廳
+    <!-- Toast 通知容器 -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-rose-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-rose-700 hover:text-rose-900 font-extrabold transition">
+                <i class="fa-solid fa-house-medical text-lg"></i>
+                <span>返回協作平台首頁</span>
             </a>
-            <span class="bg-rose-50 text-rose-700 text-xs sm:text-sm font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider">家長危機應對模組</span>
+            <div class="flex items-center gap-2">
+                <span class="bg-rose-100 text-rose-800 text-xs font-black px-2.5 py-1 rounded-full uppercase"><i class="fa-solid fa-triangle-exclamation mr-1 animate-pulse"></i>緊急工具</span>
+            </div>
         </div>
+    </header>
 
-        <!-- 橫幅區 -->
-        <div class="bg-gradient-to-r from-rose-500 to-red-600 rounded-3xl p-6 sm:p-10 text-white mb-8 shadow-xl relative overflow-hidden">
-            <div class="relative z-10 max-w-2xl">
-                <span class="bg-white/20 text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">緊急避難指南</span>
-                <h1 class="text-2xl sm:text-4xl font-black mb-3">🚨 情緒失控 (Meltdown) SOS 急救包</h1>
-                <p class="text-rose-100 text-sm sm:text-base leading-relaxed">
-                    孩子當下正在情緒崩潰、尖叫或丟擲物品嗎？請先相信：<b>這不是故意叛逆，而是孩子的大腦神經系統正在經歷一場無法自控的「安全海嘯」</b>。請跟隨本機器的引導進行科學降溫。
+    <!-- 主要內容區 -->
+    <main class="flex-grow max-w-5xl mx-auto px-4 py-8 w-full space-y-8">
+        
+        <!-- 緊急避難指南標題橫幅 -->
+        <div class="bg-gradient-to-r from-red-600 to-rose-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
+                <i class="fa-solid fa-triangle-exclamation text-[150px]"></i>
+            </div>
+            <div class="relative z-10 space-y-3">
+                <span class="bg-white/20 text-white text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider inline-block backdrop-blur-md">緊急避難指南</span>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2">
+                    🚨 情緒失控 (Meltdown) SOS 急救包
+                </h1>
+                <p class="text-rose-100 text-xs sm:text-sm leading-relaxed max-w-3xl">
+                    孩子當下正在情緒崩潰、尖叫或丟擲物品嗎？請先相信：<b>這不是故意叛逆，而是孩子的大腦神經系統正在經歷一場無法自控的「安全海嘯」。</b>請跟隨本機器的引導進行科學降溫。
                 </p>
             </div>
-            <i class="fa-solid fa-triangle-exclamation absolute -right-6 -bottom-6 text-9xl text-white/10"></i>
         </div>
 
-        <!-- 雙欄架構：左欄危機導航，右欄感統互動 -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-            
-            <!-- ================= 左/中欄：危機診斷與3步驟導航 ================= -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- 狀態篩選頁籤 -->
-                <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-100 shadow-sm">
-                    <h3 class="font-extrabold text-slate-800 text-lg sm:text-xl mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-rose-500"></i> 第一步：判斷當下情緒爆發階段
-                    </h3>
-                    <div class="grid grid-cols-3 gap-2 p-1 bg-slate-100 rounded-xl mb-6">
-                        <button onclick="switchPhase('phase-rumble')" id="btn-phase-rumble" class="phase-btn py-2.5 px-2 text-xs sm:text-sm font-black rounded-lg text-slate-600 hover:text-slate-800 transition">
-                            1. 醞釀期 (Rumble)
-                        </button>
-                        <button onclick="switchPhase('phase-meltdown')" id="btn-phase-meltdown" class="phase-btn py-2.5 px-2 text-xs sm:text-sm font-black rounded-lg bg-rose-500 text-white shadow-sm transition">
-                            2. 爆發期 (Meltdown)
-                        </button>
-                        <button onclick="switchPhase('phase-recovery')" id="btn-phase-recovery" class="phase-btn py-2.5 px-2 text-xs sm:text-sm font-black rounded-lg text-slate-600 hover:text-slate-800 transition">
-                            3. 修復期 (Recovery)
-                        </button>
-                    </div>
-
-                    <!-- 醞釀期內容 -->
-                    <div id="panel-phase-rumble" class="phase-panel hidden space-y-4">
-                        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950">
-                            <p class="font-bold text-sm sm:text-base mb-1">⚠️ 警號：大腦開始過載</p>
-                            <p class="text-xs sm:text-sm">孩子開始逃避眼神、咬手指、呼吸急促或重複碎碎念。此時大腦理智區尚未完全關閉，是<b>黃金阻截期</b>！</p>
-                        </div>
-                        <div class="space-y-3">
-                            <h4 class="font-bold text-slate-800 text-sm">🛠️ 推薦介入行動：</h4>
-                            <div class="p-3.5 bg-slate-50 rounded-xl text-xs sm:text-sm leading-relaxed border border-slate-100">
-                                <b>1. 減少環境要求</b>：立刻停止正在進行的功課或挑戰，『我哋先放低功課，休息 5 分鐘。』
-                            </div>
-                            <div class="p-3.5 bg-slate-50 rounded-xl text-xs sm:text-sm leading-relaxed border border-slate-100">
-                                <b>2. 提供感官避難所</b>：引導孩子去角落坐下，或遞上他們喜歡的抗壓捏捏玩具。
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 爆發期內容 (預設顯示) -->
-                    <div id="panel-phase-meltdown" class="phase-panel space-y-4">
-                        <div class="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-950">
-                            <p class="font-bold text-sm sm:text-base mb-1">🛑 警號：杏仁核綁架，理智完全關閉</p>
-                            <p class="text-xs sm:text-sm">孩子開始尖叫、扔玩具或倒地大哭。此時講道理、責備或詢問「為什麼」只會令神經系統進一步防衛。</p>
-                        </div>
-                        <div class="space-y-3">
-                            <h4 class="font-bold text-slate-800 text-sm">🛠️ 推薦介入行動：</h4>
-                            <div class="p-3.5 bg-slate-50 rounded-xl text-xs sm:text-sm leading-relaxed border border-slate-100">
-                                <b>1. 保持零說話 (Zero Talking)</b>：家長請閉嘴，不要長篇大論。語言此時是高負荷噪音。
-                            </div>
-                            <div class="p-3.5 bg-slate-50 rounded-xl text-xs sm:text-sm leading-relaxed border border-slate-100">
-                                <b>2. 安全距離防護</b>：將易碎、危險物品移開，家長在旁邊安靜守候，不強行擁抱（除非有自殘危險）。
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 修復期內容 -->
-                    <div id="panel-phase-recovery" class="phase-panel hidden space-y-4">
-                        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950">
-                            <p class="font-bold text-sm sm:text-base mb-1">🌱 警號：潮退後的疲憊期</p>
-                            <p class="text-xs sm:text-sm">孩子哭聲漸歇，呼吸粗重，顯得疲累、愧疚或放空。此時是<b>修復關係與情緒導航 (Coaching) 的時機</b>。</p>
-                        </div>
-                        <div class="space-y-3">
-                            <h4 class="font-bold text-slate-800 text-sm">🛠️ 推薦情感修復話術：</h4>
-                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                                <div>
-                                    <p class="text-xs text-slate-400 font-bold mb-1">🗣️ 認可感受與標籤情緒 (一鍵複製)</p>
-                                    <textarea id="script-empathy" class="bg-transparent font-bold text-xs sm:text-sm text-slate-700 w-full h-12 focus:outline-none resize-none" readonly>「媽媽見到你頭先好驚又好嬲，喊到好攰係咪？媽媽知道你唔係登心掟嘢嘅，我會陪住你。」</textarea>
-                                </div>
-                                <button onclick="copyEmpathyText('script-empathy')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs px-3.5 py-2.5 rounded-xl shrink-0 min-h-[40px] flex items-center gap-1">
-                                    <i class="fa-regular fa-copy"></i> 複製話術
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 實踐小測驗：危機處理情境挑戰 -->
-                <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-100 shadow-sm">
-                    <div class="flex justify-between items-center border-b pb-3 mb-4">
-                        <h3 class="font-extrabold text-slate-800 text-lg flex items-center gap-2">
-                            <i class="fa-solid fa-graduation-cap text-indigo-500"></i> 家長應對情境模擬測驗
-                        </h3>
-                        <span id="quiz-badge" class="bg-indigo-50 text-indigo-700 font-bold text-xs px-2.5 py-1 rounded-full">第 1 / 2 題</span>
-                    </div>
-                    <div id="quiz-container" class="space-y-4">
-                        <!-- 動態載入測驗 -->
-                    </div>
-                    <div id="quiz-feedback" class="hidden p-4 rounded-xl text-xs sm:text-sm border transition-all"></div>
+        <!-- 模塊一：家長調息艙 (步驟零：穩住家長自律神經) -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-rose-100 flex flex-col md:flex-row items-center gap-8">
+            <div class="md:w-1/2 text-left space-y-4">
+                <span class="bg-rose-50 text-rose-700 text-xs font-extrabold px-3.5 py-1.5 rounded-full"><i class="fa-solid fa-wind mr-1"></i>步驟零：穩住家長自律神經</span>
+                <h3 class="text-xl sm:text-2xl font-black text-slate-800">家長靜心調息球</h3>
+                <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                    孩子失控時，家長的自律神經也會被同步引燃。請合上眼，在介入前跟隨畫面中央的呼吸球進行 <b>3 次腹式呼吸</b>，將「戰鬥或逃跑」系統切換回冷靜模式。
+                </p>
+                <div class="flex gap-3">
+                    <button id="start-breathe-btn" onclick="toggleBreathing()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-5 py-3 rounded-xl transition text-xs shadow-md shadow-rose-100 flex items-center gap-2">
+                        <i class="fa-solid fa-play"></i> <span>開始 10 秒調息</span>
+                    </button>
+                    <button onclick="resetBreathing()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-3 rounded-xl transition text-xs">
+                        重設
+                    </button>
                 </div>
             </div>
 
-            <!-- ================= 右欄：感統環境模擬器 & 家長冷緊艙 ================= -->
-            <div class="space-y-6">
-                
-                <!-- 1. 虛擬感統房間模擬器 -->
-                <div class="bg-slate-900 text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-slate-800 flex flex-col justify-between h-[360px] relative overflow-hidden transition-all duration-500" id="sensory-room">
-                    <!-- 虛擬房間指示層 -->
-                    <div class="absolute inset-0 bg-red-500/20 pointer-events-none transition-opacity duration-500" id="room-alert-overlay"></div>
-                    
-                    <div class="relative z-10">
-                        <h3 class="font-extrabold text-sm sm:text-base flex items-center gap-2 mb-2">
-                            <i class="fa-solid fa-house-laptop text-rose-400"></i> 虛擬感統房間模擬演練
-                        </h3>
-                        <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed mb-4">
-                            當孩子崩潰時，點擊以下按鈕，親自調整虛擬房間，體驗如何科學「減低感官刺激」：
-                        </p>
-                    </div>
-
-                    <!-- 房間視覺狀態指示 -->
-                    <div class="bg-black/40 rounded-2xl p-4 my-2 text-center border border-white/5 relative z-10 flex flex-col items-center justify-center flex-grow transition-all duration-500" id="room-state-box">
-                        <div class="text-3xl sm:text-4xl mb-2" id="room-emoji">📺⚡🔊</div>
-                        <p class="text-xs font-bold text-slate-300" id="room-desc">亮霓虹燈、電視播放嘈雜音樂、環境吵雜</p>
-                    </div>
-
-                    <!-- 操控按鈕區 -->
-                    <div class="grid grid-cols-3 gap-2 relative z-10 mt-2">
-                        <button onclick="toggleSensory('light')" id="btn-sensory-light" class="bg-slate-800 hover:bg-slate-700 p-2 text-[11px] sm:text-xs font-bold rounded-xl border border-slate-700 text-rose-300 transition-colors">
-                            💡 調暗燈光
-                        </button>
-                        <button onclick="toggleSensory('sound')" id="btn-sensory-sound" class="bg-slate-800 hover:bg-slate-700 p-2 text-[11px] sm:text-xs font-bold rounded-xl border border-slate-700 text-rose-300 transition-colors">
-                            🔇 關閉電視
-                        </button>
-                        <button onclick="toggleSensory('blanket')" id="btn-sensory-blanket" class="bg-slate-800 hover:bg-slate-700 p-2 text-[11px] sm:text-xs font-bold rounded-xl border border-slate-700 text-rose-300 transition-colors">
-                            🛌 鋪重力毯
-                        </button>
+            <!-- 呼吸動畫球 -->
+            <div class="md:w-1/2 flex flex-col items-center justify-center py-4 bg-slate-50/50 rounded-2xl border border-slate-100 p-6">
+                <div class="relative w-40 h-40 flex items-center justify-center">
+                    <div id="breathing-ball" class="w-24 h-24 rounded-full bg-rose-200 flex items-center justify-center shadow-inner breathing-ball"></div>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span id="breathe-txt" class="font-black text-rose-900 text-sm">準備就緒</span>
+                        <span id="breathe-timer" class="text-[10px] text-rose-700 font-mono font-bold mt-1">點擊開始</span>
                     </div>
                 </div>
+                <p id="breathe-helper-text" class="text-rose-800 text-xs font-bold mt-4 text-center">吸氣 (4秒) → 憋氣 (2秒) → 呼氣 (4秒)</p>
+            </div>
+        </div>
 
-                <!-- 2. 家長自身冷靜艙 (3分鐘調息呼吸球) -->
-                <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-100 shadow-sm text-center flex flex-col items-center">
-                    <h3 class="font-extrabold text-slate-800 text-sm sm:text-base mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-wind text-rose-500"></i> 家長理智冷緊艙 (Breathing)
-                    </h3>
-                    <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed mb-6">
+        <!-- 模塊二：判斷當下情緒爆發階段 -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-rose-100 space-y-6">
+            <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-rose-600"></i> 第一步：判斷當下情緒爆發階段
+            </h3>
+
+            <!-- 階段切換按鈕 -->
+            <div class="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                <button id="tab-rumble" onclick="switchStage('rumble')" class="py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 bg-white shadow-sm text-rose-600 border border-rose-100">
+                    1. 醞釀期 (Rumble)
+                </button>
+                <button id="tab-meltdown" onclick="switchStage('meltdown')" class="py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-white/50">
+                    2. 爆發期 (Meltdown)
+                </button>
+                <button id="tab-recovery" onclick="switchStage('recovery')" class="py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-white/50">
+                    3. 修復期 (Recovery)
+                </button>
+            </div>
+
+            <!-- 動態內容容器 -->
+            <div id="stage-content-box" class="space-y-4">
+                <!-- 預設顯示醞釀期 -->
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-amber-900">
+                    <p class="font-black flex items-center gap-2 text-sm sm:text-base">
+                        <i class="fa-solid fa-triangle-exclamation"></i> 警號：大腦開始過載
+                    </p>
+                    <p class="text-xs sm:text-sm mt-1.5 leading-relaxed">
+                        孩子開始逃避眼神、咬手指、呼吸急促或重複碎碎念。此時大腦理智區尚未完全關閉，是<b>黃金阻截期</b>！
+                    </p>
+                </div>
+
+                <div class="space-y-3">
+                    <p class="font-black text-xs sm:text-sm text-slate-700 flex items-center gap-1.5"><i class="fa-solid fa-screwdriver-wrench"></i> 推薦介入行動：</p>
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 text-xs sm:text-sm leading-relaxed">
+                        <b>1. 減少環境要求：</b>立刻停止正在進行的功課或挑戰，「我哋先放低功課，休息 5 分鐘。」
+                    </div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 text-xs sm:text-sm leading-relaxed">
+                        <b>2. 提供感官避難所：</b>引導孩子去角落坐下，或遞上他們喜歡的抗壓捏捏玩具。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 雙欄排版：左邊為虛擬感統房模擬，右邊為家長理智冷緊艙 (音頻與冷靜) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 虛擬感統房 -->
+            <div class="bg-emerald-950 text-emerald-100 rounded-3xl p-6 shadow-xl border border-emerald-900 flex flex-col justify-between">
+                <div class="space-y-3">
+                    <h4 class="font-black text-base sm:text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-house-laptop text-emerald-400"></i> 虛擬感統房間模擬演練
+                    </h4>
+                    <p class="text-[11px] text-emerald-300 leading-relaxed">
+                        當孩子崩潰時，點擊以下按鈕，親自調整虛擬房間，體驗如何科學「減低感官刺激」：
+                    </p>
+                </div>
+
+                <!-- 房間視覺模擬框 -->
+                <div id="sensory-room" class="my-5 bg-emerald-900 border border-emerald-800 rounded-2xl p-5 text-center transition-all duration-500 relative overflow-hidden h-36 flex flex-col items-center justify-center">
+                    <div id="room-visual" class="text-3xl sm:text-4xl animate-bounce mb-2">💡 🔊 🏃‍♂️</div>
+                    <p id="room-status" class="text-xs font-bold text-white">當前狀態：感官高度超載中 (高熱、吵鬧)</p>
+                    <p id="room-tip" class="text-[10px] text-emerald-300 mt-1">點擊下方按鈕以採取降溫手段</p>
+                </div>
+
+                <!-- 按鈕面板 -->
+                <div class="grid grid-cols-3 gap-2">
+                    <button id="btn-light" onclick="toggleSensory('light')" class="bg-emerald-800 hover:bg-emerald-700 text-white text-[11px] font-bold py-2.5 rounded-xl border border-emerald-700 flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-lightbulb"></i> <span>燈光已調暗</span>
+                    </button>
+                    <button id="btn-tv" onclick="toggleSensory('tv')" class="bg-emerald-800 hover:bg-emerald-700 text-white text-[11px] font-bold py-2.5 rounded-xl border border-emerald-700 flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-tv"></i> <span>電視已關閉</span>
+                    </button>
+                    <button id="btn-blanket" onclick="toggleSensory('blanket')" class="bg-emerald-800 hover:bg-emerald-700 text-white text-[11px] font-bold py-2.5 rounded-xl border border-emerald-700 flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-scroll"></i> <span>已蓋重力毯</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 家長冷靜艙 (音頻與冷靜) -->
+            <div class="bg-white rounded-3xl p-6 shadow-xl border border-rose-100 flex flex-col justify-between">
+                <div class="space-y-3">
+                    <h4 class="font-black text-base sm:text-lg text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-heart-pulse text-rose-500 animate-pulse"></i> 家長理智冷緊艙 (Breathing)
+                    </h4>
+                    <p class="text-slate-500 text-xs leading-relaxed">
                         面對崩潰的孩子，您需要先穩住自己的理智腦。請跟隨呼吸球節奏，吸氣（膨脹）、吐氣（縮小）：
                     </p>
-
-                    <!-- 動態呼吸球 -->
-                    <div class="w-32 h-32 flex items-center justify-center mb-6 relative">
-                        <div class="breathing-bubble w-16 h-16 rounded-full flex items-center justify-center text-white text-xs font-black shadow-lg shadow-rose-200">
-                            調息中
-                        </div>
-                    </div>
-
-                    <!-- 內建暖心背景音頻 -->
-                    <button onclick="toggleBinauralBeat()" id="btn-sound-frequency" class="w-full h-11 bg-rose-50 hover:bg-rose-100 text-rose-700 font-extrabold rounded-xl text-xs transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-volume-high"></i> <span id="sound-btn-text">播放送舒緩 528Hz 音頻</span>
-                    </button>
                 </div>
 
+                <div class="my-4 flex justify-center">
+                    <div id="audio-breather-ball" class="w-20 h-20 rounded-full bg-rose-200/50 flex items-center justify-center font-bold text-xs text-rose-700 border border-rose-300">
+                        調息中
+                    </div>
+                </div>
+
+                <!-- 528Hz 音頻播放 -->
+                <button onclick="toggle528Hz()" id="btn-528" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-800 font-bold py-3.5 rounded-2xl transition border border-rose-100 flex items-center justify-center gap-2 text-xs">
+                    <i class="fa-solid fa-volume-high animate-bounce"></i> <span id="btn-528-text">播放送舒緩 528Hz 音頻</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 模塊三：情緒海嘯三要、三不法則 (完美對齊 2026-06-17 下午1.50.56 截圖) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- 三不要 -->
+            <div class="bg-rose-50/60 border border-rose-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5">
+                <h3 class="text-rose-800 font-black text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-circle-xmark text-rose-600"></i> 三不要 (避免引發二次海嘯)
+                </h3>
+                <ul class="space-y-4 text-slate-600 text-xs sm:text-sm">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-rose-200 text-rose-800 w-6 h-6 rounded-full flex items-center justify-center font-bold shrink-0 text-xs mt-0.5">1</span>
+                        <div>
+                            <strong class="text-rose-950 block">不要長篇大論道理、說教</strong>
+                            <p class="text-slate-500 text-xs mt-1 leading-relaxed">崩潰時孩子大腦「顳葉及杏仁核」極度充血，負責邏輯的額葉已完全斷線，說教只會增加聽覺資訊超載。</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-rose-200 text-rose-800 w-6 h-6 rounded-full flex items-center justify-center font-bold shrink-0 text-xs mt-0.5">2</span>
+                        <div>
+                            <strong class="text-rose-950 block">不要強行眼神接觸 (Eye Contact)</strong>
+                            <p class="text-slate-500 text-xs mt-1 leading-relaxed">對於自閉症 (ASD) 學生，此時直視他的雙眼會被其杏仁核解讀為「攻擊與威脅性信號」，加劇對抗情緒。</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-rose-200 text-rose-800 w-6 h-6 rounded-full flex items-center justify-center font-bold shrink-0 text-xs mt-0.5">3</span>
+                        <div>
+                            <strong class="text-rose-950 block">不要在當下進行懲罰或剝奪</strong>
+                            <p class="text-slate-500 text-xs mt-1 leading-relaxed">「你再喊今晚就沒得看電視！」這類要挾只會讓驚恐的杏仁核瞬間進入絕望反抗狀態，令Meltdown時間延長。</p>
+                        </div>
+                    </li>
+                </ul>
             </div>
 
+            <!-- 三要 -->
+            <div class="bg-emerald-50/40 border border-emerald-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5">
+                <h3 class="text-emerald-800 font-black text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-emerald-600"></i> 三要 (安全平復三部曲)
+                </h3>
+                <ul class="space-y-4 text-slate-600 text-xs sm:text-sm">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-emerald-100 text-emerald-800 w-6 h-6 rounded-full flex items-center justify-center font-bold shrink-0 text-xs mt-0.5">1</span>
+                        <div>
+                            <strong class="text-emerald-950 block">要確保物理空間安全 (Safety)</strong>
+                            <p class="text-slate-500 text-xs mt-1 leading-relaxed">移走周圍的尖銳物品，在不觸碰孩子身體的前提下，用身體作為溫和擋板，隔開危險（如馬路、鐵路邊緣）。</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-emerald-100 text-emerald-800 w-6 h-6 rounded-full flex items-center justify-center font-bold shrink-0 text-xs mt-0.5">2</span>
+                        <div>
+                            <strong class="text-emerald-950 block">要降低環境感官刺激 (Sensory Down)</strong>
+                            <p class="text-slate-500 text-xs mt-1 leading-relaxed">調暗燈光、關閉吵鬧的電視、請圍觀的路人散開，並用極其低沉、緩慢、溫柔的語調說：「爸爸/媽媽喺度，你安全嘅。」</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-emerald-100 text-emerald-800 w-6 h-6 rounded-full flex items-center justify-center font-bold shrink-0 text-xs mt-0.5">3</span>
+                        <div>
+                            <strong class="text-emerald-950 block">要靜默陪伴，等待海嘯退潮</strong>
+                            <p class="text-slate-500 text-xs mt-1 leading-relaxed">將你的姿態降到與孩子視線齊平或更低。不加干涉地在一旁陪伴，讓他的杏仁核慢慢感知到環境是安全、無攻擊性的。</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
 
-    <!-- 頁尾聲明 -->
-    <footer class="mt-8 border-t border-slate-200 pt-6 text-center max-w-5xl mx-auto w-full">
-        <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed">
-            🛡️ <b>醫療合規聲明：</b>本急救包提供之感統調節、情緒標籤和零說話介入法屬於行為干預範疇。若孩子有持續性嚴重傷害自己或他人之行為，請立即尋求心理學家、精神科醫生或致電緊急救援熱線。
-        </p>
+        <!-- 模塊四：家長應對情境模擬測驗 (互動 Quiz) -->
+        <div id="quiz-card" class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-rose-100 space-y-6">
+            <div class="flex justify-between items-center">
+                <span class="bg-blue-50 text-blue-700 text-xs font-extrabold px-3.5 py-1.5 rounded-full"><i class="fa-solid fa-puzzle-piece mr-1"></i>家長應對情境模擬測驗</span>
+                <span id="quiz-question-num" class="text-blue-600 font-bold text-xs sm:text-sm">第 1 / 2 題</span>
+            </div>
+
+            <div class="space-y-3">
+                <h3 id="quiz-question-title" class="text-base sm:text-lg font-black text-slate-800">當自閉症的孩子因為感到「環境太吵、太多陌生人」而開始尖叫打滾時，以下哪句話是家長應該「最先」說出口的？</h3>
+            </div>
+
+            <!-- 選項按鈕 -->
+            <div class="grid grid-cols-1 gap-3" id="quiz-options">
+                <button onclick="submitQuizOption('A')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-rose-400 hover:bg-rose-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">A</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">停止大吼！你這樣會吵到別人，知不知道？</span>
+                </button>
+                <button onclick="submitQuizOption('B')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-emerald-400 hover:bg-emerald-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">B</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">媽媽在旁邊陪住你，現在好安全，你可以哭一陣子。</span>
+                </button>
+                <button onclick="submitQuizOption('C')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-amber-400 hover:bg-amber-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">C</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">告訴我，你為什麼要這樣做？你想要什麼？</span>
+                </button>
+            </div>
+
+            <!-- 回饋框 (預設隱藏) -->
+            <div id="quiz-feedback" class="hidden p-5 rounded-2xl border transition-all duration-300">
+                <div class="flex items-start gap-3.5">
+                    <div id="feedback-icon" class="text-2xl mt-0.5 shrink-0"></div>
+                    <div class="space-y-2">
+                        <h4 id="feedback-title" class="font-black text-sm sm:text-base"></h4>
+                        <p id="feedback-desc" class="text-xs sm:text-sm leading-relaxed"></p>
+                        <!-- 下一題按鈕 -->
+                        <button id="next-question-btn" onclick="loadNextQuestion()" class="mt-4 bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition">下一題</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模塊五：海嘯退潮後：黃金修復期 (完美對齊 2026-06-17 下午1.51.06 截圖) -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-rose-100 space-y-5">
+            <span class="bg-indigo-50 text-indigo-700 text-xs font-black px-3.5 py-1.5 rounded-full"><i class="fa-solid fa-rainbow mr-1"></i>海嘯退潮後：黃金修復期</span>
+            <h3 class="text-xl sm:text-2xl font-black text-slate-800">如何進行「低焦慮事後檢討」？</h3>
+            <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                當孩子大哭止住、身體放鬆、開始發呆或尋求抱抱時，代表海嘯已過。此時進入修復期，請遵循以下步驟：
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+                <!-- 第一步 -->
+                <div class="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-1.5">
+                        1. 情感確認 (Validation)
+                    </h4>
+                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                        用溫柔的身體接觸或拍拍，告訴他：「媽媽知道頭先嗰度好嘈，你當時好驚、好憤怒。喊完就無事喇。」先同理其感受。
+                    </p>
+                </div>
+                <!-- 第二步 -->
+                <div class="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-1.5">
+                        2. 替代行為探討 (Replacement)
+                    </h4>
+                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                        不要責備，而是討論下一次如何表達：「下次如果覺得太嘈/好想要玩具，可以用卡片或者同媽媽講『我想要去安靜地方』。」
+                    </p>
+                </div>
+                <!-- 第三步 -->
+                <div class="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 space-y-2">
+                    <h4 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-1.5">
+                        3. 照料者自我關懷
+                    </h4>
+                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                        請記住，Meltdown 不是管教失敗。你和孩子剛打完一場勝仗，請給自己倒一杯溫水，對自己說一聲「辛苦了」。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-1 text-xs text-slate-500">
+            <p>© 2026 香港教育與 SEN 專業協作網絡 - 臨床情緒緊急急救包</p>
+            <p class="font-mono">本頁面所載之情緒干預步驟基於應用行為分析學 (ABA) 與認知行為療法 (CBT)。</p>
+        </div>
     </footer>
 
-    <!-- JavaScript 核心控制邏輯 -->
+    <!-- JavaScript 邏輯 -->
     <script>
-        // 1. 三階段導航
-        function switchPhase(phaseId) {
-            document.querySelectorAll('.phase-panel').forEach(p => p.classList.add('hidden'));
-            document.getElementById(`panel-${phaseId}`).classList.remove('hidden');
+        // ================= 呼吸球控制邏輯 =================
+        let breathingTimer = null;
 
-            document.querySelectorAll('.phase-btn').forEach(b => {
-                b.className = "phase-btn py-2.5 px-2 text-xs sm:text-sm font-black rounded-lg text-slate-600 hover:text-slate-800 transition";
+        function toggleBreathing() {
+            const ball = document.getElementById('breathing-ball');
+            const audioBall = document.getElementById('audio-breather-ball');
+            const btn = document.getElementById('start-breathe-btn');
+            const txt = document.getElementById('breathe-txt');
+            const timer = document.getElementById('breathe-timer');
+
+            if (breathingTimer) {
+                // 暫停呼吸
+                clearInterval(breathingTimer);
+                breathingTimer = null;
+                ball.classList.remove('breathing-active');
+                ball.style.transform = 'scale(1)';
+                txt.innerText = "已暫停";
+                timer.innerText = "點擊繼續";
+                btn.innerHTML = `<i class="fa-solid fa-play"></i> <span>恢復調息</span>`;
+                showToast("已暫停呼吸調息艙", "info");
+            } else {
+                // 開始/恢復呼吸
+                showToast("靜心調息艙已啟動，跟隨氣球律動深呼吸...", "success");
+                btn.innerHTML = `<i class="fa-solid fa-pause"></i> <span>暫停調息</span>`;
+                ball.classList.add('breathing-active');
+                
+                let totalCycleSec = 0;
+                breathingTimer = setInterval(() => {
+                    totalCycleSec = (totalCycleSec + 1) % 10;
+                    
+                    if (totalCycleSec < 4) {
+                        // 0, 1, 2, 3 秒: 吸氣
+                        txt.innerText = "深入吸氣...";
+                        timer.innerText = `${4 - totalCycleSec}s`;
+                        ball.style.transform = `scale(${1 + (totalCycleSec * 0.15)})`;
+                        ball.style.backgroundColor = '#fda4af';
+                        audioBall.style.transform = `scale(${1 + (totalCycleSec * 0.1)})`;
+                    } else if (totalCycleSec < 6) {
+                        // 4, 5 秒: 憋氣
+                        txt.innerText = "平靜憋氣";
+                        timer.innerText = `${6 - totalCycleSec}s`;
+                        ball.style.transform = 'scale(1.6)';
+                        ball.style.backgroundColor = '#fecdd3';
+                        audioBall.style.transform = 'scale(1.4)';
+                    } else {
+                        // 6, 7, 8, 9 秒: 呼氣
+                        txt.innerText = "緩慢呼氣...";
+                        timer.innerText = `${10 - totalCycleSec}s`;
+                        let shrinkFactor = 1.6 - ((totalCycleSec - 6) * 0.15);
+                        ball.style.transform = `scale(${shrinkFactor})`;
+                        ball.style.backgroundColor = '#ffe4e6';
+                        audioBall.style.transform = `scale(${1.4 - ((totalCycleSec - 6) * 0.1)})`;
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetBreathing() {
+            if (breathingTimer) {
+                clearInterval(breathingTimer);
+                breathingTimer = null;
+            }
+            const ball = document.getElementById('breathing-ball');
+            const audioBall = document.getElementById('audio-breather-ball');
+            const btn = document.getElementById('start-breathe-btn');
+            const txt = document.getElementById('breathe-txt');
+            const timer = document.getElementById('breathe-timer');
+
+            ball.classList.remove('breathing-active');
+            ball.style.transform = 'scale(1)';
+            ball.style.backgroundColor = '#fecdd3';
+            audioBall.style.transform = 'scale(1)';
+            txt.innerText = "準備就緒";
+            timer.innerText = "點擊開始";
+            btn.innerHTML = `<i class="fa-solid fa-play"></i> <span>開始 10 秒調息</span>`;
+            showToast("呼吸器已完成重設", "info");
+        }
+
+        // ================= 階段切換 Tabs 邏輯 =================
+        const stageData = {
+            rumble: {
+                warning: "⚠️ 警號：大腦開始過載",
+                desc: "孩子開始逃避眼神、咬手指、呼吸急促或重複碎碎念。此時大腦理智區尚未完全關閉，是<b>黃金阻截期</b>！",
+                actions: [
+                    "<b>1. 減少環境要求：</b>立刻停止正在進行的功課或挑戰，「我哋先放低功課，休息 5 分鐘。」",
+                    "<b>2. 提供感官避難所：</b>引導孩子去角落坐下，或遞上他們喜歡的抗壓捏捏玩具。"
+                ],
+                style: "bg-amber-50 border-amber-200 text-amber-900"
+            },
+            meltdown: {
+                warning: "🛑 警號：杏仁核綁架，理智完全關閉",
+                desc: "孩子開始尖叫、扔玩具或倒地大哭。此時講道理、責備或詢問「為什麼」只會令神經系統進一步防衛。",
+                actions: [
+                    "<b>1. 保持零說話 (Zero Talking)：</b>家長請閉嘴，不要長篇大論。語言此時是高負荷噪音。",
+                    "<b>2. 安全距離防護：</b>將易碎、危險物品移開，家長在旁邊安靜守候，不強行擁抱（除非有自殘危險）。"
+                ],
+                style: "bg-red-50 border-red-200 text-red-900"
+            },
+            recovery: {
+                warning: "🌱 警號：潮退後的疲憊期",
+                desc: "孩子哭聲漸歇，呼吸粗重，顯得疲累、愧疚或放空。此時是修復關係與情緒導航 (Coaching) 的時機。",
+                actions: [
+                    `<div class="space-y-3">
+                        <p class="font-bold text-slate-800 text-xs sm:text-sm">🗣️ 推薦情感修復話術：</p>
+                        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 flex justify-between items-center text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            <span>💬 <b>認可感受與標籤情緒</b><br>「媽媽見到你頭先好驚又好嬲，喊到好攰係咪？媽媽知道你唔係登心掟嘢嘅，我會陪住你。」</span>
+                            <button onclick="copySpeech()" class="ml-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-3 rounded-lg text-[10px] transition shrink-0 flex items-center gap-1">
+                                <i class="fa-solid fa-copy"></i> 複製話術
+                            </button>
+                        </div>
+                    </div>`
+                ],
+                style: "bg-emerald-50 border-emerald-200 text-emerald-950"
+            }
+        };
+
+        function switchStage(stageKey) {
+            const data = stageData[stageKey];
+            if (!data) return;
+
+            // 更新按鈕樣式
+            const tabs = ['rumble', 'meltdown', 'recovery'];
+            tabs.forEach(tab => {
+                const btn = document.getElementById(`tab-${tab}`);
+                if (tab === stageKey) {
+                    btn.className = "py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-rose-600 bg-white shadow-sm border border-rose-100";
+                } else {
+                    btn.className = "py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-white/50";
+                }
             });
 
-            const activeBtn = document.getElementById(`btn-${phaseId}`);
-            activeBtn.className = "phase-btn py-2.5 px-2 text-xs sm:text-sm font-black rounded-lg bg-rose-500 text-white shadow-sm transition";
-        }
-
-        function copyEmpathyText(id) {
-            const el = document.getElementById(id);
-            el.select();
-            document.execCommand('copy');
-            showToast("📋 溫柔共情話術已複製到您的剪貼簿！", "success");
-        }
-
-        // 2. 虛擬感統房間模擬器邏輯
-        let sensoryState = { light: false, sound: false, blanket: false };
-
-        function toggleSensory(type) {
-            sensoryState[type] = !sensoryState[type];
-            
-            const btn = document.getElementById(`btn-sensory-${type}`);
-            const room = document.getElementById('sensory-room');
-            const alertOverlay = document.getElementById('room-alert-overlay');
-            const stateBox = document.getElementById('room-state-box');
-            const emoji = document.getElementById('room-emoji');
-            const desc = document.getElementById('room-desc');
-
-            // 調整按鈕視覺
-            if (sensoryState[type]) {
-                btn.className = "bg-emerald-600 text-white p-2 text-[11px] sm:text-xs font-bold rounded-xl border border-emerald-500 transition-colors";
-                if(type === 'light') btn.innerText = "💡 燈光已調暗";
-                if(type === 'sound') btn.innerText = "🔇 電視已關閉";
-                if(type === 'blanket') btn.innerText = "🛌 已蓋重力毯";
-                playSynthTone(500, 'sine', 0.1);
-            } else {
-                btn.className = "bg-slate-800 hover:bg-slate-700 p-2 text-[11px] sm:text-xs font-bold rounded-xl border border-slate-700 text-rose-300 transition-colors";
-                if(type === 'light') btn.innerText = "💡 調暗燈光";
-                if(type === 'sound') btn.innerText = "🔇 關閉電視";
-                if(type === 'blanket') btn.innerText = "🛌 鋪重力毯";
-                playSynthTone(350, 'triangle', 0.15);
-            }
-
-            // 更新模擬房狀態
-            let itemsLeft = [];
-            let descText = "";
-            let emojiText = "";
-
-            if (!sensoryState.light) { itemsLeft.push("💡亮霓虹燈"); emojiText += "💡"; }
-            if (!sensoryState.sound) { itemsLeft.push("🔊嘈雜電視"); emojiText += "📺"; }
-            if (!sensoryState.blanket) { itemsLeft.push("🤸孩子躁動"); emojiText += "🤸"; }
-
-            if (itemsLeft.length === 3) {
-                room.className = "bg-slate-900 text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-slate-800 flex flex-col justify-between h-[360px] relative overflow-hidden transition-all duration-500";
-                alertOverlay.classList.remove('opacity-0');
-                desc.innerText = "高難度感官刺激環境！孩子極易在霓虹燈與嘈雜聲中崩溃。";
-            } else if (itemsLeft.length === 0) {
-                room.className = "bg-emerald-950 text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-emerald-800 flex flex-col justify-between h-[360px] relative overflow-hidden transition-all duration-500";
-                alertOverlay.classList.add('opacity-0');
-                emoji.innerText = "🧘✨💤";
-                desc.innerText = "完美降溫感統角落！低燈光、零雜音、配合溫暖重力毯，幫助大腦理智區快速復元。";
-            } else {
-                room.className = "bg-slate-800 text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-slate-700 flex flex-col justify-between h-[360px] relative overflow-hidden transition-all duration-500";
-                alertOverlay.classList.add('opacity-0');
-                emoji.innerText = emojiText || "🧘";
-                desc.innerText = `改善中！環境中仍有：${itemsLeft.join('、')}。請繼續改善環境。`;
-            }
-        }
-
-        // 3. 實境模擬測驗題庫
-        const quizData = [
-            {
-                q: "當自閉症的孩子因為感到「環境太吵、太多陌生人」而開始尖叫打滾時，以下哪句話是家長應該「最先」說出口的？",
-                options: [
-                    "A. 停止大吼！你這樣會吵到別人，知不知道？",
-                    "B. 媽媽在旁邊陪住你，現在好安全，你可以哭一陣子。",
-                    "C. 告訴我，你為什麼要這樣做？你想要什麼？"
-                ],
-                correct: 1,
-                explain: "正確答案是 B！當孩子陷入 Meltdown 時，其大腦邊緣系統已感知到極度危險。任何指責 (A) 或是要求孩子用語言分析因果的問題 (C) 都會進一步刺激杏仁核增加焦慮。只有溫和認可感受，給予安全承諾，才是讓大腦降溫的第一步。"
-            },
-            {
-                q: "當過度活躍 (ADHD) 的孩子在溫習時情緒開始暴躁、扔鉛筆，此時最科學的「醞釀期」介入策略是：",
-                options: [
-                    "A. 堅持要求：『你寫完呢行字先可以休息！』",
-                    "B. 主動降溫：『我見到你隻手好攰了。我哋先放低筆，一齊去廚房飲杯凍水休息下。』",
-                    "C. 採用代幣罰則：『你再掟筆，就扣除你今日所有的遊戲時間！』"
-                ],
-                correct: 1,
-                explain: "正確答案是 B！在 Rumble（醞釀期）階段，孩子已處於過載邊緣。強行要求完成任務 (A) 或威脅懲罰 (C) 會瞬間引發情緒大崩潰。主動為其提供生理降溫與轉換場景（如喝冷水）能極高概率阻止海嘯爆發。"
-            }
-        ];
-
-        let currentQuizIdx = 0;
-
-        function initQuiz() {
-            currentQuizIdx = 0;
-            renderQuizCard();
-        }
-
-        function renderQuizCard() {
-            const current = quizData[currentQuizIdx];
-            document.getElementById('quiz-badge').innerText = `第 ${currentQuizIdx + 1} / ${quizData.length} 題`;
-
-            const container = document.getElementById('quiz-container');
-            const feedback = document.getElementById('quiz-feedback');
-            feedback.classList.add('hidden');
-
-            let optionsHtml = '';
-            current.options.forEach((opt, idx) => {
-                optionsHtml += `
-                    <button onclick="checkAnswer(${idx})" class="quiz-opt-btn w-full text-left bg-white hover:bg-rose-50/40 border border-slate-200 hover:border-rose-400 p-4 rounded-2xl transition font-medium text-xs sm:text-sm min-h-[48px]">
-                        ${opt}
-                    </button>
-                `;
+            // 更新內容
+            const container = document.getElementById('stage-content-box');
+            let actionHtml = '';
+            data.actions.forEach(act => {
+                if (stageKey === 'recovery') {
+                    actionHtml += act;
+                } else {
+                    actionHtml += `<div class="bg-slate-50 border border-slate-100 rounded-xl p-4 text-xs sm:text-sm leading-relaxed">${act}</div>`;
+                }
             });
 
             container.innerHTML = `
-                <div class="space-y-4">
-                    <p class="text-slate-800 font-extrabold text-xs sm:text-sm leading-relaxed">${current.q}</p>
-                    <div class="space-y-2.5">
-                        ${optionsHtml}
-                    </div>
+                <div class="${data.style} border rounded-2xl p-5">
+                    <p class="font-black flex items-center gap-2 text-sm sm:text-base">
+                        ${data.warning}
+                    </p>
+                    <p class="text-xs sm:text-sm mt-1.5 leading-relaxed">
+                        ${data.desc}
+                    </p>
                 </div>
+                <div class="space-y-3">
+                    ${stageKey !== 'recovery' ? '<p class="font-black text-xs sm:text-sm text-slate-700 flex items-center gap-1.5"><i class="fa-solid fa-screwdriver-wrench"></i> 推薦介入行動：</p>' : ''}
+                    ${actionHtml}
+                </div>
+            `;
+            showToast(`已切換至當前情緒爆發階段：${stageKey === 'rumble' ? '醞釀期' : stageKey === 'meltdown' ? '爆發期' : '修復期'}`, "info");
+        }
+
+        function copySpeech() {
+            const text = "媽媽見到你頭先好驚又好嬲，喊到好攰係咪？媽媽知道你唔係登心掟嘢嘅，我會陪住你。";
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast("📋 專業認可話術已成功複製到剪貼簿！", "success");
+        }
+
+        // ================= 虛擬感統房間模擬邏輯 =================
+        let roomState = { light: false, tv: false, blanket: false };
+
+        function toggleSensory(type) {
+            roomState[type] = !roomState[type];
+            
+            const btn = document.getElementById(`btn-${type}`);
+            const room = document.getElementById('sensory-room');
+            const visual = document.getElementById('room-visual');
+            const statusText = document.getElementById('room-status');
+
+            if (roomState[type]) {
+                btn.className = "bg-emerald-100 text-emerald-900 text-[11px] font-bold py-2.5 rounded-xl border border-emerald-400 flex flex-col items-center gap-1 shadow-inner";
+            } else {
+                btn.className = "bg-emerald-800 hover:bg-emerald-700 text-white text-[11px] font-bold py-2.5 rounded-xl border border-emerald-700 flex flex-col items-center gap-1";
+            }
+
+            // 動態更新視覺模擬
+            let emoji = '';
+            if (!roomState.light) emoji += '💡 ';
+            if (!roomState.tv) emoji += '🔊 ';
+            if (!roomState.blanket) emoji += '🏃‍♂️ ';
+
+            if (emoji === '') emoji = '🧘‍♂️✨💤';
+
+            visual.innerText = emoji;
+
+            // 計算當前冷靜指數
+            let count = (roomState.light ? 1 : 0) + (roomState.tv ? 1 : 0) + (roomState.blanket ? 1 : 0);
+            if (count === 3) {
+                statusText.innerText = "完美降溫感統角落！低燈光、零雜音、配合溫暖重力毯，大腦快速復元。";
+                room.className = "my-5 bg-emerald-900 border border-emerald-400 rounded-2xl p-5 text-center transition-all duration-500 relative overflow-hidden h-36 flex flex-col items-center justify-center";
+                showToast("✨ 成功打造完美感統冷靜角落！", "success");
+            } else if (count > 0) {
+                statusText.innerText = `降溫中 (已執行 ${count} 項感官刺激調減)`;
+                room.className = "my-5 bg-emerald-950 border border-emerald-800 rounded-2xl p-5 text-center transition-all duration-500 relative overflow-hidden h-36 flex flex-col items-center justify-center";
+            } else {
+                statusText.innerText = "當前狀態：感官高度超載中 (高熱、吵鬧)";
+                room.className = "my-5 bg-emerald-950 border border-emerald-900 rounded-2xl p-5 text-center transition-all duration-500 relative overflow-hidden h-36 flex flex-col items-center justify-center";
+            }
+        }
+
+        // ================= Web Audio API 528Hz 合成器邏輯 =================
+        let audioCtx = null;
+        let oscillator = null;
+        let gainNode = null;
+        let isPlaying = false;
+
+        function toggle528Hz() {
+            const btnText = document.getElementById('btn-528-text');
+            const btn = document.getElementById('btn-528');
+
+            if (isPlaying) {
+                // 停止音頻
+                if (oscillator) {
+                    oscillator.stop();
+                    oscillator.disconnect();
+                }
+                isPlaying = false;
+                btnText.innerText = "播放送舒緩 528Hz 音頻";
+                btn.className = "w-full bg-rose-50 hover:bg-rose-100 text-rose-800 font-bold py-3.5 rounded-2xl transition border border-rose-100 flex items-center justify-center gap-2 text-xs";
+                showToast("已停止 528Hz 療癒音頻", "info");
+            } else {
+                // 開始播放音頻
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    oscillator = audioCtx.createOscillator();
+                    gainNode = audioCtx.createGain();
+
+                    oscillator.type = 'sine'; // 正弦波，最純淨柔和
+                    oscillator.frequency.setValueAtTime(528, audioCtx.currentTime); // 528Hz 舒緩頻率
+
+                    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime); // 適中音量，絕不刺耳
+
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+
+                    oscillator.start();
+                    isPlaying = true;
+                    btnText.innerText = "暫停 528Hz 療癒頻率中...";
+                    btn.className = "w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 rounded-2xl transition border border-rose-500 flex items-center justify-center gap-2 text-xs animate-pulse";
+                    showToast("🔊 正實時合成播放 528Hz Solfeggio 療癒頻率，幫助舒緩大腦神經...", "success");
+                } catch (e) {
+                    showToast("您的瀏覽器暫時不支援實時音頻合成。", "error");
+                }
+            }
+        }
+
+        // ================= 情境模擬 Quiz 邏輯 =================
+        const quizDatabase = [
+            {
+                question: "當自閉症的孩子因為感到「環境太吵、太多陌生人」而開始尖叫打滾時，以下哪句話是家長應該「最先」說出口的？",
+                options: {
+                    A: "停止大吼！你這樣會吵到別人，知不知道？",
+                    B: "媽媽在旁邊陪住你，現在好安全，你可以哭一陣子。",
+                    C: "告訴我，你為什麼要這樣做？你想要什麼？"
+                },
+                answer: "B",
+                feedbackTitle: {
+                    A: "A 選擇：這會將現場變成雙重情緒戰場！",
+                    B: "B 選擇：極其完美！這是專業前線的黃金標準！",
+                    C: "C 選擇：杏仁核綁架時，大腦理智區已關機！"
+                },
+                feedbackDesc: {
+                    A: "<b>臨床分析：</b>此時大喊喝止只會對孩子敏感的神經系統輸入更大的「感官威脅 (Sensory threat)」，加劇崩潰，不要企圖在爆發當下進行說教或社教要求。",
+                    B: "<b>臨床分析：</b>這是心理學上的「共同調節 (Co-regulation)」。提供最簡潔且無害的語言訊息，讓他的大腦知道環境已被安全接管，是平息海嘯最關鍵的第一步。",
+                    C: "<b>臨床分析：</b>在 Meltdown 時要求孩子進行語言因果邏輯分析，猶如在風暴中修復網絡，這會給他尚未成熟或暫時斷線的额葉造成巨大壓力，增加焦慮。"
+                }
+            },
+            {
+                question: "在孩子情緒崩潰稍微穩定、進入修復期 (Recovery) 時，家長進行「事後檢討」的黃金原則是什麼？",
+                options: {
+                    A: "立刻重申規矩：「下次你再扔玩具，我就會扣你所有代幣星星！」",
+                    B: "等孩子完全放鬆、神志清醒後，先同理他的委屈，然後共同商討「Plan B 替代表達卡」。",
+                    C: "冷處理，當作甚麼事都沒發生，以免孩子尷尬。"
+                },
+                answer: "B",
+                feedbackTitle: {
+                    A: "A 選擇：威脅手段會讓孩子重新進入防衛狀態！",
+                    B: "B 選擇：這就是專業認知行為療法的精髓所在！",
+                    C: "C 選擇：逃避問題無法建立替代健康行為。"
+                },
+                feedbackDesc: {
+                    A: "<b>臨床分析：</b>在修復期，孩子剛經歷極其真實的情緒創傷。此時突然提及懲罰或扣分，會極易誘發二次情緒海嘯，並損害親子親密信任關係。",
+                    B: "<b>臨床分析：</b>完美的「事後檢討 (De-briefing)」應先接納與驗證其情緒，在理智腦上線後，才引入替代行為（如「下次可以給媽媽看安靜卡」），這能幫助孩子逐步建立情緒彈性。",
+                    C: "<b>臨床分析：</b>如果不做任何引導或情感確認，孩子的大腦就無法學會「下次可以用什麼替代尖叫」，行為模式將會在未來同類刺激下機械重複。"
+                }
+            }
+        ];
+
+        let currentQuizIndex = 0;
+
+        function loadQuizQuestion() {
+            const quiz = quizDatabase[currentQuizIndex];
+            const qNum = document.getElementById('quiz-question-num');
+            const qTitle = document.getElementById('quiz-question-title');
+            const qOptions = document.getElementById('quiz-options');
+            const feedback = document.getElementById('quiz-feedback');
+
+            feedback.classList.add('hidden');
+            qNum.innerText = `第 ${currentQuizIndex + 1} / ${quizDatabase.length} 題`;
+            qTitle.innerText = quiz.question;
+
+            qOptions.innerHTML = `
+                <button onclick="submitQuizOption('A')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-rose-400 hover:bg-rose-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">A</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.A}</span>
+                </button>
+                <button onclick="submitQuizOption('B')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-emerald-400 hover:bg-emerald-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">B</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.B}</span>
+                </button>
+                <button onclick="submitQuizOption('C')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-amber-400 hover:bg-amber-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">C</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.C}</span>
+                </button>
             `;
         }
 
-        function checkAnswer(selectedIdx) {
-            const current = quizData[currentQuizIdx];
+        function submitQuizOption(choice) {
+            const quiz = quizDatabase[currentQuizIndex];
             const feedback = document.getElementById('quiz-feedback');
-            const btns = document.querySelectorAll('.quiz-opt-btn');
+            const fIcon = document.getElementById('feedback-icon');
+            const fTitle = document.getElementById('feedback-title');
+            const fDesc = document.getElementById('feedback-desc');
+            const nextBtn = document.getElementById('next-question-btn');
 
-            btns.forEach(btn => btn.disabled = true);
             feedback.classList.remove('hidden');
 
-            if (selectedIdx === current.correct) {
-                playSynthTone(587.33, 'sine', 0.2); // 播放高音 Calming D Note
-                feedback.className = "mt-4 p-4 rounded-xl text-xs sm:text-sm border bg-emerald-50 text-emerald-800 border-emerald-100";
-                feedback.innerHTML = `
-                    <p class="font-black mb-1 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check text-emerald-600"></i> 回答完全正確！
-                    </p>
-                    <p class="leading-relaxed mb-3">${current.explain}</p>
-                    <button onclick="nextQuizStep()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 rounded-xl text-xs transition">
-                        ${currentQuizIdx === quizData.length - 1 ? '完成全部挑戰' : '下一題'}
-                    </button>
-                `;
+            if (choice === quiz.answer) {
+                fIcon.innerHTML = '✅';
+                fTitle.innerText = quiz.feedbackTitle[choice];
+                fTitle.className = "font-black text-emerald-800 text-sm sm:text-base";
+                fDesc.innerHTML = quiz.feedbackDesc[choice];
+                feedback.className = "p-5 rounded-2xl border border-emerald-100 bg-emerald-50/40 text-emerald-900";
+                showToast("✅ 恭喜！答對了，選擇十分完美！", "success");
             } else {
-                playSynthTone(220, 'triangle', 0.35); // 播放沉重音
-                feedback.className = "mt-4 p-4 rounded-xl text-xs sm:text-sm border bg-rose-50 text-rose-800 border-rose-100";
-                feedback.innerHTML = `
-                    <p class="font-black mb-1 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-xmark text-rose-600"></i> 回答稍有偏差，再試一試！
-                    </p>
-                    <p class="leading-relaxed mb-3">${current.explain}</p>
-                    <button onclick="nextQuizStep()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-5 py-2 rounded-xl text-xs transition">
-                        ${currentQuizIdx === quizData.length - 1 ? '完成挑戰' : '下一題'}
-                    </button>
-                `;
+                fIcon.innerHTML = '❌';
+                fTitle.innerText = quiz.feedbackTitle[choice];
+                fTitle.className = "font-black text-rose-800 text-sm sm:text-base";
+                fDesc.innerHTML = quiz.feedbackDesc[choice];
+                feedback.className = "p-5 rounded-2xl border border-rose-100 bg-rose-50/40 text-rose-900";
+                showToast("❌ 答案仍有偏差，請仔细閱讀分析。", "error");
             }
-        }
 
-        function nextQuizStep() {
-            currentQuizIdx++;
-            if (currentQuizIdx < quizData.length) {
-                renderQuizCard();
+            // 如果是最後一題，隱藏下一題按鈕並提示完成
+            if (currentQuizIndex === quizDatabase.length - 1) {
+                nextBtn.innerText = "完成所有情境測驗";
+                nextBtn.onclick = function() {
+                    showToast("🎉 太棒了！您已成功完成了所有家長危機應對訓練情境！", "success");
+                    feedback.classList.add('hidden');
+                };
             } else {
-                const container = document.getElementById('quiz-container');
-                const feedback = document.getElementById('quiz-feedback');
-                feedback.classList.add('hidden');
-
-                container.innerHTML = `
-                    <div class="text-center py-6">
-                        <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 animate-bounce">
-                            <i class="fa-solid fa-medal"></i>
-                        </div>
-                        <h4 class="font-extrabold text-slate-800 text-sm sm:text-base mb-1">家長求生訓練完成！</h4>
-                        <p class="text-slate-500 text-xs mb-4">您已經完全掌握了科學面對孩子情緒海嘯的關鍵法則。</p>
-                        <button onclick="initQuiz()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition">重新模擬</button>
-                    </div>
-                `;
+                nextBtn.innerText = "下一題";
+                nextBtn.onclick = loadNextQuestion;
             }
         }
 
-        // ================= 4. Web Audio 暖心舒緩頻率發生器 =================
-        let audioCtx = null;
-        let binauralOsc1 = null;
-        let binauralOsc2 = null;
-        let binauralGain = null;
-        let isBeatPlaying = false;
+        function loadNextQuestion() {
+            currentQuizIndex = (currentQuizIndex + 1) % quizDatabase.length;
+            loadQuizQuestion();
+        }
 
-        function toggleBinauralBeat() {
-            const btnText = document.getElementById('sound-btn-text');
-            const btn = document.getElementById('btn-sound-frequency');
-
-            if (!isBeatPlaying) {
-                try {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    binauralGain = audioCtx.createGain();
-                    binauralGain.gain.setValueAtTime(0.06, audioCtx.currentTime); // 柔和極低音量
-
-                    // 528Hz：細胞修復與舒緩心跳頻率
-                    binauralOsc1 = audioCtx.createOscillator();
-                    binauralOsc1.type = 'sine';
-                    binauralOsc1.frequency.setValueAtTime(528, audioCtx.currentTime);
-
-                    // 532Hz：在另一聲道引入 4Hz Theta 腦波共鳴，促進放鬆與大腦降溫
-                    binauralOsc2 = audioCtx.createOscillator();
-                    binauralOsc2.type = 'sine';
-                    binauralOsc2.frequency.setValueAtTime(532, audioCtx.currentTime);
-
-                    // 連線
-                    binauralOsc1.connect(binauralGain);
-                    binauralOsc2.connect(binauralGain);
-                    binauralGain.connect(audioCtx.destination);
-
-                    binauralOsc1.start();
-                    binauralOsc2.start();
-
-                    isBeatPlaying = true;
-                    btnText.innerText = "■ 停止播放 (528Hz 已開啟)";
-                    btn.className = "w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-xs transition flex items-center justify-center gap-2";
-                    showToast("🎵 528Hz 心靈放鬆頻率正在播放中。建議佩戴耳機以獲取最佳放鬆效果。", "success");
-                } catch (e) {
-                    showToast("❌ 瀏覽器暫不支持 Web Audio API 音頻合成。", "error");
-                }
-            } else {
-                stopBinauralBeat();
+        // ================= 免費的純 HTML Toast 替代 Alert =================
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
+            
+            let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+            let borderClass = 'border-emerald-100 shadow-emerald-50/50';
+            if (type === 'error') {
+                icon = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
+                borderClass = 'border-rose-100 shadow-rose-50/50';
+            } else if (type === 'info') {
+                icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
+                borderClass = 'border-blue-100 shadow-blue-50/50';
             }
-        }
-
-        function stopBinauralBeat() {
-            const btnText = document.getElementById('sound-btn-text');
-            const btn = document.getElementById('btn-sound-frequency');
-
-            if (isBeatPlaying) {
-                if(binauralOsc1) { binauralOsc1.stop(); binauralOsc1.disconnect(); }
-                if(binauralOsc2) { binauralOsc2.stop(); binauralOsc2.disconnect(); }
-                if(binauralGain) { binauralGain.disconnect(); }
-                isBeatPlaying = false;
-            }
-            btnText.innerText = "播放送舒緩 528Hz 音頻";
-            btn.className = "w-full h-11 bg-rose-50 hover:bg-rose-100 text-rose-700 font-extrabold rounded-xl text-xs transition flex items-center justify-center gap-2";
-        }
-
-        // 通用點擊短音效
-        function playSynthTone(freq, type, duration) {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, ctx.currentTime);
-                gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + duration);
-            } catch (e) {}
-        }
-
-        function showToast(message, type) {
-            const toast = document.createElement("div");
-            toast.className = `fixed top-6 right-6 z-[100] px-6 py-4 rounded-2xl shadow-xl text-white font-bold text-xs sm:text-sm transition-all transform translate-y-0 ${type === 'success' ? 'bg-emerald-600' : 'bg-rose-600'}`;
-            toast.innerHTML = message;
-            document.body.appendChild(toast);
+            
+            toast.className += ` ${borderClass}`;
+            toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
+            
+            container.appendChild(toast);
+            
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-[-10px]');
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
         }
 
-        // 確保離開頁面時停止音頻
-        window.onbeforeunload = stopBinauralBeat;
+        // ================= 讀取首頁無障礙 A11y 狀態 =================
+        function syncA11ySettings() {
+            const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
+            const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
+            
+            if (cachedContrast === 'true') {
+                document.body.classList.add('a11y-high-contrast');
+            }
+            if (cachedLargeText === 'true') {
+                document.documentElement.classList.add('a11y-large-text');
+            }
+        }
 
-        // 初始化
         window.onload = function() {
-            initQuiz();
-        }
+            syncA11ySettings();
+            loadQuizQuestion();
+        };
     </script>
 </body>
 </html>
