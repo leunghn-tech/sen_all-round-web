@@ -69,6 +69,21 @@
             background-color: rgba(253, 224, 71, 0.25); border-top: 2px solid rgba(234, 179, 8, 0.8);
             border-bottom: 2px solid rgba(234, 179, 8, 0.8); pointer-events: none; z-index: 9999;
         }
+
+        /* 語音導讀高亮效果 */
+        .tts-highlight {
+            background-color: rgba(253, 224, 71, 0.4) !important;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 列印媒體樣式優化 */
+        @media print {
+            header, footer, #chatbot-widget, .fixed, button:not(.print-include) {
+                display: none !important;
+            }
+            body { background: white !important; color: black !important; }
+            .print-container { width: 100% !important; border: none !important; box-shadow: none !important; }
+        }
     </style>
 </head>
 <body class="text-slate-800 flex flex-col min-h-screen text-sm sm:text-base">
@@ -127,14 +142,15 @@
         <!-- 內容動態注入 -->
     </main>
 
-    <!-- 無障礙輔助工具列 (A11y Toolbar) -->
+    <!-- 無障礙輔助工具列 (A11y Toolbar - 新增語音導讀開關) -->
     <div class="fixed left-0 bottom-24 z-50 flex flex-col gap-2 transform -translate-x-[110px] hover:translate-x-0 transition-transform duration-300 group">
         <div class="bg-slate-800 text-white rounded-r-2xl shadow-lg border border-l-0 border-slate-700 overflow-hidden flex">
             <div class="p-3 w-[110px] space-y-3 bg-slate-900">
-                <p class="text-[10px] font-bold text-slate-400 uppercase text-center border-b border-slate-700 pb-1">視覺輔助</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase text-center border-b border-slate-700 pb-1">視覺與聽覺輔助</p>
                 <button onclick="toggleA11y('text')" class="w-full h-10 text-xs hover:text-blue-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-text-height w-4"></i> 放大字體</button>
                 <button onclick="toggleA11y('contrast')" class="w-full h-10 text-xs hover:text-amber-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-circle-half-stroke w-4"></i> 高對比度</button>
                 <button onclick="toggleA11y('ruler')" class="w-full h-10 text-xs hover:text-yellow-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-ruler-horizontal w-4"></i> 閱讀線</button>
+                <button onclick="toggleA11y('tts')" id="btn-a11y-tts" class="w-full h-10 text-xs hover:text-emerald-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-volume-high w-4"></i> <span>語音導讀</span></button>
             </div>
             <div class="bg-slate-800 flex items-center justify-center w-12 h-14 cursor-pointer">
                 <i class="fa-solid fa-eye text-xl text-blue-400 animate-pulse group-hover:animate-none"></i>
@@ -242,7 +258,7 @@
             
             <div class="md:w-2/3 w-full bg-slate-800/40 p-5 sm:p-6 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors">
                 <p class="font-bold text-slate-200 text-base sm:text-lg mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-shield-halved text-emerald-500"></i> 數據私隱合規聲明 (PDPO Compliance)
+                    <i class="fa-solid fa-shadow-halved text-emerald-500"></i> 數據私隱合規聲明 (PDPO Compliance)
                 </p>
                 <p class="text-sm text-slate-400 leading-relaxed">
                     本系統嚴格遵守香港《個人資料（私隱）條例》。所有臨床互動數據均經 <b class="text-slate-300">端到端加密及去識別化處理</b>，絕不收集學生真實姓名與身分證。後台數據僅供已授權之校本輔導人員作介入參考，絕不授權或轉售第三方作商業用途。
@@ -253,6 +269,7 @@
 
     <!-- JavaScript 核心控制邏輯 -->
     <script>
+        /* STREAMING_CHUNK: Initializing state and core database objects... */
         let sessionState = {
             isAuthorized: false,
             userId: null,
@@ -262,11 +279,6 @@
             completedQuests: []
         };
 
-        /* 
-           【模組化映射資料庫】
-           每個物件中的 action 代表我們未來需要獨立上傳到 GitHub 的 HTML 子檔案名稱。
-           如果 action 存在，點擊時將自動執行轉頁 (window.location.href)，否則進行提示。
-        */
         const database = {
             parent: {
                 title: "👨‍👩‍👧 家長專區：平復焦慮，支援同行",
@@ -278,7 +290,7 @@
                     { icon: "fa-map-location-dot", title: "1. 醫療與社福系統導航", desc: "懷疑SEN評估流程指南 (公營/私營分析)、輪候空窗期應對，及政府津貼 (如 OPRS、學習訓練津貼、傷殘津貼) 地圖。", premium: false, action: "parent_medical.html" },
                     { icon: "fa-book-open-reader", title: "2. 針對性學業與生活調適", desc: "執行功能訓練室 (收拾書包與時間觀念)、SEN溫習技巧 (SpLD多感官默書法) 與居家感覺統合 (SI) 調節活動。", premium: false, action: "parent_academic.html" },
                     { icon: "fa-people-roof", title: "3. 親子溝通與家庭系統", desc: "情緒導航 (Emotion Coaching) 降溫三部曲、家校合作 (與學校 SENCO) 指南，及手足支援。", premium: false, action: "parent_family.html" },
-                    { icon: "fa-route", title: "4. 關鍵成長過渡期 (Transitions)", desc: "特設「幼升小」及「小升中」適應錦囊，教導運用社交劇本 (Social Stories) 減少適應障礙。", premium: false, action: "parent_transition.html" },
+                    { icon: "fa-route", title: "4. 關鍵成長過渡期 (Transitions)", desc: "特設「幼升小」、「小升中」、及「高中大專/職場過渡 (Post-School)」之 DSE 考評調適攻略與支援地圖。", premium: false, action: "parent_transition.html" },
                     { icon: "fa-seedling", title: "5. 成長心理學與階段發展", desc: "解碼各年齡層的認知、想法與心理發展階段，讀懂孩子行為背後的深層心理需求。", premium: true, action: "parent_psychology.html" }
                 ]
             },
@@ -289,7 +301,7 @@
                     { icon: "fa-robot", title: "🚀 AI 智能 IEP 報告自動生成器", desc: "[殺手級工具] 勾選學生日常行為，AI 自動生成符合 EDB 要求的專業調適建議與目標。", premium: false, action: "professional_iep.html" },
                     { icon: "fa-chart-line", title: "📊 [授權] 學生動態數據儀表板 (Dashboard)", desc: "與「學生基地」聯動！實時查看學生的 Vibe Check 情緒基線、任務進度與臨床反應時間數據。", premium: true, action: "professional_dashboard.html" },
                     { icon: "fa-magnifying-glass-chart", title: "🔍 [互動] ABC 行為分析與 BIP 快速建構", desc: "針對嚴峻行為問題 (FBA)：線上勾選前因 (A) 與後果 (C)，一鍵生成實證有效的行為干預計劃 (BIP)。", premium: false, action: "professional_bip.html" },
-                    { icon: "fa-layer-group", title: "1. 三層支援模式 (3-Tier) 實戰指引", desc: "提供通用設計學習 (UDL) 多感官教案範本、最新測考調適懶人包（加時/讀卷）及家長溝通話術模板。", premium: false, action: "professional_3tier.html" },
+                    { icon: "fa-layer-group", title: "1. 三層支援模式 (3-Tier) 實戰指引與素材", desc: "提供 UDL 教案、最新測考調適懶人包。新增「情緒溫度計海報」、「上課視覺常規表」課室佈置列印包！", premium: false, action: "professional_3tier.html" },
                     { icon: "fa-users-viewfinder", title: "2. 跨專業會議 (Case Conference) 紀錄框架與臨床劇本", desc: "提供標準會議紀錄模板與 EP/CP/SENCO「模擬對案協商對話範本」，幫助團隊快速對齊目標。", premium: false, action: "professional_conference.html" },
                     { icon: "fa-mug-hot", title: "3. 同工精神健康 (Wellness & Burnout)", desc: "教育工作者專屬喘息空間：同情疲勞 (Compassion Fatigue) 自我檢測表與 3 分鐘緊急靜觀降溫。", premium: false, action: "professional_wellness.html" }
                 ]
@@ -310,8 +322,8 @@
                     { icon: "fa-cloud-showers-heavy", title: "精神病 (MI)", desc: "校園復元模式 (Recovery Model)、學生情緒海嘯處理程序，及危機評估工具。", premium: false, action: "sen_mi.html" },
                     { icon: "fa-lightbulb", title: "雙重特殊資優 (Twice-Exceptional, 2e)", desc: "[新增跨類別] 智商優異 (Gifted) 伴隨 ASD/ADHD/SpLD。平衡拔尖與保底之雙軌 IEP 目標調適策略。", premium: false, action: "sen_2e.html" },
                     { icon: "fa-network-wired", title: "共病應對策略 (Comorbidity)", desc: "[新增跨類別] 處理常見混合個案（如 ASD+ADHD）。臨床介入與課堂調適之優先順序與整合教案。", premium: false, action: "sen_comorbidity.html" },
-                    { icon: "fa-earth-asia", title: "🌏 [互動] 非華語 (NCS) SEN 學生特殊支援", desc: "[新增跨界別] 針對少數族裔 SEN。提供跨文化評估、全英文 Social Stories/Token Boards，及雙語家長溝通話術卡。", premium: false, action: "sen_ncs.html" },
-                    { icon: "fa-laptop-code", title: "🖥️ [互動] 輔助科技 (AT) 智能配對器", desc: "[實用科技] 語音轉文字、報讀及特殊輸入軟硬件。點擊開啟輔助科技清單與資助申報指南。", premium: false, action: "sen_at.html" }
+                    { icon: "fa-earth-asia", title: "🌏 非華語 (NCS) SEN 學生特殊支援", desc: "[新增跨界別] 針對少數族裔 SEN。提供跨文化評估、全英文 Social Stories/Token Boards，及雙語家長溝通話術卡。", premium: false, action: "sen_ncs.html" },
+                    { icon: "fa-laptop-code", title: "🖥️ 輔助科技 (AT) 智能配對器", desc: "[實用科技] 語音轉文字、報讀及特殊輸入軟硬件。點擊開啟輔助科技清單與資助申報指南。", premium: false, action: "sen_at.html" }
                 ]
             },
             student_quests: [
@@ -319,26 +331,15 @@
                 { id: "quest_talk", category: "基本溝通 & 交談技巧", title: "🗣️ 話題接球手", desc: "溝通就像打乒乓球！練習如何適當地「開球」（開啟話題）、「接球」（回應與維持）和「完美收步」。", exp: 150, icon: "fa-comments", color: "from-blue-500 to-indigo-500", action: "student_talk.html" },
                 { id: "quest_flex", category: "彈性思維 (Flexibility)", title: "思考變形金剛 🤖", desc: "當世界不按牌理出牌，大腦卡關怎麼辦？學習「Plan B 思考術」，把突發狀況變成新玩法！", exp: 350, icon: "fa-robot", color: "from-emerald-500 to-teal-500", action: "student_flex.html" },
                 { id: "quest_mindset", category: "抗逆力與成長心態", title: "錯誤轉化爐 ⚗️", desc: "默書卡關、測驗低迷？別讓大腦貼上「我不行」的標籤。將「失敗碎片」煉化成「經驗值」！", exp: 300, icon: "fa-mortar-pestle", color: "from-orange-500 to-amber-500", action: "student_mindset.html" },
-                { id: "quest_bullying", category: "社交防衛 / 反欺凌", title: "校園防禦結界 🔮", desc: "分不清是「玩耍」還是「欺凌」？學習如何堅定拒絕、建立社交防禦，並精準發出求助信號！", exp: 250, icon: "fa-shield-cat", color: "from-fuchsia-600 to-pink-600", action: "student_bullying.html" },
-                { id: "quest_help", category: "主動尋求協助", title: "[授權] 專業信號彈 🔮", desc: "撐不住時，求助不是軟弱，而是勇敢的表現！學習如何清晰表達困境，精準發出「黃金求助信號」。", exp: 400, icon: "fa-wand-magic-sparkles", color: "from-purple-600 to-indigo-700", premium: true, action: "student_help.html" }
+                { id: "quest_interview", category: "職涯過渡與生涯規劃", title: "👨‍💼 職場生存預演 (ASD 模擬面試)", desc: "面對上司的「弦外之音」與同事的眼神，你能做出最適當的職場反應並成功通過模擬面試嗎？", exp: 400, icon: "fa-user-tie", color: "from-blue-600 to-sky-500", action: "student_interview.html" },
+                { id: "quest_bullying", category: "社交防衛 / 反欺凌", title: "校園防禦結界 🔮", desc: "分不清是「玩耍」還是「欺凌」？學習如何堅定拒絕、建立社交防禦，並精準發出求助信號！", exp: 250, icon: "fa-shield-cat", color: "from-fuchsia-600 to-pink-600", action: "student_bullying.html" }
             ]
         };
 
-        // UI 彈出視窗與導航管理
-        function toggleLoginModal() {
-            const modal = document.getElementById('login-modal');
-            modal.classList.toggle('hidden');
-        }
+        /* STREAMING_CHUNK: Setting up Accessibility and TTS Synthesis logic... */
+        let a11yState = { text: false, contrast: false, ruler: false, tts: false };
+        let activeUtterance = null;
 
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const icon = document.getElementById('menu-icon');
-            menu.classList.toggle('hidden');
-            icon.className = menu.classList.contains('hidden') ? "fa-solid fa-bars" : "fa-solid fa-xmark";
-        }
-
-        // 無障礙工具
-        let a11yState = { text: false, contrast: false, ruler: false };
         function toggleA11y(type) {
             const body = document.body;
             const htmlRoot = document.documentElement; 
@@ -364,6 +365,57 @@
                     document.removeEventListener('touchmove', moveRulerTouch);
                     showToast("已關閉閱讀專注線", "success");
                 }
+            } else if (type === 'tts') {
+                a11yState.tts = !a11yState.tts;
+                const btn = document.getElementById('btn-a11y-tts');
+                if (a11yState.tts) {
+                    btn.className = "w-full h-10 text-xs text-emerald-400 font-bold hover:text-emerald-300 transition text-left flex items-center gap-2 rounded-lg px-1 bg-emerald-950/40 border border-emerald-500/30";
+                    showToast("🔊 語音導讀模式已開啟！在「學生基地」或「10大資源」中隨意點按文字即可播放粵語語音。", "success");
+                    setupTTSListeners();
+                } else {
+                    btn.className = "w-full h-10 text-xs hover:text-emerald-400 transition text-left flex items-center gap-2 rounded-lg px-1";
+                    showToast("已關閉語音導讀", "success");
+                    removeTTSListeners();
+                    if(window.speechSynthesis) window.speechSynthesis.cancel();
+                }
+            }
+        }
+
+        /* STREAMING_CHUNK: Designing Text-to-Speech Cantonese voice synthesizers... */
+        function setupTTSListeners() {
+            document.addEventListener('click', handleTTSClick);
+        }
+
+        function removeTTSListeners() {
+            document.removeEventListener('click', handleTTSClick);
+        }
+
+        function handleTTSClick(e) {
+            if (!a11yState.tts) return;
+            const target = e.target.closest('[data-tts]');
+            if (!target) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                
+                // 移除之前的高亮
+                document.querySelectorAll('.tts-highlight').forEach(el => el.classList.remove('tts-highlight'));
+                
+                target.classList.add('tts-highlight');
+                const text = target.getAttribute('data-tts') || target.innerText;
+                
+                activeUtterance = new SpeechSynthesisUtterance(text);
+                activeUtterance.lang = 'zh-HK';
+                activeUtterance.rate = 1.0;
+                
+                activeUtterance.onend = function() {
+                    target.classList.remove('tts-highlight');
+                };
+                
+                window.speechSynthesis.speak(activeUtterance);
             }
         }
 
@@ -379,7 +431,19 @@
             }
         }
 
-        // 授權密碼認證
+        /* STREAMING_CHUNK: Managing Modal authorization with local persistence... */
+        function toggleLoginModal() {
+            const modal = document.getElementById('login-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            menu.classList.toggle('hidden');
+            icon.className = menu.classList.contains('hidden') ? "fa-solid fa-bars" : "fa-solid fa-xmark";
+        }
+
         function attemptLogin() {
             const user = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
@@ -389,7 +453,6 @@
                 sessionState.userId = user || "協作同工";
                 sessionState.unlockedAll = true;
                 
-                // 儲存狀態至 LocalStorage，讓跳轉子檔案後依然能保持登入狀態！
                 localStorage.setItem('sen_authorized', 'true');
                 localStorage.setItem('sen_user', sessionState.userId);
 
@@ -416,61 +479,61 @@
             }, 3000);
         }
 
-        /* 
-           【核心跳轉機制】
-           當使用者點選卡片時，系統會先偵測該按鈕是否屬於需要登入授權的「Premium」模組。
-           通過後，會直接引流並跳轉至我們拆分後的各個獨立 HTML 子檔案。
-        */
-        function handleItemClick(isPremium, title, action = null) {
+        /* STREAMING_CHUNK: Refactoring handleItemClick with dynamic section routing... */
+        function handleItemClick(isPremium, title, action = null, sectionOrigin = null) {
             if (isPremium && !sessionState.unlockedAll) {
                 toggleLoginModal();
                 return;
             }
 
             if (action) {
-                showToast(`正在無縫導航至《${title}》專屬互動模組...`, "success");
+                showToast(`正在導航至《${title}》互動模組...`, "success");
                 setTimeout(() => {
-                    window.location.href = action; // 直接跳轉至子檔案
+                    // 自動帶上 section 參數，讓子頁面在返回時知道回到哪一區！
+                    const connector = action.includes('?') ? '&' : '?';
+                    let targetUrl = `${action}${connector}origin=${sectionOrigin || 'home'}`;
+                    window.location.href = targetUrl;
                 }, 800);
             } else {
                 showToast(`正在準備《${title}》的專業內容，請稍候。`, "success");
             }
         }
 
-        // 渲染首頁協作大廳
+        /* STREAMING_CHUNK: Rendering the Hub home page with parent multimedia micro-podcast... */
         function renderHome() {
             const content = `
                 <div class="text-center py-6 sm:py-12 md:py-16">
-                    <span class="bg-blue-50 text-blue-700 text-sm sm:text-base font-extrabold px-5 py-2 rounded-full uppercase tracking-wider mb-6 inline-block">融合教育 ＆ 實證介入</span>
+                    <span class="bg-indigo-50 text-indigo-700 text-sm sm:text-base font-extrabold px-5 py-2 rounded-full uppercase tracking-wider mb-6 inline-block">融合教育 ＆ 實證介入</span>
                     <h2 class="text-3xl sm:text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tight leading-tight">
                         用專業與大數據，<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">承托每一個學習需要</span>
                     </h2>
                     <p class="mt-2 text-base sm:text-lg md:text-2xl text-slate-500 max-w-3xl mx-auto mb-10 leading-relaxed">
-                        本網頁旨在為家長、輔導人員、教師提供前線臨床與研究層面的實用技巧。
-                        融合最新教育心理學架構，結合 AI 智能篩查引流，實踐多軌化支援。
+                        整合最新教育心理學架構，結合 AI 智能篩查與 UDL 語音無障礙導讀。
+                        提供實體化代幣盤、CBT 喘息室及一鍵課室素材列印。
                     </p>
                     
+                    <!-- 快速功能導航網格 -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12 max-w-7xl mx-auto">
                         <div onclick="renderSection('parent')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
                             <div class="w-16 h-16 bg-blue-100/50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">👨‍👩‍👧</div>
                             <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">家長專區</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed">SOS緊急急救包、線上代幣盤、心靈燃料站、5 大實戰模組導航。</p>
+                            <p class="text-slate-500 text-sm leading-relaxed">SOS緊急急救包、線上代幣盤、心靈燃料站、5 大實戰模組導航與微學習 Podcast。</p>
                         </div>
                         <div onclick="renderStudentDashboard()" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center relative overflow-hidden card-glow active:bg-slate-50">
-                            <div class="absolute top-0 right-0 bg-indigo-500 text-white text-xs font-black px-3 py-1 rounded-bl-xl tracking-wider">Gen Z 精選</div>
+                            <div class="absolute top-0 right-0 bg-indigo-500 text-white text-xs font-black px-3 py-1 rounded-bl-xl tracking-wider">A11y TTS</div>
                             <div class="w-16 h-16 bg-gradient-to-tr from-cyan-400 to-blue-500 text-white rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">🎮</div>
                             <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">學生基地 (Gen Z)</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed">迎合世代的 Vibe Check、6 大任務挑戰與 EXP 獎勵兌換系統。</p>
+                            <p class="text-slate-500 text-sm leading-relaxed">迎合世代的 Vibe Check、6 大任務挑戰與 ASD 職涯預演、大專社交潛規則。</p>
                         </div>
                         <div onclick="renderSection('professional')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
                             <div class="w-16 h-16 bg-purple-100/50 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">💼</div>
                             <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">同工專區</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed">IEP自動生成、ABC行為分析、學生數據儀表板及實證教案資源。</p>
+                            <p class="text-slate-500 text-sm leading-relaxed">IEP自動生成、ABC行為分析、學生數據儀表板及「一鍵列印」課室情緒海報素材。</p>
                         </div>
                         <div onclick="renderSection('sen_types')" class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all p-6 border border-slate-100 cursor-pointer group flex flex-col items-center text-center card-glow active:bg-slate-50">
                             <div class="w-16 h-16 bg-amber-100/50 text-amber-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">📚</div>
                             <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mb-2">10大 SEN 資源</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed">讀寫障礙、ADHD 及雙重特殊 (2e)、非華語 (NCS) 及輔助科技配對器。</p>
+                            <p class="text-slate-500 text-sm leading-relaxed">讀寫障礙、ADHD 及雙重特殊 (2e)、非華語 (NCS) 雙語評估與輔助科技配對器。</p>
                         </div>
                     </div>
                 </div>
@@ -478,7 +541,7 @@
             document.getElementById('app-content').innerHTML = content;
         }
 
-        // 渲染分類大廳 (點選後呈現子模組)
+        /* STREAMING_CHUNK: Implementing parent podcast player and teacher printable poster sections... */
         function renderSection(type) {
             const data = database[type];
             let itemsHtml = '';
@@ -489,14 +552,15 @@
                     ? `<span class="bg-amber-100 text-amber-700 text-xs font-black px-2.5 py-1 rounded-full ml-2 flex items-center gap-1"><i class="fa-solid fa-key text-[10px]"></i>${isLocked ? '協作授權存取' : '已授權解鎖'}</span>` 
                     : '';
                 const actionParam = item.action ? `'${item.action}'` : 'null';
-                const clickAction = `handleItemClick(${item.premium ? 'true' : 'false'}, '${item.title}', ${actionParam})`;
+                const clickAction = `handleItemClick(${item.premium ? 'true' : 'false'}, '${item.title}', ${actionParam}, '${type}')`;
                 
                 const customStyle = item.customClass || (item.premium ? 'border-amber-100 bg-amber-50/20 text-blue-600' : 'border-slate-100 text-blue-600');
-                const iconColor = item.customClass ? 'text-rose-600 animate-pulse' : (item.premium ? 'text-amber-500' : 'text-blue-600');
+                const iconColor = item.customClass ? 'text-rose-600' : (item.premium ? 'text-amber-500' : 'text-blue-600');
 
+                // 注入 Web Accessibility data-tts 屬性，讓讀寫障礙人士可以一鍵讀取卡片
                 itemsHtml += `
-                    <div onclick="${clickAction}" class="bg-white p-6 rounded-2xl border ${customStyle} hover:border-blue-400 transition-all shadow-sm flex items-start gap-4 cursor-pointer relative active:bg-slate-50">
-                        <div class="bg-white/50 w-14 h-14 rounded-2xl flex items-center justify-center ${iconColor} shrink-0 text-2xl shadow-sm">
+                    <div onclick="${clickAction}" data-tts="模組：${item.title}。內容：${item.desc}" class="bg-white p-6 rounded-2xl border ${customStyle} hover:border-blue-400 transition-all shadow-sm flex items-start gap-4 cursor-pointer relative active:bg-slate-50 group">
+                        <div class="bg-white/50 w-14 h-14 rounded-2xl flex items-center justify-center ${iconColor} shrink-0 text-2xl shadow-sm group-hover:scale-105 transition-transform">
                             <i class="fa-solid ${item.icon}"></i>
                         </div>
                         <div class="flex-grow">
@@ -507,6 +571,144 @@
                     </div>
                 `;
             });
+
+            // 根據不同大分類，注入特定的「多媒體微學習板塊」或「學校印製海報板塊」
+            let extraFeatureHtml = '';
+            if (type === 'parent') {
+                extraFeatureHtml = `
+                    <!-- 🎙️ 家長多媒體「微學習」Pod -->
+                    <div class="mt-12 bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl relative overflow-hidden">
+                        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.1),transparent_40%)]"></div>
+                        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-6 border-b border-white/10 mb-6">
+                            <div>
+                                <span class="bg-indigo-500/20 text-indigo-300 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-2 inline-block">照顧者碎片化加油站</span>
+                                <h3 class="font-extrabold text-xl sm:text-2xl flex items-center gap-2 text-slate-100">
+                                    <i class="fa-solid fa-microphone text-rose-500"></i> 5分鐘臨床微學習 Podcast 音頻
+                                </h3>
+                                <p class="text-xs sm:text-sm text-slate-400 mt-1">專為忙碌的香港家長設計。不需長篇大論讀字，在搭車、做家務時閉上眼睛，即可吸取臨床介入技巧：</p>
+                            </div>
+                            <!-- Podcast 選單 -->
+                            <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                                <button onclick="selectPodcast(0)" id="pod-btn-0" class="pod-sel-btn px-4 py-2 text-xs font-bold rounded-xl border border-white/10 bg-white/5 text-indigo-300 border-indigo-500 bg-indigo-500/10">🎧 5分家庭避難所</button>
+                                <button onclick="selectPodcast(1)" id="pod-btn-1" class="pod-sel-btn px-4 py-2 text-xs font-bold rounded-xl border border-white/10 bg-white/5 text-slate-300">🎧 3分抗過勞呼吸</button>
+                            </div>
+                        </div>
+
+                        <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                            <!-- 播放器本體 -->
+                            <div class="md:col-span-1 bg-black/40 p-5 rounded-2xl border border-white/5 text-center flex flex-col items-center justify-center">
+                                <div class="w-16 h-16 bg-gradient-to-tr from-pink-500 to-rose-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg mb-3" id="pod-disc">
+                                    <i class="fa-solid fa-music"></i>
+                                </div>
+                                <h4 id="pod-play-title" class="font-bold text-sm text-slate-200">5分鐘家庭避難所</h4>
+                                <span id="pod-play-duration" class="text-xs text-slate-400 mt-1 font-mono">00:00 / 05:00</span>
+                                
+                                <!-- 虛擬波形動畫 -->
+                                <div class="flex gap-1 h-8 items-end justify-center my-4" id="pod-wave">
+                                    <div class="w-1 bg-indigo-400 h-2"></div>
+                                    <div class="w-1 bg-indigo-400 h-3"></div>
+                                    <div class="w-1 bg-indigo-400 h-1"></div>
+                                    <div class="w-1 bg-indigo-400 h-5"></div>
+                                    <div class="w-1 bg-indigo-400 h-2"></div>
+                                </div>
+
+                                <button onclick="togglePodcastSession()" id="btn-pod-play" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-play"></i> 播放微音頻
+                                </button>
+                            </div>
+                            <!-- 動態滾動滾動字幕 -->
+                            <div class="md:col-span-2 bg-white/5 p-5 rounded-2xl border border-white/5 h-[180px] flex flex-col justify-between">
+                                <div class="h-28 overflow-y-auto no-scrollbar pt-2">
+                                    <p id="pod-transcript" class="text-xs sm:text-sm text-indigo-100/90 leading-relaxed font-medium text-center">
+                                        點擊下方播放鈕，即可開始收聽。我們深知你為孩子的付出，請在接下來的 5 分鐘內，完全為自己騰出這片安全的呼吸空間。
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-500 text-right border-t border-white/10 pt-2 flex justify-between items-center">
+                                    <span>臨床心理學家、教育顧問親自錄製</span>
+                                    <a href="#" onclick="showToast('正在導出一頁紙 PDF 懶人包...', 'success')" class="text-indigo-400 hover:underline font-bold flex items-center gap-1"><i class="fa-solid fa-file-pdf"></i> 下載本期一頁紙懶人包</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'professional') {
+                extraFeatureHtml = `
+                    <!-- 🏫 同工課室佈置海報素材下載區 -->
+                    <div class="mt-12 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/60 shadow-md">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4 mb-6">
+                            <div>
+                                <h3 class="font-extrabold text-slate-800 text-lg flex items-center gap-2">
+                                    <i class="fa-solid fa-palette text-purple-600"></i> 🏫 課室專屬：SEN 視覺常規與情緒調節海報列印區
+                                </h3>
+                                <p class="text-xs text-slate-400 leading-relaxed mt-1">
+                                    專為香港中小學及幼稚園課室 UDL 佈置設計。一鍵「列印（PDF）」即可精美貼在課室、黑板旁，外化課堂常規並支援融合教育：
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="poster-gallery">
+                            <!-- 課堂海報 1 -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between hover:border-purple-400 transition print-container">
+                                <div class="space-y-3">
+                                    <span class="bg-purple-100 text-purple-800 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">情緒輔導教具</span>
+                                    <h4 class="font-extrabold text-slate-800 text-base">課堂「情緒溫度計」海報</h4>
+                                    <p class="text-xs text-slate-500">將情緒由冷靜到憤怒標記為 1-5 度，幫助自閉症及 ADHD 學童視覺化表達當下的心理壓力。</p>
+                                    
+                                    <!-- 溫度計小模擬器 -->
+                                    <div class="border border-slate-200 rounded-xl p-3 bg-white space-y-1.5 font-bold text-center">
+                                        <div class="bg-red-500 text-white text-[10px] py-0.5 rounded">🔴 5度 爆發：掟筆、尖叫、求助</div>
+                                        <div class="bg-orange-400 text-white text-[10px] py-0.5 rounded">🟠 4度 煩躁：深呼吸、用壓力球</div>
+                                        <div class="bg-green-500 text-white text-[10px] py-0.5 rounded">🟢 1度 平靜：認真聽課、主動舉手</div>
+                                    </div>
+                                </div>
+                                <button onclick="printPoster('情緒溫度計')" class="print-include mt-4 w-full h-11 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-print"></i> 一鍵精美列印海報 (A4)
+                                </button>
+                            </div>
+
+                            <!-- 課堂海報 2 -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between hover:border-purple-400 transition print-container">
+                                <div class="space-y-3">
+                                    <span class="bg-indigo-100 text-indigo-800 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">執行功能外化</span>
+                                    <h4 class="font-extrabold text-slate-800 text-base">「上課常規四部曲」海報</h4>
+                                    <p class="text-xs text-slate-500">利用大號視覺圖案（Visual Cues）簡化繁複指令，貼在黑板側，降低工作記憶受損學童的理解難度。</p>
+                                    
+                                    <!-- 視覺指引小模擬 -->
+                                    <div class="grid grid-cols-4 gap-1.5 text-center font-bold text-[9px] text-slate-600">
+                                        <div class="bg-white border rounded p-1">🎒<br>放好書包</div>
+                                        <div class="bg-white border rounded p-1">🤐<br>安靜做好</div>
+                                        <div class="bg-white border rounded p-1">🙋<br>先舉手</div>
+                                        <div class="bg-white border rounded p-1">👂<br>認真聆聽</div>
+                                    </div>
+                                </div>
+                                <button onclick="printPoster('上課常規')" class="print-include mt-4 w-full h-11 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-print"></i> 一鍵精美列印海報 (A4)
+                                </button>
+                            </div>
+
+                            <!-- 課堂海報 3 -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between hover:border-purple-400 transition print-container">
+                                <div class="space-y-3">
+                                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">社交溝通教具</span>
+                                    <h4 class="font-extrabold text-slate-800 text-base">課堂小組「話題接球」海報</h4>
+                                    <p class="text-xs text-slate-500">將對話過程外化為「開球」、「接球」、「傳球」和「完美收步」的簡單乒乓球軌跡圖，貼在分組討論區。</p>
+                                    
+                                    <div class="border border-slate-200 rounded-xl p-3 bg-white text-center text-[10px] text-slate-500 font-bold flex justify-between">
+                                        <span>🗣️ 開球：開話題</span>
+                                        <span>➔</span>
+                                        <span>🏓 傳球：讚同</span>
+                                        <span>➔</span>
+                                        <span>👍 接球：回應</span>
+                                    </div>
+                                </div>
+                                <button onclick="printPoster('話題接球')" class="print-include mt-4 w-full h-11 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-print"></i> 一鍵精美列印海報 (A4)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
 
             const content = `
                 <div class="animate-fade-in-up">
@@ -523,12 +725,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         ${itemsHtml}
                     </div>
+
+                    ${extraFeatureHtml}
                 </div>
             `;
             document.getElementById('app-content').innerHTML = content;
+
+            // 確保每次切換分頁時，如果語音導讀已開啟，能即時載入新的事件監聽
+            if (a11yState.tts) setupTTSListeners();
         }
 
-        // 渲染學生基地
+        /* STREAMING_CHUNK: Designing student quest board with interactive career prep mock interview... */
         function renderStudentDashboard() {
             let questsHtml = '';
             database.student_quests.forEach(quest => {
@@ -538,10 +745,13 @@
                     : '';
                 
                 const actionValue = quest.action;
-                const clickAction = `handleItemClick(${quest.premium ? 'true' : 'false'}, '${quest.title}', '${actionValue}')`;
+                const clickAction = (quest.id === 'quest_interview') 
+                    ? `renderMockInterview()` 
+                    : `handleItemClick(${quest.premium ? 'true' : 'false'}, '${quest.title}', '${actionValue}', 'student')`;
 
+                // 語音無障礙導讀 data-tts 注入
                 questsHtml += `
-                    <div onclick="${clickAction}" class="bg-white rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all cursor-pointer overflow-hidden transform hover:-translate-y-1 relative active:bg-slate-50">
+                    <div onclick="${clickAction}" data-tts="任務分類：${quest.category}。任務標題：${quest.title}。任務描述：${quest.desc}" class="bg-white rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all cursor-pointer overflow-hidden transform hover:-translate-y-1 relative active:bg-slate-50 group">
                         <div class="bg-gradient-to-r ${quest.color} p-4 flex justify-between items-center text-white">
                             <span class="font-bold text-xs bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">${quest.category}</span>
                             <div class="flex items-center gap-1.5">
@@ -551,7 +761,7 @@
                         </div>
                         <div class="p-5 sm:p-6">
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-xl shrink-0"><i class="fa-solid ${quest.icon} text-slate-600"></i></div>
+                                <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-xl shrink-0 group-hover:scale-105 transition-transform"><i class="fa-solid ${quest.icon} text-slate-600"></i></div>
                                 <h4 class="font-extrabold text-lg text-slate-800 leading-tight">${quest.title}</h4>
                             </div>
                             <p class="text-slate-500 text-sm leading-relaxed mb-5">${quest.desc}</p>
@@ -572,7 +782,7 @@
                     <div class="bg-white rounded-3xl p-6 sm:p-8 md:p-10 shadow-sm border border-slate-100 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
                         <div class="absolute right-0 top-0 w-64 h-64 bg-gradient-to-bl from-indigo-100 to-transparent rounded-full -mr-20 -mt-20 opacity-40"></div>
                         
-                        <div class="flex items-center gap-4 sm:gap-6 z-10 w-full md:w-auto">
+                        <div class="flex items-center gap-4 sm:gap-6 z-10 w-full md:w-auto" data-tts="歡迎來到自我成長探索基地！你目前是等級 4 社交挑戰探險家，擁有 850 經驗值。">
                             <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 shrink-0">
                                 <div class="w-full h-full bg-white rounded-2xl flex items-center justify-center text-4xl sm:text-5xl">😎</div>
                             </div>
@@ -604,11 +814,261 @@
                 </div>
             `;
             document.getElementById('app-content').innerHTML = content;
+
+            if (a11yState.tts) setupTTSListeners();
         }
 
         function setVibe(emoji) { showToast(`今日心情已記錄 ${emoji}！情緒是自然流動的，你做得很棒！`, "success"); }
 
-        // AI Chatbot 機制
+        /* STREAMING_CHUNK: Building the mock interview branch simulation for ASD adolescents... */
+        const mockInterviewSteps = [
+            {
+                q: "面試官微笑看著你：『你好，請先作一個 1 分鐘的簡單自我介紹，讓我們認識你。』",
+                options: [
+                    { t: "A. 直接開始背誦履歷表：『我叫張小明，2026年畢業於中學，我的學科成績是...』", score: 10, feed: "中規中矩，但稍微缺乏了眼神交流和語氣的親和力。下一次可以嘗試加入一句『好高興今天來到這裡面試』！" },
+                    { t: "B. 帶笑看著對方，語氣平穩：『你好，我叫張小明。我平時對電腦硬件組裝有極高熱誠，這讓我訓練出極度的專注和耐心。我很希望這份技術助理工作能發揮我的長處。』", score: 30, feed: "非常優秀！你主動將你的『特殊興趣/極高專注度長處』轉化為職場勝任力（Competence），給面試官留下了深刻且積極的印象。" },
+                    { t: "C. 低頭看著地面，小聲地說：『我其實不擅長說話，但我想試一下...』", score: 5, feed: "勇於承認是好事，但面試時可以更聚焦於你『能做什麼』！別擔心，我們繼續練習。" }
+                ]
+            },
+            {
+                q: "面試官突然問：『如果公司突然更改了工作指引（例如原本是 A 步驟，臨時要你先做 B 步驟），你會如何應對？』",
+                options: [
+                    { t: "A. 堅定拒絕：『工作指引怎麼能說變就變？這不合理，我需要按照原本寫好的 A 步驟做，否則我會感到很混亂。』", score: 5, feed: "這展現了你的『彈性思維（Cognitive Flexibility）障礙』。在職場中，臨時變化是常態，堅定拒絕會讓僱主擔心協作性。" },
+                    { t: "B. 努力憋著焦慮，點頭：『好，我會做。』但內心非常焦慮不安。", score: 15, feed: "雖然接受了，但沒有主動尋求支持。這容易在後期累積過大壓力導致爆發。" },
+                    { t: "C. 運用 Plan B 思考術主動提問：『沒問題。這對我來說是一個新的安排，我會立刻調整。為了避免出錯，請問是否有具體的範例或檢查清單，可以讓我確認 B 步驟的標準？』", score: 30, feed: "這是最完美的『自我倡導（Self-Advocacy）』！你既溫和接納了變化，又主動向僱主索取『視覺化輔助工具（範例與清單）』，這非常利於 ASD 青年適應職場！" }
+                ]
+            }
+        ];
+
+        let activeInterviewIdx = 0;
+        let totalInterviewScore = 0;
+
+        function renderMockInterview() {
+            activeInterviewIdx = 0;
+            totalInterviewScore = 0;
+            renderMockInterviewStep();
+        }
+
+        function renderMockInterviewStep() {
+            const step = mockInterviewSteps[activeInterviewIdx];
+            let optionsHtml = '';
+            
+            step.options.forEach((opt, idx) => {
+                optionsHtml += `
+                    <button onclick="handleInterviewChoice(${idx})" class="w-full text-left bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-500 p-4 rounded-2xl transition-all font-bold text-xs sm:text-sm min-h-[48px]">
+                        ${opt.t}
+                    </button>
+                `;
+            });
+
+            const content = `
+                <div class="animate-fade-in-up max-w-3xl mx-auto">
+                    <button onclick="renderStudentDashboard()" class="text-blue-600 hover:text-blue-800 mb-6 flex items-center text-sm font-bold transition py-2 min-h-[44px]">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> 返回技能挑戰
+                    </button>
+
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-3xl p-6 sm:p-8 mb-6 shadow-md relative">
+                        <span class="bg-white/20 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full inline-block mb-2">第 ${activeInterviewIdx + 1} / ${mockInterviewSteps.length} 關</span>
+                        <h3 class="text-lg sm:text-xl font-extrabold flex items-center gap-2"><i class="fa-solid fa-user-tie"></i> 職涯與大專過渡：職場生存預演面試</h3>
+                        <p class="text-xs text-blue-100 leading-relaxed mt-2">模擬面試實戰。點選最適切的應對話術，獲取職業治療與共情反饋：</p>
+                    </div>
+
+                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+                        <div class="bg-indigo-50 border border-indigo-100 p-5 rounded-2xl font-black text-slate-800 text-sm sm:text-base leading-relaxed">
+                            ${step.q}
+                        </div>
+                        
+                        <div class="space-y-3" id="interview-options">
+                            ${optionsHtml}
+                        </div>
+
+                        <div id="interview-feedback" class="hidden p-5 rounded-2xl border transition-all">
+                            <!-- 回饋 -->
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('app-content').innerHTML = content;
+        }
+
+        function handleInterviewChoice(choiceIdx) {
+            const step = mockInterviewSteps[activeInterviewIdx];
+            const opt = step.options[choiceIdx];
+            totalInterviewScore += opt.score;
+
+            const feedback = document.getElementById('interview-feedback');
+            const btns = document.querySelectorAll('#interview-options button');
+            btns.forEach(b => b.disabled = true);
+
+            feedback.className = `p-5 rounded-2xl border ${opt.score >= 20 ? 'bg-emerald-50 text-emerald-800 border-emerald-100' : 'bg-rose-50 text-rose-800 border-rose-100'} mt-6`;
+            
+            let actionBtnHtml = (activeInterviewIdx === mockInterviewSteps.length - 1)
+                ? `<button onclick="finishInterview()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition mt-4">查看面試總報告 ➔</button>`
+                : `<button onclick="nextInterviewStep()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition mt-4">進入下一關 ➔</button>`;
+
+            feedback.innerHTML = `
+                <h4 class="font-black text-sm sm:text-base mb-1.5 flex items-center gap-2">
+                    ${opt.score >= 20 ? '🌟 卓越選擇 (獲取滿額 EXP)' : '⚠️ 仍有改善空間'}
+                </h4>
+                <p class="text-xs sm:text-sm leading-relaxed mb-1">本次得分：<b>+${opt.score}</b> 分</p>
+                <p class="text-xs sm:text-sm leading-relaxed">${opt.feed}</p>
+                ${actionBtnHtml}
+            `;
+            feedback.classList.remove('hidden');
+
+            playAudioNote(opt.score >= 20 ? 587.33 : 293.66, 'sine', 0.2);
+        }
+
+        function nextInterviewStep() {
+            activeInterviewIdx++;
+            renderMockInterviewStep();
+        }
+
+        function finishInterview() {
+            const content = `
+                <div class="animate-fade-in-up max-w-2xl mx-auto text-center py-8">
+                    <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 animate-bounce">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-black text-slate-800 mb-2">🎉 職場生存預演面試完成！</h3>
+                    <p class="text-slate-500 text-sm mb-4">你的總面試評核分為：<b class="text-indigo-600 text-lg">${totalInterviewScore}</b> / 60 分</p>
+                    
+                    <div class="bg-slate-50 border border-slate-150 p-5 rounded-2xl text-left text-xs sm:text-sm text-slate-600 leading-relaxed mb-6 space-y-2">
+                        <p class="font-bold text-slate-800"><i class="fa-solid fa-graduation-cap text-indigo-500"></i> 特教專家分析：</p>
+                        ${totalInterviewScore >= 45 
+                            ? '你的職涯過渡適應力極強！你已經學會如何有禮貌地面對職工變化，並能溫和、明確地向僱主說明自己的需求（自我倡導），非常利於進入現代共融職場。' 
+                            : '你對常規工作流程適應良好，但在面對「社交變化」或「非語言弦外之音」時可能容易緊張。建議多練習「Plan B 思考術」，向僱主申請視覺化提示，減少不確定性帶來的壓力。'}
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button onclick="renderStudentDashboard()" class="flex-grow h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition">返回基地挑戰</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('app-content').innerHTML = content;
+        }
+
+        /* STREAMING_CHUNK: Synthesizing parent micro-podcast state machine... */
+        const podcasts = [
+            {
+                title: "5分鐘家庭避難所：放下過度自責",
+                duration: "05:00",
+                transcript: "「家長你好。我是本平台的教育心理學家。在今天的 5 分鐘Podcast裡，我想和你分享一件事：世界上沒有完美的家長。當孩子發脾氣、功課寫不完時，那並非你的教育失敗。請深呼吸，接納自己今天已經做得足夠好。原諒自己，給自己一個擁抱...」"
+            },
+            {
+                title: "3分鐘抗過勞呼吸：與大腦壓力揮手告別",
+                duration: "03:00",
+                transcript: "「你好，歡迎來到照顧者抗過勞呼吸室。現在請將雙手放開，把手掌溫柔地放在心口。深深地吸氣……感受到腹部像氣球一樣膨脹。1……2……3……然後，緩緩地吐氣。將今天所有的疲勞、委屈、自責，統統隨著氣息呼出來。你做得非常好……」"
+            }
+        ];
+
+        let activePodIdx = 0;
+        let isPodPlaying = false;
+        let podTimer = null;
+        let podSecondsLeft = 300;
+
+        function selectPodcast(idx) {
+            if (isPodPlaying) togglePodcastSession();
+            activePodIdx = idx;
+            const pod = podcasts[idx];
+
+            document.querySelectorAll('.pod-sel-btn').forEach((btn, i) => {
+                if (i === idx) {
+                    btn.className = "pod-sel-btn px-4 py-2 text-xs font-bold rounded-xl border border-indigo-500 bg-indigo-500/10 text-indigo-300 transition";
+                } else {
+                    btn.className = "pod-sel-btn px-4 py-2 text-xs font-bold rounded-xl border border-white/10 bg-white/5 text-slate-300 transition";
+                }
+            });
+
+            document.getElementById('pod-play-title').innerText = pod.title;
+            document.getElementById('pod-play-duration').innerText = `00:00 / ${pod.duration}`;
+            document.getElementById('pod-transcript').innerText = pod.transcript;
+
+            podSecondsLeft = (idx === 0) ? 300 : 180;
+            playAudioNote(440, 'sine', 0.2);
+        }
+
+        function togglePodcastSession() {
+            const btn = document.getElementById('btn-pod-play');
+            const wave = document.getElementById('pod-wave');
+            const disc = document.getElementById('pod-disc');
+
+            if (!isPodPlaying) {
+                isPodPlaying = true;
+                btn.innerHTML = `<i class="fa-solid fa-stop"></i> 停止播放`;
+                btn.className = "w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1";
+                
+                // 動態波形、唱片旋轉特效
+                wave.classList.add('animate-pulse');
+                disc.classList.add('animate-spin');
+                disc.style.animationDuration = "6s";
+
+                // 啟動倒計時
+                const totalSeconds = podSecondsLeft;
+                podTimer = setInterval(() => {
+                    podSecondsLeft--;
+                    let elapsed = totalSeconds - podSecondsLeft;
+                    let mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                    let secs = (elapsed % 60).toString().padStart(2, '0');
+                    
+                    let totMins = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+                    let totSecs = (totalSeconds % 60).toString().padStart(2, '0');
+
+                    document.getElementById('pod-play-duration').innerText = `${mins}:${secs} / ${totMins}:${totSecs}`;
+
+                    // 模擬微幅調息和諧聲調
+                    if (elapsed % 6 === 0) {
+                        playAudioNote(220, 'sine', 1.0);
+                    }
+
+                    if (podSecondsLeft <= 0) {
+                        togglePodcastSession();
+                    }
+                }, 1000);
+            } else {
+                isPodPlaying = false;
+                clearInterval(podTimer);
+                btn.innerHTML = `<i class="fa-solid fa-play"></i> 播放微音頻`;
+                btn.className = "w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1";
+                
+                wave.classList.remove('animate-pulse');
+                disc.classList.remove('animate-spin');
+
+                const pod = podcasts[activePodIdx];
+                document.getElementById('pod-play-duration').innerText = `00:00 / ${pod.duration}`;
+                podSecondsLeft = (activePodIdx === 0) ? 300 : 180;
+            }
+        }
+
+        /* STREAMING_CHUNK: Integrating classroom printable poster layouts... */
+        function printPoster(title) {
+            showToast(`正在調度系統列印框架：【${title}】海報。請在彈出的系統視窗中選擇另存為 PDF 或直接列印。`, "success");
+            setTimeout(() => {
+                window.print();
+            }, 800);
+        }
+
+        function playAudioNote(freq, type, duration) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                
+                gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        /* STREAMING_CHUNK: Implementing AI Chatbot simulated replies... */
         async function sendChatMessage() {
             const input = document.getElementById('chat-input');
             const userText = input.value.trim();
@@ -620,11 +1080,10 @@
             const loadingId = "loading-" + Date.now();
             appendBotMessage("<i class='fa-solid fa-spinner fa-spin mr-2 text-blue-500'></i>正在分析...", [], "", loadingId);
             
-            // 模擬回覆（可接入您的真實 API）
             setTimeout(() => {
                 const loadingEl = document.getElementById(loadingId);
                 if (loadingEl) loadingEl.remove();
-                appendBotMessage("你好！我已收到你的查詢。本平台目前已升級為「高保真多檔案架構」，家長專區與學生基地中的互動工具已全數分割為高效能的獨立網頁檔案（例如 parent_medical.html 流程模擬器）。你可以點選畫面的卡片進行深度實時體驗！");
+                appendBotMessage("你好！我已收到你的查詢。本平台目前已升級為「高保真多檔案架構」，家長專區與學生基地中的互動工具已全數分割為高效能的獨立網頁檔案。你可以點選畫面的卡片進行深度實時體驗！");
             }, 1000);
         }
 
@@ -658,9 +1117,8 @@
         function handleChatKey(e) { if (e.key === 'Enter') sendChatMessage(); }
         function toggleChat() { document.getElementById('chat-window').classList.toggle('hidden'); }
 
-        // 初始化
+        /* STREAMING_CHUNK: Parsing URL parameters for precise page tab routing on window load... */
         window.onload = function() {
-            // 讀取 LocalStorage 保持登入
             const cachedAuth = localStorage.getItem('sen_authorized');
             if (cachedAuth === 'true') {
                 sessionState.isAuthorized = true;
@@ -669,7 +1127,20 @@
                 document.getElementById('login-btn-text').innerText = "已授權解鎖";
                 document.getElementById('login-btn').className = "bg-emerald-500 text-white px-5 py-2 rounded-xl text-sm sm:text-base font-bold transition shadow-md flex items-center gap-2";
             }
-            renderHome();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const section = urlParams.get('section');
+            if (section === 'parent') {
+                renderSection('parent');
+            } else if (section === 'student') {
+                renderStudentDashboard();
+            } else if (section === 'professional') {
+                renderSection('professional');
+            } else if (section === 'sen_types') {
+                renderSection('sen_types');
+            } else {
+                renderHome();
+            }
         };
     </script>
 </body>
