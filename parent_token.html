@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-HK" class="transition-all duration-300">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>正向增強代幣盤 - 家長教育心理工具</title>
+    <title>⭐ [互動] 實時線上代幣盤 (Token Economy)</title>
     <!-- 引入 Tailwind CSS 進行精緻視覺排版 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入 Font Awesome 專業圖示 -->
@@ -12,692 +12,948 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
         body {
             font-family: 'Noto Sans HK', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f0fdf4; /* 溫和的淡綠色背景，建立積極正向聯想 */
+            transition: all 0.3s ease;
             -webkit-tap-highlight-color: transparent;
         }
-        /* 輕微跳動的星星動畫 */
-        @keyframes starBounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); filter: drop-shadow(0 10px 15px rgba(245, 158, 11, 0.4)); }
+
+        /* 代幣星星動畫 */
+        @keyframes pop {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
         }
-        .animate-star {
-            animation: starBounce 2s infinite ease-in-out;
+        .star-pop {
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* 慶祝彩色碎屑 */
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 50;
+        }
+
+        /* 隱藏滾動條但保持滾動 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 無障礙高對比度樣式 */
+        body.a11y-high-contrast {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+        body.a11y-high-contrast * {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border-color: #ffffff !important;
+            box-shadow: none !important;
+        }
+        body.a11y-high-contrast .bg-white, body.a11y-high-contrast .bg-emerald-50, body.a11y-high-contrast .bg-emerald-100 {
+            background-color: #121212 !important;
+            border: 2px solid #ffffff !important;
+        }
+        body.a11y-high-contrast button, body.a11y-high-contrast a {
+            background-color: #000000 !important;
+            color: #ffff00 !important;
+            border: 2px solid #ffff00 !important;
+        }
+        body.a11y-high-contrast button:hover {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+        }
+        body.a11y-high-contrast .text-emerald-800, body.a11y-high-contrast .text-emerald-600 {
+            color: #ffff00 !important;
+        }
+
+        html.a11y-large-text { font-size: 125% !important; }
+
+        .tts-highlight {
+            background-color: rgba(253, 224, 71, 0.4) !important;
+            transition: background-color 0.3s ease;
         }
     </style>
 </head>
-<body class="text-slate-800 p-4 sm:p-6 md:p-8 min-h-screen flex flex-col justify-between">
+<body class="text-slate-800 flex flex-col min-h-screen text-sm sm:text-base pb-12">
+
+    <!-- Toast 通知容器 -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
     <!-- 頂部導航 -->
-    <div class="max-w-6xl mx-auto w-full mb-6">
-        <div class="flex items-center justify-between mb-4 sm:mb-6">
-            <a href="index.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-bold transition text-base py-2 min-h-[44px]">
-                <i class="fa-solid fa-arrow-left mr-2"></i> 返回協作大廳
+    <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-emerald-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-emerald-700 hover:text-emerald-900 font-extrabold transition">
+                <i class="fa-solid fa-house-medical text-lg"></i>
+                <span>返回協作平台首頁</span>
             </a>
-            <span class="bg-blue-50 text-blue-700 text-xs sm:text-sm font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider">家長支援模組 02 · 操作制約實踐</span>
+            <div class="flex items-center gap-2">
+                <span class="bg-emerald-100 text-emerald-800 text-xs font-black px-2.5 py-1 rounded-full uppercase"><i class="fa-solid fa-star mr-1 animate-pulse"></i>正向增強工具</span>
+            </div>
         </div>
+    </header>
 
-        <!-- 橫幅區 -->
-        <div class="bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 rounded-3xl p-6 sm:p-10 text-white mb-8 shadow-xl relative overflow-hidden">
-            <div class="relative z-10 max-w-2xl">
-                <span class="bg-white/20 text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">行為改變技術 (Behavior Modification)</span>
-                <h1 class="text-2xl sm:text-4xl font-black mb-3">⭐ 實時線上正向代幣盤 (Token Economy)</h1>
-                <p class="text-indigo-100 text-sm sm:text-base leading-relaxed">
-                    基於<b>斯金納操作制約理論 (Operant Conditioning)</b>，透過「即時正向強化」塑造良好行為。點擊賺取星星，集滿後在自選菜單中兌換獎勵，訓練孩子的延宕滿足與自主感。
+    <!-- 主要內容區 -->
+    <main class="flex-grow max-w-6xl mx-auto px-4 py-8 w-full space-y-8">
+        
+        <!-- 標題橫幅 -->
+        <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
+                <i class="fa-solid fa-star text-[150px]"></i>
+            </div>
+            <div class="relative z-10 space-y-3">
+                <span class="bg-white/20 text-white text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider inline-block backdrop-blur-md">實證特殊教育法 (ABA)</span>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2">
+                    ⭐ 實時線上自訂代幣增強盤 (Custom Token Board)
+                </h1>
+                <p class="text-emerald-100 text-xs sm:text-sm leading-relaxed max-w-3xl">
+                    行為學大師斯金納 (B.F. Skinner) 證實：<b>行為在獲得立即的正向回饋（增強物）時，未來重複出現的機率會大幅提升。</b>本升級版支援自定義代幣容量、自訂行為清單與多顆星星獎勵權重，幫助家長與同工靈活調整教案。
                 </p>
             </div>
-            <i class="fa-solid fa-wand-magic-sparkles absolute -right-6 -bottom-6 text-9xl text-white/10"></i>
         </div>
 
-        <!-- 雙欄架構 -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+        <!-- ABA 特教理論：代幣盤三大黃金守則 -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-100 space-y-6">
+            <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap text-emerald-600"></i> ABA 專家指導：代幣盤三大黃金守則
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100/50 space-y-2">
+                    <div class="text-emerald-700 font-bold text-sm sm:text-base flex items-center gap-2">
+                        <span class="bg-emerald-200 text-emerald-900 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">1</span>
+                        目標行為必須「極具體」
+                    </div>
+                    <p class="text-slate-500 text-xs leading-relaxed">
+                        避免使用模糊的「乖巧」、「聽話」等字眼。應改為：<b>「在晚上 9 點前自動收拾書包」</b>、<b>「想發脾氣時用言語告訴媽媽『我好嬲』並深呼吸兩次」</b>。
+                    </p>
+                </div>
+                <div class="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100/50 space-y-2">
+                    <div class="text-emerald-700 font-bold text-sm sm:text-base flex items-center gap-2">
+                        <span class="bg-emerald-200 text-emerald-900 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">2</span>
+                        代幣必須「立即給予」
+                    </div>
+                    <p class="text-slate-500 text-xs leading-relaxed">
+                        當孩子完成目標行為，大腦杏仁核和獎勵通路需要在 <b>5 秒內</b>獲得回饋。若等周末才給星，大腦無法建立直接的行為-增強連結，效果降低 90%。
+                    </p>
+                </div>
+                <div class="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100/50 space-y-2">
+                    <div class="text-emerald-700 font-bold text-sm sm:text-base flex items-center gap-2">
+                        <span class="bg-emerald-200 text-emerald-900 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs">3</span>
+                        絕對避免扣分（罰星）
+                    </div>
+                    <p class="text-slate-500 text-xs leading-relaxed">
+                        「你唔乖，扣返一粒星！」這會激發反抗或焦慮。除少數專業 BIP (行為干預計劃) 容許「反應代價」外，常規家庭代幣應只加不扣，建立純積極增強迴路。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 雙欄排版：左邊為家長控制端，右邊為學生代幣盤展示端 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
             
-            <!-- ================= 左欄：行為契約配置與代幣看板 ================= -->
-            <div class="lg:col-span-2 space-y-6">
-                
-                <!-- 代幣累積大看板 -->
-                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm relative overflow-hidden">
-                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-                        <div>
-                            <h3 class="font-extrabold text-slate-800 text-lg sm:text-xl flex items-center gap-2">
-                                <i class="fa-solid fa-circle-check text-indigo-500"></i> 當前儲蓄進度
-                            </h3>
-                            <p class="text-slate-400 text-xs sm:text-sm">每完成一項契約行為，即可點擊按鈕派發星星</p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-bold text-slate-400">當前星幣：</span>
-                            <div class="bg-amber-100 border border-amber-200 text-amber-800 font-black text-xl sm:text-2xl px-5 py-2 rounded-2xl flex items-center gap-2 shadow-sm">
-                                <i class="fa-solid fa-star text-amber-500 animate-star"></i> <span id="star-counter">0</span>
+            <!-- 家長控制台 (12格中佔5格) -->
+            <div class="lg:col-span-5 bg-white rounded-3xl p-6 shadow-xl border border-emerald-100 space-y-5 flex flex-col justify-between">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                        <h4 class="font-black text-base sm:text-lg text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-emerald-600"></i> 家長/同工控制台
+                        </h4>
+                        <span class="bg-indigo-50 text-indigo-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">自訂控制端</span>
+                    </div>
+
+                    <!-- 星星數量模式調整與自訂 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-100">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-gauge-high mr-1"></i> 代幣容量自訂設置 (Token Capacity)</label>
+                        <div class="flex flex-wrap gap-2 items-center">
+                            <button onclick="setStarCap(5)" id="cap-5-btn" class="flex-1 min-w-[70px] bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs transition border border-emerald-500">5 星盤</button>
+                            <button onclick="setStarCap(10)" id="cap-10-btn" class="flex-1 min-w-[70px] bg-white hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-xs transition border border-slate-200">10 星盤</button>
+                            <div class="flex items-center gap-1.5 flex-1 min-w-[120px] bg-white border border-slate-200 rounded-xl px-2 py-1">
+                                <span class="text-[10px] text-slate-400 font-bold whitespace-nowrap">自訂:</span>
+                                <input type="number" id="custom-cap-input" min="3" max="20" value="5" onchange="handleCustomCapChange(this.value)" class="w-full text-center font-bold text-xs text-slate-700 focus:outline-none bg-transparent">
+                                <span class="text-[10px] text-slate-400 font-bold whitespace-nowrap">星</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 虛擬代幣盤格網 (實體化視覺反饋) -->
-                    <div class="grid grid-cols-5 gap-3 sm:gap-4 p-4 sm:p-6 bg-slate-50 rounded-2xl border border-slate-200/60" id="token-grid">
-                        <!-- 由 JS 動態生成 10 個代幣格，集滿即可慶祝並提醒兌換 -->
+                    <!-- 新增自訂任務區 -->
+                    <div class="bg-emerald-50/40 p-4 rounded-2xl border border-emerald-100/50 space-y-3">
+                        <h5 class="text-xs font-black text-emerald-800 flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> 新增自訂行為任務
+                        </h5>
+                        <div class="space-y-2 text-xs">
+                            <input type="text" id="new-task-name" placeholder="例如：自動完成英文網頁功課" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="flex items-center bg-white border border-slate-200 rounded-xl px-2 py-1.5">
+                                    <span class="text-[10px] text-slate-400 font-bold whitespace-nowrap mr-1">獎勵:</span>
+                                    <select id="new-task-stars" class="w-full font-bold text-xs text-slate-700 bg-transparent focus:outline-none">
+                                        <option value="1">1 顆星 ⭐</option>
+                                        <option value="2">2 顆星 ⭐⭐</option>
+                                        <option value="3">3 顆星 ⭐⭐⭐</option>
+                                    </select>
+                                </div>
+                                <select id="new-task-category" class="bg-white border border-slate-200 rounded-xl px-2 py-1.5 font-bold text-xs text-slate-700 focus:outline-none">
+                                    <option value="academic">📚 學業/功課</option>
+                                    <option value="emotion">🧘‍♂️ 情緒/自我控制</option>
+                                    <option value="life">🧼 生活自理/常規</option>
+                                </select>
+                            </div>
+                            <button onclick="createNewTask()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl transition shadow-sm text-xs">
+                                ➕ 新增至快速增強清單
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 快速預置目標任務列表 (動態生成) -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider flex justify-between items-center">
+                            <span>快速增強任務清單 (Quick Award)</span>
+                            <span class="text-[10px] text-slate-400 font-medium">點擊按鈕直接派星</span>
+                        </label>
+                        <div id="dynamic-task-list" class="space-y-2 max-h-56 overflow-y-auto no-scrollbar pr-1">
+                            <!-- 由 JS 動態渲染 -->
+                        </div>
                     </div>
                 </div>
 
-                <!-- 行為契約配置表 -->
-                <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-100 shadow-sm">
-                    <div class="flex justify-between items-center border-b pb-3 mb-4">
-                        <h3 class="font-extrabold text-slate-800 text-base sm:text-lg flex items-center gap-2">
-                            <i class="fa-solid fa-clipboard-list text-blue-500"></i> 1. 設定今日目標行為 (SMARTER)
-                        </h3>
-                        <button onclick="resetBehaviors()" class="text-xs text-red-500 hover:text-red-700 font-bold transition"><i class="fa-solid fa-rotate-left"></i> 重設行為</button>
-                    </div>
-                    
-                    <div class="space-y-3" id="behavior-list">
-                        <!-- 行為列表由 JS 渲染 -->
-                    </div>
-
-                    <!-- 自定義目標行為 -->
-                    <div class="mt-4 pt-4 border-t border-slate-100 flex gap-2">
-                        <input type="text" id="new-behavior-input" placeholder="新增自訂具體行為 (如: 10分鐘內冷靜完成刷牙)..." class="flex-grow bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition h-11">
-                        <select id="new-behavior-stars" class="bg-slate-50 border border-slate-200 rounded-xl px-2 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 h-11">
-                            <option value="1">⭐ 1</option>
-                            <option value="2">⭐⭐ 2</option>
-                            <option value="3">⭐⭐⭐ 3</option>
-                        </select>
-                        <button onclick="addNewBehavior()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 rounded-xl transition shrink-0 flex items-center justify-center min-h-[44px]">新增</button>
-                    </div>
+                <!-- 家長自訂星數加減 -->
+                <div class="pt-3 border-t border-slate-100 flex gap-2">
+                    <button onclick="adjustStars(-1)" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold py-3 rounded-xl flex-1 text-xs transition border border-rose-100 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-minus-circle"></i> 減少一粒星 (極少用)
+                    </button>
+                    <button onclick="adjustStars(1)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl flex-1 text-xs transition shadow-md shadow-emerald-100 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-plus-circle"></i> 獎勵一粒星 ⭐
+                    </button>
                 </div>
-
             </div>
 
-            <!-- ================= 右欄：自主挑選獎勵商店 & 專家臨床角落 ================= -->
-            <div class="space-y-6">
-                
-                <!-- 自主決定獎勵商店 -->
-                <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-100 shadow-sm">
-                    <div class="flex justify-between items-center border-b pb-3 mb-4">
-                        <h3 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                            <i class="fa-solid fa-store text-amber-500"></i> 2. 孩子自主獎勵商店
-                        </h3>
-                        <button onclick="triggerCustomConfirm('resetRewards')" class="text-xs text-red-500 hover:text-red-700 font-bold transition"><i class="fa-solid fa-rotate-left"></i> 重設</button>
-                    </div>
-                    <p class="text-[11px] sm:text-xs text-slate-400 mb-4 leading-relaxed">
-                        與孩子一同商議獎勵。高額度獎勵能有效訓練<b>延宕滿足能力 (Delay of Gratification)</b>：
-                    </p>
-
-                    <div class="space-y-3" id="reward-list">
-                        <!-- 獎勵由 JS 渲染 -->
+            <!-- 學生代幣盤展示端 (12格中佔7格) -->
+            <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-100 space-y-6 flex flex-col justify-between relative overflow-hidden" id="confetti-container">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                        <h4 class="font-black text-base sm:text-lg text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-tv text-emerald-600"></i> 學生終端代幣展示螢幕 (Student Display)
+                        </h4>
+                        <span id="current-goal-tag" class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">目標獎勵：去公園踩單車 30 分鐘</span>
                     </div>
 
-                    <!-- 自定義獎勵項目 -->
-                    <div class="mt-4 pt-4 border-t border-slate-100 flex gap-2">
-                        <input type="text" id="new-reward-input" placeholder="新增自訂獎勵 (如: 同爸爸踩單車)..." class="flex-grow bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none transition h-10">
-                        <input type="number" id="new-reward-cost" min="1" max="50" value="5" class="w-14 bg-slate-50 border border-slate-200 rounded-xl px-2 text-xs font-bold text-center focus:outline-none focus:ring-2 focus:ring-blue-500 h-10">
-                        <button onclick="addNewReward()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 rounded-xl transition shrink-0 flex items-center justify-center min-h-[40px]">新增</button>
+                    <!-- 夢想目標設定框 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl space-y-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-slate-100">
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">當前大目標 (Target Reinforcer)</span>
+                            <h5 id="target-reward-title" class="font-black text-slate-800 text-sm sm:text-base">🎁 兌換目標：去公園踩單車 30 分鐘</h5>
+                        </div>
+                        <button onclick="openTargetModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-3.5 rounded-xl text-xs transition shrink-0">
+                            設定大目標
+                        </button>
+                    </div>
+
+                    <!-- 代幣盤進度數字展示 -->
+                    <div class="text-center space-y-1">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">當前代幣儲備</p>
+                        <p class="text-3xl sm:text-4xl font-black text-amber-500 font-mono" id="progress-number">0 / 5</p>
+                    </div>
+
+                    <!-- 代幣星星格自適應容器 -->
+                    <div class="py-6 flex flex-wrap gap-3 justify-center max-w-xl mx-auto" id="stars-grid">
+                        <!-- 由 JS 動態生成流式彈性星形盒子，完美適配 3 到 20 顆星，絕不斷行破碎 -->
                     </div>
                 </div>
 
-                <!-- 專家臨床角落 (學術底蘊) -->
-                <div class="bg-indigo-950 text-indigo-200 rounded-3xl p-5 sm:p-6 shadow-md border border-indigo-900">
-                    <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2 mb-3">
-                        <i class="fa-solid fa-graduation-cap text-yellow-400"></i> 心理學家：代幣盤三大死穴
-                    </h3>
-                    <ul class="space-y-2.5 text-[11px] sm:text-xs leading-relaxed text-indigo-200">
-                        <li class="flex gap-2">
-                            <span class="text-red-400 font-black shrink-0">❌ 死穴一：目標設定過於抽象</span>
-                            <span>家長常設定「今日要乖」、「要聽話」，這類目標難以測量。請改為「在指令發出兩次內開始行動」。</span>
-                        </li>
-                        <li class="flex gap-2 border-t border-indigo-900 pt-2.5">
-                            <span class="text-red-400 font-black shrink-0">❌ 死穴二：隨意扣減已賺取的代幣</span>
-                            <span><b>切忌倒扣代幣！</b>「你唔聽話，我扣返你一粒星」。這會破壞行為契約的信任鏈，引發強烈反彈。若要處罰，請採用獨立的「Time-out 隔離法」，切勿污染代幣系統。</span>
-                        </li>
-                        <li class="flex gap-2 border-t border-indigo-900 pt-2.5">
-                            <span class="text-red-400 font-black shrink-0">❌ 死穴三：代幣貶值或通膨</span>
-                            <span>如果星星太容易獲得，或者獎勵門檻過低，系統會快速失效。一般建議大獎勵設定在 10-15 顆星（約 3-5 天的累積量）。</span>
-                        </li>
-                    </ul>
+                <!-- 兌換最終增強物按鈕 -->
+                <div class="pt-4 border-t border-slate-100">
+                    <button id="exchange-btn" disabled onclick="exchangeReward()" class="w-full h-14 bg-slate-100 text-slate-400 font-black rounded-2xl text-sm transition flex items-center justify-center gap-2 cursor-not-allowed">
+                        <i class="fa-solid fa-gift"></i> <span id="exchange-btn-text">未集滿代幣（需集滿 5 顆星）</span>
+                    </button>
                 </div>
-
             </div>
 
         </div>
-    </div>
 
-    <!-- 慶祝用的 Canvas 畫布 (Confetti Effect) -->
-    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50 w-full h-full"></canvas>
+        <!-- 模塊四：家長代幣盤實戰情境糾錯測驗 (Interactive Scenario Quiz) -->
+        <div id="token-quiz" class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-100 space-y-6">
+            <div class="flex justify-between items-center">
+                <span class="bg-blue-50 text-blue-700 text-xs font-extrabold px-3.5 py-1.5 rounded-full"><i class="fa-solid fa-puzzle-piece mr-1"></i>家長代幣盤實戰情境糾錯測驗</span>
+                <span id="quiz-question-num" class="text-blue-600 font-bold text-xs sm:text-sm">第 1 / 2 題</span>
+            </div>
 
-    <!-- 自訂防呆確認對話框 Modal (替代原生 confirm) -->
-    <div id="custom-confirm-modal" class="fixed inset-0 bg-slate-900/60 z-[110] flex justify-center items-center hidden backdrop-blur-sm p-4">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center border border-slate-100">
-            <div class="text-4xl mb-3 text-red-500">⚠️</div>
-            <h4 class="font-extrabold text-slate-800 text-base sm:text-lg mb-2">確認執行此操作？</h4>
-            <p id="confirm-modal-text" class="text-xs sm:text-sm text-slate-500 leading-relaxed mb-6">此動作將無法還原，請確認是否繼續。</p>
-            <div class="flex gap-3">
-                <button onclick="closeCustomConfirm()" class="flex-grow h-11 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs sm:text-sm transition">
-                    取消
-                </button>
-                <button id="confirm-modal-action-btn" class="flex-grow h-11 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs sm:text-sm transition">
-                    確認執行
-                </button>
+            <div class="space-y-3">
+                <h3 id="quiz-question-title" class="text-base sm:text-lg font-black text-slate-800">在代幣盤執行過程中，孩子在吃晚飯時突然大發脾氣，並將碗筷丟到地上。此時，家長最正確的「代幣處理」做法是什麼？</h3>
+            </div>
+
+            <!-- 選項按鈕 -->
+            <div class="grid grid-cols-1 gap-3" id="quiz-options">
+                <!-- 由 JS 動態加載 -->
+            </div>
+
+            <!-- 回饋框 (預設隱藏) -->
+            <div id="quiz-feedback" class="hidden p-5 rounded-2xl border transition-all duration-300">
+                <div class="flex items-start gap-3.5">
+                    <div id="feedback-icon" class="text-2xl mt-0.5 shrink-0"></div>
+                    <div class="space-y-2">
+                        <h4 id="feedback-title" class="font-black text-sm sm:text-base"></h4>
+                        <p id="feedback-desc" class="text-xs sm:text-sm leading-relaxed"></p>
+                        <!-- 下一題按鈕 -->
+                        <button id="next-question-btn" onclick="loadNextQuestion()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition">下一題</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模塊五：實時動態代幣與行為事件紀錄 (Audit Log) -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-100 space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-emerald-600"></i> 行為事件實時紀錄 (Behavior Logs)
+                </h3>
+                <button onclick="clearLogs()" class="text-xs font-bold text-slate-400 hover:text-rose-600 transition">清除紀錄</button>
+            </div>
+            <div id="log-container" class="space-y-2.5 max-h-48 overflow-y-auto text-xs text-slate-500 leading-relaxed">
+                <!-- 動態注入的行為日誌 -->
+                <p class="text-slate-400 italic text-center py-4">暫時未有行為代幣事件發生，點擊左側「加星」開啟紀錄。</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 設置大目標自訂視窗 (Target Setting Modal) -->
+    <div id="target-modal" class="fixed inset-0 bg-slate-900/60 z-50 flex justify-center items-center hidden backdrop-blur-sm p-4 transition-opacity">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden p-6 sm:p-8 space-y-5">
+            <h4 class="text-lg sm:text-xl font-extrabold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-emerald-600"></i> 自訂最終大目標
+            </h4>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">目標增強物名稱 (Target Reinforcer)</label>
+                    <input type="text" id="target-input" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none h-11" placeholder="例如: 睇電視 15 分鐘 / 食哈根達斯雪糕">
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeTargetModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl text-xs transition">
+                        取消
+                    </button>
+                    <button onclick="saveTargetReward()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-xs transition">
+                        儲存設置
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 頁尾聲明 -->
-    <footer class="mt-8 border-t border-slate-200 pt-6 text-center max-w-6xl mx-auto w-full">
-        <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed">
-            🛡️ <b>學術合規聲明：</b>代幣制 (Token Economy) 屬於行為塑造技術。當良好行為完全建立並穩定後，建議家長<b>「逐步淡化 (Fading)」</b>實體物質獎勵，改為高頻率的社會性增強（如溫暖的擁抱與具體的讚賞），以培養兒童持久的內在學習動機。
-        </p>
+    <!-- 頁尾 -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-1 text-xs text-slate-500">
+            <p>© 2026 香港教育與 SEN 專業協作網絡 - 應用行為分析代幣經濟盤</p>
+            <p class="font-mono">本系統嚴格遵循香港《個人資料（私隱）條例》（PDPO）去識別化規範。</p>
+        </div>
     </footer>
 
     <!-- JavaScript 核心控制邏輯 -->
     <script>
-        // 1. 初始化狀態
-        let stars = parseInt(localStorage.getItem('token_stars')) || 0;
-        const maxTokensOnBoard = 10;
+        // ================= 全局變數 =================
+        let tokenState = {
+            currentStars: 0,
+            starCap: 5,
+            targetReward: "去公園踩單車 30 分鐘",
+            tasks: [
+                { id: "task_1", name: "🎒 收拾好今日書包與功課", stars: 1, category: "academic" },
+                { id: "task_2", name: "🧘‍♂️ 情緒宣洩：用深呼吸冷靜", stars: 2, category: "emotion" },
+                { id: "task_3", name: "🧼 主動洗手、執拾好鞋襪", stars: 1, category: "life" }
+            ]
+        };
 
-        // 預設正向目標行為
-        const defaultBehaviors = [
-            { id: 1, text: "完成功課後自發收拾書包、檢查手冊", stars: 2, isEditing: false },
-            { id: 2, text: "在晚飯指令發出10分鐘內，主動洗手入座", stars: 1, isEditing: false },
-            { id: 3, text: "當情緒暴躁時，能主動使用「靜溫球」深呼吸冷靜", stars: 3, isEditing: false },
-            { id: 4, text: "在晚上10點前自覺關掉屏幕並上床安睡", stars: 2, isEditing: false }
-        ];
+        // ================= Web Audio API 聲音合成引擎 =================
+        let audioCtx = null;
 
-        // 預設獎勵 (符合延宕滿足梯度)
-        const defaultRewards = [
-            { id: 1, text: "即時兌換：額外 15 分鐘屏幕遊戲時間", cost: 3, isEditing: false },
-            { id: 2, text: "中期獎勵：週末由孩子指定一餐家庭晚餐菜式", cost: 8, isEditing: false },
-            { id: 3, text: "長期滿足：與爸爸或媽媽一對一外出踩單車半日", cost: 15, isEditing: false }
-        ];
-
-        let activeBehaviors = JSON.parse(localStorage.getItem('token_behaviors')) || [...defaultBehaviors];
-        let activeRewards = JSON.parse(localStorage.getItem('token_rewards')) || [...defaultRewards];
-
-        // Ensure editing states are cleared on startup
-        activeBehaviors.forEach(b => b.isEditing = false);
-        activeRewards.forEach(r => r.isEditing = false);
-
-        // 2. 本地持久化保存
-        function saveState() {
-            localStorage.setItem('token_stars', stars);
-            localStorage.setItem('token_behaviors', JSON.stringify(activeBehaviors));
-            localStorage.setItem('token_rewards', JSON.stringify(activeRewards));
-        }
-
-        // 3. Web Audio API 零資源即時音效合成
-        function playSynthesizedSound(frequency, type, duration, isSequence = false) {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                
-                if (isSequence) {
-                    // 升音階和弦 (和諧愉悅聲，用於獲得星星)
-                    const now = audioCtx.currentTime;
-                    const notes = [frequency, frequency * 1.25, frequency * 1.5, frequency * 2];
-                    notes.forEach((f, index) => {
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        osc.type = type;
-                        osc.frequency.setValueAtTime(f, now + (index * 0.12));
-                        gain.gain.setValueAtTime(0.08, now + (index * 0.12));
-                        gain.gain.exponentialRampToValueAtTime(0.01, now + (index * 0.12) + duration);
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        osc.start(now + (index * 0.12));
-                        osc.stop(now + (index * 0.12) + duration);
-                    });
-                } else {
-                    // 單音效 (如購買成功、重置)
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = type;
-                    osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + duration);
-                }
-            } catch (e) {}
-        }
-
-        // 4. HTML5 Canvas 五彩碎紙慶祝效果
-        const canvas = document.getElementById('confetti-canvas');
-        const ctx = canvas.getContext('2d');
-        let confetti = [];
-        let animationFrameId = null;
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function createConfetti() {
-            confetti = [];
-            const colors = ['#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899', '#f43f5e'];
-            for (let i = 0; i < 120; i++) {
-                confetti.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    size: Math.random() * 8 + 4,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    speedX: Math.random() * 4 - 2,
-                    speedY: Math.random() * 5 + 3,
-                    rotation: Math.random() * 360,
-                    rotationSpeed: Math.random() * 4 - 2
-                });
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
         }
 
-        function drawConfetti() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            let active = false;
-            confetti.forEach(p => {
-                p.y += p.speedY;
-                p.x += p.speedX;
-                p.rotation += p.rotationSpeed;
-                
-                if (p.y < canvas.height) {
-                    active = true;
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate(p.rotation * Math.PI / 180);
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
-                    ctx.restore();
-                }
-            });
+        // 合成加星「叮叮」音效 (多顆星則重覆播放)
+        function playAddStarSound(times = 1) {
+            initAudio();
+            if (!audioCtx) return;
 
-            if (active) {
-                animationFrameId = requestAnimationFrame(drawConfetti);
+            const now = audioCtx.currentTime;
+            
+            for (let i = 0; i < times; i++) {
+                const offset = i * 0.12;
+                playNote(523.25 + (i * 100), now + offset, 0.15); // 音高隨顆數微微上昇
+                playNote(659.25 + (i * 100), now + offset + 0.05, 0.2); 
+            }
+        }
+
+        // 合成兌換大獎慶祝音效
+        function playCelebrateSound() {
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            const notes = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50]; // 上昇琶音
+            notes.forEach((freq, idx) => {
+                playNote(freq, now + (idx * 0.08), 0.15);
+            });
+        }
+
+        // 合成警告音
+        function playDeductSound() {
+            initAudio();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(220, now); 
+            osc.frequency.exponentialRampToValueAtTime(110, now + 0.3); 
+
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.35);
+        }
+
+        function playNote(frequency, startTime, duration) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(frequency, startTime);
+
+            gain.gain.setValueAtTime(0.1, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(startTime);
+            osc.stop(startTime + duration + 0.05);
+        }
+
+        // ================= 代幣盤 UI 控制器 =================
+        function updateTokenBoard() {
+            const starsGrid = document.getElementById('stars-grid');
+            const progressNum = document.getElementById('progress-number');
+            const exchangeBtn = document.getElementById('exchange-btn');
+            const exchangeBtnText = document.getElementById('exchange-btn-text');
+
+            // 確保代幣不超限
+            if (tokenState.currentStars < 0) tokenState.currentStars = 0;
+            if (tokenState.currentStars > tokenState.starCap) tokenState.currentStars = tokenState.starCap;
+
+            progressNum.innerText = `${tokenState.currentStars} / ${tokenState.starCap}`;
+
+            // 清空並重新渲染星星 (自適應 Flex-wrap 佈局)
+            starsGrid.innerHTML = '';
+            for (let i = 1; i <= tokenState.starCap; i++) {
+                const cell = document.createElement('div');
+                // 根據總星星數，動態微調圓球寬度，確保 3~20 顆星都能完美在一兩行內收納
+                const sizeClass = tokenState.starCap > 12 ? "w-10 h-10 text-xl rounded-xl" : "w-14 h-14 text-3xl rounded-2xl";
+                
+                cell.className = `${sizeClass} border-2 flex items-center justify-center transition-all duration-300 relative shadow-sm shrink-0`;
+                
+                if (i <= tokenState.currentStars) {
+                    cell.className += " bg-amber-500 border-amber-400 text-white star-pop shadow-md shadow-amber-100";
+                    cell.innerHTML = '<i class="fa-solid fa-star"></i>';
+                } else {
+                    cell.className += " bg-slate-50 border-slate-200 text-slate-300";
+                    cell.innerHTML = '<i class="fa-regular fa-star opacity-40"></i>';
+                }
+                starsGrid.appendChild(cell);
+            }
+
+            // 更新按鈕狀態
+            if (tokenState.currentStars >= tokenState.starCap) {
+                exchangeBtn.disabled = false;
+                exchangeBtn.className = "w-full h-14 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-black rounded-2xl text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-100 animate-bounce";
+                exchangeBtnText.innerText = `立即兌換大獎：${tokenState.targetReward}！`;
             } else {
-                cancelAnimationFrame(animationFrameId);
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                exchangeBtn.disabled = true;
+                exchangeBtn.className = "w-full h-14 bg-slate-100 text-slate-400 font-black rounded-2xl text-sm transition flex items-center justify-center gap-2 cursor-not-allowed";
+                exchangeBtnText.innerText = `未集滿代幣（需集滿 ${tokenState.starCap} 顆星）`;
             }
         }
 
-        function triggerConfettiCelebration() {
-            createConfetti();
-            if (animationFrameId) cancelAnimationFrame(animationFrameId);
-            drawConfetti();
-        }
-
-        // 5. 渲染代幣累積格子盤
-        function renderTokenGrid() {
-            const grid = document.getElementById('token-grid');
-            let html = '';
+        // 自訂容量處理器
+        function handleCustomCapChange(val) {
+            let num = parseInt(val);
+            if (isNaN(num) || num < 3) num = 3;
+            if (num > 20) num = 20;
             
-            // 每次代幣盤為 10 顆星
-            for (let i = 1; i <= maxTokensOnBoard; i++) {
-                const filled = stars >= i;
-                const isFullStar = (stars > 0 && i <= stars);
-                html += `
-                    <div class="aspect-square flex flex-col justify-center items-center rounded-2xl border transition-all duration-300 ${isFullStar ? 'bg-amber-500 border-amber-400 shadow-md shadow-amber-200Scale' : 'bg-white border-slate-200'}">
-                        ${isFullStar 
-                            ? `<i class="fa-solid fa-star text-white text-xl sm:text-2xl animate-pulse"></i>` 
-                            : `<span class="text-xs font-black text-slate-300">${i}</span>`
-                        }
-                    </div>
-                `;
-            }
-            grid.innerHTML = html;
+            document.getElementById('custom-cap-input').value = num;
+            setStarCap(num);
         }
 
-
-        // 6. 渲染目標行為列表 (新增自訂內聯編輯及刪除)
-        function renderBehaviors() {
-            const list = document.getElementById('behavior-list');
-            let html = '';
-
-            activeBehaviors.forEach(b => {
-                if (b.isEditing) {
-                    html += `
-                        <div class="p-4 bg-indigo-50/50 border border-indigo-200 rounded-2xl space-y-3">
-                            <input type="text" id="edit-behavior-text-${b.id}" value="${b.text}" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
-                            <div class="flex justify-between items-center gap-2">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-xs font-bold text-slate-500">獎勵星星：</span>
-                                    <select id="edit-behavior-stars-${b.id}" class="bg-white border border-slate-200 rounded-lg p-1 text-xs font-bold">
-                                        <option value="1" ${b.stars === 1 ? 'selected' : ''}>⭐ 1</option>
-                                        <option value="2" ${b.stars === 2 ? 'selected' : ''}>⭐⭐ 2</option>
-                                        <option value="3" ${b.stars === 3 ? 'selected' : ''}>⭐⭐⭐ 3</option>
-                                    </select>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="cancelEditBehavior(${b.id})" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg transition">取消</button>
-                                    <button onclick="saveEditBehavior(${b.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">保存</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl hover:border-indigo-200 transition-colors gap-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 font-extrabold text-xs flex items-center justify-center shrink-0">
-                                    +${b.stars}
-                                </div>
-                                <p class="text-xs sm:text-sm text-slate-700 font-bold leading-relaxed">${b.text}</p>
-                            </div>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <button onclick="toggleEditBehavior(${b.id})" class="p-2 text-slate-400 hover:text-indigo-600 transition" title="修改內容"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="triggerCustomConfirm('deleteBehavior', ${b.id})" class="p-2 text-slate-400 hover:text-red-500 transition" title="刪除行為"><i class="fa-solid fa-trash-can"></i></button>
-                                <button onclick="awardStars(${b.stars})" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs px-3.5 py-2.5 rounded-xl transition flex items-center gap-1 min-h-[40px]">
-                                    派發 <i class="fa-solid fa-star text-[10px]"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            list.innerHTML = html;
-        }
-
-
-        // 7. 渲染獎勵商店 (新增自訂內聯編輯及刪除)
-        function renderRewards() {
-            const list = document.getElementById('reward-list');
-            let html = '';
-
-            activeRewards.forEach(r => {
-                const canAfford = stars >= r.cost;
-                if (r.isEditing) {
-                    html += `
-                        <div class="p-4 bg-amber-50/50 border border-amber-200 rounded-2xl space-y-3">
-                            <input type="text" id="edit-reward-text-${r.id}" value="${r.text}" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none transition">
-                            <div class="flex justify-between items-center gap-2">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="text-xs font-bold text-slate-500">所需星數：</span>
-                                    <input type="number" id="edit-reward-cost-${r.id}" min="1" max="50" value="${r.cost}" class="w-14 bg-white border border-slate-200 rounded-lg p-1 text-xs font-bold text-center">
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="cancelEditReward(${r.id})" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg transition">取消</button>
-                                    <button onclick="saveEditReward(${r.id})" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">保存</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-100 rounded-2xl hover:border-amber-200 transition-colors gap-3">
-                            <div class="flex-grow">
-                                <p class="text-xs sm:text-sm font-bold text-slate-700 leading-relaxed">${r.text}</p>
-                                <span class="text-[10px] sm:text-xs font-black text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full mt-1.5 inline-block">
-                                    需 ${r.cost} 顆星
-                                </span>
-                            </div>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <button onclick="toggleEditReward(${r.id})" class="p-2 text-slate-400 hover:text-amber-500 transition" title="修改內容"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="triggerCustomConfirm('deleteReward', ${r.id})" class="p-2 text-slate-400 hover:text-red-500 transition" title="刪除獎勵"><i class="fa-solid fa-trash-can"></i></button>
-                                <button onclick="redeemReward(${r.cost}, '${r.text}')" 
-                                        ${canAfford ? '' : 'disabled'} 
-                                        class="font-extrabold text-xs px-3.5 py-2.5 rounded-xl transition min-h-[40px] ${canAfford ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-md' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}">
-                                    兌換 🎁
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            list.innerHTML = html;
-        }
-
-        // --- 行為編輯邏輯控制 ---
-        function toggleEditBehavior(id) {
-            activeBehaviors.forEach(b => b.isEditing = (b.id === id));
-            renderBehaviors();
-        }
-        function cancelEditBehavior(id) {
-            activeBehaviors.forEach(b => b.isEditing = false);
-            renderBehaviors();
-        }
-        function saveEditBehavior(id) {
-            const b = activeBehaviors.find(item => item.id === id);
-            if (b) {
-                const textInput = document.getElementById(`edit-behavior-text-${id}`).value.trim();
-                const starSelect = document.getElementById(`edit-behavior-stars-${id}`).value;
-                if (textInput) {
-                    b.text = textInput;
-                    b.stars = parseInt(starSelect);
-                    b.isEditing = false;
-                    renderBehaviors();
-                    saveState();
-                    showToast("💾 目標行為已更新並保存！", "success");
-                    playSynthesizedSound(500, 'sine', 0.1);
-                }
-            }
-        }
-        function deleteBehavior(id) {
-            activeBehaviors = activeBehaviors.filter(b => b.id !== id);
-            renderBehaviors();
-            saveState();
-            showToast("🗑️ 已成功刪除目標行為。", "success");
-            playSynthesizedSound(200, 'triangle', 0.15);
-        }
-
-        // --- 獎勵編輯邏輯控制 ---
-        function toggleEditReward(id) {
-            activeRewards.forEach(r => r.isEditing = (r.id === id));
-            renderRewards();
-        }
-        function cancelEditReward(id) {
-            activeRewards.forEach(r => r.isEditing = false);
-            renderRewards();
-        }
-        function saveEditReward(id) {
-            const r = activeRewards.find(item => item.id === id);
-            if (r) {
-                const textInput = document.getElementById(`edit-reward-text-${id}`).value.trim();
-                const costInput = document.getElementById(`edit-reward-cost-${id}`).value;
-                if (textInput && parseInt(costInput) > 0) {
-                    r.text = textInput;
-                    r.cost = parseInt(costInput);
-                    r.isEditing = false;
-                    renderRewards();
-                    saveState();
-                    showToast("💾 獎勵項目已更新並保存！", "success");
-                    playSynthesizedSound(500, 'sine', 0.1);
-                }
-            }
-        }
-        function deleteReward(id) {
-            activeRewards = activeRewards.filter(r => r.id !== id);
-            renderRewards();
-            saveState();
-            showToast("🗑️ 已成功刪除該獎勵項目。", "success");
-            playSynthesizedSound(200, 'triangle', 0.15);
-        }
-
-        // --- 自訂安全確認視窗系統 (Modal) 邏輯 ---
-        let currentConfirmAction = null;
-        let currentConfirmParam = null;
-
-        function triggerCustomConfirm(actionType, param = null) {
-            currentConfirmAction = actionType;
-            currentConfirmParam = param;
+        // 設定容量並重置
+        function setStarCap(cap) {
+            tokenState.starCap = cap;
+            tokenState.currentStars = 0; // 重設避免越界混亂
             
-            const textEl = document.getElementById('confirm-modal-text');
-            const modal = document.getElementById('custom-confirm-modal');
-            const actionBtn = document.getElementById('confirm-modal-action-btn');
+            const btn5 = document.getElementById('cap-5-btn');
+            const btn10 = document.getElementById('cap-10-btn');
 
-            if (actionType === 'deleteBehavior') {
-                textEl.innerText = "您確定要永久刪除此目標行為嗎？這項行為契約將會從列表移除。";
-                actionBtn.className = "flex-grow h-11 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs sm:text-sm transition";
-            } else if (actionType === 'deleteReward') {
-                textEl.innerText = "您確定要永久刪除這項獎勵商品嗎？孩子將無法再挑選兌換它。";
-                actionBtn.className = "flex-grow h-11 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs sm:text-sm transition";
-            } else if (actionType === 'resetBehaviors') {
-                textEl.innerText = "您確定要將目標行為還原成預設配置嗎？您自訂的所有行為都將丟失。";
-                actionBtn.className = "flex-grow h-11 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs sm:text-sm transition";
-            } else if (actionType === 'resetRewards') {
-                textEl.innerText = "您確定要將獎勵商店還原成預設配置嗎？您自訂的所有獎勵都將被重置。";
-                actionBtn.className = "flex-grow h-11 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs sm:text-sm transition";
-            }
-
-            modal.classList.remove('hidden');
-            
-            // 綁定確認事件的執行函數
-            actionBtn.onclick = function() {
-                executeCustomConfirm();
-            };
-        }
-
-        function closeCustomConfirm() {
-            document.getElementById('custom-confirm-modal').classList.add('hidden');
-            currentConfirmAction = null;
-            currentConfirmParam = null;
-        }
-
-        function executeCustomConfirm() {
-            if (currentConfirmAction === 'deleteBehavior') {
-                deleteBehavior(currentConfirmParam);
-            } else if (currentConfirmAction === 'deleteReward') {
-                deleteReward(currentConfirmParam);
-            } else if (currentConfirmAction === 'resetBehaviors') {
-                activeBehaviors = [...defaultBehaviors];
-                renderBehaviors();
-                saveState();
-                showToast("🔄 已成功還原目標行為為系統預設值。", "success");
-                playSynthesizedSound(330, 'sawtooth', 0.15);
-            } else if (currentConfirmAction === 'resetRewards') {
-                activeRewards = [...defaultRewards];
-                renderRewards();
-                saveState();
-                showToast("🔄 已成功還原獎勵商店為系統預設值。", "success");
-                playSynthesizedSound(330, 'sawtooth', 0.15);
-            }
-            closeCustomConfirm();
-        }
-
-        // 8. 獲得星星與正向回饋
-        function awardStars(count) {
-            stars += count;
-            document.getElementById('star-counter').innerText = stars;
-            
-            // 撥放上升和弦音效 (和諧愉悅聲)
-            playSynthesizedSound(440, 'triangle', 0.25, true);
-            
-            renderTokenGrid();
-            renderRewards();
-            saveState();
-
-            // 如果剛好突破/集滿 10 顆星
-            if (stars % maxTokensOnBoard === 0 || (stars - count) % maxTokensOnBoard > stars % maxTokensOnBoard) {
-                triggerConfettiCelebration();
-                showCustomMessage("🎉 太棒了！孩子已經集滿代幣格！請與孩子一同前往「獎勵小商店」兌換心愛獎勵，肯定他們的堅持！");
+            // 更新預置按鈕樣式
+            if (cap === 5) {
+                btn5.className = "flex-1 min-w-[70px] bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs transition border border-emerald-500 shadow-inner";
+                btn10.className = "flex-1 min-w-[70px] bg-white hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-xs transition border border-slate-200";
+                document.getElementById('custom-cap-input').value = 5;
+            } else if (cap === 10) {
+                btn10.className = "flex-1 min-w-[70px] bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs transition border border-emerald-500 shadow-inner";
+                btn5.className = "flex-1 min-w-[70px] bg-white hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-xs transition border border-slate-200";
+                document.getElementById('custom-cap-input').value = 10;
             } else {
-                showToast(`⭐ 成功發放了 ${count} 顆星星！繼續加油！`, "success");
+                btn5.className = "flex-1 min-w-[70px] bg-white hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-xs transition border border-slate-200";
+                btn10.className = "flex-1 min-w-[70px] bg-white hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-xs transition border border-slate-200";
             }
+
+            updateTokenBoard();
+            addLog("system", `代幣盤容量變更為 ${cap} 星制，進度已被重設。`);
+            showToast(`代幣容量調整為 ${cap} 星！`, "info");
         }
 
-        // 9. 兌換獎勵
-        function redeemReward(cost, rewardName) {
-            if (stars >= cost) {
-                stars -= cost;
-                document.getElementById('star-counter').innerText = stars;
+        // 手動加減
+        function adjustStars(amount) {
+            const isAdding = amount > 0;
+            const original = tokenState.currentStars;
+            tokenState.currentStars += amount;
+
+            if (tokenState.currentStars > tokenState.starCap) tokenState.currentStars = tokenState.starCap;
+            if (tokenState.currentStars < 0) tokenState.currentStars = 0;
+
+            if (tokenState.currentStars !== original) {
+                if (isAdding) {
+                    playAddStarSound(1);
+                    addLog("award", "手動獎勵了 1 顆星。");
+                    showToast("⭐ 獎勵代幣星星 +1！", "success");
+                    if (tokenState.currentStars === tokenState.starCap) triggerConfetti();
+                } else {
+                    playDeductSound();
+                    addLog("deduct", "手動扣減了 1 顆星。");
+                    showToast("⚠️ 已扣減一顆代幣星星。", "error");
+                }
+            }
+            updateTokenBoard();
+        }
+
+        // ================= 自訂任務動態增減與渲染 =================
+        function renderTaskList() {
+            const listContainer = document.getElementById('dynamic-task-list');
+            listContainer.innerHTML = '';
+
+            if (tokenState.tasks.length === 0) {
+                listContainer.innerHTML = `<p class="text-slate-400 italic text-center py-3 text-xs">任務清單空空如也，請在上方新增自訂行為。</p>`;
+                return;
+            }
+
+            tokenState.tasks.forEach(task => {
+                const btn = document.createElement('div');
+                btn.className = "group w-full flex items-center justify-between bg-slate-50 hover:bg-emerald-50/40 p-2.5 rounded-xl border border-slate-100 hover:border-emerald-200 transition text-xs";
                 
-                // 播放購買成功的號角音效
-                playSynthesizedSound(587.33, 'sine', 0.4);
-                
-                triggerConfettiCelebration();
-                
-                renderTokenGrid();
-                renderRewards();
-                saveState();
+                // 動態判斷 Icon 與類別色
+                let badgeClass = 'bg-slate-200 text-slate-700';
+                let icon = '🎯';
+                if (task.category === 'academic') { icon = '📚'; badgeClass = 'bg-blue-50 text-blue-700'; }
+                else if (task.category === 'emotion') { icon = '🧘‍♂️'; badgeClass = 'bg-rose-50 text-rose-700'; }
+                else if (task.category === 'life') { icon = '🧼'; badgeClass = 'bg-emerald-50 text-emerald-700'; }
 
-                showCustomMessage(`🎁 兌換成功！已成功扣減 ${cost} 顆星幣。<br>請家長立即落實獎勵：<b>「${rewardName}」</b>，切勿拖延，以維護信用契約！`);
-            }
-        }
+                // 用於語音導讀
+                const ttsMessage = `點擊獎勵：${task.name}。完成可獲得 ${task.stars} 顆星星。`;
 
-        // 10. 自訂添加與重置
-        function addNewBehavior() {
-            const input = document.getElementById('new-behavior-input');
-            const starSelect = document.getElementById('new-behavior-stars');
-            const text = input.value.trim();
-
-            if (text) {
-                const newId = activeBehaviors.length ? activeBehaviors[activeBehaviors.length - 1].id + 1 : 1;
-                activeBehaviors.push({
-                    id: newId,
-                    text: text,
-                    stars: parseInt(starSelect.value)
-                });
-                input.value = '';
-                renderBehaviors();
-                saveState();
-                showToast("✅ 已新增自訂目標行為！", "success");
-            }
-        }
-
-        function addNewReward() {
-            const input = document.getElementById('new-reward-input');
-            const costInput = document.getElementById('new-reward-cost');
-            const text = input.value.trim();
-            const cost = parseInt(costInput.value);
-
-            if (text && cost > 0) {
-                const newId = activeRewards.length ? activeRewards[activeRewards.length - 1].id + 1 : 1;
-                activeRewards.push({
-                    id: newId,
-                    text: text,
-                    cost: cost
-                });
-                input.value = '';
-                renderRewards();
-                saveState();
-                showToast("✅ 已新增自訂獎勵項目！", "success");
-            }
-        }
-
-        function resetBehaviors() {
-            if (confirm("確定要將目標行為還原成預設配置嗎？")) {
-                activeBehaviors = [...defaultBehaviors];
-                renderBehaviors();
-                saveState();
-                playSynthesizedSound(330, 'sawtooth', 0.15);
-            }
-        }
-
-        function resetRewards() {
-            if (confirm("確定要將獎勵商店還原成預設配置嗎？")) {
-                activeRewards = [...defaultRewards];
-                renderRewards();
-                saveState();
-                playSynthesizedSound(330, 'sawtooth', 0.15);
-            }
-        }
-
-        // 11. 輔助提示框與 Toast
-        function showCustomMessage(htmlContent) {
-            const div = document.createElement('div');
-            div.className = "fixed inset-0 bg-slate-900/60 z-[100] flex justify-center items-center backdrop-blur-sm p-4";
-            div.innerHTML = `
-                <div class="bg-white w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl text-center border border-slate-100">
-                    <div class="text-5xl mb-4">🏆</div>
-                    <h4 class="font-extrabold text-slate-800 text-lg mb-3">行為契約里程碑</h4>
-                    <p class="text-sm sm:text-base text-slate-600 leading-relaxed mb-6">${htmlContent}</p>
-                    <button onclick="this.parentElement.parentElement.remove()" class="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl text-sm transition">
-                        收到，立即執行！
+                btn.innerHTML = `
+                    <button onclick="awardCustomStar('${task.name}', '${task.category}', ${task.stars})" data-tts="${ttsMessage}" class="flex-grow text-left flex items-center justify-between pr-2">
+                        <span class="text-slate-700 font-bold flex items-center gap-1.5">
+                            <span>${icon}</span>
+                            <span class="truncate max-w-[200px] sm:max-w-[240px]">${task.name}</span>
+                        </span>
+                        <span class="text-emerald-600 font-black shrink-0 ml-1 whitespace-nowrap">加 ${task.stars} 星 <i class="fa-solid fa-circle-plus"></i></span>
                     </button>
-                </div>
-            `;
-            document.body.appendChild(div);
+                    <button onclick="deleteTask('${task.id}')" title="刪除任務" class="text-slate-300 hover:text-rose-500 p-1 transition ml-1">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `;
+                listContainer.appendChild(btn);
+            });
         }
 
-        function showToast(message, type) {
-            const toast = document.createElement("div");
-            toast.className = `fixed top-6 right-6 z-[100] px-6 py-4 rounded-2xl shadow-xl text-white font-bold text-xs sm:text-sm transition-all transform translate-y-0 ${type === 'success' ? 'bg-emerald-600' : 'bg-rose-600'}`;
-            toast.innerHTML = message;
-            document.body.appendChild(toast);
+        // 新增自訂行為
+        function createNewTask() {
+            const nameInput = document.getElementById('new-task-name');
+            const name = nameInput.value.trim();
+            const stars = parseInt(document.getElementById('new-task-stars').value);
+            const category = document.getElementById('new-task-category').value;
+
+            if (!name) {
+                showToast("請輸入任務行為名稱！", "error");
+                return;
+            }
+
+            const newTask = {
+                id: "task_" + Date.now(),
+                name: name,
+                stars: stars,
+                category: category
+            };
+
+            tokenState.tasks.push(newTask);
+            nameInput.value = ''; // 清空輸入框
+            renderTaskList();
+            showToast(`已成功新增任務：${name}`, "success");
+            addLog("system", `新增了自訂增強任務【${name}】(加 ${stars} 星)`);
+        }
+
+        // 刪除自訂行為
+        function deleteTask(id) {
+            const index = tokenState.tasks.findIndex(t => t.id === id);
+            if (index > -1) {
+                const removedName = tokenState.tasks[index].name;
+                tokenState.tasks.splice(index, 1);
+                renderTaskList();
+                showToast("自訂任務已刪除", "info");
+                addLog("system", `刪除了任務：【${removedName}】`);
+            }
+        }
+
+        // 點擊自訂任務派星
+        function awardCustomStar(taskName, category, starsToAward) {
+            if (tokenState.currentStars >= tokenState.starCap) {
+                showToast("代幣盤已經集滿了！請先兌換大獎。", "info");
+                return;
+            }
+
+            tokenState.currentStars += starsToAward;
+            if (tokenState.currentStars > tokenState.starCap) {
+                tokenState.currentStars = tokenState.starCap;
+            }
+
+            playAddStarSound(starsToAward);
+            addLog(category, `完成目標行為「${taskName}」，獲得代幣 ${starsToAward} 顆。`);
+            showToast(`⭐ 目標達成！加 ${starsToAward} 顆星！`, "success");
+
+            if (tokenState.currentStars === tokenState.starCap) {
+                triggerConfetti();
+            }
+
+            updateTokenBoard();
+        }
+
+        // ================= 兌換與五彩碎紙動畫 =================
+        function exchangeReward() {
+            playCelebrateSound();
+            triggerConfetti();
+            showToast(`🎉 兌換成功！已兌換「${tokenState.targetReward}」！`, "success");
+            addLog("exchange", `集滿代幣！成功兌換最終增強物：【${tokenState.targetReward}】。`);
+
+            tokenState.currentStars = 0;
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-[-10px]');
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
+                updateTokenBoard();
+            }, 800);
         }
 
-        // 初始化加載
+        function triggerConfetti() {
+            const container = document.getElementById('confetti-container');
+            const particleCount = 45;
+
+            for (let i = 0; i < particleCount; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'confetti';
+                
+                const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6', '#eab308'];
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                const startX = container.offsetWidth / 2;
+                const startY = container.offsetHeight - 50;
+                
+                conf.style.left = startX + 'px';
+                conf.style.top = startY + 'px';
+                conf.style.opacity = '1';
+                
+                container.appendChild(conf);
+
+                const angle = Math.random() * Math.PI - Math.PI; 
+                const velocity = 5 + Math.random() * 8;
+                const gravity = 0.22;
+
+                let curX = startX;
+                let curY = startY;
+                let vx = Math.cos(angle) * velocity;
+                let vy = Math.sin(angle) * velocity;
+                let currentOpacity = 1;
+
+                let animFrame = null;
+                function updateParticle() {
+                    vy += gravity; 
+                    curX += vx;
+                    curY += vy;
+                    currentOpacity -= 0.018;
+
+                    conf.style.left = curX + 'px';
+                    conf.style.top = curY + 'px';
+                    conf.style.opacity = currentOpacity;
+
+                    if (currentOpacity > 0 && curY < container.offsetHeight) {
+                        animFrame = requestAnimationFrame(updateParticle);
+                    } else {
+                        conf.remove();
+                        cancelAnimationFrame(animFrame);
+                    }
+                }
+                updateParticle();
+            }
+        }
+
+        // ================= 大目標自訂視窗 =================
+        function openTargetModal() {
+            document.getElementById('target-modal').classList.remove('hidden');
+            document.getElementById('target-input').value = tokenState.targetReward;
+        }
+
+        function closeTargetModal() {
+            document.getElementById('target-modal').classList.add('hidden');
+        }
+
+        function saveTargetReward() {
+            const inputVal = document.getElementById('target-input').value.trim();
+            if (!inputVal) {
+                showToast("目標名稱不能為空！", "error");
+                return;
+            }
+
+            tokenState.targetReward = inputVal;
+            document.getElementById('target-reward-title').innerText = `🎁 兌換目標：${inputVal}`;
+            document.getElementById('current-goal-tag').innerText = `目標獎勵：${inputVal}`;
+
+            addLog("system", `更改大獎目標為：${inputVal}`);
+            closeTargetModal();
+            updateTokenBoard();
+            showToast("目標設置成功！", "success");
+        }
+
+        // ================= 行為日誌 =================
+        function addLog(category, message) {
+            const container = document.getElementById('log-container');
+            
+            if (container.querySelector('italic')) {
+                container.innerHTML = '';
+            }
+
+            const log = document.createElement('div');
+            log.className = "flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100 shadow-inner animate-pulse";
+
+            let icon = '⚙️';
+            let badgeClass = 'bg-slate-200 text-slate-800';
+            if (category === 'academic') {
+                icon = '📚';
+                badgeClass = 'bg-blue-100 text-blue-800';
+            } else if (category === 'emotion') {
+                icon = '🧘‍♂️';
+                badgeClass = 'bg-rose-100 text-rose-800';
+            } else if (category === 'life') {
+                icon = '🧼';
+                badgeClass = 'bg-emerald-100 text-emerald-800';
+            } else if (category === 'exchange') {
+                icon = '🎉';
+                badgeClass = 'bg-amber-100 text-amber-800 font-extrabold';
+            }
+
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+            log.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold ${badgeClass}">${icon}</span>
+                    <span class="text-slate-700 font-medium">${message}</span>
+                </div>
+                <span class="font-mono text-[10px] text-slate-400 font-bold">${timeStr}</span>
+            `;
+
+            const defaultText = container.querySelector('.italic');
+            if (defaultText) defaultText.remove();
+
+            container.insertBefore(log, container.firstChild);
+            
+            setTimeout(() => {
+                log.classList.remove('animate-pulse');
+            }, 500);
+        }
+
+        function clearLogs() {
+            document.getElementById('log-container').innerHTML = `<p class="text-slate-400 italic text-center py-4">暫時未有行為代幣事件發生，點擊左側「加星」開啟紀錄。</p>`;
+            showToast("行為日誌已清空", "info");
+        }
+
+        // ================= 情境模擬 Quiz 數據庫 =================
+        const quizDatabase = [
+            {
+                question: "在代幣盤執行過程中，孩子在吃晚飯時突然大發脾氣，並將碗筷丟到地上。此時，家長最正確的「代幣處理」做法是什麼？",
+                options: {
+                    A: "立刻走到代幣盤前，拔走他今天下午因為做完功課而好不容易得到的兩顆星作為懲罰。",
+                    B: "暫時不處理代幣盤。先實施情緒冷靜程序（如移走危險物），等孩子情緒恢復後，再引導他收拾地面，如果他願意配合執拾，則對「收拾地面」這項新行為獎勵加一粒星。",
+                    C: "對他說：「如果你現在停止發脾氣，我就多送你三顆星！」"
+                },
+                answer: "B",
+                feedbackTitle: {
+                    A: "A 選擇：這被稱為「反應代價 (Response Cost)」的濫用！",
+                    B: "B 選擇：這就是最具實證、最完美的「行為功能介入法」！",
+                    C: "C 選擇：這是「賄賂行為」，是在訓練孩子發脾氣！"
+                },
+                feedbackDesc: {
+                    A: "<b>臨床分析：</b>突然拔星會摧毀好不容易建立的信任感。孩子會覺得『反正做完功課得到的星隨時會被沒收，那我就不努力做功課了。』在情緒失控時，這甚至會火上澆油。",
+                    B: "<b>臨床分析：</b>極其完美！1. 當下不處理代幣盤，避免激化情緒。2. 行為平復後引導他收拾，並對收拾這個<b>替代親社會行為 (Pro-social behavior)</b> 給予立即加星增強。這不僅解決了當前問題，還引導了健康行為。",
+                    C: "<b>臨床分析：</b>在哭鬧時承諾給星星，孩子大腦會解讀為：『哭鬧 = 獲得家長承諾多送三顆星的籌碼。』這本質上是在**增強、訓練他的哭鬧和勒索行為**，下次他只會哭得更兇。"
+                }
+            },
+            {
+                question: "在設定代幣盤的「大目標（夢想獎勵）」時，哪一個目標是最符合特殊教育原理、最能激發學生動力的？",
+                options: {
+                    A: "「去日本東京迪士尼樂園旅行」——需要集滿 100 顆星。",
+                    B: "「每天乖乖聽媽媽話」——需要集滿 5 顆星。",
+                    C: "「今晚可以使用平板電腦打遊戲 15 分鐘」——需要集滿 5 顆星。"
+                },
+                answer: "C",
+                feedbackTitle: {
+                    A: "A 選擇：目標太宏大、延遲時間太長！",
+                    B: "B 選擇：目標過於模糊，無法操作！",
+                    C: "C 選擇：完全正確！這是最經典的「高動能增強物配對」！"
+                },
+                feedbackDesc: {
+                    A: "<b>臨床分析：</b>100 顆星的週期長達幾星期甚至幾個月。對於 SEN / 自閉 / 讀寫障礙等大腦額葉執行功能不成熟的孩子，延遲折扣極高，孩子會因為『等太久、難度太高』在中途徹底放棄。",
+                    B: "<b>臨床分析：</b>『乖乖聽話』沒有統一的定義。甚麼叫乖？甚麼叫不乖？這會導致在結算時發生家庭糾紛（例如孩子覺得自己乖，媽媽覺得不乖），從而失去代幣制的科學一致性。",
+                    C: "<b>臨床分析：</b>目標具體明確（打遊戲15分鐘），星數適中（5顆星通常在一到兩天內能達成），這種<b>『短、平、快』</b>的增強迴路，能不斷給大腦輸入成就感，最有利於建立自律自控習慣。"
+                }
+            }
+        ];
+
+        let currentQuizIndex = 0;
+
+        function loadQuizQuestion() {
+            const quiz = quizDatabase[currentQuizIndex];
+            const qNum = document.getElementById('quiz-question-num');
+            const qTitle = document.getElementById('quiz-question-title');
+            const qOptions = document.getElementById('quiz-options');
+            const feedback = document.getElementById('quiz-feedback');
+
+            feedback.classList.add('hidden');
+            qNum.innerText = `第 ${currentQuizIndex + 1} / ${quizDatabase.length} 題`;
+            qTitle.innerText = quiz.question;
+
+            qOptions.innerHTML = `
+                <button onclick="submitQuizOption('A')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-emerald-400 hover:bg-emerald-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">A</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.A}</span>
+                </button>
+                <button onclick="submitQuizOption('B')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-emerald-400 hover:bg-emerald-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">B</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.B}</span>
+                </button>
+                <button onclick="submitQuizOption('C')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-emerald-400 hover:bg-emerald-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">C</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.C}</span>
+                </button>
+            `;
+        }
+
+        function submitQuizOption(choice) {
+            const quiz = quizDatabase[currentQuizIndex];
+            const feedback = document.getElementById('quiz-feedback');
+            const fIcon = document.getElementById('feedback-icon');
+            const fTitle = document.getElementById('feedback-title');
+            const fDesc = document.getElementById('feedback-desc');
+            const nextBtn = document.getElementById('next-question-btn');
+
+            feedback.classList.remove('hidden');
+
+            if (choice === quiz.answer) {
+                fIcon.innerHTML = '✅';
+                fTitle.innerText = quiz.feedbackTitle[choice];
+                fTitle.className = "font-black text-emerald-800 text-sm sm:text-base";
+                fDesc.innerHTML = quiz.feedbackDesc[choice];
+                feedback.className = "p-5 rounded-2xl border border-emerald-100 bg-emerald-50/40 text-emerald-950";
+                showToast("✅ 恭喜答對！非常有遠見與特教智慧的做法！", "success");
+            } else {
+                fIcon.innerHTML = '❌';
+                fTitle.innerText = quiz.feedbackTitle[choice];
+                fTitle.className = "font-black text-rose-800 text-sm sm:text-base";
+                fDesc.innerHTML = quiz.feedbackDesc[choice];
+                feedback.className = "p-5 rounded-2xl border border-rose-100 bg-rose-50/40 text-rose-950";
+                showToast("❌ 答案仍有偏差，建議仔細閱讀特教解析。", "error");
+            }
+
+            if (currentQuizIndex === quizDatabase.length - 1) {
+                nextBtn.innerText = "完成所有糾錯情境測驗";
+                nextBtn.onclick = function() {
+                    showToast("🎉 太棒了！您已成功完成了所有代幣盤危機情境預習！", "success");
+                    feedback.classList.add('hidden');
+                };
+            } else {
+                nextBtn.innerText = "下一題";
+                nextBtn.onclick = loadNextQuestion;
+            }
+        }
+
+        function loadNextQuestion() {
+            currentQuizIndex = (currentQuizIndex + 1) % quizDatabase.length;
+            loadQuizQuestion();
+        }
+
+        // ================= 輔助 Toast 系統 =================
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
+            
+            let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+            let borderClass = 'border-emerald-100 shadow-emerald-50/50';
+            if (type === 'error') {
+                icon = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
+                borderClass = 'border-rose-100 shadow-rose-50/50';
+            } else if (type === 'info') {
+                icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
+                borderClass = 'border-blue-100 shadow-blue-50/50';
+            }
+            
+            toast.className += ` ${borderClass}`;
+            toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // 讀取無障礙 A11y 狀態
+        function syncA11ySettings() {
+            const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
+            const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
+            
+            if (cachedContrast === 'true') {
+                document.body.classList.add('a11y-high-contrast');
+            }
+            if (cachedLargeText === 'true') {
+                document.documentElement.classList.add('a11y-large-text');
+            }
+        }
+
+        // ================= 初始化頁面 =================
         window.onload = function() {
-            document.getElementById('star-counter').innerText = stars;
-            renderTokenGrid();
-            renderBehaviors();
-            renderRewards();
+            syncA11ySettings();
+            updateTokenBoard();
+            renderTaskList();
+            loadQuizQuestion();
         };
     </script>
 </body>
