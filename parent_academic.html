@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>針對性學業與生活調適 - SEN全方位輔導資源平台</title>
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Noto+Sans+HK:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Space Grotesk', 'Noto Sans HK', sans-serif; }
+        .canvas-container { position: relative; background: #e2af65; border-radius: 1.5rem; overflow: hidden; }
+        .sand-canvas { cursor: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/svgs/solid/fingerprint.svg'), auto; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen antialiased text-slate-800 pb-12">
+
+    <div class="max-w-6xl mx-auto px-4 pt-6 sm:pt-8">
+        
+        <!-- 🎯 完美補上：置頂流暢回歸導航按鈕 -->
+        <div class="mb-6">
+            <a href="index.html" class="inline-flex items-center gap-3 text-slate-600 hover:text-emerald-600 font-black transition-all bg-white shadow-sm border border-slate-200 hover:border-emerald-300 rounded-2xl px-5 py-3 text-base min-h-[48px] hover:shadow-md">
+                <i class="fa-solid fa-house-user text-lg"></i>
+                <span>返回香港教育與 SEN 專業協作平台 (大廳)</span>
+            </a>
+        </div>
+
+        <!-- 主卡片 -->
+        <div class="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden">
+            <!-- 頂部橫幅 -->
+            <div class="bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-700 p-6 sm:p-10 text-white relative">
+                <div class="absolute right-6 top-6 text-white/10 text-8xl font-black select-none pointer-events-none">VAKT</div>
+                <span class="bg-white/20 text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block backdrop-blur-sm">家長實戰培訓 · 執行功能與感統</span>
+                <h1 class="text-2xl sm:text-4xl font-black mb-3">🎒 針對性學業與生活調適</h1>
+                <p class="text-emerald-50 text-sm sm:text-base max-w-3xl leading-relaxed">
+                    拒絕無效說教！本模組將特教心理學的<b>執行功能訓練</b>、<b>多感官字形沙盤</b>以及<b>感覺統合飲食</b>轉化為可操作的互動教具，幫你告別每天做功課的家庭戰爭。
+                </p>
+            </div>
+
+            <!-- 功能切換標籤 -->
+            <div class="border-b border-slate-100 bg-slate-50/50 p-2 flex flex-wrap gap-2">
+                <button onclick="switchTab('bag')" id="btn-bag" class="tab-btn px-5 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 bg-emerald-600 text-white shadow-md">
+                    <i class="fa-solid fa-list-check"></i> 1. 三色文件夾執書包 (EF)
+                </button>
+                <button onclick="switchTab('sand')" id="btn-sand" class="tab-btn px-5 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-pen-nib"></i> 2. 讀寫多感官觸覺沙盤 (VAKT)
+                </button>
+                <button onclick="switchTab('sensory')" id="btn-sensory" class="tab-btn px-5 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-child-reaching"></i> 3. 居家感統調適處方
+                </button>
+            </div>
+
+            <!-- 內容區 -->
+            <div class="p-6 sm:p-10">
+                
+                <!-- 模組 1：執行功能執書包遊戲 -->
+                <div id="content-bag" class="tab-content block animate-fade-in">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                                <h3 class="font-bold text-slate-800 mb-1 flex items-center gap-2">
+                                    <i class="fa-solid fa-gamepad text-emerald-500"></i> 互動特教桌：今天星期一，請幫孩子收拾好書包
+                                </h3>
+                                <p class="text-xs text-slate-500">（教學：點擊桌面上的書本或功課，引導它們放入正確顏色的功能收納文件夾中）</p>
+                            </div>
+                            
+                            <!-- 桌面物品區 -->
+                            <div class="bg-amber-50/40 border-2 border-dashed border-amber-200 rounded-3xl p-6 grid grid-cols-2 sm:grid-cols-4 gap-4" id="desk-items">
+                                <div onclick="packItem('eng-book', 'blue')" id="item-eng-book" class="cursor-pointer bg-white border border-blue-200 p-4 rounded-xl shadow-sm hover:shadow-md transition text-center group">
+                                    <div class="text-3xl text-blue-500 mb-2 group-hover:scale-110 transition"><i class="fa-solid fa-book-atlas"></i></div>
+                                    <div class="font-bold text-sm text-slate-700">英文課本</div>
+                                    <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full mt-1 inline-block">星期一必備</span>
+                                </div>
+                                <div onclick="packItem('math-ws', 'red')" id="item-math-ws" class="cursor-pointer bg-white border border-red-200 p-4 rounded-xl shadow-sm hover:shadow-md transition text-center group">
+                                    <div class="text-3xl text-red-500 mb-2 group-hover:scale-110 transition"><i class="fa-solid fa-calculator"></i></div>
+                                    <div class="font-bold text-sm text-slate-700">數學工作紙</div>
+                                    <span class="text-[10px] bg-red-50 text-red-600 px-2 py-0.5 rounded-full mt-1 inline-block">今日功課</span>
+                                </div>
+                                <div onclick="packItem('gs-project', 'yellow')" id="item-gs-project" class="cursor-pointer bg-white border border-yellow-200 p-4 rounded-xl shadow-sm hover:shadow-md transition text-center group">
+                                    <div class="text-3xl text-yellow-600 mb-2 group-hover:scale-110 transition"><i class="fa-solid fa-flask"></i></div>
+                                    <div class="font-bold text-sm text-slate-700">常識專題報告</div>
+                                    <span class="text-[10px] bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded-full mt-1 inline-block">週五才交</span>
+                                </div>
+                                <div onclick="packItem('handbook', 'blue')" id="item-handbook" class="cursor-pointer bg-white border border-blue-200 p-4 rounded-xl shadow-sm hover:shadow-md transition text-center group">
+                                    <div class="text-3xl text-blue-600 mb-2 group-hover:scale-110 transition"><i class="fa-solid fa-book-open"></i></div>
+                                    <div class="font-bold text-sm text-slate-700">學生手冊</div>
+                                    <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full mt-1 inline-block">每天必備</span>
+                                </div>
+                            </div>
+
+                            <!-- 三色收納夾 -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div id="folder-blue" class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 min-h-[160px] transition-all">
+                                    <h4 class="font-black text-blue-700 border-b border-blue-200 pb-2 mb-2 flex items-center justify-between">
+                                        <span>📘 藍色夾 (常規課本)</span>
+                                        <span id="count-blue" class="text-xs bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full">0</span>
+                                    </h4>
+                                    <div class="space-y-2 text-xs text-slate-600" id="list-blue"></div>
+                                </div>
+                                <div id="folder-red" class="bg-red-50 border-2 border-red-200 rounded-2xl p-4 min-h-[160px] transition-all">
+                                    <h4 class="font-black text-red-700 border-b border-red-200 pb-2 mb-2 flex items-center justify-between">
+                                        <span>📕 紅色夾 (今日功課)</span>
+                                        <span id="count-red" class="text-xs bg-red-200 text-red-800 px-2 py-0.5 rounded-full">0</span>
+                                    </h4>
+                                    <div class="space-y-2 text-xs text-slate-600" id="list-red"></div>
+                                </div>
+                                <div id="folder-yellow" class="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 min-h-[160px] transition-all">
+                                    <h4 class="font-black text-yellow-700 border-b border-yellow-200 pb-2 mb-2 flex items-center justify-between">
+                                        <span>📙 黃色夾 (通告備忘)</span>
+                                        <span id="count-yellow" class="text-xs bg-yellow-200 text-yellow-800 px-2 py-0.5 rounded-full">0</span>
+                                    </h4>
+                                    <div class="space-y-2 text-xs text-slate-600" id="list-yellow"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center pt-2">
+                                <button onclick="resetBagGame()" class="text-xs bg-slate-200 hover:bg-slate-300 text-slate-600 px-4 py-2 rounded-xl transition font-bold">
+                                    <i class="fa-solid fa-rotate-left mr-1"></i> 重設桌面與書包
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 專家理論分析欄 -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6">
+                            <h3 class="font-black text-slate-800 text-lg mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-brain text-purple-600"></i> 教育心理學：為什麼要分色管理？
+                            </h3>
+                            <div class="space-y-4 text-sm text-slate-600 leading-relaxed">
+                                <p>
+                                    許多 <b>ADHD（過度活躍）</b> 兒童的家長常抱怨孩子「日日漏帶書、唔知功課去咗邊」。這本質上是他們的<b>執行功能（Executive Functioning）</b>中的「組織與規劃能力」發展遲緩。
+                                </p>
+                                <p class="bg-white p-3 rounded-xl border border-slate-200 font-medium">
+                                    💡 <b>外化結構原理：</b><br>
+                                    不要對孩子說「去執書包」這種抽象指令。透過本平台倡導的<b>三色文件夾法</b>，將繁雜的桌面外化為具體的視覺顏色結構。藍色放堂書，紅色放今晚必須做的功課，黃色放長遠的通告。這樣能極大程度降低學童的工作記憶負荷（Working Memory Load）。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模組 2：多感官觸覺沙盤 -->
+                <div id="content-sand" class="tab-content hidden animate-fade-in">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-4">
+                            <div class="bg-amber-100 text-amber-900 px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>家長請指導孩子：用滑鼠或手指直接在下方沙盤中「寫出字形」，聆聽沙沙聲，深度加深字形記憶。</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-bold text-slate-600">當前範字：</span>
+                                    <span id="current-word-display" class="text-2xl font-black bg-emerald-50 text-emerald-700 px-4 py-1 rounded-xl border border-emerald-200">藍</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="changeSandWord('藍')" class="text-xs font-bold px-3 py-1.5 rounded-lg border bg-white hover:bg-slate-50">字例一：藍</button>
+                                    <button onclick="changeSandWord('廣')" class="text-xs font-bold px-3 py-1.5 rounded-lg border bg-white hover:bg-slate-50">字例二：廣</button>
+                                    <button onclick="clearSand()" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700"><i class="fa-solid fa-eraser mr-1"></i> 掃平沙盤</button>
+                                </div>
+                            </div>
+
+                            <!-- Canvas 虛擬沙盤 -->
+                            <div class="canvas-container shadow-inner border-4 border-amber-700/30">
+                                <canvas id="sandCanvas" width="600" height="350" class="w-full sand-canvas"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 專家理論分析欄 -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6">
+                            <h3 class="font-black text-slate-800 text-lg mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-shapes text-orange-500"></i> 什麼是 VAKT 多感官學習法？
+                            </h3>
+                            <div class="space-y-4 text-sm text-slate-600 leading-relaxed">
+                                <p>
+                                    針對 <b>SpLD（讀寫障礙/特殊學習困難）</b> 學生，純粹靠眼睛看字形（Visual）或死抄爛寫，大腦的枕葉和顳葉神經迴路極難被激活。
+                                </p>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2">
+                                    <p>🧠 <b>多管道交叉記憶（VAKT）：</b></p>
+                                    <ul class="list-disc pl-4 space-y-1 text-xs">
+                                        <li><b>Visual (視覺)</b>：看著左側高亮範字。</li>
+                                        <li><b>Auditory (聽覺)</b>：劃動時瀏覽器自動產生的沙石摩擦聲景。</li>
+                                        <li><b>Kinesthetic (動覺)</b>：手臂與手指的揮灑軌跡。</li>
+                                        <li><b>Tactile (觸覺)</b>：模擬沙盤的視覺紋理反饋。</li>
+                                    </ul>
+                                </div>
+                                <p class="text-xs text-slate-500 italic">臨床實證指出，當觸覺、聽覺與大肌肉動覺與視覺字形同步輸入時，能有效繞過受損的拼讀網絡，幫助孩子重構長期記憶。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模組 3：居家感統調適處方 -->
+                <div id="content-sensory" class="tab-content hidden animate-fade-in">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                                <h3 class="font-bold text-slate-800 text-base mb-2">🔍 第一步：請勾選孩子在做功課/溫習時的當下狀態</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <label onclick="selectSensoryState('high')" class="cursor-pointer border-2 border-slate-200 p-4 rounded-xl flex items-center gap-3 hover:bg-slate-50 transition" id="lbl-state-high">
+                                        <input type="radio" name="sensory-state" class="text-emerald-600 focus:ring-emerald-500">
+                                        <div>
+                                            <div class="font-bold text-slate-800">狀態 A：過度亢奮躁動</div>
+                                            <div class="text-xs text-slate-500">坐立不安、身體不停扭動、遊魂</div>
+                                        </div>
+                                    </label>
+                                    <label onclick="selectSensoryState('low')" class="cursor-pointer border-2 border-slate-200 p-4 rounded-xl flex items-center gap-3 hover:bg-slate-50 transition" id="lbl-state-low">
+                                        <input type="radio" name="sensory-state" class="text-emerald-600 focus:ring-emerald-500">
+                                        <div>
+                                            <div class="font-bold text-slate-800">狀態 B：無精打采疲累</div>
+                                            <div class="text-xs text-slate-500">恰眼瞓、伏在桌上、反應極慢</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 處方顯示區 -->
+                            <div id="sensory-prescription-box" class="hidden bg-emerald-50/50 border border-emerald-200 rounded-3xl p-6 space-y-4">
+                                <h4 class="font-black text-emerald-800 text-lg flex items-center gap-2">
+                                    <i class="fa-solid fa-file-medical"></i> 職業治療學：居家感統運動處方 (Sensory Diet)
+                                </h4>
+                                <div id="prescription-content" class="text-sm text-slate-700 leading-relaxed bg-white p-5 rounded-xl border border-emerald-100">
+                                    <!-- 動態生成 -->
+                                </div>
+                                
+                                <!-- 實時感統計時器 -->
+                                <div class="bg-slate-900 text-white p-4 rounded-xl flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
+                                        <span class="font-bold text-sm tracking-wide">處方執行計時器：</span>
+                                        <span id="sensory-timer-display" class="font-mono text-2xl font-black text-amber-400">02:00</span>
+                                    </div>
+                                    <button onclick="toggleSensoryTimer()" id="btn-sensory-timer" class="bg-emerald-600 hover:bg-emerald-700 text-xs font-bold px-4 py-2 rounded-lg transition">
+                                        開始執行
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 專家理論分析欄 -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6">
+                            <h3 class="font-black text-slate-800 text-lg mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-dumbbell text-blue-500"></i> 什麼是感覺飲食 (Sensory Diet)？
+                            </h3>
+                            <div class="space-y-4 text-sm text-slate-600 leading-relaxed">
+                                <p>
+                                    學童溫習時表現不佳，往往並非「態度懶散」，而是大腦的<b>神經警醒度（Arousal Level）</b>失衡。
+                                </p>
+                                <p>
+                                    當孩子<b>過度躁動</b>時，表示其大腦缺乏抑制性刺激，需要透過<b>重體力工作（Heavy Work）</b>提供大量的本體覺（Proprioception）來安定神經；相反，當孩子<b>呆滯遊魂</b>時，則需要快速的前庭覺（Vestibular）刺激來喚醒大腦皮質。
+                                </p>
+                                <p class="text-xs bg-amber-50 text-amber-800 p-3 rounded-xl border border-amber-200 font-bold">
+                                    ⚠️ 警告：感統運動每次不宜超過 3-5 分鐘，時間過長反而會造成神經系統更嚴重的超載！
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript 邏輯與網頁合成音效 -->
+    <script>
+        // Web Audio API 聲音合成引擎
+        let audioCtx = null;
+        function playTone(freq, type, duration) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) { console.log("Audio error", e); }
+        }
+
+        // 模擬細沙摩擦音效
+        function playSandSound() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const bufferSize = audioCtx.sampleRate * 0.05;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 400; 
+                filter.Q.value = 1.5;
+                
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+                
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                noise.start();
+            } catch (e) {}
+        }
+
+        // 分頁切換
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+            });
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+            activeBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-md');
+            
+            playTone(440, 'sine', 0.1);
+            if(tabId === 'sand') setTimeout(initSandCanvas, 100);
+        }
+
+        // ================= 模組 1：執書包遊戲邏輯 =================
+        const packedItems = { blue: 0, red: 0, yellow: 0 };
+        function packItem(itemId, targetFolder) {
+            const itemEl = document.getElementById(`item-${itemId}`);
+            if (!itemEl || itemEl.style.opacity === "0.4") return;
+            
+            itemEl.style.opacity = "0.4";
+            itemEl.style.pointerEvents = "none";
+            
+            packedItems[targetFolder]++;
+            document.getElementById(`count-${targetFolder}`).innerText = packedItems[targetFolder];
+            
+            const listEl = document.getElementById(`list-${targetFolder}`);
+            const name = itemEl.querySelector('.font-bold').innerText;
+            listEl.innerHTML += `<div class="bg-white p-2 rounded-lg border border-slate-200 font-bold flex items-center gap-1 text-[11px]"><i class="fa-solid fa-circle-check text-green-500"></i> ${name}</div>`;
+            
+            // 成功置入和弦
+            playTone(523.25, 'sine', 0.15); // C5
+            setTimeout(() => playTone(659.25, 'sine', 0.15), 80); // E5
+        }
+
+        function resetBagGame() {
+            packedItems.blue = 0; packedItems.red = 0; packedItems.yellow = 0;
+            document.getElementById('count-blue').innerText = "0";
+            document.getElementById('count-red').innerText = "0";
+            document.getElementById('count-yellow').innerText = "0";
+            document.getElementById('list-blue').innerHTML = "";
+            document.getElementById('list-red').innerHTML = "";
+            document.getElementById('list-yellow').innerHTML = "";
+            
+            document.querySelectorAll('#desk-items > div').forEach(el => {
+                el.style.opacity = "1";
+                el.style.pointerEvents = "auto";
+            });
+            playTone(330, 'triangle', 0.2);
+        }
+
+        // ================= 模組 2：Canvas 沙盤邏輯 =================
+        let canvas, ctx, isDrawing = false;
+        function initSandCanvas() {
+            canvas = document.getElementById('sandCanvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            clearSand();
+            
+            // 桌面/手機端事件觸發
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseleave', stopDraw);
+            
+            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e.touches[0]); });
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
+            canvas.addEventListener('touchend', stopDraw);
+        }
+
+        function clearSand() {
+            if (!ctx || !canvas) return;
+            // 鋪滿金黃色沙子底色
+            ctx.fillStyle = '#e2af65';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // 繪製沙子顆粒感效果
+            for (let i = 0; i < 800; i++) {
+                ctx.fillStyle = 'rgba(255,255,255,0.25)';
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
+                ctx.fillStyle = 'rgba(139,94,26,0.15)';
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
+            }
+            playTone(200, 'triangle', 0.3);
+        }
+
+        function changeSandWord(word) {
+            document.getElementById('current-word-display').innerText = word;
+            clearSand();
+        }
+
+        function startDraw(e) { isDrawing = true; draw(e); }
+        function stopDraw() { isDrawing = false; ctx.beginPath(); }
+        function draw(e) {
+            if (!isDrawing || !canvas || !ctx) return;
+            const rect = canvas.getBoundingClientRect();
+            // 相對應網頁比例座標轉換
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            
+            ctx.lineWidth = 14;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            // 露出深木色沙盤底色效果
+            ctx.strokeStyle = '#5c3a21'; 
+            
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            
+            // 播放細沙摩擦音頻
+            playSandSound();
+        }
+
+        // ================= 模組 3：居家感統飲食處方邏輯 =================
+        let sensoryTimer = null;
+        let sensorySecondsLeft = 120;
+        let isTimerRunning = false;
+
+        function selectSensoryState(state) {
+            document.getElementById('lbl-state-high').className = "cursor-pointer border-2 border-slate-200 p-4 rounded-xl flex items-center gap-3 hover:bg-slate-50 transition";
+            document.getElementById('lbl-state-low').className = "cursor-pointer border-2 border-slate-200 p-4 rounded-xl flex items-center gap-3 hover:bg-slate-50 transition";
+            
+            const activeLbl = document.getElementById(`lbl-state-${state}`);
+            activeLbl.className = "cursor-pointer border-2 border-emerald-500 bg-emerald-50/50 p-4 rounded-xl flex items-center gap-3 transition";
+            
+            const box = document.getElementById('sensory-prescription-box');
+            box.classList.remove('hidden');
+            
+            const content = document.getElementById('prescription-content');
+            if (state === 'high') {
+                content.innerHTML = `
+                    <div class="font-bold text-red-700 mb-2"><i class="fa-solid fa-circle-down"></i> 抑制性處方（適合過度躁動學童）：</div>
+                    <ul class="list-decimal pl-4 space-y-2 text-xs sm:text-sm">
+                        <li><b>推牆運動（Heavy Work）</b>：請學童站立雙手用力推牆壁，雙腳緊貼地面，維持 30 秒。這能對關節施加深層本體覺，迅速安定中樞神經。</li>
+                        <li><b>大舊被捲壽司</b>：用一張厚重棉被將孩子裹緊（露出頭部），家長輕輕在被子上方施加全身下壓按摩，維持 1-2 分鐘，提供觸覺深層壓力放鬆。</li>
+                    </ul>
+                `;
+                sensorySecondsLeft = 120; // 2分鐘
+            } else {
+                content.innerHTML = `
+                    <div class="font-bold text-amber-700 mb-2"><i class="fa-solid fa-circle-up"></i> 喚醒性處方（適合疲累遊魂學童）：</div>
+                    <ul class="list-decimal pl-4 space-y-2 text-xs sm:text-sm">
+                        <li><b>太空人原地旋轉（Vestibular）</b>：讓學童原地順時針快速旋轉 5 圈，再逆時針旋轉 5 圈，隨後緊盯家長手指。這能激活前庭覺，喚醒遊魂中的大腦皮質。</li>
+                        <li><b>冰水洗臉與精油嗅覺刺激</b>：用冷水洗臉，並在溫習桌旁滴上 2 滴薄荷或檸檬精油，透過感官直接突觸神經元。</li>
+                    </ul>
+                `;
+                sensorySecondsLeft = 180; // 3分鐘
+            }
+            
+            updateTimerDisplay();
+            clearInterval(sensoryTimer);
+            isTimerRunning = false;
+            document.getElementById('btn-sensory-timer').innerText = "開始執行";
+            playTone(587.33, 'sine', 0.15);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(sensorySecondsLeft / 60).toString().padStart(2, '0');
+            const s = (sensorySecondsLeft % 60).toString().padStart(2, '0');
+            document.getElementById('sensory-timer-display').innerText = `${m}:${s}`;
+        }
+
+        function toggleSensoryTimer() {
+            const btn = document.getElementById('btn-sensory-timer');
+            if (isTimerRunning) {
+                clearInterval(sensoryTimer);
+                btn.innerText = "繼續執行";
+                isTimerRunning = false;
+                playTone(300, 'triangle', 0.2);
+            } else {
+                isTimerRunning = true;
+                btn.innerText = "暫停倒計";
+                playTone(600, 'sine', 0.1);
+                sensoryTimer = setInterval(() => {
+                    if (sensorySecondsLeft > 0) {
+                        sensorySecondsLeft--;
+                        updateTimerDisplay();
+                        if(sensorySecondsLeft % 2 === 0) playTone(880, 'sine', 0.02); // 輕微每秒倒數音
+                    } else {
+                        clearInterval(sensoryTimer);
+                        isTimerRunning = false;
+                        btn.innerText = "處方完成";
+                        // 完成大號角音
+                        playTone(523.25, 'sine', 0.4);
+                        playTone(783.99, 'sine', 0.4);
+                        alert("⏱️ 居家感統調適時間結束！大腦神經已調整完畢，請家長立刻帶領孩子返回座位開始溫習功課。");
+                    }
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
