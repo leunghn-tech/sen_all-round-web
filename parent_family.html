@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="zh-HK" class="transition-all duration-300">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>👨‍👩‍👧 親子溝通與家庭系統支持指南 (Parent-Child Communication & Family Support)</title>
+    <!-- 引入 Tailwind CSS 進行精緻視覺排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 專業圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght=300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #fffafb; /* 療癒、溫暖、帶有安全感的微淡粉紅背景 */
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 隱藏滾動條但保持滾動 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 無障礙高對比度樣式 */
+        body.a11y-high-contrast {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+        body.a11y-high-contrast * {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border-color: #ffffff !important;
+            box-shadow: none !important;
+        }
+        body.a11y-high-contrast .bg-white, body.a11y-high-contrast .bg-rose-50, body.a11y-high-contrast .bg-coral-50 {
+            background-color: #121212 !important;
+            border: 2px solid #ffffff !important;
+        }
+        body.a11y-high-contrast button, body.a11y-high-contrast a, body.a11y-high-contrast select, body.a11y-high-contrast textarea, body.a11y-high-contrast input {
+            background-color: #000000 !important;
+            color: #ffff00 !important;
+            border: 2px solid #ffff00 !important;
+        }
+        body.a11y-high-contrast button:hover {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+        }
+        body.a11y-high-contrast .text-rose-800, body.a11y-high-contrast .text-rose-600 {
+            color: #ffff00 !important;
+        }
+
+        html.a11y-large-text { font-size: 125% !important; }
+
+        .tts-highlight {
+            background-color: rgba(253, 224, 71, 0.4) !important;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 腦電波波動動畫 */
+        @keyframes pulse-brain-red {
+            0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+            50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 25px rgba(239, 68, 68, 0.8); }
+        }
+        @keyframes pulse-brain-green {
+            0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+            50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 25px rgba(16, 185, 129, 0.8); }
+        }
+        .brain-red-active {
+            animation: pulse-brain-red 1.5s infinite ease-in-out;
+        }
+        .brain-green-active {
+            animation: pulse-brain-green 1.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen text-sm sm:text-base pb-12">
+
+    <!-- Toast 通知容器 -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- 頂部導航 -->
+    <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-rose-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-rose-700 hover:text-rose-900 font-extrabold transition">
+                <i class="fa-solid fa-house-medical text-lg"></i>
+                <span>返回協作平台首頁</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <span class="bg-rose-100 text-rose-800 text-xs font-black px-2.5 py-1 rounded-full uppercase"><i class="fa-solid fa-people-roof mr-1 animate-pulse"></i>親子與家庭</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full space-y-8">
+        
+        <!-- 標題橫幅 -->
+        <div class="bg-gradient-to-r from-rose-500 via-rose-600 to-amber-500 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
+                <i class="fa-solid fa-people-roof text-[150px]"></i>
+            </div>
+            <div class="relative z-10 space-y-3">
+                <span class="bg-white/20 text-white text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider inline-block backdrop-blur-md">系統心理學與實證調適</span>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2">
+                    👨‍👩‍👧 親子溝通與家庭系統支持指南
+                </h1>
+                <p class="text-rose-50 text-xs sm:text-sm leading-relaxed max-w-4xl">
+                    拒絕空泛的「多加忍讓、保持理智」。本模組結合 <b>Bowen 家庭系統理論</b>、<b>Gottman 情緒導航</b>與香港融合教育制度，教你如何用同理話術降溫、專業對齊校方，並平衡照料常規手足的心理需求。
+                </p>
+            </div>
+        </div>
+
+        <!-- 三板塊頂部 Tab 切換按鈕 -->
+        <div class="flex flex-wrap gap-2.5 bg-white p-2 rounded-2xl shadow-sm border border-slate-100 justify-center">
+            <button id="tab-coaching" onclick="switchFamilyTab('coaching')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-rose-700 bg-rose-50 border border-rose-100 shadow-sm">
+                <i class="fa-solid fa-headset"></i> 1. 情緒導航 (Emotion Coaching) 模擬艙
+            </button>
+            <button id="tab-senco" onclick="switchFamilyTab('senco')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
+                <i class="fa-solid fa-school-flag"></i> 2. 家校通訊與 SENCO 信件產生器
+            </button>
+            <button id="tab-sibling" onclick="switchFamilyTab('sibling')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
+                <i class="fa-solid fa-people-arrows animate-pulse"></i> 3. 特教家庭的手足支持空間
+            </button>
+        </div>
+
+        <!-- 主體內容：左右兩欄佈局 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- 左欄：互動操作區 (12格中佔 8格) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- 模塊一：情緒導航模擬艙 (Emotion Coaching Simulator) -->
+                <div id="panel-coaching" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-6">
+                    <!-- 說明 -->
+                    <div class="bg-rose-50/50 border border-rose-100 rounded-2xl p-4 text-rose-950 text-xs sm:text-sm leading-relaxed">
+                        <span class="font-extrabold"><i class="fa-solid fa-circle-info mr-1"></i> 家長請在此演練：</span>
+                        孩子情緒大爆發時，我們大腦中習慣的「說教、指責或轉移焦點」會對孩子神經系統產生什麼化學反應？如何利用 Gottman 5 步情緒導航平息海嘯、重塑大腦連結？
+                    </div>
+
+                    <!-- 場景選擇 -->
+                    <div class="space-y-2.5">
+                        <label class="block text-xs font-black text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-magnifying-glass-location"></i> 選擇親子衝突演練情境 (Select Scenario)
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="coaching-scenario-buttons">
+                            <!-- JS 動態渲染 -->
+                        </div>
+                    </div>
+
+                    <!-- 虛擬情境展示 -->
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden">
+                        <div class="space-y-2 text-left md:w-2/3">
+                            <span class="bg-rose-100 text-rose-800 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider" id="coaching-scenario-tag">情境 A</span>
+                            <h4 class="font-black text-slate-800 text-sm sm:text-base leading-relaxed mt-1" id="coaching-scenario-text">
+                                孩子因為默書卡關、字形寫反，突然大發脾氣，用鉛筆在作業紙上狂畫，並大哭吼叫：「我唔識！我係廢物！我唔想讀書！」
+                            </h4>
+                        </div>
+                        <!-- 孩子當前科學大腦反應 -->
+                        <div class="shrink-0 flex flex-col items-center justify-center p-3.5 bg-white rounded-2xl border border-slate-150 shadow-inner w-36 text-center">
+                            <div id="coaching-brain-icon" class="w-12 h-12 rounded-full flex items-center justify-center text-xl text-white brain-red-active bg-red-500">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <span class="text-xs font-black text-slate-800 block mt-2" id="coaching-brain-label">杏仁核過載</span>
+                            <span class="text-[9px] text-slate-400 block mt-0.5" id="coaching-brain-sub">處於「戰或逃」防禦</span>
+                        </div>
+                    </div>
+
+                    <!-- 家長應對選項 (互動按鈕) -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-reply-all"></i> 選擇您的溝通回應 (Choose Response Mode)
+                        </label>
+                        <div class="grid grid-cols-1 gap-3" id="coaching-options">
+                            <!-- JS 動態加載選項 -->
+                        </div>
+                    </div>
+
+                    <!-- 反饋報告框 (預設隱藏) -->
+                    <div id="coaching-result-box" class="hidden p-5 rounded-2xl border transition-all duration-500">
+                        <!-- JS 填充 -->
+                    </div>
+                </div>
+
+                <!-- 模塊二：家校通訊與 SENCO 信件產生器 (Comorbidity Supported Builder) -->
+                <div id="panel-senco" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-6 hidden">
+                    <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 text-blue-950 text-xs sm:text-sm leading-relaxed">
+                        <span class="font-extrabold"><i class="fa-solid fa-circle-check mr-1"></i> 多重 SEN 及多維度調適支持：</span>
+                        在香港的三層支援模式下，與特殊教育統籌主任 (SENCO) 保持客觀、冷靜且有法理依據的溝通至關重要。<b>如果孩子同時有多項 SEN 診斷（例如：自閉症共病 ADHD），請在下方多選勾選。</b>同時，你可以多選多個最切合孩子當前需要的調適方案，系統會自動生成結構極其清晰的電郵信件範本：
+                    </div>
+
+                    <!-- 輸入表單組 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">學生小名 / 代號 (不可用真實姓名防洩密)</label>
+                            <input type="text" id="senco-student-name" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none h-11" placeholder="例如: 小明 / Sunny">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">就讀班級 (如 小三B班 / 中二C班)</label>
+                            <input type="text" id="senco-student-class" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none h-11" placeholder="例如: 3B / 2C">
+                        </div>
+                    </div>
+
+                    <!-- 多選 SEN 類別 -->
+                    <div class="space-y-2.5">
+                        <label class="block text-xs font-black text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-network-wired text-rose-500"></i> 主要特教類別 (支援多學群/共病特質 - 可多選)
+                        </label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
+                                <input type="checkbox" name="sen-type-chk" value="特殊學習困難 (SpLD/讀寫障礙)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <span>讀寫困難 (SpLD)</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
+                                <input type="checkbox" name="sen-type-chk" value="注意力不足/過度活躍症 (ADHD)" class="accent-rose-500 w-4 h-4 shrink-0" checked>
+                                <span>過度活躍症 (ADHD)</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
+                                <input type="checkbox" name="sen-type-chk" value="自閉症譜系障礙 (ASD)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <span>自閉症譜系 (ASD)</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
+                                <input type="checkbox" name="sen-type-chk" value="言語障礙 (SLI)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <span>言語障礙 (SLI)</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
+                                <input type="checkbox" name="sen-type-chk" value="精神健康需要 (MI/焦慮抑鬱)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <span>精神健康需要 (MI)</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
+                                <input type="checkbox" name="sen-type-chk" value="雙重特殊資優 (2e)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <span>雙重特殊資優 (2e)</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
+                                <input type="checkbox" name="sen-type-chk" value="發展遲緩 (DD)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <span>發展遲緩 (DD)</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
+                                <input type="checkbox" name="sen-type-chk" value="有限智能 (Borderline)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <span>有限智能 (Borderline)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 多選調適具體手段 -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-list-check text-rose-500"></i> 當前希望校方提供之具體調適措施 (可跨範疇多選)
+                        </label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            <!-- 類別 1: 測驗考試調適安排 -->
+                            <div class="bg-rose-50/20 border border-rose-100 rounded-2xl p-4 space-y-3">
+                                <h5 class="text-xs font-extrabold text-rose-800 flex items-center gap-1"><i class="fa-solid fa-file-signature"></i> 1. 測驗考試調適安排 (Exam Accom.)</h5>
+                                <div class="space-y-2">
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-exam" value="安排延長 25% 答題時間 (考評加時)" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0" checked>
+                                        <span>安排延長 25% 答題時間 (考評加時)</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-exam" value="提供低刺激、安靜之特別試室應考，避免大班感官干擾" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>提供低刺激、安靜之特別試室應考</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-exam" value="提供放大試卷或文字報讀音訊、讀題輔助 (如有讀寫困難)" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>提供放大試卷及文字報讀輔助</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-exam" value="酌情寬限非主科語文因筆順、筆誤、大細寫或手寫困難引致之扣分" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>寬限非語文科因筆順/拼寫筆誤之扣分</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 類別 2: 功課減量與功課輔助 -->
+                            <div class="bg-blue-50/20 border border-blue-100 rounded-2xl p-4 space-y-3">
+                                <h5 class="text-xs font-extrabold text-blue-800 flex items-center gap-1"><i class="fa-solid fa-book-open"></i> 2. 功課分量與輔助調配 (Homework Accom.)</h5>
+                                <div class="space-y-2">
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-homework" value="功課實施「質重於量」彈性減免 (如免除重複性生字抄寫及罰抄)" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>功課「質重於量」彈性減免 (如免罰抄)</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-homework" value="容許以語音轉文字、口頭錄音、或打字代替部分傳統手寫功課" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>容許以語音、錄音或打字代替手寫</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-homework" value="容許彈性遲交功課 1-2 天，以舒緩傍晚因功課拖延引發之家庭情緒衝突" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>容許彈性延期 1-2 天提交功課</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-homework" value="將複雜、大篇幅的申論題型簡化，拆解為分步引導式填空或連線選擇題" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>將長篇題型拆解、簡化為引導填空題</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 類別 3: 課室座位與環境微調 -->
+                            <div class="bg-amber-50/20 border border-amber-100 rounded-2xl p-4 space-y-3">
+                                <h5 class="text-xs font-extrabold text-amber-800 flex items-center gap-1"><i class="fa-solid fa-chair"></i> 3. 課室環境與教學輔導 (Classroom Accom.)</h5>
+                                <div class="space-y-2">
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-classroom" value="座位安排在前排靠近講台中央，避免安排在靠近窗戶、後門走廊等感官干擾源的位置" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>座位安排在前排，避開窗戶/後門干擾</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-classroom" value="當學童課堂分神遊魂時，科任老師使用低調的非口頭密碼 (如輕敲桌面、特許默契手勢) 溫和重召專注" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>科任老師使用低調密碼/手勢重召專注</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-classroom" value="容許學童上課時使用減壓指尖玩具或觸覺防震氣墊，以調節多動傾向並調平身體警醒度" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>容許上課使用指尖玩具/觸覺防震氣墊</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-classroom" value="於課桌邊張貼個人專屬的「上課視覺常規卡/收拾備忘清單」以輔助工作記憶弱項" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>課桌邊張貼上課視覺提示與常規收拾</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 類別 4: 社交情緒與輔導干預 -->
+                            <div class="bg-emerald-50/20 border border-emerald-100 rounded-2xl p-4 space-y-3">
+                                <h5 class="text-xs font-extrabold text-emerald-800 flex items-center gap-1"><i class="fa-solid fa-face-smile"></i> 4. 社交情緒與輔導干預 (Social Accom.)</h5>
+                                <div class="space-y-2">
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-social" value="安排學童加入校本「社交思考/溝通合作小組」，或由駐校社工/心理學家定期進行一對一跟進輔導" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>安排加入社交思考小組或社工跟進輔導</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-social" value="當學童面臨社交衝突或情緒暴發臨界時，校方協助實施「ABC前因後果解碼分析」引導，而非直接給予道德處分" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>情緒爆發時由校方進行「ABC前因後果分析」</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-social" value="課堂或集體分組活動中，請班主任安排正面、包容及溫和的關愛同學擔任協作伙伴" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>指派班中「關愛天使組」同儕正面扶持</span>
+                                    </label>
+                                    <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="adjust-social" value="於校內設立情绪「安全撤退空間」(如輔導室特定沙發)，允許學童感到極度感官超載時申請前往降溫" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <span>設立校園情緒「安全撤退空間」供避難</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- 生成按鈕 -->
+                    <button onclick="generateSencoEmail()" class="w-full h-14 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-2xl transition shadow-md shadow-rose-100 text-xs flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>一鍵生成專業家校信件電郵範本</span>
+                    </button>
+
+                    <!-- 生成信件回饋框 (預設隱藏) -->
+                    <div id="senco-result-box" class="hidden bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wide"><i class="fa-solid fa-envelope-open-text mr-1"></i> 家校電郵範本已生成：</span>
+                            <button onclick="copySencoEmail()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold py-1.5 px-3.5 rounded-xl text-xs transition flex items-center gap-1">
+                                <i class="fa-solid fa-copy"></i> <span>複製信件文字</span>
+                            </button>
+                        </div>
+                        <textarea id="senco-email-textarea" readonly rows="12" class="w-full bg-white border border-slate-200 rounded-xl p-4 text-xs sm:text-sm font-mono text-slate-700 focus:outline-none focus:ring-0 leading-relaxed no-scrollbar"></textarea>
+                    </div>
+                </div>
+
+                <!-- 模塊三：特教家庭的手足支持空間 (Sibling Support Hub) -->
+                <div id="panel-sibling" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-6 hidden">
+                    <div class="bg-amber-50/50 border border-amber-200 rounded-2xl p-4 text-amber-950 text-xs sm:text-sm leading-relaxed">
+                        <span class="font-extrabold"><i class="fa-solid fa-people-arrows mr-1"></i> 關注常規手足被隱藏的壓力：</span>
+                        在擁有 SEN 孩子的家庭中，父母的精力與時間往往 90% 被傾注在特教學童身上，這導致其他發育正常的子女（常規手足，Typical Siblings）容易發展出<b>「隱形孩子」或「過度早熟（Parentified child）」</b>心理。請往下滑動探索手足的真心話：
+                    </div>
+
+                    <!-- 橫向滑動手足真心話卡片 -->
+                    <div class="relative">
+                        <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
+                        <div class="flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory scroll-smooth no-scrollbar" id="sibling-cards-grid">
+                            <!-- 由 JS 動態注入 4 張手足真心話卡片 -->
+                        </div>
+                    </div>
+
+                    <!-- 臨床建議 -->
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 space-y-3">
+                        <h4 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center gap-1.5">
+                            <i class="fa-solid fa-shield-heart text-rose-500"></i> 特教家庭手足心理救援黃金處方 (Sibling Support Diet)
+                        </h4>
+                        <div class="space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            <p><b>1. 「一對一」特殊約會時間 (Special Date Time)：</b>每週為常規手足特配僅限 30-45 分鐘、**完全不談及 SEN 手足**的專屬相處時光。這能給予其關鍵的「情感確認（Validation）」。</p>
+                            <p><b>2. 不要強加「你是哥哥/姐姐，一定要讓弟弟」：</b>拒絕道德綁架。在常規孩子面臨功課、玩具摩擦時，家長應公平仲裁，維護常規子女的基本邊界與自尊心。</p>
+                            <p><b>3. 主動告知特教真相：</b>用年齡相符的語言，坦誠告訴常規孩子：「弟弟/妹妹大腦神經生病了，所以好難自控。這不是你的責任，也不是爸爸媽媽偏心。」</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模塊四：親子溝通與家庭系統管教思維糾錯測驗 (動態加載) -->
+                <div id="family-quiz" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h3 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-puzzle-piece text-rose-600"></i> <span>家庭系統：家長管教思維糾錯測驗</span>
+                        </h3>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h3 id="quiz-question-title" class="text-sm sm:text-base font-black text-slate-800">載入中...</h3>
+                    </div>
+
+                    <!-- 選項按鈕 -->
+                    <div class="grid grid-cols-1 gap-3" id="quiz-options">
+                        <!-- 由 JS 動態加載 -->
+                    </div>
+
+                    <!-- 回饋框 (預設隱藏) -->
+                    <div id="quiz-feedback" class="hidden p-5 rounded-2xl border transition-all duration-300">
+                        <div class="flex items-start gap-3.5">
+                            <div id="feedback-icon" class="text-2xl mt-0.5 shrink-0"></div>
+                            <div class="space-y-2">
+                                <h4 id="feedback-title" class="font-black text-sm sm:text-base"></h4>
+                                <p id="feedback-desc" class="text-xs sm:text-sm leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 右欄：教育心理學與特教解說區 (12格中佔 4格) -->
+            <div class="lg:col-span-4 space-y-6" id="right-theory-column">
+                <!-- 由 JS 根據當前啟用的 Tab 狀態，動態渲染理論卡片 -->
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-1 text-xs text-slate-500">
+            <p>© 2026 香港教育與 SEN 專業協作網絡 - 親子溝通與家庭系統指南</p>
+            <p class="font-mono">本系統所用之家校通訊框架、手足心理救援方案均由臨床心理與家庭學團隊理論認證。</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript 核心控制與音訊合成邏輯 -->
+    <script>
+        let currentTab = 'coaching'; // 默認選中情緒導航
+        let activeScenarioKey = 'academic_failure'; // 默認默書失敗場景
+
+        // ==========================================
+        // 1. 情緒導航 (Emotion Coaching) 情境資料庫
+        // ==========================================
+        const coachingDatabase = {
+            academic_failure: {
+                title: "📚 默書挫敗狂撕紙",
+                tag: "情境 A：學業與抗逆力挫敗",
+                description: "孩子因為默書不合格、字形寫反，突然大發脾氣，用鉛筆在作業紙上狂畫，並大哭吼叫：「我唔識！我係廢物！我唔想讀書！」",
+                options: {
+                    dismissive: {
+                        text: "<b>❌ 忽視/說教回應：</b>「唔好喊！默書唔合格咪再溫囉，撕紙解決到問題咩？你再喊就扣你今晚代幣星星！」",
+                        brainIcon: "fa-fire-alt",
+                        brainColor: "bg-red-500 brain-red-active",
+                        brainLabel: "杏仁核完全爆炸",
+                        brainSub: "「戰或逃」警戒拉滿，聽覺關閉",
+                        feedbackTitle: "忽視與懲罰：使杏仁核進入完全「生存防衛」模式",
+                        feedbackClass: "p-5 rounded-2xl border border-rose-100 bg-rose-50/40 text-rose-950",
+                        feedbackDesc: "<b>臨床分析：</b>當孩子高呼「我是廢物」時，代表他正處於強烈的自我懷疑與恐懼。家長急於制止哭鬧、重申規則（扣星說教），會被其杏仁核解讀為<b>『在我的絕境下進行追加攻擊』</b>。大腦邏輯額葉此時會因壓力皮質醇上升而完全斷線，說教不但在當下毫無效果，更會導致孩子的情緒失控加劇。"
+                    },
+                    coaching: {
+                        text: "<b>✅ Gottman 情緒導航：</b>「媽媽知道默書好難、好有挫敗感。你覺得好嬲自己、好想放棄係咪？媽媽會喺度，我哋喊完再慢慢寫。」",
+                        brainIcon: "fa-brain",
+                        brainColor: "bg-emerald-500 brain-green-active",
+                        brainLabel: "前額葉皮質激活",
+                        brainSub: "血清素上升，情緒調平、重構連結",
+                        feedbackTitle: "情緒導航：共同調節（Co-regulation）重塑神經迴路",
+                        feedbackClass: "p-5 rounded-2xl border border-emerald-100 bg-emerald-50/40 text-emerald-950",
+                        feedbackDesc: "<b>臨床分析：</b>極其專業！這是 Gottman 情緒導航的核心。1. <b>標籤情緒：</b>指出「有挫敗感、很氣自己」，幫孩子建立語言詞彙以釋放右腦情感過載。2. <b>同理確認：</b>「媽媽在旁邊、喊完再寫」提供無威脅的安全島。當杏仁核感知安全，抑制性神經遞質（GABA）會迅速分泌，幫助大腦前額葉（負責邏輯）重新接管，這才是真正教導自我調解的黃金時機。"
+                    }
+                }
+            },
+            screen_limit: {
+                title: "🎮 要關機食飯怒吼尖叫",
+                tag: "情境 B：生活常規與邊界調適",
+                description: "打機時間到了，家長命令關機食飯。自閉/ADHD 的孩子突然尖叫，把平板重重摔在沙發上，並倒地大喊：「我唔要食飯！我要繼續打機！你最衰！」",
+                options: {
+                    dismissive: {
+                        text: "<b>❌ 強制對抗：</b>「打機大晒呀？你咩態度！我數三聲即刻起身，如果唔係我就打爛部 iPad，以後唔准再玩！」",
+                        brainIcon: "fa-bolt-lightning",
+                        brainColor: "bg-red-500 brain-red-active",
+                        brainLabel: "戰鬥型杏仁核綁架",
+                        brainSub: "分泌腎上腺素，引發對立反抗",
+                        feedbackTitle: "強制威脅：強行碰撞，引發病理性對立反抗行為",
+                        feedbackClass: "p-5 rounded-2xl border border-rose-100 bg-rose-50/40 text-rose-950",
+                        feedbackDesc: "<b>臨床分析：</b>自閉症或ADHD學童在大腦轉換（Transitions）上天生具有認知彈性遲緩。從打機的極高多巴胺獎勵，瞬間切換到平淡的食飯，其大腦面臨極大生理不適。家長威脅「打爛部機」，會激活其最底層的恐懼防衛，令其進入病理性戰鬥模式，親子對峙瞬間升級為物理破壞。"
+                    },
+                    coaching: {
+                        text: "<b>✅ 情感確認與物理降溫：</b>「媽媽知道正玩到最精彩處被叫停，真係好難受、好嬲。媽媽陪你深呼吸兩下，我哋等 1 分鐘冷靜下再食飯。」",
+                        brainIcon: "fa-lungs",
+                        brainColor: "bg-emerald-500 brain-green-active",
+                        brainLabel: "自律神經平穩",
+                        brainSub: "副交感神經運作，降低身體興奮",
+                        feedbackTitle: "同理轉換：降低轉換難度，維持愛與規則邊界",
+                        feedbackClass: "p-5 rounded-2xl border border-emerald-100 bg-emerald-50/40 text-emerald-950",
+                        feedbackDesc: "<b>臨床分析：</b>堪稱典範！你接納並用言語說出了他面臨「高多巴胺退潮」時的難受，這對孩子的神經起到了撫平作用。承認他的憤怒是合情合理的，但同時維持規則（依然要食飯），只是提供了 1 分鐘的緩衝期（Plan B 轉換期），這才是培養孩子自我調適、接納日常限制的最有效方式。"
+                    }
+                }
+            },
+            sibling_friction: {
+                title: "👫 搶玩具打翻碗筷",
+                tag: "情境 C：家庭手足系統衝突",
+                description: "SEN 弟弟搶走常規姐姐的畫筆，姐姐崩潰並推翻餐具。媽媽見狀反射性地對姐姐吼道：「弟弟唔識事，你大個可唔可以讓下佢啊？」姐姐哭訴：「你次次都淨係幫佢！」",
+                options: {
+                    dismissive: {
+                        text: "<b>❌ 偏頗說教：</b>「弟弟有特教需要，你唔可以體諒下爸爸媽媽辛苦咩？你大件少少讓佢有咩問題？」",
+                        brainIcon: "fa-heart-crack",
+                        brainColor: "bg-red-500 brain-red-active",
+                        brainLabel: "隱形手足內疚崩潰",
+                        brainSub: "安全感與依附關係重創，產生極度怨恨",
+                        feedbackTitle: "道德綁架：強迫手足背負特教包袱，破壞家庭平衡",
+                        feedbackClass: "p-5 rounded-2xl border border-rose-100 bg-rose-50/40 text-rose-950",
+                        feedbackDesc: "<b>臨床分析：</b>這是 Bowen 家庭系統理論中的典型「偏三角化（Triangulation）」錯誤。常規手足因為「你要體諒父母、弟弟病了」等要求，其個人物理與心理邊界被迫無限收縮。長期以往，會導致其對父母產生嚴重的失望和背叛感，弟弟和姐姐之間也會形成長期的對立與心理扭曲。"
+                    },
+                    coaching: {
+                        text: "<b>✅ 公平仲裁與分流安撫：</b>「弟弟搶嘢係唔啱嘅，媽媽同你一齊拿返。媽媽見到你次次都要讓佢好委屈，今晚媽媽單獨同你講古仔陪你。」",
+                        brainIcon: "fa-hands-holding-child",
+                        brainColor: "bg-emerald-500 brain-green-active",
+                        brainLabel: "常規手足依附重建",
+                        brainSub: "重獲安全感，提升家庭支持力",
+                        feedbackTitle: "公平仲裁：重構孩子心中的「安全正義感」",
+                        feedbackClass: "p-5 rounded-2xl border border-emerald-100 bg-emerald-50/40 text-emerald-950",
+                        feedbackDesc: "<b>臨床分析：</b>非常明智且勇敢！在特教家庭中，常規手足最需要的是「正義感」和「被看見」。家長當面制止弟弟的越界，維護了姐姐的個人邊界；隨後主動標籤其「次次都要讓弟弟的委屈」，並承諾單獨相處時間（約會機制），這能極大程度補償常規孩子的心理能量，免其步入隱性抑鬱。"
+                    }
+                }
+            }
+        };
+
+        // ==========================================
+        // 2. Web Audio API 音訊合成與回饋音效 (Sound FX)
+        // ==========================================
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+        }
+
+        // 播放「正確/綠色」提示音：和諧和弦上升
+        function playSuccessSound() {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const freqs = [392.00, 523.25, 659.25, 783.99]; // G4, C5, E5, G5
+            freqs.forEach((f, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, now + idx * 0.08);
+                gain.gain.setValueAtTime(0.08, now + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.35);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + idx * 0.08);
+                osc.stop(now + idx * 0.08 + 0.4);
+            });
+        }
+
+        // 播放「錯誤/紅色」提示音：低沉雙音摩擦
+        function playErrorSound() {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc1.type = 'triangle';
+            osc1.frequency.setValueAtTime(140, now);
+            osc2.type = 'sawtooth';
+            osc2.frequency.setValueAtTime(143, now); // 微小頻差形成刺耳拍頻
+
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc1.start(now);
+            osc1.stop(now + 0.35);
+            osc2.start(now);
+            osc2.stop(now + 0.35);
+        }
+
+        // ==========================================
+        // 3. 情緒導航 (Emotion Coaching) 控制器
+        // ==========================================
+        function renderCoachingScenarioButtons() {
+            const container = document.getElementById('coaching-scenario-buttons');
+            container.innerHTML = '';
+
+            Object.keys(coachingDatabase).forEach(key => {
+                const data = coachingDatabase[key];
+                const btn = document.createElement('button');
+                
+                if (key === activeScenarioKey) {
+                    btn.className = "py-2.5 px-3 rounded-xl font-bold text-xs transition border bg-rose-600 text-white border-rose-500 shadow-sm";
+                } else {
+                    btn.className = "py-2.5 px-3 rounded-xl font-bold text-xs transition border bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
+                }
+
+                btn.innerText = data.title;
+                btn.onclick = () => selectCoachingScenario(key);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectCoachingScenario(key) {
+            activeScenarioKey = key;
+            renderCoachingScenarioButtons();
+
+            const data = coachingDatabase[key];
+            document.getElementById('coaching-scenario-tag').innerText = data.tag;
+            document.getElementById('coaching-scenario-text').innerText = data.description;
+
+            // 還原腦部狀態視覺
+            const brainIcon = document.getElementById('coaching-brain-icon');
+            brainIcon.className = "w-12 h-12 rounded-full flex items-center justify-center text-xl text-white brain-red-active bg-red-500";
+            brainIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            document.getElementById('coaching-brain-label').innerText = "杏仁核過載";
+            document.getElementById('coaching-brain-sub').innerText = "處於「戰或逃」防禦";
+
+            // 隱藏結果反饋框
+            document.getElementById('coaching-result-box').classList.add('hidden');
+
+            // 渲染回答按鈕
+            renderCoachingOptions(data);
+            showToast(`情境已載入：${data.title}`, "info");
+        }
+
+        function renderCoachingOptions(data) {
+            const container = document.getElementById('coaching-options');
+            container.innerHTML = `
+                <button onclick="submitCoachingResponse('dismissive')" class="text-left border border-slate-200 rounded-2xl p-4 hover:border-rose-400 hover:bg-rose-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-rose-100 text-rose-800 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">A</span>
+                    <span class="text-slate-700 text-xs sm:text-sm">${data.options.dismissive.text}</span>
+                </button>
+                <button onclick="submitCoachingResponse('coaching')" class="text-left border border-slate-200 rounded-2xl p-4 hover:border-emerald-400 hover:bg-emerald-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-emerald-100 text-emerald-800 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">B</span>
+                    <span class="text-slate-700 text-xs sm:text-sm">${data.options.coaching.text}</span>
+                </button>
+            `;
+        }
+
+        function submitCoachingResponse(type) {
+            const scenario = coachingDatabase[activeScenarioKey];
+            const opt = scenario.options[type];
+
+            // 1. 動態更新大腦視覺化指標
+            const brainIcon = document.getElementById('coaching-brain-icon');
+            brainIcon.className = `w-12 h-12 rounded-full flex items-center justify-center text-xl text-white ${opt.brainColor}`;
+            
+            if (type === 'coaching') {
+                brainIcon.innerHTML = '<i class="fa-solid fa-brain"></i>';
+                playSuccessSound();
+                showToast("✅ 完美導航！大腦神經正在安全著陸...", "success");
+            } else {
+                brainIcon.innerHTML = '<i class="fa-solid fa-fire"></i>';
+                playErrorSound();
+                showToast("❌ 說教與指責，引發了二次防衛機制！", "error");
+            }
+
+            document.getElementById('coaching-brain-label').innerText = opt.brainLabel;
+            document.getElementById('coaching-brain-sub').innerText = opt.brainSub;
+
+            // 2. 顯示反饋大白卡
+            const resultBox = document.getElementById('coaching-result-box');
+            resultBox.className = `${opt.feedbackClass} border-2 mt-4 transition-all duration-300`;
+            resultBox.innerHTML = `
+                <div class="flex items-start gap-3.5">
+                    <span class="text-2xl">${type === 'coaching' ? '✅' : '❌'}</span>
+                    <div class="space-y-1.5">
+                        <h5 class="font-black text-sm sm:text-base">${opt.feedbackTitle}</h5>
+                        <p class="text-xs sm:text-sm leading-relaxed">${opt.feedbackDesc}</p>
+                    </div>
+                </div>
+            `;
+            resultBox.classList.remove('hidden');
+        }
+
+        // ==========================================
+        // 4. 家校通訊信件動態組裝產生器 (Comorbidity Logic)
+        // ==========================================
+        function generateSencoEmail() {
+            const name = document.getElementById('senco-student-name').value.trim() || "Sunny";
+            const sClass = document.getElementById('senco-student-class').value.trim() || "3B";
+            
+            // 1. 收集並編譯選中的 SEN 類別 (支持共病與多選)
+            const checkedSENs = Array.from(document.querySelectorAll('input[name="sen-type-chk"]:checked')).map(el => el.value);
+            let senTypeStr = "特殊教育需要 (SEN)";
+            if (checkedSENs.length > 0) {
+                if (checkedSENs.length === 1) {
+                    senTypeStr = checkedSENs[0];
+                } else {
+                    senTypeStr = `多重特教需要共病特質 (包括：${checkedSENs.join('、')})`;
+                }
+            }
+
+            // 2. 收集並編譯所有選中的調適選項
+            let adjustmentsContent = "";
+
+            const examChecked = Array.from(document.querySelectorAll('input[name="adjust-exam"]:checked')).map(el => el.value);
+            const hwChecked = Array.from(document.querySelectorAll('input[name="adjust-homework"]:checked')).map(el => el.value);
+            const crChecked = Array.from(document.querySelectorAll('input[name="adjust-classroom"]:checked')).map(el => el.value);
+            const socChecked = Array.from(document.querySelectorAll('input[name="adjust-social"]:checked')).map(el => el.value);
+
+            if (examChecked.length === 0 && hwChecked.length === 0 && crChecked.length === 0 && socChecked.length === 0) {
+                playErrorSound();
+                showToast("⚠️ 請至少勾選一項希望校方提供之調適措施！", "error");
+                return;
+            }
+
+            if (examChecked.length > 0) {
+                adjustmentsContent += "【一、 測驗及考試調適安排 (Exam Accommodations)】\n";
+                examChecked.forEach((item, idx) => {
+                    adjustmentsContent += `  ${idx + 1}. ${item}\n`;
+                });
+                adjustmentsContent += "\n";
+            }
+
+            if (hwChecked.length > 0) {
+                adjustmentsContent += "【二、 功課分量調減與課業調配輔助 (Homework Accommodations)】\n";
+                hwChecked.forEach((item, idx) => {
+                    adjustmentsContent += `  ${idx + 1}. ${item}\n`;
+                });
+                adjustmentsContent += "\n";
+            }
+
+            if (crChecked.length > 0) {
+                adjustmentsContent += "【三、 課室物理座位與環境支持 (Classroom Accommodations)】\n";
+                crChecked.forEach((item, idx) => {
+                    adjustmentsContent += `  ${idx + 1}. ${item}\n`;
+                });
+                adjustmentsContent += "\n";
+            }
+
+            if (socChecked.length > 0) {
+                adjustmentsContent += "【四、 社交融入、情緒干預與輔導支持 (Social Accommodations)】\n";
+                socChecked.forEach((item, idx) => {
+                    adjustmentsContent += `  ${idx + 1}. ${item}\n`;
+                });
+                adjustmentsContent += "\n";
+            }
+
+            const emailText = `敬啟者：
+
+本人乃 貴校 ${sClass} 班學生 ${name} 之家長。
+
+敝子女早前經由本港專業臨床心理學家/教育心理學家評估，核實確診具備「${senTypeStr}」之特殊學習需要（相關專業醫學/心理評估報告影印本請見信件隨信附件備份）。
+
+隨著日常上課及評估季節的推進，敝子女在校園生活中，受到其神經發育特質之生理限制，於日常專注、功課執筆、考評時限及朋輩社交上面臨了一定的瓶頸與障礙。為了保護學童的學習自信與動能，並確保其獲得公平展現學術潛能的機會，本人特此書面向學校特殊教育統籌主任（SENCO）及班主任提出正式申請，希望校方能於以下多維度範疇中，協助落實並提供相應之特殊調適：
+
+${adjustmentsContent}本人深信家校雙方的積極協調與相互理解，是孩子在融合教育環境下穩步成長的最佳防線。本人非常樂意配合學校特教團隊（如 SENCO、科任老師及輔導社工）的教育安排，謝謝。
+
+期待 貴校的專業回覆與支持！
+
+順祝
+教安！
+
+學生 ${name} 家長 謹啟
+2026年6月18日`;
+
+            document.getElementById('senco-email-textarea').value = emailText;
+            document.getElementById('senco-result-box').classList.remove('hidden');
+            
+            playSuccessSound();
+            showToast("✉️ 專業電郵信件範本已動態組裝完成！已完美融合共病與多維調配手段。", "success");
+        }
+
+        function copySencoEmail() {
+            const text = document.getElementById('senco-email-textarea').value;
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast("📋 信件文字已複製，可直接貼上至電郵軟件發送校方。", "success");
+        }
+
+        // ==========================================
+        // 5. 特教家庭手足支持空間 (Module 3) 數據庫與渲染
+        // ==========================================
+        const siblingVoiceDatabase = [
+            {
+                role: "👧 姐姐/妹妹的真心話 (小學六年級)",
+                voice: "「點解細佬每次搶我啲玩具，或者打碎我辛苦砌好嘅模型，媽媽次次都淨係鬧我唔懂事，叫我讓佢？我也只是孩子，我也需要公平和被疼愛。」",
+                tip: "<b>臨床解碼：</b>當常規孩子大喊「不公平」時，表示其安全感已受損。家長必須當面糾正 SEN 學童的越界行為，並口頭承認姐姐的委屈，這能極大程度修復她的心理邊界。"
+            },
+            {
+                role: "👦 哥哥/弟弟的真心話 (中學二年級)",
+                voice: "「出街食飯嗰陣，細妹突然大吵大鬧，周圍啲人都用好奇怪嘅眼神望住我哋。我覺得好尷尬好無地自容，我甚至唔想再帶同學返屋企。」",
+                tip: "<b>臨床解碼：</b>手足在青少年期面臨同輩認同，SEN 手足在公眾場合失控會給常規手足帶來巨大的同輩壓力。家長不要責怪他「愛面子」，而應理解其尷尬，並允許他保留個人社交隱私，不需要向每個人解釋弟弟的情況。"
+            },
+            {
+                role: "👧 隱形子女的真心話 (中學三年級)",
+                voice: "「由細到大，爸媽帶細佬去醫院排期、做言語訓練。我次次都一個人喺客廳溫書。我唔敢病，亦唔敢考差，因為我知道爸媽已經太辛苦，我不想再成為他們的負擔...」",
+                tip: "<b>臨床解碼：</b>這被稱為「過度早熟（Parentified Sibling）」。這種孩子極懂事、從不製造麻煩，但其壓抑的無力感常在成年後爆發為嚴重抑鬱。家長應主動對她說：「謝謝你這麼懂事，但你在爸爸媽媽心中依然極其重要。你累了也隨時可以向我們哭。」"
+            }
+        ];
+
+        function renderSiblingCards() {
+            const container = document.getElementById('sibling-cards-grid');
+            container.innerHTML = '';
+
+            siblingVoiceDatabase.forEach((card, index) => {
+                const el = document.createElement('div');
+                // 流式寬度適配橫向滾動 snap
+                el.className = "flex-shrink-0 w-[290px] sm:w-[330px] snap-center bg-amber-50/20 border border-amber-200/50 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3 shadow-sm hover:border-amber-400 transition";
+                el.innerHTML = `
+                    <div class="space-y-2 text-xs sm:text-sm">
+                        <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-0.5 rounded-full block w-max"><i class="fa-solid fa-microphone-lines"></i> 常規手足的真心話 (${index + 1}/3)：</span>
+                        <p class="text-slate-600 font-medium italic leading-relaxed">"${card.voice}"</p>
+                        <div class="border-t border-slate-100 my-2 pt-2">
+                            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full block w-max mb-1.5"><i class="fa-solid fa-user-doctor"></i> 特教心理諮詢師解碼：</span>
+                            <p class="text-slate-700 leading-relaxed">${card.tip}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        // ==========================================
+        // 6. 三板塊頂部切換與右欄理論動態加載
+        // ==========================================
+        const familyTheoryData = {
+            coaching: `
+                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                    <h4 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center gap-1.5">
+                        🧠 臨床心理學：什麼是 Gottman 情緒導航？
+                    </h4>
+                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                        臨床心理學大師約翰·高特曼（John Gottman）指出，當孩子情緒大爆發時，大腦會發生<b>「杏仁核劫持（Amygdala Hijacking）」</b>。
+                    </p>
+                    <div class="bg-rose-50 border border-rose-200 rounded-2xl p-4 space-y-2 text-[11px] text-rose-950">
+                        <strong class="font-bold block">💡 臨床黃金原理：</strong>
+                        <p class="leading-relaxed">
+                            大腦的「情感右腦」在失控時完全充血，而負責邏輯說理的「理性左腦」則暫時關機。家長此時進行道德批判或要求孩子冷靜，無疑是在「向正在燃燒的引擎傾倒開水」。
+                            <br><br>
+                            我們必須先透過<b>「共同調節（Co-regulation）」</b>——即用家長溫柔安定的聲調、眼神（標籤情緒），讓孩子感知環境安全，調降其心率。當杏仁核解除警戒，血液重新回流至前額葉時，孩子大腦才能重新建立「情緒調適」的神經鏈接。
+                        </p>
+                    </div>
+                </div>
+            `,
+            senco: `
+                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                    <h4 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center gap-1.5">
+                        🏛️ 融合教育法：如何智慧對齊校方？
+                    </h4>
+                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                        香港教育局自 2000 年代起推行<b>「融合教育（Whole School Approach）」</b>，學校配備特教統籌主任（SENCO）以落實三層支援模式。
+                    </p>
+                    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 space-y-2 text-[11px] text-blue-950">
+                        <strong class="font-bold block">💡 家校專業溝通黃金框架：</strong>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li><b>不要帶著敵意投訴：</b>學校老師面臨大班壓力，家長在信件中應採取「尋求家校協作解決」的冷靜姿態。</li>
+                            <li><b>附上法律與心理學報告依據：</b>在信件後務必附上註冊教育/臨床心理學家、精神科醫生的確診摘要報告。</li>
+                            <li><b>提出「低干預調適」：</b>如前排靠中央位置，這不會過多增加老師工作量，最易在實操中被執行。</li>
+                        </ul>
+                    </div>
+                </div>
+            `,
+            sibling: `
+                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                    <h4 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center gap-1.5">
+                        🧘‍♂️ Bowen 家庭系統理論：家庭的動態平衡
+                    </h4>
+                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                        莫里·鮑溫（Murray Bowen）提出，家庭是一個<b>情緒有機系統（Emotional System）</b>，一個成員的特教變動會同步引起其他成員的連鎖心理重組。
+                    </p>
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-[11px] text-amber-950">
+                        ⚠️ <b>「隱形手足」心理黑洞：</b>
+                        常規手足因為父母精力有限，常被要求「讓弟弟/妹妹、不要哭」。這種被壓抑、隱形的情感飢渴會轉化為強烈的愧疚感和低自尊，甚至在成年後產生嚴重的親密關係障礙。
+                        <br><br>
+                        <b>解法：</b>家長不要期待常規孩子「天生大度體諒」。定期特配個別約會時間，保護常規孩子的基本物理與心理邊界，才是讓整個家庭系統穩健、防止其崩解的臨床救贖。
+                    </div>
+                </div>
+            `
+        };
+
+        function switchFamilyTab(tabKey) {
+            currentTab = tabKey;
+
+            // 更新頂部按鈕高亮
+            const tabs = ['coaching', 'senco', 'sibling'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if (t === tabKey) {
+                    el.className = "flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-rose-700 bg-rose-50 border border-rose-100 shadow-sm";
+                } else {
+                    el.className = "flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50";
+                }
+            });
+
+            // 顯隱左欄模組
+            document.getElementById('panel-coaching').classList.add('hidden');
+            document.getElementById('panel-senco').classList.add('hidden');
+            document.getElementById('panel-sibling').classList.add('hidden');
+
+            if (tabKey === 'coaching') {
+                document.getElementById('panel-coaching').classList.remove('hidden');
+                selectCoachingScenario(activeScenarioKey);
+            } else if (tabKey === 'senco') {
+                document.getElementById('panel-senco').classList.remove('hidden');
+            } else if (tabKey === 'sibling') {
+                document.getElementById('panel-sibling').classList.remove('hidden');
+                renderSiblingCards();
+            }
+
+            // 更新右欄理論解說卡片
+            document.getElementById('right-theory-column').innerHTML = familyTheoryData[tabKey];
+
+            // 動態同步加載對應的管教思維糾錯 Quiz
+            loadTabSpecificQuiz(tabKey);
+        }
+
+        // ==========================================
+        // 7. 三大 Tab 專屬家庭與親子管教思維糾錯測驗
+        // ==========================================
+        const tabQuizDatabase = {
+            coaching: {
+                title: "🧩 親子溝通：情緒導航與情緒海嘯糾錯測驗",
+                question: "當 ADHD/自閉症的孩子因為感到「功課太難寫、挫挫感太大」而在客廳大吼大叫、瘋狂撕碎工作紙、砸桌子時。作為家長，最應採取的第一步溝通是什麼？",
+                options: {
+                    A: "立刻黑臉喝止：「你掟夠未？你做錯嘢仲好意思發脾氣？再掟我就即刻收走今晚代幣盤！」",
+                    B: "走過去，在不接觸其身體的安全距離蹲下，用極其緩慢溫柔的聲調說：「媽媽知道默書好難，你覺得好嬲自己、好想放棄係咪？媽媽會喺度陪住你，我哋冷靜一陣。」",
+                    C: "冷處理，覺得他在故意無理取鬧博同情，直接關門走進房間，讓他一個人反省到冷靜為止。"
+                },
+                answer: "B",
+                feedbackTitle: {
+                    A: "A 選擇：這會點燃二次情緒海嘯！",
+                    B: "B 選擇：極其完美！這是 Gottman 情緒導航的黃金典範！",
+                    C: "C 選擇：冷處理會讓孩子大腦神經感到極端遺棄與孤絕。"
+                },
+                feedbackDesc: {
+                    A: "<b>臨床分析：</b>此時大吼喝止、威脅扣分只會對孩子極度脆弱的神經系統輸入更大的「安全威脅」，大腦邏輯前額葉此時已斷線，強硬對撞會令崩潰期拉得更長並伴隨肢體衝突。",
+                    B: "<b>臨床分析：</b>完全正確！1. <b>共同調節（Co-regulation）</b>：用大人溫柔的自律神經頻率平復其杏仁核。2. <b>情緒標籤</b>：說出其委屈與憤怒。這才是最符合大腦神經學的科學干預。",
+                    C: "<b>臨床分析：</b>對於神經發育障礙或感官超載的孩子，這時的崩潰是神經大風暴，冷漠關門會讓孩子感到在最脆弱時被遺棄，無法學會如何自我平復，並在內心烙印深深的依附創傷。"
+                }
+            },
+            senco: {
+                title: "🏫 家校合作：如何落實校本三層支援測考調適？",
+                question: "在向派位主流小學提出孩子「科考評調適（如加時25%、單獨試室、英文大細寫豁免）」時，家長應該準備好以下哪項最合規之法律依據？",
+                options: {
+                    A: "直接向特教主任說：「我孩子天生拼字慢、壓力大，所以你們一定要給他加時，否則就是歧視！」",
+                    B: "出具香港心理學會註冊之臨床/教育心理學家、或醫管局精神科醫生在過去2年內簽署的正式診斷及「教育評估報告（含有明確的考評調適指引）」。",
+                    C: "手寫一封家長陳情書，講述孩子溫習時有多辛苦，要求學校破例准許。"
+                },
+                answer: "B",
+                feedbackTitle: {
+                    A: "A 選擇：這缺乏法理依據，容易在溝通初期製造家校對立。",
+                    B: "B 選擇：極其專業！這是啟動教育局校本調適的唯一硬指標！",
+                    C: "C 選擇：家長陳情書無法在派考調適中作為法理行政依據。"
+                },
+                feedbackDesc: {
+                    A: "<b>臨床分析：</b>主流學校面臨教育局的考評規管，考評加時是一項嚴肅的行政程序。不客氣的口頭指責不僅會製造沒必要的摩擦，還可能因不合程序而被駁回。",
+                    B: "<b>臨床分析：</b>非常棒！派校的考評調適必須依賴<b>具法定註冊心理學家或醫管局專科醫生</b>出具的書面建議。將該專業報告提交給 SENCO 備存，校方即可在下個測考直接合法實施三層支援調適。",
+                    C: "<b>臨床分析：</b>雖然情感真摯，但在專業行政體系下，家長陳情不能作為豁免考規的法理憑證。必須依據我們產生的家校信件範本，配合專業評估報告一併遞交。"
+                }
+            },
+            sibling: {
+                title: "👫 手足支援：如何調平特教家庭中的關愛天平？",
+                question: "當家長發現常規姐姐在看見爸媽整晚陪伴自閉症弟弟時，情緒突然低落、並在學校默書不合格時。作為家長，最科學的處理是？",
+                options: {
+                    A: "對姐姐說：「弟弟病咗已經好辛苦，你就唔可以考好少少幫爸爸媽媽分憂、讓我哋少操心嗎？」",
+                    B: "暫時放下對弟弟的關注。單獨帶姐姐出街進行半小時的『專屬約會』，並溫柔告訴她：『媽媽見到你次次都要讓細路好委屈，但你喺媽媽心中同樣無比重要。』",
+                    C: "忽視姐姐的抗議，覺得她只是在無理取鬧，試圖與病弱的弟弟搶風頭。"
+                },
+                answer: "B",
+                feedbackTitle: {
+                    A: "A 選擇：強行道德包袱會把常規手足推向嚴重的心理抑鬱！",
+                    B: "B 選擇：非常專業！您讀懂了特教家庭系統平衡最關鍵的救贖！",
+                    C: "C 選擇：冷落常規手足會製造另一個隱性心理病患學童。"
+                },
+                feedbackDesc: {
+                    A: "<b>臨床分析：</b>強迫常規孩子背負「特教包袱、要大度分憂」，這會讓其工作記憶與自尊感崩潰。這類「隱形手足」長大後往往伴隨嚴重的親密關係障礙與不安全感。",
+                    B: "<b>臨床分析：</b>這就是心理學上最關鍵的<b>「手足一對一專屬約會（Special Date Time）」</b>！主動標籤她的委屈、確認她的地位，這能給予常規孩子無比的滋養與安全感，重建家庭系統和諧。",
+                    C: "<b>臨床分析：</b>常規孩子的「退步與哭鬧」並不是無理取鬧，而是她大腦在發出求救信號：『我也需要愛。』忽視只會讓她的心理黑洞在孤絕中越來越深。"
+                }
+            }
+        };
+
+        function loadTabSpecificQuiz(tabKey) {
+            const quiz = tabQuizDatabase[tabKey];
+            if (!quiz) return;
+
+            document.getElementById('quiz-question-title').innerHTML = quiz.question;
+
+            const optionsContainer = document.getElementById('quiz-options');
+            const feedbackContainer = document.getElementById('quiz-feedback');
+            
+            feedbackContainer.classList.add('hidden'); // 切換 Tab 時隱藏舊的反饋
+
+            optionsContainer.innerHTML = `
+                <button onclick="submitTabQuiz('${tabKey}', 'A')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-rose-400 hover:bg-rose-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">A</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.A}</span>
+                </button>
+                <button onclick="submitTabQuiz('${tabKey}', 'B')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-rose-400 hover:bg-rose-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">B</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.B}</span>
+                </button>
+                <button onclick="submitTabQuiz('${tabKey}', 'C')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-rose-400 hover:bg-rose-50/30 transition flex items-start gap-3 w-full">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">C</span>
+                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.C}</span>
+                </button>
+            `;
+        }
+
+        function submitTabQuiz(tabKey, choice) {
+            const quiz = tabQuizDatabase[tabKey];
+            const feedback = document.getElementById('quiz-feedback');
+            const fIcon = document.getElementById('feedback-icon');
+            const fTitle = document.getElementById('feedback-title');
+            const fDesc = document.getElementById('feedback-desc');
+
+            feedback.classList.remove('hidden');
+
+            if (choice === quiz.answer) {
+                fIcon.innerHTML = '✅';
+                fTitle.innerText = quiz.feedbackTitle[choice];
+                fTitle.className = "font-black text-emerald-800 text-sm sm:text-base";
+                fDesc.innerHTML = quiz.feedbackDesc[choice];
+                feedback.className = "p-5 rounded-2xl border border-emerald-100 bg-emerald-50/40 text-emerald-950";
+                playSuccessSound();
+                showToast("✅ 恭喜！答對了，選擇十分完美且溫柔！", "success");
+            } else {
+                fIcon.innerHTML = '❌';
+                fTitle.innerText = quiz.feedbackTitle[choice];
+                fTitle.className = "font-black text-rose-800 text-sm sm:text-base";
+                fDesc.innerHTML = quiz.feedbackDesc[choice];
+                feedback.className = "p-5 rounded-2xl border border-rose-100 bg-rose-50/40 text-rose-950";
+                playErrorSound();
+                showToast("❌ 答案仍有偏差，請仔細閱讀分析。", "error");
+            }
+        }
+
+
+        // ==========================================
+        // 8. 輔助通知系統 (Toast) & A11y 狀態同步
+        // ==========================================
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
+            
+            let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+            let borderClass = 'border-emerald-100 shadow-emerald-50/50';
+            if (type === 'error') {
+                icon = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
+                borderClass = 'border-rose-100 shadow-rose-50/50';
+            } else if (type === 'info') {
+                icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
+                borderClass = 'border-blue-100 shadow-blue-50/50';
+            }
+            
+            toast.className += ` ${borderClass}`;
+            toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        function syncA11ySettings() {
+            const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
+            const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
+            
+            if (cachedContrast === 'true') {
+                document.body.classList.add('a11y-high-contrast');
+            }
+            if (cachedLargeText === 'true') {
+                document.documentElement.classList.add('a11y-large-text');
+            }
+        }
+
+        // ==========================================
+        // 頁面初始化
+        // ==========================================
+        window.onload = function() {
+            syncA11ySettings();
+            
+            // 默認加載第一大 Tab
+            switchFamilyTab('coaching');
+        };
+    </script>
+</body>
+</html>
