@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="zh-HK" class="transition-all duration-300">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🌱 成長心理學與階段發展 (Developmental Psychology & Milestones)</title>
+    <!-- 引入 Tailwind CSS 進行精緻視覺排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 專業圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght=300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #fffafb; /* 與家長系列一致的溫暖微淡粉/珊瑚橘底色 */
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 心理學煉金爐熔燒動畫 */
+        @keyframes glow-orange {
+            0%, 100% { box-shadow: 0 0 12px rgba(249, 115, 22, 0.4); border-color: rgba(249, 115, 22, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(249, 115, 22, 0.85); border-color: rgba(249, 115, 22, 0.8); }
+        }
+        .furnace-glow {
+            animation: glow-orange 2s infinite ease-in-out;
+        }
+
+        /* 深度排版與字體優化 */
+        .article-card-content {
+            font-size: 1.15rem !important;
+            line-height: 1.85 !important;
+        }
+        .article-card-content p {
+            margin-bottom: 1.25rem;
+        }
+        .article-card-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 成長思維卡片優美 UI 重構與 Hover 特效 */
+        .mindset-transmute-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            background-color: #faf5f5; /* 稍微加深的溫暖灰色底 */
+            transition: all 0.3s ease;
+            text-align: left;
+            width: 100%;
+        }
+        .mindset-transmute-card:hover {
+            transform: translateY(-3px);
+            background-color: #fff1f2; /* 懸停時變為淡淡的淺粉色 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(244, 63, 94, 0.1);
+            border-color: #fda4af;
+        }
+
+        /* 自訂卡片與手風琴過渡動畫 */
+        .card-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 無障礙高對比度樣式 */
+        body.a11y-high-contrast {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+        body.a11y-high-contrast * {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border-color: #ffffff !important;
+            box-shadow: none !important;
+        }
+        body.a11y-high-contrast .bg-white, body.a11y-high-contrast .bg-rose-50, body.a11y-high-contrast .bg-orange-50 {
+            background-color: #121212 !important;
+            border: 2px solid #ffffff !important;
+        }
+        body.a11y-high-contrast button, body.a11y-high-contrast a, body.a11y-high-contrast select, body.a11y-high-contrast textarea, body.a11y-high-contrast input {
+            background-color: #000000 !important;
+            color: #ffff00 !important;
+            border: 2px solid #ffff00 !important;
+        }
+        body.a11y-high-contrast button:hover {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+        }
+        body.a11y-high-contrast .text-rose-800, body.a11y-high-contrast .text-coral-600 {
+            color: #ffff00 !important;
+        }
+
+        html.a11y-large-text { font-size: 125% !important; }
+
+        .tts-highlight {
+            background-color: rgba(253, 224, 71, 0.4) !important;
+            transition: background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen text-base pb-12">
+
+    <!-- Toast 通知容器 -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- 頂部導航 -->
+    <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-rose-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-rose-700 hover:text-rose-900 font-extrabold transition text-base">
+                <i class="fa-solid fa-house-medical text-lg"></i>
+                <span>返回協作平台首頁</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <span class="bg-rose-100 text-rose-800 text-sm font-black px-2.5 py-1 rounded-full uppercase flex items-center gap-1.5">
+                    <i class="fa-solid fa-seedling animate-pulse"></i>發展心理學
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full space-y-8">
+        
+        <!-- 標題橫幅 -->
+        <div class="bg-gradient-to-r from-rose-500 via-coral-500 to-amber-500 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
+                <i class="fa-solid fa-seedling text-[150px]"></i>
+            </div>
+            <div class="relative z-10 space-y-3">
+                <span class="bg-white/20 text-white text-xs sm:text-sm font-black px-3.5 py-1 rounded-full uppercase tracking-wider inline-block backdrop-blur-md">成長心理學與階段發展 (Developmental Milestones)</span>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2">
+                    🌱 成長心理學與階段發展指南
+                </h1>
+                <p class="text-rose-50 text-base leading-relaxed max-w-4xl">
+                    讀懂行為背後的心理密碼。本模組基於 <b>Erikson 心理社會發展理論</b> 與 <b>Piaget 認知發展階段</b>，幫助家長解碼孩子在不同時期的安全感缺失、自我認同與行為抗拒，實現「知己知彼」的溫柔共情管教。
+                </p>
+            </div>
+        </div>
+
+        <!-- 發展階段 Tab 切換按鈕 -->
+        <div class="flex flex-wrap gap-2.5 bg-white p-2.5 rounded-2xl shadow-sm border border-slate-100 justify-center">
+            <button id="tab-preschool" onclick="switchStageTab('preschool')" class="flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-rose-700 bg-rose-50 border border-rose-100 shadow-sm">
+                <i class="fa-solid fa-baby text-base"></i> 1. 幼兒探索期 (3-6歲)
+            </button>
+            <button id="tab-schoolage" onclick="switchStageTab('schoolage')" class="flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-slate-600 hover:bg-slate-50">
+                <i class="fa-solid fa-children text-base"></i> 2. 學齡勤奮期 (6-12歲)
+            </button>
+            <button id="tab-adolescence" onclick="switchStageTab('adolescence')" class="flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-slate-600 hover:bg-slate-50">
+                <i class="fa-solid fa-arrows-to-eye text-base"></i> 3. 青春認同自主期 (12-18歲)
+            </button>
+        </div>
+
+        <!-- 雙欄排版 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- 左欄：互動操作區、小遊戲與文章策略 (12格中佔 8格) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- 模塊一：互動心理學小活動/模擬器 (Interactive Psychology Tool) -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <h3 class="font-black text-slate-800 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-gamepad text-rose-600 text-xl"></i> 
+                            <span id="activity-title" class="text-base sm:text-lg">發展心理學互動探索</span>
+                        </h3>
+                        <span class="bg-rose-50 text-rose-800 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">實時體驗艙</span>
+                    </div>
+
+                    <!-- 各階段的情境小活動/模擬器動態注入區 -->
+                    <div id="activity-playground" class="transition-all duration-300">
+                        <!-- 由 JS 實時灌入 -->
+                    </div>
+                </div>
+
+                <!-- 模塊二：深度心理學調適文章/微策略 (Developmental Articles) -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-4">
+                    <h3 class="font-black text-slate-800 text-lg flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <i class="fa-solid fa-book-open text-rose-600 text-xl"></i> 
+                        <span class="text-base sm:text-lg">心靈解碼與介入策略 (點擊卡片即可展開/收合精讀)</span>
+                    </h3>
+
+                    <!-- 各階段的深度教育調適策略文章注入區 -->
+                    <div id="articles-container" class="space-y-4 transition-all duration-300">
+                        <!-- 由 JS 實時灌入高階手風琴折疊卡片 -->
+                    </div>
+                </div>
+
+                <!-- 模塊三：親子管教思維糾錯測驗 (Corrective Quiz) -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-rose-100 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h3 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-puzzle-piece text-rose-600 text-xl"></i> <span>管教思維：家長心理學糾錯測驗</span>
+                        </h3>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 id="quiz-question-title" class="text-base sm:text-lg font-black text-slate-800 leading-relaxed">載入中...</h4>
+                    </div>
+
+                    <!-- 選項按鈕 -->
+                    <div class="grid grid-cols-1 gap-3.5" id="quiz-options">
+                        <!-- 由 JS 動態加載 -->
+                    </div>
+
+                    <!-- 回饋框 -->
+                    <div id="quiz-feedback" class="hidden p-5 rounded-2xl border transition-all duration-300">
+                        <div class="flex items-start gap-4">
+                            <div id="feedback-icon" class="text-2xl mt-0.5 shrink-0"></div>
+                            <div class="space-y-1.5">
+                                <h4 id="feedback-title" class="font-black text-sm sm:text-base"></h4>
+                                <p id="feedback-desc" class="text-xs sm:text-sm leading-relaxed text-slate-600"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 右欄：教育心理學與臨床專家解說區 (12格中佔 4格) -->
+            <div class="lg:col-span-4 space-y-6" id="right-theory-column">
+                <!-- 由 JS 根據當前啟用的 Tab 狀態，動態渲染專家卡片 -->
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-1 text-xs sm:text-sm text-slate-500">
+            <p>© 2026 香港教育與 SEN 專業協作網絡 - 成長心理學與階段發展模組</p>
+            <p class="font-mono">本系統所提供之發展模型、心理指標與行為解碼皆基於當代主流臨床發展心理學理論。</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript 核心控制與音訊合成邏輯 -->
+    <script>
+        let currentTab = 'preschool'; // 默認選中幼兒探索期
+
+        // ==========================================
+        // 1. Web Audio API 音訊合成 (用於測驗反饋與活動互動)
+        // ==========================================
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+        }
+
+        // 播放「正確/綠色」提示音：上升琶音
+        function playSuccessSound() {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const freqs = [392.00, 523.25, 659.25, 783.99]; // G4, C5, E5, G5
+            freqs.forEach((f, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, now + idx * 0.08);
+                gain.gain.setValueAtTime(0.08, now + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.35);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + idx * 0.08);
+                osc.stop(now + idx * 0.08 + 0.4);
+            });
+        }
+
+        // 播放「錯誤/紅色」提示音：刺耳雙音
+        function playErrorSound() {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc1.type = 'triangle';
+            osc1.frequency.setValueAtTime(140, now);
+            osc2.type = 'sawtooth';
+            osc2.frequency.setValueAtTime(143, now); // 微小頻差形成拍頻
+
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc1.start(now);
+            osc1.stop(now + 0.35);
+            osc2.start(now);
+            osc2.stop(now + 0.35);
+        }
+
+        // 播放普通 click 音效
+        function playClickSound() {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, now);
+            gain.gain.setValueAtTime(0.05, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.08);
+        }
+
+        // ==========================================
+        // 2. 發展心理學全套實時內容數據庫 (The Complete Content DB)
+        // ==========================================
+        const stageContentDatabase = {
+            preschool: {
+                title: "🌱 1. 幼兒探索期 (3-6 歲)：自我控制與安全感建立",
+                // 互動活動：幼兒行為密碼解鎖器 (Attachment Secure Builder)
+                activityHtml: `
+                    <div class="space-y-4">
+                        <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+                            <b>探索任務：行為密碼解碼器。</b>幼兒還不會用精準語言表達情緒，常表現為「咬人、尖叫、摔玩具」。請點擊以下幼兒日常的「棘手行為」，親自解開其神經系統底層的「求救密碼」：
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <button onclick="decodePreschoolBehavior('bite')" class="p-4 border border-rose-150 bg-rose-50/50 hover:bg-rose-100 text-rose-950 font-bold rounded-xl text-sm sm:text-base text-left transition flex items-start gap-2 shadow-sm">
+                                <i class="fa-solid fa-face-angry text-rose-500 mt-0.5 text-base sm:text-lg"></i>
+                                <div>
+                                    <span>情境一：搶玩具時咬人/動粗</span>
+                                </div>
+                            </button>
+                            <button onclick="decodePreschoolBehavior('scream')" class="p-4 border border-orange-150 bg-orange-50/50 hover:bg-orange-100 text-orange-950 font-bold rounded-xl text-sm sm:text-base text-left transition flex items-start gap-2 shadow-sm">
+                                <i class="fa-solid fa-volume-high text-orange-500 mt-0.5 text-base sm:text-lg"></i>
+                                <div>
+                                    <span>情境二：在餐廳因嘈雜尖叫</span>
+                                </div>
+                            </button>
+                            <button onclick="decodePreschoolBehavior('cling')" class="p-4 border border-amber-150 bg-amber-50/50 hover:bg-amber-100 text-amber-950 font-bold rounded-xl text-sm sm:text-base text-left transition flex items-start gap-2 shadow-sm">
+                                <i class="fa-solid fa-hands-holding-child text-amber-500 mt-0.5 text-base sm:text-lg"></i>
+                                <div>
+                                    <span>情境三：返學時死攬家長哭</span>
+                                </div>
+                            </button>
+                        </div>
+                        <!-- 解密反饋卡 (預設隱藏) -->
+                        <div id="preschool-decoder-box" class="hidden p-5 rounded-2xl bg-white border border-rose-200 space-y-2.5 transition-all duration-300">
+                            <h5 class="font-black text-rose-950 text-base sm:text-lg flex items-center gap-1.5" id="decoder-title"></h5>
+                            <p class="text-slate-600 text-sm sm:text-base leading-relaxed" id="decoder-desc"></p>
+                        </div>
+                    </div>
+                `,
+                // 文章策略 (已進行 1.15rem 和 1.85 行高優化)
+                articles: [
+                    {
+                        icon: "fa-brain",
+                        title: "解密幼兒：情緒暴發 (Tantrum) 與神經崩潰 (Meltdown) 的生理學區別",
+                        content: `
+                            <div class="space-y-4">
+                                <p class="border-l-4 border-rose-400 pl-4 italic text-slate-500 text-sm sm:text-base">
+                                    許多家長常將孩子所有的哭鬧一律簡單歸咎為「頑皮、無理取鬧」。然而在臨床特教與兒童神經學中，兩者有著完全本質的區別：
+                                </p>
+                                <p>
+                                    <b>1. 脾氣發作 (Tantrum) — 「目標導向型表達」：</b><br>
+                                    這是一種有目的性的抗議（例如：孩子想要玩具但被家長拒絕）。在 Tantrum 狀態下，孩子仍保有部分的自我控制力，他甚至會一邊大聲哭鬧，一邊「偷偷瞄著家長的眼色與反應」以決定抗爭強度。<br>
+                                    <span class="text-rose-700 font-bold">💡 介入策略：</span>家長必須溫和且堅定地維持規則底線。進行冷靜忽視（Planned Ignoring），絕不能因為哭鬧而輕易妥協，等他平息後，再以行為代幣給予正向獎勵。
+                                </p>
+                                <p>
+                                    <b>2. 感官超載崩潰 (Meltdown) — 「神經系統超載防禦」：</b><br>
+                                    這完全是自主神經系統的徹底超負荷（例如：去完刺耳、嘈雜、強光刺激的玩具賣場後，大腦杏仁核發出極度恐懼信號）。這時孩子已經完全失去了自控力，進入了「戰或逃」的驚恐防禦狀態。<br>
+                                    <div class="text-emerald-700 bg-emerald-50 p-4 rounded-xl font-medium border border-emerald-100">
+                                        👉 <b>專家處方：</b>此時任何說理、斥責或懲罰只會加劇威脅，造成二次創傷。家長應立刻將孩子帶離高感官刺激環境，給予安靜的靜默陪伴，等大腦神經風暴自然平息。
+                                    </div>
+                                </p>
+                            </div>
+                        `
+                    },
+                    {
+                        icon: "fa-seedling",
+                        title: "埃里克森自主性階段：如何避免「羞怯與懷疑」的陰影？",
+                        content: `
+                            <div class="space-y-4">
+                                <p>
+                                    發展心理學家埃里克森 (Erikson) 指出，3-6 歲是學童建立<b>「自主性 (Autonomy) 對 羞怯懷疑 (Shame & Doubt)」</b>的關鍵轉折點。這個時期的學童大腦正發育出極強的渴望說：「我自己來！」（如自己穿衣服、自己裝水喝）。
+                                </p>
+                                <p>
+                                    <b>特教提醒與痛點：</b><br>
+                                    SEN 學童（如發展遲緩或小肌肉弱的孩子）在自理動作協調上天生需要更長時間，自行嘗試時常會弄得一團糟。這時，如果身邊的家長因為趕時間或不耐煩而大聲責備（如：「穿得咁慢，等媽媽穿啦！」）或強行代勞，會在幼兒心中深埋下<b>「我不行、我好蠢、我很差」</b>的無能自責，進而扼殺其探索的勇氣。
+                                </p>
+                                <div class="text-rose-700 bg-rose-50/50 p-4 rounded-xl font-medium border border-rose-100">
+                                    👉 <b>支架引導術 (Scaffolding)：</b><br>
+                                    家長應充當外在的「鷹架」——只幫忙扶穩杯腳，讓孩子自己把水倒入；只幫忙扶住鞋舌，讓孩子自己貼上魔術貼。讓孩子在被支持的「安全範圍」中獲取「我可以」的心理自主掌控感。
+                                </div>
+                            </div>
+                        `
+                    }
+                ],
+                // 測驗
+                quiz: {
+                    question: "【幼兒期情境】4 歲小明（疑似專注力不足與發展遲緩）在出門前，堅持要「自己穿鞋」。但他扣來扣去花了 10 分鐘仍未穿好，此時上學時間已經快遲到了。作為懂得心理學的家長，最科學的教育介入是什麼？",
+                    options: {
+                        A: "直接奪過來幫他穿上，並責備：「你咁慢！快啲啦遲到喇，等媽媽同起著，大個仔可唔可以快手少少？」",
+                        B: "進行「小步子拆解 (Task Analysis) 支架支持」：蹲下來幫他扶住鞋舌，指引他自己貼上魔術貼，並鼓勵：「媽媽幫你扶住，小明自己貼魔術貼。哇，貼得好整齊！」",
+                        C: "隨他去，即使遲到也坐在旁邊冷眼旁觀，不給予任何輔助，直至他自己穿好為止。"
+                    },
+                    answer: "B",
+                    feedbackTitle: {
+                        A: "A 選擇：這會直接挫傷他的自主效能感，並引發出門情緒衝突！",
+                        B: "B 選擇：極其完美！這是發展心理學的經典「支架教學法 (Scaffolding)」！",
+                        C: "C 選擇：完全放任會讓幼兒在漫無目的的挫敗中陷入極度的自我懷疑。"
+                    },
+                    feedbackDesc: {
+                        A: `<b>臨床分析：</b>奪過來代勞、加上責備，會直接在幼兒大腦中烙下「我穿不好鞋子 ➔ 媽媽很生氣 ➔ 我很無能」的羞恥感。長期以往，孩子會喪失自理探索的動能，變得極度依賴家長。`,
+                        B: `<b>臨床分析：</b>非常棒！發展遲緩 of 幼兒在精細動作上極需支持。您幫他做最難的「扶住鞋舌（支架）」，讓他做最後一步「自己貼上（建立掌控感）」。孩子既成功穿好鞋，又保護了其埃里克森自主性發展！`,
+                        C: `<b>臨床分析：</b>完全不給予輔裝會讓幼兒陷入漫無邊際的無效掙扎，孩子無法自發學會技巧，只會積累巨大的焦慮和挫敗感，最終以嚎啕大哭或砸鞋子等情緒爆發收尾。`
+                    }
+                },
+                // 專家卡片
+                theoryHtml: `
+                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3 pb-3 border-b border-rose-100">
+                            <div class="w-12 h-12 bg-rose-100 text-rose-700 rounded-2xl flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-user-doctor text-2xl"></i></div>
+                            <div>
+                                <h4 class="font-extrabold text-slate-800 text-base">臨床專家共情講堂</h4>
+                                <span class="text-sm text-slate-400 font-bold block mt-0.5">幼兒發展心理學觀點</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-600">
+                            <p><b>安全依附是自律的母土：</b>很多家長誤以為 3-6 歲孩子哭鬧黏人是「性格嬌縱」，試圖用強硬隔離手段逼其獨立（如任由他哭、關入黑房）。</p>
+                            <p>但<b>約翰·鮑比 (Bowlby) 依附理論</b>指出，只有當幼兒獲得了父母無條件的「安全基地 (Secure Base)」反饋，其自律與探索神經系統才能健康發育。黏人代表其心靈安全感正在拉警報，此時給予擁抱擁護（共同調節），才能幫助其神經系統恢復平穩。</p>
+                        </div>
+                    </div>
+                `
+            },
+            schoolage: {
+                title: "📚 2. 學齡勤奮期 (6-12 歲)：自信心構建與成長思維",
+                // 互動活動：成長思維煉金爐 (Growth Mindset Transmuter)
+                activityHtml: `
+                    <div class="space-y-4">
+                        <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+                            <b>探索任務：成長思維煉金術 (Transmuter)。</b>小學生在面對學業/生活挫敗時，大腦極易固化為「我很笨、我永遠學不會」的固定思維（Fixed Mindset）。請點擊以下固定思維卡，將它們投入<b>「心理學轉換爐」</b>，實時淬煉成強大的成長思維：
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="mindset-cards">
+                            <button onclick="transmuteMindset('dumb')" class="mindset-transmute-card p-4 rounded-xl text-sm sm:text-base">
+                                <span class="font-bold text-slate-700">「我數學次次不合格，我天生冇數理大腦。」</span>
+                                <i class="fa-solid fa-arrow-right-to-bracket text-rose-400 text-lg"></i>
+                            </button>
+                            <button onclick="transmuteMindset('mistake')" class="mindset-transmute-card p-4 rounded-xl text-sm sm:text-base">
+                                <span class="font-bold text-slate-700">「我默書又寫錯字，我好憎做錯嘢，好丟架。」</span>
+                                <i class="fa-solid fa-arrow-right-to-bracket text-rose-400 text-lg"></i>
+                            </button>
+                            <button onclick="transmuteMindset('social')" class="mindset-transmute-card p-4 rounded-xl text-sm sm:text-base">
+                                <span class="font-bold text-slate-700">「大家都唔想同我玩，我真係一個好討人厭、好失敗嘅人。」</span>
+                                <i class="fa-solid fa-arrow-right-to-bracket text-rose-400 text-lg"></i>
+                            </button>
+                            <button onclick="transmuteMindset('sports')" class="mindset-transmute-card p-4 rounded-xl text-sm sm:text-base">
+                                <span class="font-bold text-slate-700">「我點練都踢唔好班際足球賽，我根本冇健身體育細胞。」</span>
+                                <i class="fa-solid fa-arrow-right-to-bracket text-rose-400 text-lg"></i>
+                            </button>
+                            <button onclick="transmuteMindset('routine')" class="mindset-transmute-card p-4 rounded-xl text-sm sm:text-base">
+                                <span class="font-bold text-slate-700">「我又忘記帶手冊被老師罵，我真係一隻記性差嘅垃圾。」</span>
+                                <i class="fa-solid fa-arrow-right-to-bracket text-rose-400 text-lg"></i>
+                            </button>
+                        </div>
+                        <!-- 煉金爐本體 (Canvas與動畫模擬) -->
+                        <div class="bg-slate-950 border-2 border-slate-800 rounded-2xl p-5 flex flex-col items-center justify-center space-y-3 furnace-glow animate-pulse" id="transmute-furnace">
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl animate-pulse">⚗️</span>
+                                <div class="text-center">
+                                    <h5 class="text-sm sm:text-base font-black text-orange-400 uppercase tracking-wider" id="furnace-status">思維轉換爐準備就緒</h5>
+                                    <span class="text-xs sm:text-sm text-slate-500 block mt-0.5">請點選上方卡片投入爐中進行認知重塑</span>
+                                </div>
+                            </div>
+                            <p class="text-sm sm:text-base text-slate-300 italic text-center min-h-[40px] flex items-center justify-center px-4" id="furnace-result"></p>
+                        </div>
+                    </div>
+                `,
+                // 文章策略 (已進行 1.15rem 和 1.85 行高優化)
+                articles: [
+                    {
+                        icon: "fa-graduation-cap",
+                        title: "學齡期的勤奮與自卑：如何守護 SEN 孩子的學習自尊心？",
+                        content: `
+                            <div class="space-y-4">
+                                <p class="border-l-4 border-indigo-400 pl-4 italic text-slate-500 text-sm sm:text-base">
+                                    小學階段 (6-12 歲) 正處於埃里克森的<b>「勤奮對自卑 (Industry vs. Inferiority)」</b>時期。孩子開始通過課堂成績、老師與同儕的反饋，來在內心定義個人能力。
+                                </p>
+                                <p>
+                                    <b>SEN 學童面臨的自卑陷阱：</b><br>
+                                    主流學校的學術評價體系往往極其單一（例如高密度的機械拼寫、快節奏的紙筆測驗）。這使得讀寫困難 (SpLD) 或專注力弱 (ADHD) 的孩子，在學校環境中面臨不間斷的「慢性挫敗感」。若沒有適時輔助，他們會迅速退縮、將自己定義為「我是無可救藥的笨人」，從而形成病理性的厭學情緒。<br><br>
+                                    <span class="text-indigo-800 font-bold">🛠️ 家長抗自卑處方：</span><br>
+                                    家長必須在家庭系統中<b>將孩子的能力與其臨床診斷剝離</b>，建立多元化評價體系。我們不讚美「分數」，而是深度肯定孩子付出的「努力與不放棄的策略」（如：「媽媽見到你今晚不放棄地把這三個英文單字寫完，這種堅韌的態度，比拿 100 分更加了不起！」）。
+                                </p>
+                            </div>
+                        `
+                    },
+                    {
+                        icon: "fa-cubes-stacked",
+                        title: "卡羅爾·德韋克 (Carol Dweck) 成長思維：把「錯誤」煉化成經驗值",
+                        content: `
+                            <div class="space-y-4">
+                                <p>
+                                    當孩子因為不會做功課而哭喊：「我唔識！我做唔到！」時，成長思維（Growth Mindset）的經典黃金回覆是：<b>「你只是『尚未 (Not Yet)』學會。」</b>
+                                </p>
+                                <p>
+                                    <b>實用居家實踐指南：</b><br>
+                                    <b>1. 戒掉「你真聰明」的空泛稱讚：</b><br>
+                                    讚美聰明會讓孩子害怕失敗（為了證明自己一直聰明，而迴避困難任務）。改為讚美具體付出的勞動和使用的方法（例如：「你剛才嘗試用畫圖的方法把這題應用題解出來，這個策略非常有彈性！」）。
+                                </p>
+                                <div class="text-emerald-700 bg-emerald-50 p-4 rounded-xl font-medium border border-emerald-100 text-sm sm:text-base">
+                                    👉 <b>2. 重新定義「做錯」的生理意義：</b><br>
+                                    向孩子解釋大腦運作原理——大腦就像肌肉，每一次做錯題、寫錯字再糾正時，大腦神經元突觸就會重新連接並長大。錯誤，其實是大腦升級神經迴路時最需要的免費「肥料」。
+                                </div>
+                            </div>
+                        `
+                    }
+                ],
+                // 測驗
+                quiz: {
+                    question: "【學齡期情境】小三的 Sunny（患有讀寫障礙）今天英文默書只拿了 20 分。他回家後把默書簿塞在書包底，被您發現後，他垂下頭小聲說：「我好蠢，我永遠都默唔識，我唔想返學。」這時，作為家長，如何運用心理學引導他重建勤奮感？",
+                    options: {
+                        A: "進行比較與督促：「人人人默到，點解你默唔到？你唔係蠢，你係懶！聽日開始同我抄 20 遍，抄到識為止！」",
+                        B: "聚焦努力與 Not Yet 認知：「20 分代表你已經認得出其中 2 個單字了！你只係『未學識』其他字，唔係你蠢。我哋試下用三色卡一齊玩多感官記字，目標下次爭取對多一個字！」",
+                        C: "完全安慰敷衍：「唔緊要啦！20分咪20分囉，讀書唔重要，最緊要開心！」"
+                    },
+                    answer: "B",
+                    feedbackTitle: {
+                        A: "A 選擇：這會將他的心理徹底推向「自卑與放棄」的深淵！",
+                        B: "B 選擇：堪稱教科書級別的「成長思維與自我效能感重建」！",
+                        C: "C 選擇：無意義的敷衍會讓他覺得您在同情他的無能，並放棄他的學業。"
+                    },
+                    feedbackDesc: {
+                        A: `<b>臨床分析：</b>讀寫障礙學童的大腦在拼寫上確實有神經學上的缺失，並非「懶惰」。強行將其與他人比較、加倍罰抄，只會徹底撕裂其學習自尊，引發重度拒學情緒。`,
+                        B: `<b>臨床分析：</b>非常棒！您做了兩件偉大的事：1. <b>具體肯定已有成就</b>（對了2個字）。2. <b>重塑「尚未學會」的信心</b>，並提供具體 low 起點的 VAKT 調適策略。這能幫助其大腦避開自卑，重燃勤奮動能！`,
+                        C: `<b>臨床分析：</b>完全的敷衍和無原則安慰（如：分數不重要、開心就好）會被敏感的孩子解讀為：『連爸媽都覺得我是個沒用的人，所以他們放棄教我了。』這同樣會打擊其自我價值感。`
+                    }
+                },
+                // 專家卡片
+                theoryHtml: `
+                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3 pb-3 border-b border-rose-100">
+                            <div class="w-12 h-12 bg-rose-100 text-rose-700 rounded-2xl flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-user-doctor text-2xl"></i></div>
+                            <div>
+                                <h4 class="font-extrabold text-slate-800 text-base">臨床專家共情講堂</h4>
+                                <span class="text-xs text-slate-400 font-bold block mt-0.5">學齡期發展心理學觀點</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-600">
+                            <p><b>別讓「習得性無助 (Learned Helplessness)」固化：</b>心理學家塞利格曼指出，當學童多次嘗試仍遭遇失敗（如每天默書不合格），其大腦會悲觀地認為：『無論我怎麼努力都沒用』。</p>
+                            <p>此時，他們會徹底放棄嘗試，甚至拒絕寫一筆。要打破這個惡性循環，必須**人為降低任務難度（Scaffolding）**，讓他們在微小、有步驟的成功中（如今天只記1個單字）重獲「我可以（Self-efficacy）」的心理支配感。</p>
+                        </div>
+                    </div>
+                `
+            },
+            adolescence: {
+                title: "🌱 3. 青春認同自主期 (12-18 歲)：自我認同與邊界協商",
+                // 互動活動：青春期自主天平 (Autonomy Balance Scale)
+                activityHtml: `
+                    <div class="space-y-4">
+                        <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+                            <b>探索任務：青春期自主與安全天平。</b>青春期 (12-18 歲) 的核心是建立「自我認同與自主權（Identity vs. Role Confusion）」。請嘗試拉動下方滑桿，調節您在「手機與社交管理」上的控制強度，實時查看其對親子關係與反叛風險的生理預測：
+                        </p>
+                        
+                        <!-- 實時滑動控制器 -->
+                        <div class="bg-slate-50 border border-slate-100 p-5 rounded-2xl space-y-4">
+                            <div class="flex justify-between items-center text-sm sm:text-base">
+                                <span class="font-black text-rose-800"><i class="fa-solid fa-lock"></i> 專制強加</span>
+                                <span class="font-mono text-slate-500">當前控制權重：<span id="slider-val" class="font-black text-indigo-600">50%</span></span>
+                                <span class="font-black text-emerald-800">民主授權 <i class="fa-solid fa-door-open"></i></span>
+                            </div>
+                            <input type="range" id="autonomy-slider" min="0" max="100" value="50" oninput="updateAutonomyScale(this.value)" class="w-full accent-rose-500 h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <!-- 實時預測分析面板 -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white border border-slate-150 p-5 rounded-xl text-center shadow-inner">
+                                <span class="text-xs sm:text-sm font-black text-slate-400 block uppercase">親子信賴與聯結度</span>
+                                <span id="metric-connect" class="text-xl sm:text-2xl font-black text-indigo-600 block mt-1">50%</span>
+                                <span id="metric-connect-sub" class="text-xs sm:text-sm text-slate-400 block mt-0.5">平穩但伴隨隱性張力</span>
+                            </div>
+                            <div class="bg-white border border-slate-150 p-5 rounded-xl text-center shadow-inner">
+                                <span class="text-xs sm:text-sm font-black text-slate-400 block uppercase">病理性反叛/對立風險</span>
+                                <span id="metric-rebel" class="text-xl sm:text-2xl font-black text-rose-500 block mt-1">50%</span>
+                                <span id="metric-rebel-sub" class="text-xs sm:text-sm text-slate-400 block mt-0.5">正常青春期邊界摩擦</span>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                // 文章策略 (已進行 1.15rem 和 1.85 行高優化)
+                articles: [
+                    {
+                        icon: "fa-arrows-to-eye",
+                        title: "埃里克森自我認同階段：為什麼孩子寧願聽同儕的，也不聽您的？",
+                        content: `
+                            <div class="space-y-4">
+                                <p class="border-l-4 border-rose-400 pl-4 italic text-slate-500 text-sm sm:text-base">
+                                    進入 12-18 歲的青少年期，學童大腦的「情感邊緣系統」正極速發育，他們對「歸屬感與朋輩接納」的社交渴求，在生理層面會達到一生中的最高峰。
+                                </p>
+                                <p>
+                                    這解釋了為什麼他們開始鎖上房門、渴望在穿衣風格、興趣愛好上與同學群組高度一致，並對家長日常的「關愛嘮叨」展現出強烈的不耐煩與迴避。<br><br>
+                                    這在發展心理學上，被稱為<b>「個體化進程 (Individuation)」</b>，並非孩子學壞了，而是他們脫離家庭、建立健全社會化邊界的必然生理表徵。<br><br>
+                                    <span class="text-rose-800 font-bold">💡 家長優雅轉型：</span><br>
+                                    家長此時如果仍一味採取沒收手機、強制規定、口頭斥責等「高壓控制（Manager）」手段，無疑於將其心門完全推向對立。您必須學會從「管理者」轉型為「教練顧問（Coach）」——給予其適度的隱私與空間，多採用開放式發問（如：「你點睇？」、「你打算點安排時間？」），逐步將人生的主導權與承擔權交回到孩子自己手中。
+                                </p>
+                            </div>
+                        `
+                    },
+                    {
+                        icon: "fa-masks-theater",
+                        title: "特殊青少年的「特殊興趣」：自我認同建立的隱形救贖",
+                        content: `
+                            <div class="space-y-4">
+                                <p>
+                                    許多患有自閉症譜系 (ASD) 或多動障礙 (ADHD) 的青少年，會發展出極度偏執的特殊興趣（如沈迷動漫角色、瘋狂收集巴士模型、狂背地鐵線路）。主流家長常因擔心其學業而強行沒收、斥其「玩物喪志」。
+                                </p>
+                                <p>
+                                    <b>物理神經學解密：</b><br>
+                                    對於社交解碼和處理外界變化極其困難的 ASD 青少而言，這些特殊興趣絕不是浪費時間。它是<b>他們在大腦感官超載、社交受挫、面臨巨大現實焦慮時唯一的「神經降溫安全島」</b>。
+                                </p>
+                                <div class="text-amber-800 bg-amber-50/50 p-4 rounded-xl font-medium border border-amber-100 text-sm sm:text-base">
+                                    👉 <b>溫馨提醒：</b>強行剝奪這些興趣無異於在他們經歷暴雨時撤走雨傘，極易引發嚴重的心理崩潰與社會隱蔽。家長應抱持理解的態度，引導將這份偏執興趣轉換為未來大專升學與職涯探索的起步跳板。
+                                </div>
+                            </div>
+                        `
+                    }
+                ],
+                // 測驗
+                quiz: {
+                    question: "【青春期情境】中二的 Sunny（患有自閉症譜系 ASD）放學回家後，立刻鎖上房門，在房間裡廢寢忘食地畫二次元動漫插畫，拒絕出來與家人吃晚飯。您去敲門，他極度煩躁地吼叫：「唔好煩我呀！我唔食飯！」此時，最符合青春期自我認同與 ASD 調適的家長做法是？",
+                    options: {
+                        A: "強行用鑰匙打開門，沒收他的畫筆與平板：「日日畫埋啲垃圾！你讀書有咁專注就得啦，即刻出嚟同我坐定食飯！」",
+                        B: "尊重其心理安全島與邊界，隔著門溫和、簡潔地說：「媽媽知道你依家畫畫最專心，需要個人空間。媽媽會放一碗飯喺門口，你畫完攰咗可以出嚟食，或者拎房食，媽媽唔會打擾你。」",
+                        C: "聽之任之，冷戰，覺得「養大你都唔知感恩，以後你死你事」，完全不給他留晚飯。"
+                    },
+                    answer: "B",
+                    feedbackTitle: {
+                        A: "A 選擇：這會徹底砸碎親子信賴邊界，並可能引發高危的肢體衝突！",
+                        B: "B 選擇：堪稱神級的「ASD 青少年自我邊界尊重與共同調節」！",
+                        C: "C 選擇：冷戰與情感遺棄會把自閉症青年推向更深層次的社交退縮與抑鬱深淵。"
+                    },
+                    feedbackDesc: {
+                        A: `<b>臨床分析：</b>強行破門 and 貶低其特殊興趣，對敏感的 ASD 青少年來說是嚴重的「人格侵害與感官威脅」。這會引發他底層杏仁核的專制反抗，令他對家長完全關閉心扉，徹底切斷親子溝通橋樑。`,
+                        B: `<b>臨床分析：</b>無懈可擊！您做對了兩大心理學策略：1. <b>保護個人空間與特殊興趣</b>：理解這是他的自體平衡和自我認同。2. <b>簡潔、不強迫的愛</b>：放一碗飯（規則），提供安全邊緣而不加評判。當他感到安全且邊界受到尊重時，他的對抗情緒會迅速退潮。`,
+                        C: `<b>臨床分析：</b>冷戰與情感遺棄只會給大腦杏仁核輸入傷感的「無愛信念」，導致青少年在房間裡更加自閉，甚至可能演變為重度的隱蔽青年、抑鬱症 or 精神疾患。`
+                    }
+                },
+                // 專家卡片
+                theoryHtml: `
+                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3 pb-3 border-b border-rose-100">
+                            <div class="w-12 h-12 bg-rose-100 text-rose-700 rounded-2xl flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-user-doctor text-2xl"></i></div>
+                            <div>
+                                <h4 class="font-extrabold text-slate-800 text-base">臨床專家共情講堂</h4>
+                                <span class="text-xs sm:text-sm text-slate-400 font-bold block mt-0.5">青春期發展心理學觀點</span>
+                            </div>
+                        </div>
+                        <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-600">
+                            <p><b>尊重「個體化 (Individuation)」進程：</b>進入 12-18 歲，青少年鎖房門、保留日記秘密，是心理學上確立『我是一個獨立個體』的健康發育印證。</p>
+                            <p>家長不需要因為孩子對自己關閉部分心扉而感到被背叛 and 焦慮. <b>「民主授權 (Authoritative parenting)」</b>是此時 the 黃金模式：在安全和核心原則（如禁毒、健康常規）守住底線的同時，在社交、愛好、時間規劃上給予他們最大限度的自治，親子關係才會從緊張走向成熟的成年同盟。</p>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // ==========================================
+        // 3. 幼兒探索期行為密碼解鎖器邏輯 (Preschool Decoder)
+        // ==========================================
+        function decodePreschoolBehavior(behavior) {
+            const box = document.getElementById('preschool-decoder-box');
+            const title = document.getElementById('decoder-title');
+            const desc = document.getElementById('decoder-desc');
+
+            box.classList.remove('hidden');
+            playClickSound();
+
+            if (behavior === 'bite') {
+                title.innerHTML = '<i class="fa-solid fa-face-angry text-rose-500 animate-pulse text-lg sm:text-xl"></i> 密碼解析：搶玩具咬人 ➔ 「我面臨社交挫敗，且工作語言未發育完全」';
+                desc.innerHTML = `
+                    <b>臨床分析：</b>3-4 歲的幼兒，負責社交溝通的額葉尚未發育，工作語言卡關。當搶不過對方時，大腦會本能地採用最原始的肢體本能（咬人、動手）來宣示主權。<br><br>
+                    <b>家長黃金介入：</b><br>
+                    1. <b>不進行道德批判：</b>不要罵他「壞孩子、沒教養」。<br>
+                    2. <b>教他替代性工具：</b>抓住他的手，教他指著玩具大聲說：「等一陣、輪流玩、或者同媽媽講。」提供工作言語的「外在支架」。
+                `;
+            } else if (behavior === 'scream') {
+                title.innerHTML = '<i class="fa-solid fa-volume-high text-orange-500 animate-pulse text-lg sm:text-xl"></i> 密碼解析：在餐廳高尖叫 ➔ 「我的感官過載，神經系統崩潰了」';
+                desc.innerHTML = `
+                    <b>臨床分析：</b>旺角或嘈雜茶餐廳的燈光、高分貝餐具撞擊聲對 3-5 歲幼兒（特別是 ASD/ADHD）的神經系統來說，是一場<b>「感官海嘯 (Sensory overload)」</b>。尖叫是他大腦自發排解、降低壓力皮質醇的痛苦呼救。<br><br>
+                    <b>家長黃金介入：</b><br>
+                    不要在現場強行喝止或打手板。應立刻抱孩子離場，去商場走廊或車上等安靜、光線暗淡的「安全撤退空間」降溫。
+                `;
+            } else if (behavior === 'cling') {
+                title.innerHTML = '<i class="fa-solid fa-hands-holding-child text-amber-500 animate-pulse text-lg sm:text-xl"></i> 密碼解析：死抱著大哭 ➔ 「我的依附系統拉響了『恐懼與被遺棄』警報」';
+                desc.innerHTML = `
+                    <b>臨床分析：</b>返學小一或幼兒園門口，強行拖走或大罵「你膽小鬼」會讓大腦中負責生存安全的杏仁核發出絕望驚恐。此時的分離焦慮是孩子本能中對安全基地（家長）流失的生存防衛。<br><br>
+                    <b>家長黃金介入：</b><br>
+                    蹲下來溫柔擁抱他，明確給予「可預測的時間承諾」：「媽媽知道 Sunny 好驚，媽媽會在下午 3 點鐘（下課鐘一響）喺門口接你，媽媽一定第一個等 Sunny。」建立時間預期。
+                `;
+            }
+        }
+
+        // ==========================================
+        // 4. 學齡期成長思維轉換爐邏輯 (Mindset Transmuter)
+        // ==========================================
+        function transmuteMindset(type) {
+            const furnaceStatus = document.getElementById('furnace-status');
+            const furnaceResult = document.getElementById('furnace-result');
+            const furnace = document.getElementById('transmute-furnace');
+
+            playClickSound();
+
+            furnaceStatus.innerText = "🌀 正在進行心理認知重塑...";
+            furnaceResult.innerText = "大腦突觸正在激活，重塑神經迴路...";
+            furnace.className = "bg-slate-950 border-2 border-orange-500 rounded-2xl p-5 flex flex-col items-center justify-center space-y-3 furnace-glow transition-all duration-300";
+
+            setTimeout(() => {
+                playSuccessSound();
+                furnaceStatus.innerText = "✨ 成長思維重塑成功！";
+                furnace.className = "bg-slate-950 border-2 border-emerald-500 rounded-2xl p-5 flex flex-col items-center justify-center space-y-3 transition-all duration-300";
+
+                if (type === 'dumb') {
+                    furnaceResult.innerHTML = `
+                        <span class="text-emerald-400 font-bold text-sm sm:text-base">✨ 重塑成果：</span>
+                        <span class="text-white text-sm sm:text-base">「我目前只是『尚未學會 (Not Yet)』這門數學概念，我之前的練習策略需要微調。只要我嘗試畫圖、拆解步驟，我的大腦就會長出新的數理神經元！」</span>
+                    `;
+                } else if (type === 'mistake') {
+                    furnaceResult.innerHTML = `
+                        <span class="text-emerald-400 font-bold text-sm sm:text-base">✨ 重塑成果：</span>
+                        <span class="text-white text-sm sm:text-base">「做錯生字代表大腦發現了未建立完整的神經迴路！太好了，每一次糾正錯字都是一次大腦增長肌肉、進行突觸升級的完美機會！」</span>
+                    `;
+                } else if (type === 'social') {
+                    furnaceResult.innerHTML = `
+                        <span class="text-emerald-400 font-bold text-sm sm:text-base">✨ 重塑成果：</span>
+                        <span class="text-white text-sm sm:text-base">「每個人交朋友的步調不同。這代表我有機會觀察大家都在玩什麼，或主動找同樣落單的同學聊聊天，練習社交技巧！」</span>
+                    `;
+                } else if (type === 'sports') {
+                    furnaceResult.innerHTML = `
+                        <span class="text-emerald-400 font-bold text-sm sm:text-base">✨ 重塑成果：</span>
+                        <span class="text-white text-sm sm:text-base">「技能是透過正確練習累積的！目前的失敗只代表我需要調整踢球姿勢或請教教練，大腦正在透過錯誤修正神經連結。」</span>
+                    `;
+                } else if (type === 'routine') {
+                    furnaceResult.innerHTML = `
+                        <span class="text-emerald-400 font-bold text-sm sm:text-base">✨ 重塑成果：</span>
+                        <span class="text-white text-sm sm:text-base">「被提醒代表現有的記性方法需要升級。我可以和家長一起設計一個『出門前檢查清單』貼在門口，用系統化工具幫忙大腦！」</span>
+                    `;
+                }
+            }, 1200);
+        }
+
+        // ==========================================
+        // 5. 青春期自主天平與親子指數計算邏輯 (Autonomy Slider)
+        // ==========================================
+        function updateAutonomyScale(val) {
+            document.getElementById('slider-val').innerText = `${val}%`;
+
+            const metricConnect = document.getElementById('metric-connect');
+            const metricConnectSub = document.getElementById('metric-connect-sub');
+            const metricRebel = document.getElementById('metric-rebel');
+            const metricRebelSub = document.getElementById('metric-rebel-sub');
+
+            // 實時心理學複雜演算法
+            const controlWeight = parseInt(val);
+
+            if (controlWeight < 30) {
+                // 過度縱容模式 (Permissive)
+                metricConnect.innerText = `${30 + controlWeight}%`;
+                metricConnect.className = "text-xl sm:text-2xl font-black text-amber-600 block mt-1";
+                metricConnectSub.innerText = "缺乏邊界安全感，孩子感到迷茫";
+                
+                metricRebel.innerText = `${20 + (30 - controlWeight) * 1.5}%`;
+                metricRebel.className = "text-xl sm:text-2xl font-black text-slate-500 block mt-1";
+                metricRebelSub.innerText = "可能流於放縱、不尊重他人邊界";
+            } else if (controlWeight <= 65) {
+                // 民主協商模式 (Authoritative) - 臨床最優區間
+                const optimalFactor = (controlWeight - 30) / 35; // 0.0 ~ 1.0
+                const connVal = Math.round(75 + (1 - Math.abs(controlWeight - 50) / 20) * 15);
+                metricConnect.innerText = `${connVal}%`;
+                metricConnect.className = "text-xl sm:text-2xl font-black text-emerald-600 block mt-1";
+                metricConnectSub.innerText = "🌟 民主協商：親子高度信賴、無障礙合作";
+
+                const rebelVal = Math.round(25 + (Math.abs(controlWeight - 50) / 20) * 15);
+                metricRebel.innerText = `${rebelVal}%`;
+                metricRebel.className = "text-xl sm:text-2xl font-black text-emerald-600 block mt-1";
+                metricRebelSub.innerText = "健康且合理的青春期獨立探索摩擦";
+            } else {
+                // 專制高壓模式 (Authoritarian) - 臨床高危區間
+                metricConnect.innerText = `${Math.round(85 - (controlWeight - 65) * 1.5)}%`;
+                metricConnect.className = "text-xl sm:text-2xl font-black text-rose-600 block mt-1";
+                metricConnectSub.innerText = "高危：親子對視消失，表面服從內心決裂";
+
+                metricRebel.innerText = `${Math.round(45 + (controlWeight - 65) * 1.5)}%`;
+                metricRebel.className = "text-xl sm:text-2xl font-black text-rose-500 block mt-1 animate-pulse";
+                metricRebelSub.innerText = "⚠️ 警報：可能隨時爆發病理性離家出走/劇烈崩潰";
+            }
+        }
+
+        // ==========================================
+        // 6. 整合動態渲染引擎 (The Dynamic Template Injector)
+        // ==========================================
+        function renderStageContent() {
+            const db = stageContentDatabase[currentTab];
+            if (!db) return;
+
+            // 1. 注入互動模擬器/活動 HTML
+            document.getElementById('activity-playground').innerHTML = db.activityHtml;
+
+            // 2. 注入專業發展調適文章 (重構為全方位 JS 互動高亮卡片手風琴，解決細節點選相容性)
+            const articlesContainer = document.getElementById('articles-container');
+            articlesContainer.innerHTML = '';
+            
+            db.articles.forEach((art, index) => {
+                const isFirst = index === 0;
+                const cardEl = document.createElement('div');
+                
+                // 動態設定初始的展開樣式與高亮框線
+                const borderClass = isFirst ? 'border-rose-300 ring-2 ring-rose-100/50 bg-white' : 'border-slate-150 bg-white';
+                
+                cardEl.className = `article-card ${borderClass} border rounded-2xl p-5 hover:border-rose-200 transition-all duration-300 shadow-sm cursor-pointer card-transition`;
+                cardEl.id = `article-card-${index}`;
+                cardEl.setAttribute('onclick', `toggleArticleCard(${index})`);
+                
+                cardEl.innerHTML = `
+                    <div class="flex items-center justify-between gap-3 select-none">
+                        <div class="flex items-center gap-4">
+                            <div class="w-11 h-11 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center shrink-0 text-lg shadow-sm">
+                                <i class="fa-solid ${art.icon}"></i>
+                            </div>
+                            <h4 class="font-black text-slate-800 text-base sm:text-lg leading-snug pr-4">${art.title}</h4>
+                        </div>
+                        <div class="card-arrow text-slate-400 transition-transform duration-300 ${isFirst ? 'rotate-180' : ''} mt-1 shrink-0">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="card-content mt-4 pl-14 text-slate-700 article-card-content border-t border-slate-100 pt-4 leading-relaxed text-left transition-all duration-300 ${isFirst ? 'block' : 'hidden'}">
+                        ${art.content}
+                    </div>
+                `;
+                articlesContainer.appendChild(cardEl);
+            });
+
+            // 3. 注入專屬管教思維糾錯測驗
+            document.getElementById('quiz-question-title').innerText = db.quiz.question;
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = `
+                <button onclick="submitPsychologyQuiz('A')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-rose-400 hover:bg-rose-50/30 transition flex items-start gap-3 w-full active:scale-[0.99]">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">A</span>
+                    <span class="text-slate-800 text-sm sm:text-base">${db.quiz.options.A}</span>
+                </button>
+                <button onclick="submitPsychologyQuiz('B')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-rose-400 hover:bg-rose-50/30 transition flex items-start gap-3 w-full active:scale-[0.99]">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">B</span>
+                    <span class="text-slate-800 text-sm sm:text-base">${db.quiz.options.B}</span>
+                </button>
+                <button onclick="submitPsychologyQuiz('C')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-rose-400 hover:bg-rose-50/30 transition flex items-start gap-3 w-full active:scale-[0.99]">
+                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">C</span>
+                    <span class="text-slate-800 text-sm sm:text-base">${db.quiz.options.C}</span>
+                </button>
+            `;
+
+            // 4. 注入右側專家卡片
+            document.getElementById('right-theory-column').innerHTML = db.theoryHtml;
+
+            // 如果是青春期，初始化滑桿指標數值
+            if (currentTab === 'adolescence') {
+                updateAutonomyScale(50);
+            }
+        }
+
+        // ==========================================
+        // 7. 解決點選相容性的手風琴動態控制函數 (Custom Controlled Accordion)
+        // ==========================================
+        window.toggleArticleCard = function(index) {
+            const cards = document.querySelectorAll('.article-card');
+            cards.forEach((card, idx) => {
+                const arrow = card.querySelector('.card-arrow');
+                const content = card.querySelector('.card-content');
+                
+                if (idx === index) {
+                    const isCurrentlyHidden = content.classList.contains('hidden');
+                    if (isCurrentlyHidden) {
+                        content.classList.remove('hidden');
+                        content.classList.add('block');
+                        arrow.classList.add('rotate-180');
+                        card.classList.remove('border-slate-150');
+                        card.classList.add('border-rose-300', 'ring-2', 'ring-rose-100/50');
+                        playClickSound();
+                    } else {
+                        content.classList.add('hidden');
+                        content.classList.remove('block');
+                        arrow.classList.remove('rotate-180');
+                        card.classList.add('border-slate-150');
+                        card.classList.remove('border-rose-300', 'ring-2', 'ring-rose-100/50');
+                        playClickSound();
+                    }
+                } else {
+                    // 折疊非當前被選取的卡片
+                    content.classList.add('hidden');
+                    content.classList.remove('block');
+                    arrow.classList.remove('rotate-180');
+                    card.classList.add('border-slate-150');
+                    card.classList.remove('border-rose-300', 'ring-2', 'ring-rose-100/50');
+                }
+            });
+        }
+
+        // 提交管教思維糾錯測驗
+        function submitPsychologyQuiz(choice) {
+            const db = stageContentDatabase[currentTab];
+            const feedback = document.getElementById('quiz-feedback');
+            const fIcon = document.getElementById('feedback-icon');
+            const fTitle = document.getElementById('feedback-title');
+            const fDesc = document.getElementById('feedback-desc');
+
+            feedback.classList.remove('hidden');
+
+            if (choice === db.quiz.answer) {
+                fIcon.innerHTML = '✅';
+                fTitle.innerText = db.quiz.feedbackTitle[choice];
+                fTitle.className = "font-black text-emerald-800 text-sm sm:text-base";
+                fDesc.innerHTML = db.quiz.feedbackDesc[choice];
+                feedback.className = "p-5 rounded-2xl border border-emerald-100 bg-emerald-50/40 text-emerald-950 shadow-sm";
+                playSuccessSound();
+                showToast("✅ 恭喜！答對了，這是最溫柔、最科學的家長心理思維！", "success");
+            } else {
+                fIcon.innerHTML = '❌';
+                fTitle.innerText = db.quiz.feedbackTitle[choice];
+                fTitle.className = "font-black text-rose-800 text-sm sm:text-base";
+                fDesc.innerHTML = db.quiz.feedbackDesc[choice];
+                feedback.className = "p-5 rounded-2xl border border-rose-100 bg-rose-50/40 text-rose-950 shadow-sm";
+                playErrorSound();
+                showToast("❌ 答案仍有偏差，請細看臨床分析糾正思維。", "error");
+            }
+        }
+
+        // ==========================================
+        // 8. 輔助通知系統 (Toast) & A11y 狀態同步
+        // ==========================================
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
+            
+            let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+            let borderClass = 'border-emerald-100 shadow-emerald-50/50';
+            if (type === 'error') {
+                icon = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
+                borderClass = 'border-rose-100 shadow-rose-50/50';
+            } else if (type === 'info') {
+                icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
+                borderClass = 'border-blue-100 shadow-blue-50/50';
+            }
+            
+            toast.className += ` ${borderClass}`;
+            toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        function syncA11ySettings() {
+            const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
+            const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
+            
+            if (cachedContrast === 'true') {
+                document.body.classList.add('a11y-high-contrast');
+            }
+            if (cachedLargeText === 'true') {
+                document.documentElement.classList.add('a11y-large-text');
+            }
+        }
+
+        // ==========================================
+        // 2. 發展階段 Tab 控制器與排版切換
+        // ==========================================
+        function switchStageTab(stageKey) {
+            currentTab = stageKey;
+
+            const tabs = ['preschool', 'schoolage', 'adolescence'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === stageKey) {
+                    btn.className = "flex items-center gap-2 px-5 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-rose-700 bg-rose-50 border border-rose-100 shadow-sm";
+                } else {
+                    btn.className = "flex items-center gap-2 px-5 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-slate-600 hover:bg-slate-50";
+                }
+            });
+
+            // 隱藏測驗結果回饋框
+            document.getElementById('quiz-feedback').classList.add('hidden');
+
+            // 呼叫動態內容渲染
+            renderStageContent();
+        }
+
+        // ==========================================
+        // 頁面初始化
+        // ==========================================
+        window.onload = function() {
+            syncA11ySettings();
+            switchStageTab('preschool'); // 預設加載第一大 Tab
+        };
+    </script>
+</body>
+</html>
