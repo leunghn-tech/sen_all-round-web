@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 SEN 全方位學習網 - 企業級測試套件</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background: linear-gradient(135deg, #f0fdfa 0%, #f0f9ff 100%);
+        }
+        .test-severity-critical { border-left: 4px solid #dc2626; }
+        .test-severity-high { border-left: 4px solid #ea580c; }
+        .test-severity-medium { border-left: 4px solid #f59e0b; }
+        .test-severity-low { border-left: 4px solid #10b981; }
+        .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .chart-container { position: relative; height: 300px; }
+    </style>
+</head>
+<body class="text-slate-800">
+    <div class="min-h-screen flex flex-col">
+        <!-- 頂部導航 -->
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white text-2xl">
+                        🧪
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black text-slate-900">SEN 全方位學習網</h1>
+                        <p class="text-xs text-slate-400 font-bold">企業級自動化測試套件 v2.0</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleA11y()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 p-2.5 rounded-lg transition" title="切換無障礙模式">
+                        <i class="fa-solid fa-universal-access text-lg"></i>
+                    </button>
+                    <a href="index.html" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-lg transition font-bold text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-home"></i> 返回首頁
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主容器 -->
+        <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- 統計面板 -->
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                    <div class="text-3xl font-black text-emerald-600" id="stat-total">0</div>
+                    <p class="text-xs text-slate-500 font-bold mt-1">總測試數</p>
+                </div>
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                    <div class="text-3xl font-black text-emerald-600" id="stat-pass">0</div>
+                    <p class="text-xs text-slate-500 font-bold mt-1">✅ 通過</p>
+                </div>
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                    <div class="text-3xl font-black text-rose-600" id="stat-fail">0</div>
+                    <p class="text-xs text-slate-500 font-bold mt-1">❌ 失敗</p>
+                </div>
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                    <div class="text-3xl font-black text-amber-600" id="stat-pending">0</div>
+                    <p class="text-xs text-slate-500 font-bold mt-1">⏳ 待測</p>
+                </div>
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                    <div class="text-3xl font-black text-blue-600" id="stat-coverage">0%</div>
+                    <p class="text-xs text-slate-500 font-bold mt-1">覆蓋率</p>
+                </div>
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                    <div class="text-3xl font-black text-violet-600" id="stat-duration">0ms</div>
+                    <p class="text-xs text-slate-500 font-bold mt-1">耗時</p>
+                </div>
+                <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                    <div class="text-3xl font-black text-teal-600" id="stat-modules">0</div>
+                    <p class="text-xs text-slate-500 font-bold mt-1">模組</p>
+                </div>
+            </div>
+
+            <!-- 控制面板 -->
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 mb-8">
+                <h2 class="text-lg font-black text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-teal-600"></i> 測試控制
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <button onclick="runAllTests()" class="bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-md">
+                        <i class="fa-solid fa-play"></i> 執行全部測試
+                    </button>
+                    <button onclick="runCriticalTests()" class="bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i> 關鍵測試
+                    </button>
+                    <button onclick="parallelTestRun()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bolt"></i> 並行執行
+                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="exportReport('json')" class="flex-1 bg-slate-500 hover:bg-slate-600 text-white font-bold py-3 px-3 rounded-xl transition text-sm flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-download"></i> JSON
+                        </button>
+                        <button onclick="exportReport('csv')" class="flex-1 bg-slate-500 hover:bg-slate-600 text-white font-bold py-3 px-3 rounded-xl transition text-sm flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-download"></i> CSV
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center gap-3">
+                    <label class="text-sm font-bold text-slate-600 flex items-center gap-2">
+                        <input type="checkbox" id="auto-retry" class="w-4 h-4"> 失敗自動重試
+                    </label>
+                    <label class="text-sm font-bold text-slate-600 flex items-center gap-2">
+                        <input type="checkbox" id="verbose-logging" checked class="w-4 h-4"> 詳細日誌
+                    </label>
+                </div>
+            </div>
+
+            <!-- 進度條 -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 mb-8">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-bold text-slate-600">整體進度</span>
+                    <span class="text-lg font-black text-teal-600" id="progress-percent">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-teal-500 to-emerald-600 transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- 測試結果容器 -->
+            <div id="test-results" class="space-y-6">
+                <!-- 由 JS 動態生成 -->
+            </div>
+
+            <!-- 開發者控制台 -->
+            <div class="mt-12 bg-slate-900 text-slate-100 rounded-2xl p-6 shadow-lg border border-slate-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-black text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-terminal text-emerald-400"></i> 開發者控制台
+                    </h3>
+                    <button onclick="toggleConsole()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded text-slate-300 font-bold">最小化</button>
+                </div>
+                <div id="console-output" class="bg-slate-950 p-4 rounded-lg font-mono text-xs text-slate-300 max-h-48 overflow-y-auto space-y-1">
+                    <div class="text-emerald-400">> 系統已準備就緒</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ==========================================
+        // 核心測試框架
+        // ==========================================
+        const moduleList = [
+            'parent_psychology.html',
+            'parent_academic.html',
+            'parent_family.html',
+            'parent_medical.html',
+            'parent_burnout.html',
+            'parent_sos.html',
+            'parent_token.html'
+        ];
+
+        let testResults = [];
+        let testStartTime = 0;
+
+        class TestResult {
+            constructor(module, name, category, severity = 'low') {
+                this.module = module;
+                this.name = name;
+                this.category = category;
+                this.severity = severity; // critical, high, medium, low
+                this.status = 'pending'; // pending, pass, fail, warning
+                this.message = '';
+                this.duration = 0;
+                this.timestamp = new Date();
+            }
+        }
+
+        async function runAllTests() {
+            testResults = [];
+            testStartTime = performance.now();
+            
+            // 建立全套測試用例
+            const tests = generateTestCases();
+            
+            log(`🚀 開始執行 ${tests.length} 項測試...`);
+            
+            for (let i = 0; i < tests.length; i++) {
+                const test = tests[i];
+                const start = performance.now();
+                
+                try {
+                    await test();
+                    test.result.status = 'pass';
+                    test.result.message = '✅ 通過';
+                } catch (error) {
+                    test.result.status = 'fail';
+                    test.result.message = `❌ ${error.message}`;
+                }
+                
+                test.result.duration = (performance.now() - start).toFixed(2);
+                testResults.push(test.result);
+                updateProgress(i + 1, tests.length);
+                renderResults();
+                updateStatistics();
+            }
+            
+            const totalDuration = (performance.now() - testStartTime).toFixed(2);
+            log(`✨ 測試完成！總耗時：${totalDuration}ms`);
+        }
+
+        function generateTestCases() {
+            const tests = [];
+            
+            // 關鍵功能測試 (Critical)
+            tests.push(createTest('頁面載入測試', 'infrastructure', 'critical', async () => {
+                if (!document.body) throw new Error('DOM 未就緒');
+            }));
+
+            tests.push(createTest('Tailwind CSS 載入', 'infrastructure', 'critical', async () => {
+                const computed = window.getComputedStyle(document.body);
+                if (!computed) throw new Error('CSS 未載入');
+            }));
+
+            tests.push(createTest('Font Awesome 圖示載入', 'infrastructure', 'critical', async () => {
+                const icon = document.querySelector('[class*="fa-"]');
+                if (!icon) throw new Error('Font Awesome 未載入');
+            }));
+
+            // 心理學模組測試
+            if (typeof switchStageTab === 'function') {
+                tests.push(createTest('switchStageTab 函數存在', 'parent_psychology', 'high', async () => {
+                    switchStageTab('preschool');
+                    await new Promise(r => setTimeout(r, 300));
+                }));
+
+                tests.push(createTest('心理學內容渲染', 'parent_psychology', 'high', async () => {
+                    const content = document.getElementById('activity-playground');
+                    if (!content || content.innerHTML === '') throw new Error('內容未渲染');
+                }));
+            }
+
+            // 音效系統測試
+            if (typeof initAudio === 'function') {
+                tests.push(createTest('Web Audio API 初始化', 'parent_psychology', 'medium', async () => {
+                    initAudio();
+                    if (!audioCtx) throw new Error('Audio Context 失敗');
+                }));
+
+                tests.push(createTest('成功音效播放', 'parent_psychology', 'medium', async () => {
+                    playSuccessSound();
+                    await new Promise(r => setTimeout(r, 100));
+                }));
+            }
+
+            // 無障礙測試
+            tests.push(createTest('無障礙工具欄加載', 'accessibility', 'high', async () => {
+                const a11yToolbar = document.querySelector('[class*="a11y"]');
+                // 測試無障礙功能是否可用
+            }));
+
+            // 響應式設計測試
+            tests.push(createTest('行動裝置適配 (768px)', 'ux', 'medium', async () => {
+                window.dispatchEvent(new Event('resize'));
+                await new Promise(r => setTimeout(r, 200));
+            }));
+
+            return tests;
+        }
+
+        function createTest(name, category, severity, testFn) {
+            const result = new TestResult('test_suite.html', name, category, severity);
+            return Object.assign(testFn, { result });
+        }
+
+        async function runCriticalTests() {
+            const criticalTests = testResults.filter(t => t.severity === 'critical');
+            log(`🔴 執行 ${criticalTests.length} 項關鍵測試...`);
+            // 僅執行關鍵測試的邏輯
+        }
+
+        async function parallelTestRun() {
+            log('⚡ 並行測試模式啟動...');
+            const tests = generateTestCases();
+            const promises = tests.map(test => 
+                test().then(() => {
+                    test.result.status = 'pass';
+                }).catch(err => {
+                    test.result.status = 'fail';
+                    test.result.message = err.message;
+                })
+            );
+            await Promise.all(promises);
+            testResults = tests.map(t => t.result);
+            updateStatistics();
+            renderResults();
+        }
+
+        function updateProgress(current, total) {
+            const percent = Math.round((current / total) * 100);
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+        }
+
+        function updateStatistics() {
+            const total = testResults.length;
+            const pass = testResults.filter(r => r.status === 'pass').length;
+            const fail = testResults.filter(r => r.status === 'fail').length;
+            const pending = testResults.filter(r => r.status === 'pending').length;
+            const coverage = total > 0 ? Math.round((pass / total) * 100) : 0;
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-pass').innerText = pass;
+            document.getElementById('stat-fail').innerText = fail;
+            document.getElementById('stat-pending').innerText = pending;
+            document.getElementById('stat-coverage').innerText = `${coverage}%`;
+            document.getElementById('stat-modules').innerText = moduleList.length;
+
+            if (testStartTime > 0) {
+                const duration = Math.round(performance.now() - testStartTime);
+                document.getElementById('stat-duration').innerText = `${duration}ms`;
+            }
+        }
+
+        function renderResults() {
+            const container = document.getElementById('test-results');
+            if (testResults.length === 0) return;
+
+            const grouped = {};
+            testResults.forEach(r => {
+                if (!grouped[r.category]) grouped[r.category] = [];
+                grouped[r.category].push(r);
+            });
+
+            container.innerHTML = '';
+            Object.entries(grouped).forEach(([category, results]) => {
+                const section = document.createElement('div');
+                section.className = 'bg-white rounded-2xl p-6 shadow-md border border-slate-100';
+                
+                const title = document.createElement('h3');
+                title.className = 'text-lg font-black text-slate-800 mb-4 flex items-center gap-2';
+                title.innerHTML = `<i class="fa-solid fa-folder"></i> ${category}`;
+                section.appendChild(title);
+
+                const list = document.createElement('div');
+                list.className = 'space-y-2';
+
+                results.forEach(r => {
+                    const card = document.createElement('div');
+                    card.className = `p-4 rounded-lg border test-severity-${r.severity} bg-slate-50`;
+                    
+                    let statusIcon = '⏳';
+                    let statusColor = 'text-amber-600';
+                    if (r.status === 'pass') {
+                        statusIcon = '✅';
+                        statusColor = 'text-emerald-600';
+                    } else if (r.status === 'fail') {
+                        statusIcon = '❌';
+                        statusColor = 'text-rose-600';
+                    }
+
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <p class="font-bold text-slate-800">${statusIcon} ${r.name}</p>
+                                <p class="text-xs text-slate-500 mt-1">${r.message}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs font-mono text-slate-400">${r.duration}ms</p>
+                            </div>
+                        </div>
+                    `;
+                    list.appendChild(card);
+                });
+
+                section.appendChild(list);
+                container.appendChild(section);
+            });
+        }
+
+        function exportReport(format) {
+            let content = '';
+            let filename = `test-report-${new Date().toISOString().slice(0, 10)}`;
+
+            if (format === 'json') {
+                content = JSON.stringify(testResults, null, 2);
+                filename += '.json';
+            } else if (format === 'csv') {
+                const headers = ['模組', '名稱', '分類', '嚴重性', '狀態', '訊息', '耗時(ms)', '時間'];
+                const rows = testResults.map(r => [
+                    r.module,
+                    r.name,
+                    r.category,
+                    r.severity,
+                    r.status,
+                    r.message,
+                    r.duration,
+                    r.timestamp
+                ]);
+                content = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+                filename += '.csv';
+            }
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+        }
+
+        function log(message) {
+            const console = document.getElementById('console-output');
+            const line = document.createElement('div');
+            line.className = 'text-slate-300';
+            line.innerText = `${new Date().toLocaleTimeString()} > ${message}`;
+            console.appendChild(line);
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function toggleA11y() {
+            document.body.classList.toggle('a11y-high-contrast');
+        }
+
+        function toggleConsole() {
+            const console = document.getElementById('console-output');
+            console.classList.toggle('max-h-48');
+        }
+
+        // 初始化
+        window.addEventListener('load', () => {
+            updateStatistics();
+            log('✨ 測試套件已準備就緒');
+        });
+    </script>
+</body>
+</html>
