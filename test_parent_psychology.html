@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 parent_psychology.html 自動化測試套件</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .test-card {
+            transition: all 0.3s ease;
+        }
+        .test-card.pass {
+            border-left: 4px solid #10b981;
+        }
+        .test-card.fail {
+            border-left: 4px solid #ef4444;
+        }
+        .test-card.pending {
+            border-left: 4px solid #f59e0b;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: bold;
+        }
+        .spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- 標題 -->
+        <div class="bg-white rounded-3xl shadow-xl p-8 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h1 class="text-4xl font-black text-slate-800 flex items-center gap-3">
+                        <i class="fa-solid fa-flask-vial text-purple-600"></i>
+                        parent_psychology.html 自動化測試套件
+                    </h1>
+                    <p class="text-slate-500 mt-2">完整的功能驗證與效能測試</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-5xl font-black text-purple-600" id="test-progress">0%</div>
+                    <p class="text-sm text-slate-400 mt-2">測試進度</p>
+                </div>
+            </div>
+            
+            <!-- 快速統計 -->
+            <div class="grid grid-cols-4 gap-4">
+                <div class="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                    <div class="text-2xl font-black text-emerald-600" id="passed-count">0</div>
+                    <p class="text-sm text-emerald-700">通過</p>
+                </div>
+                <div class="bg-rose-50 rounded-xl p-4 border border-rose-100">
+                    <div class="text-2xl font-black text-rose-600" id="failed-count">0</div>
+                    <p class="text-sm text-rose-700">失敗</p>
+                </div>
+                <div class="bg-amber-50 rounded-xl p-4 border border-amber-100">
+                    <div class="text-2xl font-black text-amber-600" id="pending-count">0</div>
+                    <p class="text-sm text-amber-700">待測試</p>
+                </div>
+                <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                    <div class="text-2xl font-black text-blue-600" id="total-count">0</div>
+                    <p class="text-sm text-blue-700">總計</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 測試控制面板 -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-black text-slate-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-purple-600"></i> 測試控制
+            </h2>
+            <div class="flex flex-wrap gap-3">
+                <button onclick="runAllTests()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-xl transition">
+                    <i class="fa-solid fa-play mr-2"></i> 執行所有測試
+                </button>
+                <button onclick="runAudioTests()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition">
+                    <i class="fa-solid fa-volume-high mr-2"></i> 音效測試
+                </button>
+                <button onclick="runInteractiveTests()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl transition">
+                    <i class="fa-solid fa-gamepad mr-2"></i> 互動測試
+                </button>
+                <button onclick="clearResults()" class="bg-slate-400 hover:bg-slate-500 text-white font-bold py-3 px-6 rounded-xl transition">
+                    <i class="fa-solid fa-trash mr-2"></i> 清除結果
+                </button>
+                <button onclick="exportResults()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-xl transition">
+                    <i class="fa-solid fa-download mr-2"></i> 匯出報告
+                </button>
+            </div>
+        </div>
+
+        <!-- 測試結果容器 -->
+        <div id="test-results" class="space-y-4">
+            <!-- 由 JavaScript 動態生成 -->
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 測試框架核心
+        // ==========================================
+        let testResults = [];
+        const testCategories = {
+            audio: '音效系統',
+            preschool: '幼兒探索期 (3-6)',
+            schoolage: '學齡勤奋期 (6-12)',
+            adolescence: '青春認同自主期 (12-18)',
+            articles: '文章手風琴',
+            quiz: '管教思維測驗',
+            a11y: '無障礙設定'
+        };
+
+        class TestCase {
+            constructor(name, category, testFn, description = '') {
+                this.name = name;
+                this.category = category;
+                this.testFn = testFn;
+                this.description = description;
+                this.status = 'pending'; // pending, pass, fail
+                this.message = '';
+                this.duration = 0;
+            }
+
+            async run() {
+                const startTime = performance.now();
+                try {
+                    await this.testFn();
+                    this.status = 'pass';
+                    this.message = '✅ 測試通過';
+                } catch (error) {
+                    this.status = 'fail';
+                    this.message = `❌ ${error.message}`;
+                }
+                this.duration = (performance.now() - startTime).toFixed(2);
+                return this;
+            }
+        }
+
+        // ==========================================
+        // 測試用例定義
+        // ==========================================
+        const testCases = [
+            // 音效系統測試
+            new TestCase(
+                'initAudio()',
+                'audio',
+                async () => {
+                    if (typeof initAudio !== 'function') throw new Error('函數不存在');
+                    initAudio();
+                    if (!audioCtx) throw new Error('Audio Context 初始化失敗');
+                },
+                '初始化 Web Audio API'
+            ),
+            new TestCase(
+                'playSuccessSound()',
+                'audio',
+                async () => {
+                    if (typeof playSuccessSound !== 'function') throw new Error('函數不存在');
+                    playSuccessSound();
+                    // 驗證是否成功播放 (延遲檢查)
+                    await new Promise(r => setTimeout(r, 100));
+                },
+                '播放成功音效 (上升琶音)'
+            ),
+            new TestCase(
+                'playErrorSound()',
+                'audio',
+                async () => {
+                    if (typeof playErrorSound !== 'function') throw new Error('函數不存在');
+                    playErrorSound();
+                    await new Promise(r => setTimeout(r, 100));
+                },
+                '播放錯誤音效 (警告蜂鳴)'
+            ),
+            new TestCase(
+                'playClickSound()',
+                'audio',
+                async () => {
+                    if (typeof playClickSound !== 'function') throw new Error('函數不存在');
+                    playClickSound();
+                    await new Promise(r => setTimeout(r, 100));
+                },
+                '播放點擊音效'
+            ),
+
+            // 幼兒期測試
+            new TestCase(
+                'switchStageTab(preschool)',
+                'preschool',
+                async () => {
+                    if (typeof switchStageTab !== 'function') throw new Error('函數不存在');
+                    switchStageTab('preschool');
+                    await new Promise(r => setTimeout(r, 300));
+                    const currentTab = document.getElementById('activity-playground');
+                    if (!currentTab || currentTab.innerHTML === '') throw new Error('內容未載入');
+                },
+                '切換到幼兒探索期'
+            ),
+            new TestCase(
+                'decodePreschoolBehavior(bite)',
+                'preschool',
+                async () => {
+                    if (typeof decodePreschoolBehavior !== 'function') throw new Error('函數不存在');
+                    decodePreschoolBehavior('bite');
+                    await new Promise(r => setTimeout(r, 100));
+                    const box = document.getElementById('preschool-decoder-box');
+                    if (box.classList.contains('hidden')) throw new Error('解密卡片未顯示');
+                    if (!document.getElementById('decoder-title').innerHTML.includes('咬人')) throw new Error('內容未正確載入');
+                },
+                '幼兒行為解碼 - 搶玩具咬人'
+            ),
+            new TestCase(
+                'decodePreschoolBehavior(scream)',
+                'preschool',
+                async () => {
+                    decodePreschoolBehavior('scream');
+                    await new Promise(r => setTimeout(r, 100));
+                    const box = document.getElementById('preschool-decoder-box');
+                    if (box.classList.contains('hidden')) throw new Error('解密卡片未顯示');
+                    if (!document.getElementById('decoder-desc').innerHTML.includes('感官')) throw new Error('感官超載分析未載入');
+                },
+                '幼兒行為解碼 - 餐廳尖叫'
+            ),
+            new TestCase(
+                'decodePreschoolBehavior(cling)',
+                'preschool',
+                async () => {
+                    decodePreschoolBehavior('cling');
+                    await new Promise(r => setTimeout(r, 100));
+                    const box = document.getElementById('preschool-decoder-box');
+                    if (box.classList.contains('hidden')) throw new Error('解密卡片未顯示');
+                    if (!document.getElementById('decoder-title').innerHTML.includes('依附')) throw new Error('依附系統分析未載入');
+                },
+                '幼兒行為解碼 - 返學哭鬧'
+            ),
+
+            // 學齡期測試
+            new TestCase(
+                'switchStageTab(schoolage)',
+                'schoolage',
+                async () => {
+                    switchStageTab('schoolage');
+                    await new Promise(r => setTimeout(r, 300));
+                    const container = document.getElementById('activity-playground');
+                    if (!container.innerHTML.includes('成長思維')) throw new Error('成長思維內容未載入');
+                },
+                '切換到學齡勤奋期'
+            ),
+            new TestCase(
+                'transmuteMindset(dumb)',
+                'schoolage',
+                async () => {
+                    if (typeof transmuteMindset !== 'function') throw new Error('函數不存在');
+                    transmuteMindset('dumb');
+                    // 等待動畫完成
+                    await new Promise(r => setTimeout(r, 1300));
+                    const status = document.getElementById('furnace-status').innerText;
+                    if (!status.includes('成功')) throw new Error('思維轉換失敗');
+                    const result = document.getElementById('furnace-result').innerHTML;
+                    if (!result.includes('未學會')) throw new Error('轉換結果不正確');
+                },
+                '成長思維轉換 - 數學天分'
+            ),
+            new TestCase(
+                'transmuteMindset(mistake)',
+                'schoolage',
+                async () => {
+                    transmuteMindset('mistake');
+                    await new Promise(r => setTimeout(r, 1300));
+                    const result = document.getElementById('furnace-result').innerHTML;
+                    if (!result.includes('大腦')) throw new Error('轉換結果不正確');
+                },
+                '成長思維轉換 - 犯錯心態'
+            ),
+            new TestCase(
+                'transmuteMindset(social)',
+                'schoolage',
+                async () => {
+                    transmuteMindset('social');
+                    await new Promise(r => setTimeout(r, 1300));
+                    const result = document.getElementById('furnace-result').innerHTML;
+                    if (!result.includes('朋友')) throw new Error('轉換結果不正確');
+                },
+                '成長思維轉換 - 社交關係'
+            ),
+            new TestCase(
+                'transmuteMindset(sports)',
+                'schoolage',
+                async () => {
+                    transmuteMindset('sports');
+                    await new Promise(r => setTimeout(r, 1300));
+                    const result = document.getElementById('furnace-result').innerHTML;
+                    if (!result.includes('技能')) throw new Error('轉換結果不正確');
+                },
+                '成長思維轉換 - 運動能力'
+            ),
+            new TestCase(
+                'transmuteMindset(routine)',
+                'schoolage',
+                async () => {
+                    transmuteMindset('routine');
+                    await new Promise(r => setTimeout(r, 1300));
+                    const result = document.getElementById('furnace-result').innerHTML;
+                    if (!result.includes('檢查清單')) throw new Error('轉換結果不正確');
+                },
+                '成長思維轉換 - 記憶方法'
+            ),
+
+            // 青春期測試
+            new TestCase(
+                'switchStageTab(adolescence)',
+                'adolescence',
+                async () => {
+                    switchStageTab('adolescence');
+                    await new Promise(r => setTimeout(r, 300));
+                    const slider = document.getElementById('autonomy-slider');
+                    if (!slider) throw new Error('自主天平滑桿未載入');
+                },
+                '切換到青春認同自主期'
+            ),
+            new TestCase(
+                'updateAutonomyScale(30)',
+                'adolescence',
+                async () => {
+                    if (typeof updateAutonomyScale !== 'function') throw new Error('函數不存在');
+                    updateAutonomyScale(30);
+                    await new Promise(r => setTimeout(r, 100));
+                    const connectVal = parseInt(document.getElementById('metric-connect').innerText);
+                    if (connectVal < 20) throw new Error('親子信賴度計算錯誤');
+                },
+                '青春期自主 - 過度縱容模式'
+            ),
+            new TestCase(
+                'updateAutonomyScale(50)',
+                'adolescence',
+                async () => {
+                    updateAutonomyScale(50);
+                    await new Promise(r => setTimeout(r, 100));
+                    const connectVal = parseInt(document.getElementById('metric-connect').innerText);
+                    if (connectVal < 70) throw new Error('親子信賴度計算錯誤 (應為民主最優)');
+                    const status = document.getElementById('metric-connect-sub').innerText;
+                    if (!status.includes('民主')) throw new Error('民主協商標籤缺失');
+                },
+                '青春期自主 - 民主協商模式 (最優)'
+            ),
+            new TestCase(
+                'updateAutonomyScale(80)',
+                'adolescence',
+                async () => {
+                    updateAutonomyScale(80);
+                    await new Promise(r => setTimeout(r, 100));
+                    const status = document.getElementById('metric-rebel-sub').innerText;
+                    if (!status.includes('警報')) throw new Error('高危警報標籤缺失');
+                },
+                '青春期自主 - 專制高壓模式 (危險)'
+            ),
+
+            // 文章手風琴測試
+            new TestCase(
+                'toggleArticleCard(0)',
+                'articles',
+                async () => {
+                    if (typeof toggleArticleCard !== 'function') throw new Error('函數不存在');
+                    switchStageTab('preschool');
+                    await new Promise(r => setTimeout(r, 300));
+                    const card = document.querySelector('.article-card');
+                    if (!card) throw new Error('文章卡片不存在');
+                    toggleArticleCard(0);
+                    await new Promise(r => setTimeout(r, 100));
+                    const content = card.querySelector('.card-content');
+                    if (!content) throw new Error('文章內容不存在');
+                },
+                '切換文章卡片展開/收合'
+            ),
+            new TestCase(
+                'articleCardArrowRotation',
+                'articles',
+                async () => {
+                    const arrow = document.querySelector('.card-arrow');
+                    if (!arrow) throw new Error('箭頭元素不存在');
+                    const isRotated = arrow.classList.contains('rotate-180');
+                    if (!isRotated) throw new Error('箭頭未旋轉');
+                },
+                '文章卡片箭頭旋轉動畫'
+            ),
+
+            // 測驗系統測試
+            new TestCase(
+                'submitPsychologyQuiz(B)',
+                'quiz',
+                async () => {
+                    if (typeof submitPsychologyQuiz !== 'function') throw new Error('函數不存在');
+                    switchStageTab('preschool');
+                    await new Promise(r => setTimeout(r, 300));
+                    submitPsychologyQuiz('B');
+                    await new Promise(r => setTimeout(r, 500));
+                    const feedback = document.getElementById('quiz-feedback');
+                    if (feedback.classList.contains('hidden')) throw new Error('反饋框未顯示');
+                    const icon = document.getElementById('feedback-icon');
+                    if (!icon.innerText.includes('✅')) throw new Error('成功圖標缺失');
+                },
+                '提交正確答案 (B)'
+            ),
+            new TestCase(
+                'submitPsychologyQuiz(A)',
+                'quiz',
+                async () => {
+                    submitPsychologyQuiz('A');
+                    await new Promise(r => setTimeout(r, 500));
+                    const feedback = document.getElementById('quiz-feedback');
+                    const icon = document.getElementById('feedback-icon');
+                    if (!icon.innerText.includes('❌')) throw new Error('錯誤圖標缺失');
+                },
+                '提交錯誤答案 (A)'
+            ),
+
+            // 無障礙測試
+            new TestCase(
+                'syncA11ySettings()',
+                'a11y',
+                async () => {
+                    if (typeof syncA11ySettings !== 'function') throw new Error('函數不存在');
+                    // 測試設定儲存
+                    localStorage.setItem('sen_a11y_contrast', 'true');
+                    syncA11ySettings();
+                    await new Promise(r => setTimeout(r, 100));
+                    if (!document.body.classList.contains('a11y-high-contrast')) throw new Error('高對比度模式未啟用');
+                },
+                '無障礙設定同步 - 高對比度'
+            ),
+            new TestCase(
+                'syncA11yLargeText()',
+                'a11y',
+                async () => {
+                    localStorage.setItem('sen_a11y_text', 'true');
+                    syncA11ySettings();
+                    await new Promise(r => setTimeout(r, 100));
+                    if (!document.documentElement.classList.contains('a11y-large-text')) throw new Error('大文字模式未啟用');
+                },
+                '無障礙設定同步 - 大文字'
+            ),
+        ];
+
+        // ==========================================
+        // 測試執行引擎
+        // ==========================================
+        async function runTests(filter = null) {
+            clearResults();
+            const filtered = filter 
+                ? testCases.filter(tc => tc.category === filter)
+                : testCases;
+            
+            document.getElementById('total-count').innerText = filtered.length;
+            
+            for (let i = 0; i < filtered.length; i++) {
+                const test = filtered[i];
+                await test.run();
+                testResults.push(test);
+                renderResults();
+                updateStatistics();
+                updateProgress(i + 1, filtered.length);
+                await new Promise(r => setTimeout(r, 200));
+            }
+        }
+
+        async function runAllTests() {
+            await runTests();
+        }
+
+        async function runAudioTests() {
+            await runTests('audio');
+        }
+
+        async function runInteractiveTests() {
+            await runTests('schoolage');
+        }
+
+        // ==========================================
+        // 結果呈現與統計
+        // ==========================================
+        function renderResults() {
+            const container = document.getElementById('test-results');
+            container.innerHTML = '';
+            
+            const groupedResults = {};
+            testResults.forEach(result => {
+                if (!groupedResults[result.category]) {
+                    groupedResults[result.category] = [];
+                }
+                groupedResults[result.category].push(result);
+            });
+
+            Object.entries(groupedResults).forEach(([category, results]) => {
+                const categoryTitle = testCategories[category] || category;
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'bg-white rounded-2xl shadow-lg p-6';
+                
+                const title = document.createElement('h3');
+                title.className = 'text-lg font-black text-slate-800 mb-4 flex items-center gap-2';
+                title.innerHTML = `<i class="fa-solid fa-folder"></i> ${categoryTitle}`;
+                categoryDiv.appendChild(title);
+
+                const testList = document.createElement('div');
+                testList.className = 'space-y-3';
+                
+                results.forEach(result => {
+                    const testDiv = document.createElement('div');
+                    testDiv.className = `test-card ${result.status} rounded-xl p-4 bg-slate-50`;
+                    
+                    let statusBadge = '';
+                    if (result.status === 'pass') {
+                        statusBadge = '<span class="status-badge text-emerald-600"><i class="fa-solid fa-check-circle"></i> 通過</span>';
+                    } else if (result.status === 'fail') {
+                        statusBadge = '<span class="status-badge text-rose-600"><i class="fa-solid fa-times-circle"></i> 失敗</span>';
+                    } else {
+                        statusBadge = '<span class="status-badge text-amber-600"><span class="spinner"></span> 待測試</span>';
+                    }
+
+                    testDiv.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-bold text-slate-800">${result.name}</h4>
+                                <p class="text-sm text-slate-500 mt-1">${result.description}</p>
+                            </div>
+                            <div class="text-right">
+                                ${statusBadge}
+                                <p class="text-xs text-slate-400 mt-1">${result.duration}ms</p>
+                            </div>
+                        </div>
+                        <div class="text-sm ${result.status === 'pass' ? 'text-emerald-700' : 'text-rose-700'}">
+                            ${result.message}
+                        </div>
+                    `;
+                    testList.appendChild(testDiv);
+                });
+
+                categoryDiv.appendChild(testList);
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        function updateStatistics() {
+            const passed = testResults.filter(r => r.status === 'pass').length;
+            const failed = testResults.filter(r => r.status === 'fail').length;
+            const pending = testResults.filter(r => r.status === 'pending').length;
+            const total = testResults.length;
+
+            document.getElementById('passed-count').innerText = passed;
+            document.getElementById('failed-count').innerText = failed;
+            document.getElementById('pending-count').innerText = pending;
+        }
+
+        function updateProgress(current, total) {
+            const percent = Math.round((current / total) * 100);
+            document.getElementById('test-progress').innerText = percent + '%';
+        }
+
+        function clearResults() {
+            testResults = [];
+            document.getElementById('test-results').innerHTML = '';
+            document.getElementById('test-progress').innerText = '0%';
+            document.getElementById('passed-count').innerText = '0';
+            document.getElementById('failed-count').innerText = '0';
+            document.getElementById('pending-count').innerText = '0';
+        }
+
+        function exportResults() {
+            const report = testResults.map(r => 
+                `${r.status.toUpperCase()}: ${r.name}\n${r.description}\n${r.message}\n---\n`
+            ).join('');
+            
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `test-report-${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click();
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('total-count').innerText = testCases.length;
+        });
+    </script>
+</body>
+</html>
