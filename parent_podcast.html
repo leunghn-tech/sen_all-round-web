@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="zh-HK" class="transition-all duration-300">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎙️ 家長 5 分鐘微學習播客艙 (Caregiver Micro-Learning Podcast)</title>
+    <!-- 引入 Tailwind CSS 進行精緻視覺排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 專業圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f5f3ff; /* 與過渡期一致的安定淡紫色基調，營造夜晚寧靜聆聽氛圍 */
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 呼吸發光脈衝 */
+        @keyframes listen-pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); border-color: rgba(139, 92, 246, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.75); border-color: rgba(139, 92, 246, 0.7); }
+        }
+        .active-pulse {
+            animation: listen-pulse 2.5s infinite ease-in-out;
+        }
+
+        /* 播客字幕字幕實時高亮與微縮放 */
+        .subtitle-line {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .subtitle-active {
+            color: #7c3aed !important; /* 紫色高亮 */
+            font-weight: 900 !important;
+            transform: scale(1.03) translateX(8px);
+            background-color: rgba(139, 92, 246, 0.08);
+            border-left: 4px solid #7c3aed;
+        }
+
+        /* 無障礙高對比度樣式 */
+        body.a11y-high-contrast {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+        body.a11y-high-contrast * {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border-color: #ffffff !important;
+            box-shadow: none !important;
+        }
+        body.a11y-high-contrast .bg-white, body.a11y-high-contrast .bg-indigo-50, body.a11y-high-contrast .bg-purple-50 {
+            background-color: #121212 !important;
+            border: 2px solid #ffffff !important;
+        }
+        body.a11y-high-contrast button, body.a11y-high-contrast a, body.a11y-high-contrast select, body.a11y-high-contrast textarea {
+            background-color: #000000 !important;
+            color: #ffff00 !important;
+            border: 2px solid #ffff00 !important;
+        }
+        body.a11y-high-contrast button:hover {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+        }
+        body.a11y-high-contrast .text-indigo-800, body.a11y-high-contrast .text-purple-700 {
+            color: #ffff00 !important;
+        }
+
+        html.a11y-large-text { font-size: 125% !important; }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen text-base pb-12">
+
+    <!-- Toast 通知容器 -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- 頂部導航 -->
+    <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-indigo-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 text-indigo-700 hover:text-indigo-900 font-extrabold transition text-base">
+                <i class="fa-solid fa-house-medical text-lg"></i>
+                <span>返回協作平台首頁</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <span class="bg-indigo-100 text-indigo-800 text-sm font-black px-2.5 py-1 rounded-full uppercase flex items-center gap-1.5">
+                    <i class="fa-solid fa-microphone-lines animate-pulse"></i>家長 5 分鐘 Podcast
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full space-y-8">
+        
+        <!-- 標題橫幅 -->
+        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
+                <i class="fa-solid fa-microphone-lines text-[150px]"></i>
+            </div>
+            <div class="relative z-10 space-y-3">
+                <span class="bg-white/20 text-white text-xs sm:text-sm font-black px-3.5 py-1 rounded-full uppercase tracking-wider inline-block backdrop-blur-md">家長放空微學習 (Caregiver Podcast Hub)</span>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2">
+                    🎙️ 家長 5 分鐘微學習播客艙
+                </h1>
+                <p class="text-indigo-50 text-base leading-relaxed max-w-4xl">
+                    專為終日奔波、身心疲憊的香港特教家長定制。<b>無需閱讀密密麻麻的文字。</b>閉上雙眼，一邊播放我們為您精選的臨床調適音訊課堂，一邊混合放鬆的 432Hz 環境白噪音。讓緊繃的神經安全降溫，在空窗時間為心靈充點電。
+                </p>
+            </div>
+        </div>
+
+        <!-- 雙欄版面：左側主播放器與滾動高亮歌詞 transcript；右側為播放列表、白噪音混音器與記事筆記 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- 左欄：主播放器與Transcript同步區 (佔8格) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- 主播放器控制面板 (The Master Player Panel) -->
+                <div id="master-player-panel" class="bg-gradient-to-b from-white to-slate-50 rounded-3xl p-6 sm:p-8 shadow-md border border-indigo-100/50 space-y-6 flex flex-col justify-between active-pulse transition-all">
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <!-- 當前播放資訊 -->
+                        <div class="flex items-center gap-4 text-left w-full sm:w-auto">
+                            <div class="w-16 h-16 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-lg shadow-indigo-100">
+                                <i class="fa-solid fa-podcast animate-pulse" id="player-status-icon"></i>
+                            </div>
+                            <div>
+                                <span class="bg-indigo-100 text-indigo-800 text-[11px] font-black px-2.5 py-0.5 rounded-full block w-max uppercase tracking-wider">正在播放 Episodic Class</span>
+                                <h3 id="current-play-title" class="font-black text-slate-800 text-base sm:text-lg mt-1">
+                                    載入中，請選擇下方單集...
+                                </h3>
+                                <p id="current-play-author" class="text-xs sm:text-sm text-slate-400 mt-0.5">主講人：香港臨床心理學家、特殊教育顧問團隊</p>
+                            </div>
+                        </div>
+
+                        <!-- 語速控制器 -->
+                        <div class="flex items-center gap-2 bg-white border border-slate-200 rounded-2xl px-3 py-2 text-xs font-black text-slate-600 shrink-0 self-end sm:self-center shadow-sm">
+                            <span>播放語速:</span>
+                            <select id="podcast-speed" onchange="adjustSpeechRate(this.value)" class="bg-transparent focus:outline-none cursor-pointer text-indigo-600 font-extrabold">
+                                <option value="0.8">0.8x (溫柔慢想)</option>
+                                <option value="1.0" selected>1.0x (標準語速)</option>
+                                <option value="1.2">1.2x (省時高效)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 實時動態聲波頻譜儀 (Dynamic Spectrum Canvas) -->
+                    <div class="bg-slate-950 rounded-2xl p-3 border border-indigo-900/30 shadow-inner">
+                        <span class="text-[10px] text-slate-500 font-black block text-left mb-1.5"><i class="fa-solid fa-chart-line mr-1"></i> 實時大腦共鳴音軌頻譜 (Brain Resonance Scope)</span>
+                        <canvas id="podcast-visualizer" class="w-full h-16 bg-slate-950 rounded-xl"></canvas>
+                    </div>
+
+                    <!-- 播放控制按鈕組 -->
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <!-- 播放/暫停主按鈕 -->
+                            <button id="podcast-play-btn" onclick="togglePodcastPlayback()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black px-6 py-3.5 rounded-2xl transition duration-300 text-sm shadow-md shadow-indigo-100 flex items-center gap-2 w-full sm:w-auto justify-center active:scale-95">
+                                <i class="fa-solid fa-play"></i> <span id="podcast-play-text">啟動播客語音</span>
+                            </button>
+                            <!-- 停止按鈕 -->
+                            <button onclick="stopPodcastPlayback()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-3.5 rounded-2xl transition text-sm flex items-center gap-1.5 active:scale-95">
+                                <i class="fa-solid fa-square"></i> <span>停止</span>
+                            </button>
+                        </div>
+                        <div class="text-xs sm:text-sm text-slate-400 font-semibold" id="player-timer-text">
+                            進度：0 / 0 句
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 播客歌詞/字幕滾動高亮區域 (The Karaoke Subtitle Terminal) -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-4">
+                    <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                        <h4 class="font-black text-slate-800 text-base sm:text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-align-left text-indigo-600"></i>
+                            <span>播客講堂：同步字幕 (點按任意句子可跳讀)</span>
+                        </h4>
+                        <span class="text-slate-400 text-xs font-bold"><i class="fa-solid fa-arrows-up-down"></i> 實時跟隨</span>
+                    </div>
+
+                    <!-- 字幕滾動視窗 -->
+                    <div id="transcript-scroll-box" class="h-80 overflow-y-auto pr-2 space-y-4 no-scrollbar scroll-smooth">
+                        <!-- 由 JS 根據當前單集動態渲染出 subtitle-line 卡片 -->
+                        <p class="text-slate-400 text-center py-20 italic">請在右側挑選一個播客單集開始聆聽。</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 右欄：播放列表、環境混音器、自筆記 (佔4格) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- 播客播放列表 (Podcast Playlists) -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 space-y-4 max-h-[400px] flex flex-col">
+                    <h4 class="font-black text-slate-800 text-sm sm:text-base flex items-center gap-1.5 border-b border-slate-100 pb-2.5 shrink-0">
+                        <i class="fa-solid fa-list-ul text-indigo-600"></i>
+                        <span>特教家長 5分鐘 快速清單 (30集)</span>
+                    </h4>
+                    
+                    <div class="space-y-2.5 overflow-y-auto no-scrollbar flex-grow pr-1" id="playlist-container">
+                        <!-- 由 JS 動態注入 30 大暖心特教音軌單集 -->
+                    </div>
+                </div>
+
+                <!-- 432Hz 雲端環境白噪音混音器 (Ambient White Noise Mixer) -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 space-y-4">
+                    <h4 class="font-black text-slate-800 text-sm sm:text-base flex items-center gap-1.5 border-b border-slate-100 pb-2.5">
+                        <i class="fa-solid fa-sliders text-indigo-600"></i>
+                        <span>432Hz 雲端環境白噪音混音器</span>
+                    </h4>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        支持 Web Audio 實時本地合成。在聽播客的同時，可以拖動下方滑桿混入治癒的和弦音與大自然白噪，安撫副交感神經：
+                    </p>
+
+                    <div class="space-y-4 pt-1">
+                        <!-- 軌道 1 -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs font-bold text-slate-600">
+                                <span>🧘‍♂️ 432Hz 雙耳阿爾法腦波 (Alpha Beats)</span>
+                                <span id="vol-alpha-txt">0%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="0" oninput="adjustBinauralVolume('alpha', this.value)" class="w-full accent-indigo-600 h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <!-- 軌道 2 -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs font-bold text-slate-600">
+                                <span>🌊 太平洋舒緩潮汐波 (Sea Waves)</span>
+                                <span id="vol-sea-txt">0%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="0" oninput="adjustBinauralVolume('sea', this.value)" class="w-full accent-indigo-600 h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                        <!-- 軌道 3 -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs font-bold text-slate-600">
+                                <span>🔥 居家溫暖營火聲 (Fireplace Crackle)</span>
+                                <span id="vol-fire-txt">0%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="0" oninput="adjustBinauralVolume('fire', this.value)" class="w-full accent-indigo-600 h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 同路人心靈樹洞記事本 (Caregiver Notepad) -->
+                <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 space-y-4">
+                    <h4 class="font-black text-slate-800 text-sm sm:text-base flex items-center gap-1.5 border-b border-slate-100 pb-2.5">
+                        <i class="fa-solid fa-pen-to-square text-indigo-600"></i>
+                        <span>同路人心靈樹洞 (聆聽手記)</span>
+                    </h4>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        聽著聽著，哪句話深深觸動了你？請記在心靈樹洞中，我們會為您永久保存在本地瀏覽器（`localStorage`）中：
+                    </p>
+
+                    <div class="space-y-3 pt-1">
+                        <textarea id="caregiver-note" rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-slate-700 leading-relaxed" placeholder="例如：『照顧好自己，才是送給孩子最好的禮物。』今天我也辛苦了..."></textarea>
+                        <button onclick="saveCaregiverNote()" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-extrabold py-2.5 rounded-xl transition text-xs flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> <span>儲存聆聽筆記</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-1 text-xs text-slate-500">
+            <p>© 2026 香港教育與 SEN 專業協作網絡 - 成長心理學與階段發展模組</p>
+            <p class="font-mono">所有音訊與播客策略皆由臨床心理專家、特教學校協調主任團隊嚴謹認證編排。</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript 核心控制與音訊合成邏輯 -->
+    <script>
+        // ==========================================
+        // 1. 播客 30 大精選單集數據庫 (zh-HK 粵語朗讀專用)
+        // ==========================================
+        const podcastDatabase = [
+            {
+                id: "ep_1",
+                title: "Ep 1: 懷疑孩子有 SEN？衞生署 CAS 輪候與公私營雙軌策略",
+                author: "主講人：香港執業臨床心理學家",
+                duration: "3 分鐘",
+                desc: "解構衞生署兒童體能智力測驗中心（CAS）的輪候流程，以及為何公私營並行的雙軌策略能為孩子爭取黃金干預期。",
+                transcript: [
+                    "各位家長，你好。當你開始懷疑孩子可能有特殊教育需要，例如自閉症或過度活躍症時，第一步往往是最迷惘的。",
+                    "香港的官方評估機構是衞生署兒童體能智力測驗中心，簡稱 CAS。",
+                    "CAS 的評估報告具有絕對的權威性，能無縫接軌教育局的支援資源。但最大的痛點是：輪候時間可能長達九個月到一年半。",
+                    "在這段黃金干預期，我們強烈建議家長採取『公私營雙軌策略』。",
+                    "也就是一邊在 CAS 排隊，同時自費尋找香港心理學會註冊的臨床心理學家（CP）或教育心理學家（EP）進行私人評估。",
+                    "私人評估通常在幾週內就能完成。拿到報告後，你就可以立即向學校申請調適，或者在外面尋找合適的訓練治療。",
+                    "記住，時間對 SEN 孩子來說就是大腦發育的黃金窗口，雙軌並行能最大程度保障孩子的權益。"
+                ]
+            },
+            {
+                id: "ep_2",
+                title: "Ep 2: 搶佔 0-6 歲黃金期：自費找執業心理學家的利弊",
+                author: "主講人：特教學校協調主任 (SENCO)",
+                duration: "4 分鐘",
+                desc: "自費找心理學家評估有什麼要注意？如何確保私人報告能被學校和教育局認可？",
+                transcript: [
+                    "承接上一集，很多家長決定自費找心理學家做評估，但又擔心報告不被學校承認。",
+                    "這裡有一個黃金守則：必須尋找『香港心理學會』認可的註冊臨床心理學家或教育心理學家。",
+                    "只有他們的報告，才能作為學校申請特別考試安排，或者向教育局申請資源的法定依據。",
+                    "自費評估的優點是快，能迅速針對孩子的弱項，例如是語言遲緩還是精細動作弱，提供精準的訓練建議。",
+                    "缺點當然是費用較高。但請把這看作是一項對孩子未來的投資。",
+                    "及早確診，及早干預，能大幅降低孩子日後在學習和社交上遇到的挫折感。",
+                    "如果經濟有困難，也可以留意一些非牟利機構（NGO）提供的資助評估服務，雖然也需要輪候，但比政府的會快一些。"
+                ]
+            },
+            {
+                id: "ep_3",
+                title: "Ep 3: 幼兒園升小一的無縫銜接：如何轉移訓練津貼與服務？",
+                author: "主講人：家庭系統諮詢治療師",
+                duration: "5 分鐘",
+                desc: "從幼兒園升上小一，是 SEN 孩子的一大關卡。家長該如何確保支援服務不中斷？",
+                transcript: [
+                    "孩子從幼兒園畢業升上小一，這不僅是學習環境的轉變，更是支援系統的重大交接。",
+                    "在學前階段，孩子可能正接受社署資助的 OPRS（到校學前康復服務）或 EETC（早期教育及訓練中心）服務。",
+                    "但請注意，這些學前服務在孩子升上小一後，就會自動終止！",
+                    "小學的支援是由教育局主導的『三層支援模式』。",
+                    "為了確保無縫銜接，家長必須在 K3 下學期（約四五月），簽署『轉介同意書』。",
+                    "同意衞生署或社福機構，將孩子的評估報告直接轉交給即將入讀的小學。",
+                    "這樣一來，小學的特殊教育需要統籌主任（SENCO）在開學前就能掌握孩子的情況，及早安排校本教育心理學家跟進，甚至在開學第一天就能提供功課或座位的調適。"
+                ]
+            },
+            {
+                id: "ep_4",
+                title: "Ep 4: 快速應對！如何用評估報告申請學校特別考試安排",
+                author: "主講人：註冊職業治療師 (OT)",
+                duration: "3 分鐘",
+                desc: "孩子考試總是做不完？教你如何利用評估報告，向學校申請加時、放大試卷等特別考試安排。",
+                transcript: [
+                    "考試對許多 SEN 孩子來說是一場惡夢，尤其是讀寫障礙或過度活躍症的學生。",
+                    "但其實，只要有合資格的評估報告，家長絕對有權向學校申請『特別考試安排』。",
+                    "最常見的調適包括：延長考試時間（通常是 25%）、提供放大字體的試卷、安排在單獨或安靜的試室考試，甚至對於嚴重的讀寫障礙，可以申請語音讀題服務。",
+                    "申請的關鍵在於：心理學家的評估報告中，必須清晰、明確地寫出建議的調適項目。",
+                    "家長拿到報告後，應盡早以書面形式向學校的 SENCO 提出申請，並附上報告副本。",
+                    "學校會根據報告建議和校內資源進行安排。千萬不要等到考試前一週才提出，學校是需要時間準備的。",
+                    "這些調適不是給予孩子特權，而是為他們提供一個公平展現能力的平台。"
+                ]
+            },
+            {
+                id: "ep_5",
+                title: "Ep 5: 什麼是 OPRS (到校學前康復服務)？家長不可不知的權益",
+                author: "主講人：香港執業臨床心理學家",
+                duration: "3 分鐘",
+                desc: "詳解 OPRS 的運作模式，以及它如何幫助有特殊需要的幼兒在熟悉的環境中接受訓練。",
+                transcript: [
+                    "對於有特殊需要的學前幼兒，『到校學前康復服務』，也就是 OPRS，是一項非常重要的支援。",
+                    "簡單來說，OPRS 就是由非政府機構的跨專業團隊，包括社工、言語治療師、職業治療師等，直接去到孩子就讀的幼稚園提供訓練。",
+                    "這有兩個巨大的好處：第一，孩子在熟悉、有安全感的環境中接受訓練，效果通常更好。",
+                    "第二，治療師可以實地觀察孩子在課室的表現，並直接向幼稚園老師示範如何協助孩子，達到『家校社』三方合作。",
+                    "要申請 OPRS，孩子必須經過衞生署 CAS 或私人心理學家的評估，並證明有特殊教育需要。",
+                    "由於 OPRS 名額有限，通常需要輪候。家長在獲得評估報告後，應盡快透過社署的中央轉介系統登記排隊。"
+                ]
+            },
+            {
+                id: "ep_6",
+                title: "Ep 6: 破解評估報告的專業術語：讀懂孩子的強項與弱項",
+                author: "主講人：特教學校協調主任 (SENCO)",
+                duration: "4 分鐘",
+                desc: "面對厚厚的心理評估報告感到一頭霧水？教你抓重點，讀懂報告背後隱藏的學習密碼。",
+                transcript: [
+                    "拿到心理學家的評估報告，很多家長會被裡面密密麻麻的專有名詞和數據嚇到。",
+                    "其實，家長不需要看懂每一個統計學名詞。讀報告，最重要是抓緊三個核心：",
+                    "第一：『總結與診斷』。明確知道孩子究竟屬於哪一種 SEN 類別，例如是 ADHD 還是 SpLD。",
+                    "第二：『強項與弱項分析』。這是報告中最有價值的部分！報告會詳細列出孩子的『視覺空間能力』、『工作記憶』、『語文理解』等指標。",
+                    "如果孩子的視覺能力強但聽覺記憶弱，那你以後教他功課時，就應該多用圖表，少用口頭說教。",
+                    "第三：『具體建議』。這裡會列出心理學家建議的學校調適（如考試加時）和家庭訓練方向。",
+                    "這份報告不是用來給孩子貼標籤的，而是我們為他量身打造學習計劃（IEP）的最強說明書。"
+                ]
+            },
+            {
+                id: "ep_7",
+                title: "Ep 7: 錯過了學前評估？小學階段的「校本教育心理學服務」",
+                author: "主講人：家庭系統諮詢治療師",
+                duration: "5 分鐘",
+                desc: "孩子上了小學才發現學習有困難？認識教育局提供的校本教育心理學服務，及早尋求校內支援。",
+                transcript: [
+                    "有些孩子的 SEN 特徵在幼稚園時期不明顯，直到上了小學，面對繁重的功課和默書，才爆發出嚴重的學習困難。",
+                    "如果錯過了學前評估，也不用慌。全港公營中小學都設有『校本教育心理學服務』。",
+                    "教育局會派駐教育心理學家（EP）定期到訪學校。",
+                    "如果家長懷疑孩子有 SEN，可以主動聯絡班主任或 SENCO，表達你的擔憂，並要求安排校本 EP 進行評估。",
+                    "校內評估是免費的。EP 會觀察孩子上課，與老師面談，並為孩子進行標準化測試。",
+                    "評估後，EP 會向學校和家長講解結果，並制定支援策略。",
+                    "請記住，主動求助絕不是給孩子添麻煩，而是負責任地為他爭取應有的教育資源。"
+                ]
+            },
+            {
+                id: "ep_8",
+                title: "Ep 8: 共病 (Comorbidity) 迷思：孩子同時有 ADHD 與 ASD",
+                author: "主講人：註冊職業治療師 (OT)",
+                duration: "3 分鐘",
+                desc: "孩子不只有一種特殊需要？探討 SEN 領域常見的「共病」現象，家長該如何釐清介入的優先順序。",
+                transcript: [
+                    "在特殊教育領域，『共病（Comorbidity）』是一個非常常見的現象。",
+                    "意思是孩子同時被診斷出兩種或以上的特殊需要。例如，一個孩子可能同時有自閉症譜系（ASD）和過度活躍症（ADHD）。",
+                    "這會讓家長感到非常焦慮，覺得問題複雜了雙倍。",
+                    "面對共病，家長的策略不是『全部都要同時醫好』，而是要排『優先順序』。",
+                    "通常，我們會優先處理最影響孩子『人身安全』和『基礎情緒穩定』的問題。",
+                    "如果 ADHD 導致孩子極度衝動、有自殘或傷人傾向，那可能需要先透過藥物或行為治療來控制衝動。",
+                    "當情緒和專注力稍微穩定後，我們才進一步處理 ASD 帶來的社交溝通障礙或固執性行為。",
+                    "與專業團隊（精神科醫生、心理學家、治療師）密切溝通，制定分階段的綜合介入計劃，是應對共病的唯一出路。"
+                ]
+            },
+            {
+                id: "ep_9",
+                title: "Ep 9: 認識學校 SENCO：家長的最強戰友",
+                author: "主講人：香港執業臨床心理學家",
+                duration: "3 分鐘",
+                desc: "特殊教育需要統籌主任 (SENCO) 是誰？他們在學校扮演什麼角色？家長如何與他們建立良好合作關係？",
+                transcript: [
+                    "在孩子的中小學生涯中，有一個人你必須認識，他就是特殊教育需要統籌主任，簡稱 SENCO。",
+                    "SENCO 是學校裡專門負責策劃、協調和推動融合教育的核心人物。",
+                    "他們負責統籌教育局發放的『學習支援津貼』，安排校本心理學家評估，並為 SEN 學生制定個別學習計劃（IEP）和考試調適。",
+                    "家長不要害怕聯絡 SENCO。他們不是來批評你的孩子的，他們是你在學校裡最強的戰友。",
+                    "建議家長在開學初，就主動約見 SENCO，帶齊最新的評估報告，平心靜氣地分享孩子的強弱項和家中的訓練進度。",
+                    "建立一個『家校互信』的溝通管道，當孩子在學校發生狀況時，你和 SENCO 才能在第一時間聯手拆彈。"
+                ]
+            },
+            {
+                id: "ep_10",
+                title: "Ep 10: 教育局「三層支援架構」詳解：我的孩子屬於哪一層？",
+                author: "主講人：特教學校協調主任 (SENCO)",
+                duration: "4 分鐘",
+                desc: "教育局推行的融合教育三層支援模式到底是什麼？不同層級的學生能獲得哪些具體的資源與協助？",
+                transcript: [
+                    "香港的主流學校實施融合教育，核心機制就是『三層支援模式』。",
+                    "第一層支援，針對的是有輕微或短暫學習困難的學生。老師會在常規課堂中進行『優化教學』，例如調整座位、簡化功課指引。",
+                    "第二層支援，針對被評估為有持續學習困難的 SEN 學生。學校會提供『額外輔導』，例如課後的小組補底班、社交技巧訓練小組，或者由言語治療師進行小組訓練。",
+                    "第三層支援，是最高級別的。針對有嚴重特殊教育需要，例如重度自閉症或嚴重讀寫障礙的學生。",
+                    "對於第三層的學生，學校必須為他們制定專屬的『個別學習計劃（IEP）』，並提供高度密集、個別化的支援。",
+                    "家長可以向學校 SENCO 查詢孩子目前屬於哪一層支援，並了解學校具體提供了哪些小組或調適措施。"
+                ]
+            },
+            {
+                id: "ep_11",
+                title: "Ep 11: 個別學習計劃 (IEP) 開會技巧：如何與學校對齊目標？",
+                author: "主講人：家庭系統諮詢治療師",
+                duration: "5 分鐘",
+                desc: "參加 IEP 會議像上戰場？教你準備清單與溝通話術，在會議中有效為孩子發聲，制定切實可行的目標。",
+                transcript: [
+                    "如果你的孩子屬於第三層支援，學校每年都會邀請你參加『個別學習計劃（IEP）會議』。",
+                    "很多家長把 IEP 會議當成是去聽老師『投訴』大會，心裡充滿防備。",
+                    "其實，IEP 會議是家長為孩子爭取權益、與專業團隊（老師、社工、治療師）對齊目標的最佳時機。",
+                    "開會前，家長請先寫下你的『關注清單』：孩子目前最大的困難是什麼？你最希望學校幫助他改善哪一個行為？",
+                    "在會議中，當老師提出目標時，家長要確保這些目標是『具體且可量度的（SMART）』。",
+                    "例如，『改善情緒』太模糊。應該改成：『當感到憤怒時，能主動運用深呼吸技巧冷靜 30 秒』。",
+                    "不要害怕提出異議，但要保持合作的態度：『我明白老師的難處，我們在家裡也會配合練習，學校這邊可以怎麼支援呢？』"
+                ]
+            },
+            {
+                id: "ep_12",
+                title: "Ep 12: 功課減壓學：向主流班主任爭取「質重於量」的調適",
+                author: "主講人：註冊職業治療師 (OT)",
+                duration: "3 分鐘",
+                desc: "抄寫功課讓親子關係破裂？探討如何向學校申請減少抄寫量、替代性功課，真正幫助 SEN 孩子吸收知識。",
+                transcript: [
+                    "每天晚上的『功課大戰』，是無數 SEN 家庭的夢魘。",
+                    "對於讀寫障礙（SpLD）或手眼協調較弱的孩子，重複抄寫生字不僅無效，還會讓他們對學習產生極度恐懼。",
+                    "家長必須勇敢地向班主任或 SENCO 提出『質重於量』的功課調適申請。",
+                    "這不是要求特權，而是基於教育局的融合教育指引。",
+                    "具體的調適可以包括：將抄寫 10 次減為抄寫 3 次，但要求字體端正；容許以口頭錄音、打字代替部分手寫作文；或者將複雜的長題目拆解為填充題。",
+                    "你可以對老師說：『我們花了一個小時抄寫，但他還是記不住，反而大發脾氣。我們可否嘗試讓他用多感官方法記字，減少機械式抄寫？』",
+                    "保護孩子對學習的興趣，永遠比完成一本完美的作業簿更重要。"
+                ]
+            },
+            {
+                id: "ep_13",
+                title: "Ep 13: 拆解校園欺凌危機：教導 SEN 孩子建立社交防禦結界",
+                author: "主講人：香港執業臨床心理學家",
+                duration: "3 分鐘",
+                desc: "SEN 學生往往是校園欺凌的高危族群。家長該如何教導孩子辨識欺凌、勇敢說「不」，並建立求助機制？",
+                transcript: [
+                    "SEN 孩子，特別是自閉症譜系（ASD）的學生，因為社交解碼能力弱，往往無法分辨同學是在『開玩笑』還是『惡意欺凌』，成為校園欺凌的高危族群。",
+                    "家長必須在家中與孩子進行『情境演練（Role-play）』，幫他們建立社交防禦結界。",
+                    "首先，教導他們辨識身體的警報信號：『當別人這樣做，你覺得心跳很快、想哭、很不舒服時，這就不是玩耍。』",
+                    "第二，教他們一套標準的防禦動作與話術：站直身體，看著對方，大聲並堅定地說：『停！我不喜歡你這樣做。』",
+                    "第三，建立明確的求助路線：『如果對方不停，立刻走開，去找王老師或者去校務處。』",
+                    "每天放學後，不要只問『今天學了什麼』，更要問『今天下課時和誰玩？有沒有發生讓你不開心的事？』保持溝通渠道暢通。"
+                ]
+            },
+            {
+                id: "ep_14",
+                title: "Ep 14: 從「對立」到「合作」：家校溝通的黃金話術與心態",
+                author: "主講人：特教學校協調主任 (SENCO)",
+                duration: "4 分鐘",
+                desc: "經常收到學校的投訴電話？教你如何把「指責」轉化為「共同解決問題」的合作契機，化解家校對立。",
+                transcript: [
+                    "當家長看到學校打來的電話，心跳加速、感到恐懼，這是很真實的反應。",
+                    "很多時候，家長會覺得老師是在『針對』自己的孩子，從而產生防衛心態，甚至與老師發生口角。",
+                    "要化解家校對立，我們需要轉變心態：老師打來，是因為孩子在學校遇到了他無法獨自處理的困難。",
+                    "當老師抱怨孩子『又打人、又不專心』時，家長可以深呼吸，然後運用『合作話術』：",
+                    "『謝謝老師告訴我。他在家裡遇到挫折時也會這樣，我們正在教他用深呼吸冷靜。老師您在學校有沒有發現什麼特別的觸發點（Trigger）？我們可以在家裡配合學校的指令一起訓練他。』",
+                    "當你展現出『我們是一夥的，都在為孩子努力』的態度時，老師的防衛心也會降低，家校合作的橋樑才能真正建立。"
+                ]
+            },
+            {
+                id: "ep_15",
+                title: "Ep 15: 善用「視覺提示」與「常規表」：幫助 SEN 學生適應課堂",
+                author: "主講人：家庭系統諮詢治療師",
+                duration: "5 分鐘",
+                desc: "大腦缺乏組織力？探討如何與老師合作，在課桌或手冊中引入視覺化工具，減少學生的焦慮與違規行為。",
+                transcript: [
+                    "許多 SEN 孩子，特別是自閉症和過度活躍症的孩子，他們的『聽覺記憶』很短暫，但『視覺處理』能力卻相對較強。",
+                    "這就是為什麼老師口頭說了十次『安靜、坐好』，孩子還是轉頭就忘。",
+                    "我們強烈建議家長與學校溝通，為孩子引入『視覺提示（Visual Cues）』與『常規表（Visual Schedules）』。",
+                    "例如，在孩子的課桌上貼一張簡單的流程圖：第一節中文、第二節數學、小息。",
+                    "當孩子知道『接下來會發生什麼事』時，他的未知焦慮感會大幅降低，安全感提升，違規行為自然減少。",
+                    "對於執行功能弱的孩子，可以製作一張『執書包視覺清單』貼在書桌旁。這比每天晚上家長在旁邊嘮叨催促有效一百倍。"
+                ]
+            },
+            {
+                id: "ep_16",
+                title: "Ep 16: 主流還是特殊學校？中度至嚴重學童的公營特殊申請指南",
+                author: "主講人：註冊職業治療師 (OT)",
+                duration: "3 分鐘",
+                desc: "主流學校真的適合每個孩子嗎？探討如何客觀評估孩子需求，以及申請輕、中、嚴重智障特殊學校的流程。",
+                transcript: [
+                    "面對孩子升學，很多家長執著於『一定要留在主流學校』，擔心去了特殊學校會被標籤。",
+                    "但如果孩子有中度至嚴重的智力障礙，或者嚴重的自閉症，主流學校那種高強度學術競爭、大班教學的環境，對他們來說可能是一種長期的折磨。",
+                    "特殊學校（Special Schools）提供高度調整的課程、極低的師生比，並配有駐校言語治療師、職業治療師和護士。",
+                    "在特校，孩子不用追趕遙不可及的分數，而是專注於『生活技能、溝通能力與情緒管理』的培養，讓他們獲得真正的成就感。",
+                    "要入讀資助特殊學校，必須經過教育心理學家或臨床心理學家的專業評估，並由教育局的『特殊教育資源中心』根據學生的智力水平與適應能力進行學位編配。"
+                ]
+            },
+            {
+                id: "ep_17",
+                title: "Ep 17: 無法應付 DSE 怎麼辦？探索香港的非主流升學出路",
+                author: "主講人：香港執業臨床心理學家",
+                duration: "3 分鐘",
+                desc: "傳統公開試不是唯一的路。為 SEN 青年盤點 DSE 以外的多元出路，減輕全家的升學焦慮。",
+                transcript: [
+                    "在香港，DSE（中學文憑試）被視為一試定生死。但對於許多 SEN 學生來說，強求他們在紙筆考試中取得好成績，無疑是緣木求魚。",
+                    "家長請放心，DSE 絕對不是唯一的出路。",
+                    "如果孩子對實作有興趣，可以考慮職業訓練局（VTC）轄下的青年學院，他們提供許多不要求 DSE 成績的職前培訓課程，如餐飲、美容、汽車維修。",
+                    "另外，一些社福機構也提供『生涯規劃與職前訓練』計劃，專門協助 SEN 青年發掘潛能，學習寫履歷和面試技巧。",
+                    "條條大路通羅馬。放下對傳統大學學位的執念，幫助孩子找到一個他能勝任、有興趣的技能，讓他未來能自食其力，才是最務實的生涯規劃。"
+                ]
+            },
+            {
+                id: "ep_18",
+                title: "Ep 18: 15歲以上的出路：認識 VTC 展亮技能發展中心",
+                author: "主講人：特教學校協調主任 (SENCO)",
+                duration: "4 分鐘",
+                desc: "專為 15 歲或以上殘疾人士設計的 VTC 展亮技能發展中心，提供哪些實用課程？畢業後的就業前景如何？",
+                transcript: [
+                    "當 SEN 孩子年滿 15 歲，家長就要開始為他們的『職業過渡』做準備了。",
+                    "職業訓練局（VTC）轄下的『展亮技能發展中心』，是專為 15 歲或以上、經評估有殘疾（包括智障、自閉症、特殊學習困難等）的人士而設的。",
+                    "展亮的課程非常實用，涵蓋商業及零售、電腦及電子工程、設計及印刷、餐飲及服務等領域。",
+                    "最重要的是，他們的教學模式是『小班教學 + 實務操作』，並配有特殊教育顧問和社工提供支援。",
+                    "畢業前，展亮會安排學生進行職場實習，並有就業輔導主任協助他們尋找工作或庇護工場的安置。",
+                    "這是一個幫助 SEN 青年從校園安全過渡到真實社會的極佳跳板。"
+                ]
+            },
+            {
+                id: "ep_19",
+                title: "Ep 19: 發掘天賦！專為 SEN 設計的高中應用學習 (ApL SEN) 課程",
+                author: "主講人：家庭系統諮詢治療師",
+                duration: "5 分鐘",
+                desc: "主流高中生也有新選擇！認識教育局推出的 ApL(SEN) 課程，讓孩子在烘焙、設計等領域找回自信。",
+                transcript: [
+                    "如果你的孩子就讀於主流中學，但對傳統學術科目感到極度吃力，教育局推出的『高中應用學習（ApL）課程』可能是一個轉機。",
+                    "特別是針對 SEN 學生，近年推出了調適版的 ApL(SEN) 課程。",
+                    "這些課程通常在中四至中六開設，內容涵蓋實用烘焙、西式糕點製作、多媒體設計、甚至基礎護理等。",
+                    "ApL 的特點是『做中學』，評估方式不再是死記硬背的考試，而是看學生的實作作品和持續表現。",
+                    "對於執行功能弱、但動手能力強的 SEN 學生來說，這往往是他們中學生涯中最期待、最有成就感的課堂。",
+                    "完成課程後，成績會記錄在 DSE 證書上，作為資歷認可。家長可以向中學的升學就業輔導老師查詢報名詳情。"
+                ]
+            },
+            {
+                id: "ep_20",
+                title: "Ep 20: 職場實習與輔助就業：社署資助的殘疾人士就業支援",
+                author: "主講人：註冊職業治療師 (OT)",
+                duration: "3 分鐘",
+                desc: "孩子準備踏入社會？了解社會福利署提供的「輔助就業」與「庇護工場」服務，為孩子建立工作安全網。",
+                transcript: [
+                    "當 SEN 青年準備踏入社會，他們面臨的挑戰比常人巨大得多：如何與同事溝通？如何應對突發狀況？",
+                    "社會福利署為不同能力的殘疾人士提供了階梯式的就業支援。",
+                    "如果孩子有一定的工作能力，但需要額外指導，可以參加『輔助就業服務』。社工會幫忙配對願意聘請殘疾人士的僱主，並在入職初期提供密集的跟進和指導。",
+                    "如果孩子目前無法應付公開就業市場的壓力，『庇護工場』提供了一個受保護、無競爭壓力的工作環境。",
+                    "在工場裡，他們可以參與簡單的包裝、手工藝製作，並獲得訓練津貼。更重要的是，這讓他們保持規律的生活作息，並擁有屬於自己的社交圈子。",
+                    "家長可以透過學校社工或醫務醫務社工，申請轉介至這些社署服務。"
+                ]
+            },
+            {
+                id: "ep_21",
+                title: "Ep 21: 特殊學校的宿舍服務：何時申請？如何申請？",
+                author: "主講人：香港執業臨床心理學家",
+                duration: "3 分鐘",
+                desc: "面對嚴重照顧壓力，何時該考慮特殊學校的宿舍服務？解開家長的內疚感，認識宿舍如何提升孩子的自理能力。",
+                transcript: [
+                    "對於照顧中度至嚴重智障、或有嚴重行為問題學童的家庭來說，照顧壓力往往是 24 小時無休止的。",
+                    "當家庭面臨極度過勞（Burnout），或者家長年邁、健康出現狀況時，為孩子申請『特殊學校宿舍服務』是一個非常必要且負責任的選擇。",
+                    "很多家長會感到內疚，覺得送孩子住宿舍就是『遺棄』他。",
+                    "請改變這個觀念。宿舍有專業的護理人員、社工和起居照顧員。",
+                    "他們提供高度結構化的環境，透過群體生活，往往能更有效地訓練孩子的個人自理能力（如自己進食、如廁訓練）和社交技巧。",
+                    "申請宿舍服務需要經過社署的評估和排期，輪候時間可能較長。建議家長在預見到照顧壓力即將臨界前，就及早與醫務社工或學校社工商討申請事宜。"
+                ]
+            },
+            {
+                id: "ep_22",
+                title: "Ep 22: 「雙重特殊資優 (2e)」孩子的升學迷思：平衡拔尖與保底",
+                author: "主講人：特教學校協調主任 (SENCO)",
+                duration: "4 分鐘",
+                desc: "IQ 極高但交不出功課？認識 2e (Twice-exceptional) 學童的特質，探討如何同時滿足他們的天賦與特殊支援需求。",
+                transcript: [
+                    "有一群特別的孩子，他們被稱為『雙重特殊資優（2e）』。",
+                    "他們可能智商高達 130，對天文地理過目不忘，但同時患有嚴重的讀寫障礙，連簡單的字都寫反；或者患有自閉症，完全無法與同學合作。",
+                    "這類孩子在主流學校最容易被誤解，老師會覺得他們『明明很聰明，就是懶惰、態度差』。",
+                    "對於 2e 孩子，升學規劃必須『拔尖與保底』雙軌並行。",
+                    "保底方面：必須針對他們的 SEN 特質申請考試調適（如語音讀題、電腦打字），解除他們展示能力的障礙。",
+                    "拔尖方面：家長要積極尋找校外的資優課程（如香港資優教育學苑），讓他們在自己熱愛的領域獲得挑戰和同儕認同，這能極大程度地挽救他們在常規課堂中受挫的自尊心。"
+                ]
+            },
+            {
+                id: "ep_23",
+                title: "Ep 23: 擁抱多元出路：家長如何調整對 SEN 孩子未來的期望？",
+                author: "主講人：家庭系統諮詢治療師",
+                duration: "5 分鐘",
+                desc: "放下「考大學、做專業人士」的執念。引導家長重新定義「成功」，看見 SEN 孩子獨特的生命價值。",
+                transcript: [
+                    "作為華人父母，我們對孩子的未來往往有一個刻板的『成功路徑』：考好成績、入好大學、找份安穩高薪的工作。",
+                    "但當孩子被診斷出 SEN 時，這條既定路線可能變得無比崎嶇，甚至遙不可及。",
+                    "家長最大的痛苦，往往來自於『期望與現實的落差』。",
+                    "我們需要學習重新定義『成功』。對於一個重度自閉症的孩子，能自己綁好鞋帶、微笑著跟鄰居說早安，就是一次偉大的成功。",
+                    "對於一個有閱讀障礙的孩子，能發現自己對烹飪的熱情，並在餅店找到一份工作自食其力，這絕對值得我們為他驕傲。",
+                    "放下與他人的比較，擁抱孩子真實的模樣。當我們不再用一把尺去衡量所有花朵時，你會發現，你的孩子正在以他獨特的方式綻放。"
+                ]
+            },
+            {
+                id: "ep_24",
+                title: "Ep 24: 撕下標籤：面對社區與親友控訴「教不好」的強大心理建設",
+                author: "主講人：註冊職業治療師 (OT)",
+                duration: "3 分鐘",
+                desc: "帶孩子外出時總是被路人指指點點？親戚聚會時被批評太縱容？教你一套心理防禦機制，保護自己免受二次傷害。",
+                transcript: [
+                    "帶 SEN 孩子外出，最讓家長崩潰的往往不是孩子的行為，而是周圍人異樣的目光和閒言閒語。",
+                    "『這孩子怎麼這麼沒教養？』『都是你太縱容他了！』這些話像針一樣刺在我們心上。",
+                    "請建立一道強大的『心理防火牆』：別人的無知，不是你的過錯。",
+                    "他們不了解自閉症的感官超載，不明白 ADHD 的衝動控制困難。他們用常規的尺去量度一個神經發展不同的孩子。",
+                    "下次再遇到這種情況，你可以選擇無視，帶著孩子平靜離開。或者，你可以準備一張簡單的小卡片，上面寫著：『我的孩子有自閉症，他現在感到很害怕，謝謝您的包容。』",
+                    "你不需要向全世界道歉，你只需要守護好你的孩子，以及你自己的內心平靜。"
+                ]
+            },
+            {
+                id: "ep_25",
+                title: "Ep 25: 你不孤單：加入「家長互助小組」與「家長資源中心 (PRC)」",
+                author: "主講人：香港執業臨床心理學家",
+                duration: "3 分鐘",
+                desc: "只有經歷過的人才懂。探討家長資源中心 (PRC) 如何提供情感避風港，讓你找到同聲同氣的戰友。",
+                transcript: [
+                    "在照顧 SEN 孩子的漫長旅途中，最可怕的敵人是『孤獨感』。",
+                    "你會覺得，身邊那些有正常發育孩子的家長朋友，根本無法理解你的痛苦。你不敢抱怨，怕被認為充滿負能量。",
+                    "這時候，你需要的是『同路人』。全港各地都設有由社署資助的『家長資源中心（PRC）』。",
+                    "在 PRC，你可以借閱特教圖書，參加紓壓工作坊。更重要的是，你可以參加『家長互助小組』。",
+                    "在那裡，沒有人會評判你。當你說『我昨天崩潰對孩子大吼』時，其他家長會拍拍你的肩膀說：『我懂，我也是這樣熬過來的。』",
+                    "找到你的社群，分享你的脆弱，你會發現自己獲得了重新出發的巨大力量。"
+                ]
+            },
+            {
+                id: "ep_26",
+                title: "Ep 26: 照顧者過勞 (Burnout) 自救：日常 5 分鐘情緒科學降溫法",
+                author: "主講人：特教學校協調主任 (SENCO)",
+                duration: "4 分鐘",
+                desc: "覺得自己快要爆炸了？認識照顧者過勞的警號，並學習隨時隨地可做的 5 分鐘正念急救技巧。",
+                transcript: [
+                    "照顧者過勞（Burnout）不是普通的疲倦，它是一種身心靈的徹底透支。",
+                    "如果你發現自己最近經常無故落淚、對原本喜歡的事物失去興趣、或者對孩子的一點小錯爆發出極度不成比例的憤怒，這就是警號響起了。",
+                    "不要硬撐，請啟動『5 分鐘情緒急救』。",
+                    "當你感覺快要失控時，請確保孩子安全，然後把自己關進洗手間或房間，鎖上門。",
+                    "進行 4-2-4 呼吸：吸氣 4 秒，憋氣 2 秒，緩慢呼氣 4 秒。重複 5 次。",
+                    "用冷水洗臉，或者雙手緊緊抱住自己（蝴蝶擁抱法），讓感官強烈刺激幫助大腦從『戰鬥模式』重啟。",
+                    "允許自己有崩潰的權利，這 5 分鐘的抽離，是為了避免引發更大的傷害。"
+                ]
+            },
+            {
+                id: "ep_27",
+                title: "Ep 27: 防止崩潰的社區喘息資源：認識 NGO 的暫託服務",
+                author: "主講人：家庭系統諮詢治療師",
+                duration: "5 分鐘",
+                desc: "你需要放假！介紹香港提供殘疾兒童暫託服務的社福機構，鼓勵家長放心地把孩子交給專業人士幾小時。",
+                transcript: [
+                    "很多家長有一種迷思：『我是他的媽媽/爸爸，我必須 24 小時看著他，交給別人我不放心，也是不負責任。』",
+                    "這是一個致命的誤區。長時間缺乏休息的照顧者，發生意外或患上抑鬱症的風險極高。",
+                    "請善用社會資源為自己爭取『喘息空間（Respite Care）』。",
+                    "香港有多家社福機構（如協康會、保良局）設有『嚴重殘疾兒童日間照顧服務』或定期的暫託計劃。",
+                    "你可以把孩子安全地交給專業護理人員照顧幾個小時，甚至大半天。",
+                    "利用這段時間，去喝杯咖啡、看場電影，或者痛痛快快地睡一覺。當你充飽電回來，你會發現自己對孩子的包容度大幅提升了。"
+                ]
+            },
+            {
+                id: "ep_28",
+                title: "Ep 28: 關注「隱形孩子」：特教家庭中的手足關懷與資源平衡",
+                author: "主講人：註冊職業治療師 (OT)",
+                duration: "3 分鐘",
+                desc: "家中有發育正常的兄弟姊妹？探討他們可能面臨的「被迫早熟」與被忽視感，教你如何公平分配家庭愛意。",
+                transcript: [
+                    "在有 SEN 孩子的家庭中，資源分配往往是嚴重傾斜的。",
+                    "發育正常的兄弟姊妹，很容易成為家庭中的『隱形孩子』。他們被期待要『懂事、讓著弟弟妹妹、不要給父母添亂』。",
+                    "長期下來，他們可能會壓抑自己的需求，產生自卑、甚至對 SEN 手足產生隱藏的怨恨。",
+                    "家長必須有意識地打破這個局面。請實施『特殊約會（Special Time）』機制。",
+                    "每週安排一段固定的時間（哪怕只有 30 分鐘），父母其中一方專門陪伴常規子女，完全不談論 SEN 孩子的事情。",
+                    "全心全意地關注他，聽他說話，讓他感受到：『在爸爸媽媽心裡，我同樣是最重要、獨一無二的寶貝。』這能極大地修復他們的心理安全感。"
+                ]
+            },
+            {
+                id: "ep_29",
+                title: "Ep 29: 夫妻同心：如何跨越教養分歧，建立強大的家庭支援系統？",
+                author: "主講人：香港執業臨床心理學家",
+                duration: "3 分鐘",
+                desc: "SEN 孩子的出現常引發夫妻爭執甚至婚姻危機。探討如何面對彼此的情緒，將互相指責轉化為團隊作戰。",
+                transcript: [
+                    "『都是你遺傳的！』『是你平時太寵他了！』在面對孩子被確診為 SEN 時，許多夫妻會在巨大的壓力下互相指責，導致婚姻出現裂痕。",
+                    "請明白，每個人面對悲傷和壓力的防衛機制都不同。有人選擇積極找資源，有人選擇逃避否認。這不是因為他不愛孩子，而是他還無法接受現實。",
+                    "停止指責，開始『團隊作戰』。",
+                    "找一個孩子不在場的安靜時刻，坦誠地分享彼此的恐懼：『我很害怕他未來不能自立，你呢？』",
+                    "合理分工，例如一方負責跟進學校和醫療報告，另一方負責週末帶孩子去公園放電。互相補位，給彼此喘息的空間。",
+                    "夫妻關係的穩固，是支撐整個特教家庭不崩塌的最核心基石。"
+                ]
+            },
+            {
+                id: "ep_30",
+                title: "Ep 30: 溫柔的自我對話：家長必學的 CBT 自我關懷術",
+                author: "主講人：特教學校協調主任 (SENCO)",
+                duration: "4 分鐘",
+                desc: "腦海中常出現「我是個失敗的媽媽/爸爸」的聲音？運用認知行為療法 (CBT)，改寫負面腳本，擁抱不完美的自己。",
+                transcript: [
+                    "我們腦海中常常有一個嚴厲的『內在裁判』：『我又對他發脾氣了，我真是一個糟糕透頂的媽媽。』",
+                    "這種負面的自我對話，會像毒藥一樣侵蝕你的能量。我們需要運用 CBT（認知行為療法）來改寫這些腳本。",
+                    "當你察覺到自己在自責時，請按下暫停鍵，用對待最好朋友的語氣對自己說話。",
+                    "把『我是一個失敗的媽媽』替換成：『我剛剛確實失去了耐心，那是因為我今天已經應付了太多突發狀況，我的神經太累了。這不代表我是個壞媽媽，我只是一個需要休息的普通人。』",
+                    "原諒自己的不完美。照顧 SEN 孩子是一場沒有終點的馬拉松，你已經在盡你所能做到最好了。今晚，請對自己說一聲：『你真的很棒，謝謝你沒有放棄。』"
+                ]
+            }
+        ];
+
+        // 播放狀態機
+        let activeEpisode = null;
+        let isPlaying = false;
+        let speechRate = 1.0;
+        let currentUtteranceIndex = 0;
+        let activeUtterances = [];
+
+        // ==========================================
+        // 2. Web Audio API 本地環境音訊與白噪音合成器引擎
+        // ==========================================
+        let audioCtx = null;
+        
+        // 實時合成節點
+        let alphaBinauralNode = null;
+        let alphaGain = null;
+        let seaWavesNode = null;
+        let seaGain = null;
+        let fireCrackleNode = null;
+        let fireGain = null;
+
+        // 動態聲頻示波器畫布 (Canvas Visualizer)
+        let canvasFrameId = null;
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+        }
+
+        // 播放普通 click 音效
+        function playClickSound() {
+            initAudioContext();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(600, now);
+            gain.gain.setValueAtTime(0.05, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.08);
+        }
+
+        // 播放「正確/綠色」提示音：上升琶音
+        function playSuccessSound() {
+            initAudioContext();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const freqs = [392.00, 523.25, 659.25, 783.99]; // G4, C5, E5, G5
+            freqs.forEach((f, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, now + idx * 0.08);
+                gain.gain.setValueAtTime(0.08, now + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.35);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + idx * 0.08);
+                osc.stop(now + idx * 0.08 + 0.4);
+            });
+        }
+
+        // ==========================================
+        // 2.1 雙耳阿爾法腦波 (Binaural Beats) 實時合成
+        // ==========================================
+        function initAlphaBeats() {
+            initAudioContext();
+            if (!audioCtx) return;
+
+            // 雙耳拍頻：左耳 432Hz，右耳 442Hz ➔ 產生 10Hz 阿爾法冥想腦波
+            const oscLeft = audioCtx.createOscillator();
+            const pannerLeft = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            oscLeft.type = 'sine';
+            oscLeft.frequency.setValueAtTime(432, audioCtx.currentTime);
+
+            const oscRight = audioCtx.createOscillator();
+            const pannerRight = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            oscRight.type = 'sine';
+            oscRight.frequency.setValueAtTime(442, audioCtx.currentTime);
+
+            alphaGain = audioCtx.createGain();
+            alphaGain.gain.setValueAtTime(0.0, audioCtx.currentTime); // 預設 0 音量
+
+            if (pannerLeft && pannerRight) {
+                pannerLeft.pan.setValueAtTime(-1.0, audioCtx.currentTime);
+                pannerRight.pan.setValueAtTime(1.0, audioCtx.currentTime);
+                oscLeft.connect(pannerLeft).connect(alphaGain);
+                oscRight.connect(pannerRight).connect(alphaGain);
+            } else {
+                oscLeft.connect(alphaGain);
+                oscRight.connect(alphaGain);
+            }
+
+            alphaGain.connect(audioCtx.destination);
+            oscLeft.start();
+            oscRight.start();
+
+            alphaBinauralNode = { oscLeft, oscRight };
+        }
+
+        // ==========================================
+        // 2.2 太平洋潮汐大浪聲效實時濾波器合成 (Ocean Waves)
+        // ==========================================
+        function createNoiseBuffer() {
+            const bufferSize = audioCtx.sampleRate * 5; // 5秒白噪
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            return buffer;
+        }
+
+        function initSeaWaves() {
+            initAudioContext();
+            if (!audioCtx) return;
+
+            const buffer = createNoiseBuffer();
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            noise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(300, audioCtx.currentTime);
+            filter.Q.setValueAtTime(1.0, audioCtx.currentTime);
+
+            seaGain = audioCtx.createGain();
+            seaGain.gain.setValueAtTime(0.0, audioCtx.currentTime); // 預設 0
+
+            noise.connect(filter).connect(seaGain).connect(audioCtx.destination);
+            noise.start();
+
+            // 利用 LFO (低頻振盪器) 動態模擬海浪漲退 (8秒一次循環)
+            const lfo = audioCtx.createOscillator();
+            lfo.frequency.setValueAtTime(0.125, audioCtx.currentTime); // 1/8 Hz
+            const lfoGain = audioCtx.createGain();
+            lfoGain.gain.setValueAtTime(200, audioCtx.currentTime); // 掃頻寬度
+
+            lfo.connect(lfoGain).connect(filter.frequency);
+            lfo.start();
+
+            seaWavesNode = { noise, filter, lfo };
+        }
+
+        // ==========================================
+        // 2.3 溫暖營火木柴爆裂聲 (Fireplace Crackle)
+        // ==========================================
+        function initFireplace() {
+            initAudioContext();
+            if (!audioCtx) return;
+
+            // 1. 低音底噪 (類似壁爐風箱)
+            const buffer = createNoiseBuffer();
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            noise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(120, audioCtx.currentTime);
+
+            fireGain = audioCtx.createGain();
+            fireGain.gain.setValueAtTime(0.0, audioCtx.currentTime);
+
+            noise.connect(filter).connect(fireGain).connect(audioCtx.destination);
+            noise.start();
+
+            // 2. 木柴爆裂的随机劈啪聲 (以突發脈衝高頻 sine 模擬)
+            setInterval(() => {
+                if (!fireGain || fireGain.gain.value < 0.05) return; // 音量低時不浪費運算
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const grainGain = audioCtx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1200 + Math.random() * 800, now);
+
+                grainGain.gain.setValueAtTime(0.06 * Math.random(), now);
+                grainGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+                osc.connect(grainGain).connect(audioCtx.destination);
+                osc.start();
+                osc.stop(now + 0.06);
+            }, 180);
+
+            fireCrackleNode = { noise };
+        }
+
+        // ==========================================
+        // 2.4 環境白噪音音量滑塊調節 (Ambience Mixing)
+        // ==========================================
+        function adjustBinauralVolume(type, val) {
+            initAudioContext();
+            
+            // 如果瀏覽器因保護機制掛起，點擊拉桿主動喚醒
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const targetVal = parseFloat(val) / 100 * 0.15; // 限制最大防刺音量
+            document.getElementById(`vol-${type}-txt`).innerText = `${val}%`;
+
+            if (type === 'alpha') {
+                if (!alphaBinauralNode) initAlphaBeats();
+                if (alphaGain) alphaGain.gain.linearRampToValueAtTime(targetVal, audioCtx.currentTime + 0.3);
+            } else if (type === 'sea') {
+                if (!seaWavesNode) initSeaWaves();
+                if (seaGain) seaGain.gain.linearRampToValueAtTime(targetVal * 1.5, audioCtx.currentTime + 0.5);
+            } else if (type === 'fire') {
+                if (!fireCrackleNode) initFireplace();
+                if (fireGain) fireGain.gain.linearRampToValueAtTime(targetVal * 1.2, audioCtx.currentTime + 0.4);
+            }
+            
+            playClickSound();
+            // 每次調整都確認啟動示波器動畫
+            drawBrainWaves();
+        }
+
+        // ==========================================
+        // 3. 播客清單初始化與動態渲染
+        // ==========================================
+        function renderPodcastPlaylist() {
+            const container = document.getElementById('playlist-container');
+            container.innerHTML = '';
+
+            podcastDatabase.forEach(ep => {
+                const isActive = activeEpisode && activeEpisode.id === ep.id;
+                const borderClass = isActive ? 'border-indigo-400 bg-indigo-50/50 shadow-inner' : 'border-slate-100 bg-white hover:border-indigo-200';
+                
+                const card = document.createElement('button');
+                card.className = `w-full text-left p-4 border rounded-2xl transition duration-200 flex flex-col justify-between space-y-2 shadow-sm ${borderClass}`;
+                card.onclick = () => selectEpisode(ep.id);
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start w-full">
+                        <span class="bg-indigo-100 text-indigo-800 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">${ep.duration}</span>
+                        ${isActive ? '<span class="text-[10px] text-indigo-700 font-extrabold animate-pulse flex items-center gap-1"><i class="fa-solid fa-volume-high"></i>正在播放</span>' : ''}
+                    </div>
+                    <h5 class="font-black text-slate-800 text-sm sm:text-base leading-snug mt-1">${ep.title}</h5>
+                    <p class="text-slate-400 text-xs leading-relaxed line-clamp-2">${ep.desc}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectEpisode(epId) {
+            // 停止舊有的播放
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            isPlaying = false;
+            currentUtteranceIndex = 0;
+
+            const ep = podcastDatabase.find(e => e.id === epId);
+            activeEpisode = ep;
+
+            // 更新播放面板 UI
+            document.getElementById('current-play-title').innerText = ep.title;
+            document.getElementById('player-timer-text').innerText = `進度：0 / ${ep.transcript.length} 句`;
+            document.getElementById('podcast-play-text').innerText = "啟動播客語音";
+            document.getElementById('podcast-play-btn').className = "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black px-6 py-3.5 rounded-2xl transition duration-300 text-sm shadow-md shadow-indigo-100 flex items-center gap-2 w-full sm:w-auto justify-center active:scale-95";
+
+            renderPodcastPlaylist();
+            renderTranscript(ep);
+            playClickSound();
+            showToast(`已載入：${ep.title}`, "info");
+        }
+
+        // ==========================================
+        // 4. 滾動歌詞字幕同步渲染 (Transcript Sync Renderer)
+        // ==========================================
+        function renderTranscript(ep) {
+            const container = document.getElementById('transcript-scroll-box');
+            container.innerHTML = '';
+
+            ep.transcript.forEach((line, index) => {
+                const p = document.createElement('div');
+                p.id = `sub-line-${index}`;
+                p.className = "subtitle-line p-3.5 rounded-xl text-slate-500 font-bold text-sm sm:text-base leading-relaxed border border-transparent transition-all";
+                p.onclick = () => jumpToLine(index);
+                p.innerHTML = `
+                    <div class="flex items-start gap-2.5">
+                        <span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-400 text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">${index + 1}</span>
+                        <span>${line}</span>
+                    </div>
+                `;
+                container.appendChild(p);
+            });
+        }
+
+        // ==========================================
+        // 5. 語音朗讀核心 (Web Speech API - zh-HK 粵語朗讀)
+        // ==========================================
+        function togglePodcastPlayback() {
+            if (!activeEpisode) {
+                showToast("⚠️ 請先在右側挑選要學習的播客單集！", "error");
+                return;
+            }
+
+            initAudioContext();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (isPlaying) {
+                // 暫停播放
+                if (window.speechSynthesis) window.speechSynthesis.pause();
+                isPlaying = false;
+                document.getElementById('podcast-play-text').innerText = "恢復播客語音";
+                document.getElementById('podcast-play-btn').className = "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black px-6 py-3.5 rounded-2xl transition duration-300 text-sm shadow-md shadow-indigo-100 flex items-center gap-2 w-full sm:w-auto justify-center active:scale-95";
+                showToast("播客語音已暫停", "info");
+            } else {
+                // 開始 / 恢復播放
+                isPlaying = true;
+                document.getElementById('podcast-play-text').innerText = "暫停播客語音";
+                document.getElementById('podcast-play-btn').className = "bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-black px-6 py-3.5 rounded-2xl transition duration-300 text-sm shadow-md shadow-rose-100 flex items-center gap-2 w-full sm:w-auto justify-center active:scale-95";
+
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                    showToast("繼續播放...", "success");
+                } else {
+                    speakLine(currentUtteranceIndex);
+                }
+            }
+            drawBrainWaves();
+        }
+
+        function stopPodcastPlayback() {
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            isPlaying = false;
+            currentUtteranceIndex = 0;
+            
+            document.getElementById('podcast-play-text').innerText = "啟動播客語音";
+            document.getElementById('podcast-play-btn').className = "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black px-6 py-3.5 rounded-2xl transition duration-300 text-sm shadow-md shadow-indigo-100 flex items-center gap-2 w-full sm:w-auto justify-center active:scale-95";
+            document.getElementById('player-timer-text').innerText = `進度：0 / ${activeEpisode ? activeEpisode.transcript.length : 0} 句`;
+
+            // 移除高亮
+            document.querySelectorAll('.subtitle-line').forEach(el => el.classList.remove('subtitle-active'));
+            showToast("播客語音已完全停止並重設", "info");
+        }
+
+        function speakLine(index) {
+            if (!isPlaying || !activeEpisode || index >= activeEpisode.transcript.length) {
+                if (index >= activeEpisode.transcript.length) {
+                    stopPodcastPlayback();
+                    showToast("🎉 太棒了！您已完整聽完本單集，辛苦了！", "success");
+                }
+                return;
+            }
+
+            currentUtteranceIndex = index;
+            document.getElementById('player-timer-text').innerText = `進度：${index + 1} / ${activeEpisode.transcript.length} 句`;
+
+            // 字幕滾動與高亮邏輯
+            document.querySelectorAll('.subtitle-line').forEach(el => el.classList.remove('subtitle-active'));
+            const activeLine = document.getElementById(`sub-line-${index}`);
+            if (activeLine) {
+                activeLine.classList.add('subtitle-active');
+                // 滾動到中心
+                activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            if (window.speechSynthesis) {
+                const sentence = activeEpisode.transcript[index];
+                const utterance = new SpeechSynthesisUtterance(sentence);
+                utterance.lang = 'zh-HK'; // 繁體粵語
+                utterance.rate = speechRate;
+
+                utterance.onend = function() {
+                    // 自動朗讀下一句
+                    speakLine(index + 1);
+                };
+
+                utterance.onerror = function() {
+                    // 容錯機制
+                    if (isPlaying) {
+                        setTimeout(() => speakLine(index + 1), 500);
+                    }
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // 跳轉到特定句子
+        function jumpToLine(index) {
+            playClickSound();
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+            
+            if (isPlaying) {
+                speakLine(index);
+            } else {
+                currentUtteranceIndex = index;
+                document.getElementById('player-timer-text').innerText = `進度：${index + 1} / ${activeEpisode.transcript.length} 句`;
+                document.querySelectorAll('.subtitle-line').forEach(el => el.classList.remove('subtitle-active'));
+                const activeLine = document.getElementById(`sub-line-${index}`);
+                if (activeLine) {
+                    activeLine.classList.add('subtitle-active');
+                    activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+
+        function adjustSpeechRate(rate) {
+            speechRate = parseFloat(rate);
+            playClickSound();
+            showToast(`語速調整為：${rate}x`, "info");
+            
+            // 如果正在播放，重啟目前句子的朗讀以適應新語速
+            if (isPlaying) {
+                if (window.speechSynthesis) window.speechSynthesis.cancel();
+                speakLine(currentUtteranceIndex);
+            }
+        }
+
+        // ==========================================
+        // 6. 心靈樹洞記事本功能 (Takeaway Notepad)
+        // ==========================================
+        function saveCaregiverNote() {
+            const noteText = document.getElementById('caregiver-note').value.trim();
+            if (!noteText) {
+                showToast("⚠️ 請先在樹洞中寫入一些文字！", "error");
+                return;
+            }
+
+            localStorage.setItem('sen_caregiver_podcast_note', noteText);
+            playSuccessSound();
+            showToast("✨ 聆聽手記已成功儲存至本地心靈樹洞中！", "success");
+        }
+
+        function loadCaregiverNote() {
+            const cachedNote = localStorage.getItem('sen_caregiver_podcast_note');
+            if (cachedNote) {
+                document.getElementById('caregiver-note').value = cachedNote;
+            }
+        }
+
+        // ==========================================
+        // 7. 聲頻 Canvas 模擬波形 (Visualizer Simulator)
+        // ==========================================
+        function drawBrainWaves() {
+            const canvas = document.getElementById('podcast-visualizer');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.offsetWidth;
+            const height = canvas.height = canvas.offsetHeight;
+
+            if (canvasFrameId) cancelAnimationFrame(canvasFrameId);
+
+            let phase = 0;
+            function animate() {
+                // 如果播客和白噪音都沒在播，直接靜止成水平線
+                const isAnySoundActive = isPlaying || (alphaGain && alphaGain.gain.value > 0) || (seaGain && seaGain.gain.value > 0) || (fireGain && fireGain.gain.value > 0);
+                
+                ctx.fillStyle = '#020617';
+                ctx.fillRect(0, 0, width, height);
+
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = isPlaying ? 'rgba(167, 139, 250, 0.95)' : 'rgba(139, 92, 246, 0.4)'; // 播放時變亮紫色
+                ctx.beginPath();
+
+                const waveCount = 3; // 三重疊加正弦波
+                for (let w = 0; w < waveCount; w++) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(167, 139, 250, ${0.8 - w * 0.25})`;
+                    ctx.lineWidth = 2 - w * 0.5;
+
+                    for (let x = 0; x < width; x++) {
+                        // 振幅根據是否正在播音響動動態調節
+                        const baseAmp = isAnySoundActive ? (isPlaying ? 16 : 8) : 0;
+                        const randomWiggle = isAnySoundActive ? Math.sin(phase * 2 + x * 0.05) * 2 : 0;
+                        const y = height / 2 + Math.sin(phase + x * (0.01 + w * 0.005)) * baseAmp + randomWiggle;
+
+                        if (x === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.stroke();
+                }
+
+                phase += isPlaying ? 0.08 : 0.03;
+                canvasFrameId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // ==========================================
+        // 8. 輔助通知系統 (Toast) & A11y 狀態同步
+        // ==========================================
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
+            
+            let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+            let borderClass = 'border-emerald-100 shadow-emerald-50/50';
+            if (type === 'error') {
+                icon = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
+                borderClass = 'border-rose-100 shadow-rose-50/50';
+            } else if (type === 'info') {
+                icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
+                borderClass = 'border-blue-100 shadow-blue-50/50';
+            }
+            
+            toast.className += ` ${borderClass}`;
+            toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        function syncA11ySettings() {
+            const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
+            const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
+            
+            if (cachedContrast === 'true') {
+                document.body.classList.add('a11y-high-contrast');
+            }
+            if (cachedLargeText === 'true') {
+                document.documentElement.classList.add('a11y-large-text');
+            }
+        }
+
+        // ==========================================
+        // 頁面初始化
+        // ==========================================
+        window.onload = function() {
+            syncA11ySettings();
+            loadCaregiverNote(); // 載入樹洞手記
+            renderPodcastPlaylist(); // 渲染單集清單
+            
+            // 預設加載 Episode 1 (情緒急救包)
+            selectEpisode('ep_1');
+            drawBrainWaves(); // 啟動 Canvas 示波器
+        };
+    </script>
+</body>
+</html>
