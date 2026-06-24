@@ -29,6 +29,15 @@
             animation: glow-orange 2s infinite ease-in-out;
         }
 
+        /* 煉金重塑淡入與推升動畫 */
+        @keyframes fadeSlideUp {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-slide-up {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
         /* 深度排版與字體優化 */
         .article-card-content {
             font-size: 1.15rem !important;
@@ -41,28 +50,71 @@
             margin-bottom: 0;
         }
 
-        /* 成長思維卡片優美 UI 重構與 Hover 特效 */
+        /* 自訂卡片與手風琴過渡動畫 */
+        .card-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 成長思維固定卡片精緻 Grid UI 佈局 */
+        .mindset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
         .mindset-transmute-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            background-color: #faf5f5; /* 稍微加深的溫暖灰色底 */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            background: linear-gradient(145deg, #ffffff, #f8fafc); /* 極淡灰白色調漸層 */
+            border-radius: 12px;
             transition: all 0.3s ease;
             text-align: left;
             width: 100%;
+            cursor: pointer;
         }
         .mindset-transmute-card:hover {
-            transform: translateY(-3px);
-            background-color: #fff1f2; /* 懸停時變為淡淡的淺粉色 */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(244, 63, 94, 0.1);
-            border-color: #fda4af;
+            transform: translateY(-5px);
+            background-color: #fff1f2; /* 懸停淡粉色 */
+            box-shadow: 0 10px 20px -3px rgba(244, 63, 94, 0.15), 0 4px 6px -2px rgba(244, 63, 94, 0.05);
+            border-color: #ff7a00; /* 醒目粉橘色外框 */
         }
 
-        /* 自訂卡片與手風琴過渡動畫 */
-        .card-transition {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        /* 自我照顧清單 Checkbox 勾選特效 */
+        .self-care-item {
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .self-care-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border-color: #fda4af;
+        }
+        .self-care-checked {
+            background-color: #f0fdf4 !important; /* 淡綠色背景 */
+            border-color: #86efac !important;
+        }
+        .self-care-checked span {
+            text-decoration: line-through !important;
+            color: #94a3b8 !important;
+        }
+
+        /* 慶祝彩色碎屑 */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 1000;
+            pointer-events: none;
+            animation: confetti-fall 3s linear forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
         /* 無障礙高對比度樣式 */
@@ -175,11 +227,43 @@
                     </div>
                 </div>
 
-                <!-- 模塊二：深度心理學調適文章/微策略 (Developmental Articles) -->
+                <!-- 模塊二點五：30秒正念呼吸緩壓艙 (Mindfulness Breath Guide) -->
                 <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-4">
                     <h3 class="font-black text-slate-800 text-lg flex items-center gap-2 border-b border-slate-100 pb-3">
-                        <i class="fa-solid fa-book-open text-rose-600 text-xl"></i> 
-                        <span class="text-base sm:text-lg">心靈解碼與介入策略 (點擊卡片即可展開/收合精讀)</span>
+                        <i class="fa-solid fa-wind text-rose-500 text-xl"></i>
+                        <span class="text-base sm:text-lg">30秒正念呼吸緩壓艙 (Mindfulness Breath Guide)</span>
+                    </h3>
+                    <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+                        在育兒焦慮或情緒緊繃時，嘗試與這顆平穩溫和的呼吸圓圈同步調息 30 秒，重啟大腦前額葉，釋放體內緊繃。
+                    </p>
+                    <div class="flex flex-col md:flex-row items-center justify-around gap-6 py-4">
+                        <!-- 呼吸動畫圓圈 -->
+                        <div class="relative w-48 h-40 flex items-center justify-center">
+                            <div id="mindful-breath-circle" class="w-24 h-24 rounded-full bg-gradient-to-tr from-rose-200 to-amber-200 shadow-lg flex items-center justify-center text-center transition-all duration-[4000ms] ease-in-out">
+                                <span id="mindful-breath-text" class="text-slate-700 font-extrabold text-sm sm:text-base">點擊開始</span>
+                            </div>
+                        </div>
+                        <!-- 引導與控制 -->
+                        <div class="flex flex-col items-center md:items-start space-y-4 max-w-sm text-center md:text-left">
+                            <div class="space-y-1">
+                                <h4 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2 justify-center md:justify-start">
+                                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+                                    <span>4-4-4 黃金呼吸調幅</span>
+                                </h4>
+                                <p id="mindful-breath-guide-sub" class="text-slate-500 text-xs sm:text-sm">吸氣 (4s) ➔ 屏氣 (4s) ➔ 呼氣 (4s)</p>
+                            </div>
+                            <button id="mindful-breath-btn" onclick="toggleMindfulBreathing()" class="bg-gradient-to-r from-rose-500 to-coral-500 hover:from-rose-600 hover:to-coral-600 text-white font-black px-6 py-3 rounded-xl transition duration-300 text-sm shadow-md shadow-rose-100 flex items-center gap-2">
+                                <i class="fa-solid fa-play" id="mindful-breath-icon"></i> <span id="mindful-breath-btn-text">開始練習</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模塊二：深度心理學調適文章/微策略 (Developmental Articles) -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-4">
+                    <h3 class="font-black text-slate-800 text-base sm:text-lg flex items-center gap-2 border-b border-slate-100 pb-3">
+                        <i class="fa-solid fa-book-open text-rose-600"></i> 
+                        <span class="text-base sm:text-lg">心靈解碼與介入策略 (點擊卡片即可展開精讀)</span>
                     </h3>
 
                     <!-- 各階段的深度教育調適策略文章注入區 -->
@@ -208,10 +292,10 @@
                     <!-- 回饋框 -->
                     <div id="quiz-feedback" class="hidden p-5 rounded-2xl border transition-all duration-300">
                         <div class="flex items-start gap-4">
-                            <div id="feedback-icon" class="text-2xl mt-0.5 shrink-0"></div>
-                            <div class="space-y-1.5">
-                                <h4 id="feedback-title" class="font-black text-sm sm:text-base"></h4>
-                                <p id="feedback-desc" class="text-xs sm:text-sm leading-relaxed text-slate-600"></p>
+                            <div id="feedback-icon" class="text-3xl mt-0.5 shrink-0"></div>
+                            <div class="space-y-2">
+                                <h4 id="feedback-title" class="font-black text-base sm:text-lg"></h4>
+                                <p id="feedback-desc" class="text-sm sm:text-base leading-relaxed text-slate-600"></p>
                             </div>
                         </div>
                     </div>
@@ -224,6 +308,81 @@
                 <!-- 由 JS 根據當前啟用的 Tab 狀態，動態渲染專家卡片 -->
             </div>
 
+        </div>
+
+        <!-- 模塊五：家長心靈韌性每日自我照顧清單 (Self-Care Checklist) -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-rose-100 max-w-7xl mx-auto space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4">
+                <div>
+                    <h3 class="font-black text-slate-800 text-lg sm:text-xl flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-list text-rose-500 text-2xl"></i>
+                        <span>家長心靈韌性每日自我照顧清單 (Self-Care Checklist)</span>
+                    </h3>
+                    <p class="text-slate-500 text-sm mt-1 leading-relaxed">
+                        先照料好自己，才能照亮孩子。邀請您每日給自己 5 個小小的溫柔練習，並記錄在雲端/本地中。
+                    </p>
+                </div>
+                <!-- 達成率 & 進度條 -->
+                <div class="w-full md:w-60 space-y-2 shrink-0">
+                    <div class="flex justify-between text-xs font-bold text-slate-600">
+                        <span>今日自護達成率</span>
+                        <span id="checklist-progress-text">0/5 完成</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                        <div id="checklist-progress-bar" class="bg-gradient-to-r from-rose-400 to-amber-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 清單列表 -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="self-care-checklist-container">
+                <!-- 項目 1 -->
+                <label class="self-care-item border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between space-y-3 cursor-pointer select-none transition-all duration-300">
+                    <div class="flex items-start gap-2.5">
+                        <input type="checkbox" id="sc-chk-1" onchange="updateSelfCareCheck()" class="accent-rose-500 w-5 h-5 rounded-lg shrink-0 mt-0.5">
+                        <span class="text-sm font-bold text-slate-700 leading-relaxed">📋 「我今天有留出至少 5 分鐘，安靜地喝杯茶或放空，單純陪伴自己。」</span>
+                    </div>
+                </label>
+                <!-- 項目 2 -->
+                <label class="self-care-item border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between space-y-3 cursor-pointer select-none transition-all duration-300">
+                    <div class="flex items-start gap-2.5">
+                        <input type="checkbox" id="sc-chk-2" onchange="updateSelfCareCheck()" class="accent-rose-500 w-5 h-5 rounded-lg shrink-0 mt-0.5">
+                        <span class="text-sm font-bold text-slate-700 leading-relaxed">📋 「當感到焦慮時，我今天有嘗試做 3 次深呼吸來安頓情緒。」</span>
+                    </div>
+                </label>
+                <!-- 項目 3 -->
+                <label class="self-care-item border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between space-y-3 cursor-pointer select-none transition-all duration-300">
+                    <div class="flex items-start gap-2.5">
+                        <input type="checkbox" id="sc-chk-3" onchange="updateSelfCareCheck()" class="accent-rose-500 w-5 h-5 rounded-lg shrink-0 mt-0.5">
+                        <span class="text-sm font-bold text-slate-700 leading-relaxed">📋 「我今天在心裡真誠地對自己說了一聲：『你已經做得很好了，辛苦了。』」</span>
+                    </div>
+                </label>
+                <!-- 項目 4 -->
+                <label class="self-care-item border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between space-y-3 cursor-pointer select-none transition-all duration-300">
+                    <div class="flex items-start gap-2.5">
+                        <input type="checkbox" id="sc-chk-4" onchange="updateSelfCareCheck()" class="accent-rose-500 w-5 h-5 rounded-lg shrink-0 mt-0.5">
+                        <span class="text-sm font-bold text-slate-700 leading-relaxed">📋 「我今天有將注意力短暫從孩子身上移開，看了一頁書、聽了一首歌或跟朋友聊聊天。」</span>
+                    </div>
+                </label>
+                <!-- 項目 5 -->
+                <label class="self-care-item border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between space-y-3 cursor-pointer select-none transition-all duration-300">
+                    <div class="flex items-start gap-2.5">
+                        <input type="checkbox" id="sc-chk-5" onchange="updateSelfCareCheck()" class="accent-rose-500 w-5 h-5 rounded-lg shrink-0 mt-0.5">
+                        <span class="text-sm font-bold text-slate-700 leading-relaxed">📋 「我今天有成功拒絕一個非必要的額外負擔，允許自己短暫休息。」</span>
+                    </div>
+                </label>
+            </div>
+
+            <!-- 每日鼓勵彩蛋及 100% 慶祝勳章 -->
+            <div id="self-care-celebration-box" class="hidden p-5 rounded-2xl bg-gradient-to-r from-amber-50 to-rose-50 border border-amber-200 text-center space-y-3 transition-all duration-500">
+                <span id="self-care-celebration-badge" class="text-4xl block animate-bounce">🏆</span>
+                <h4 id="self-care-celebration-title" class="font-black text-rose-950 text-base sm:text-lg">太棒了！今天您成功為自己的心靈充飽了電！</h4>
+                <p id="self-care-celebration-desc" class="text-slate-600 text-sm leading-relaxed max-w-2xl mx-auto"></p>
+            </div>
+            <!-- 單項鼓勵彩蛋 (隨機提示) -->
+            <div id="self-care-hint-box" class="hidden p-4 rounded-2xl bg-rose-50/50 border border-rose-100/50 text-center transition-all duration-300">
+                <p id="self-care-hint-text" class="text-rose-800 text-sm font-black italic"></p>
+            </div>
         </div>
 
     </main>
@@ -239,6 +398,20 @@
     <!-- JavaScript 核心控制與音訊合成邏輯 -->
     <script>
         let currentTab = 'preschool'; // 默認選中幼兒探索期
+
+        // 正念呼吸狀態機變數
+        let breathTimer = null;
+        let breathActive = false;
+        let breathSec = 0;
+
+        // 自我照顧清單彩蛋短語
+        const selfCareEncouragements = [
+            "照顧好自己，才是送給孩子最好的禮物。💖",
+            "你的每一份付出都無比珍貴，今天也辛苦了。✨",
+            "每一次短暫的放鬆，都是為了蓄積更多溫柔力量。🌸",
+            "不完美的家長，就是百分之百稱職的照顧者。☀️",
+            "記得給自己留一些空白，你值得被溫柔對待。🍵"
+        ];
 
         // ==========================================
         // 1. Web Audio API 音訊合成 (用於測驗反饋與活動互動)
@@ -318,6 +491,23 @@
             osc.stop(now + 0.08);
         }
 
+        // 播放呼吸引導柔和提示音
+        function playBreathTone(freq) {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.03, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 2.0);
+        }
+
         // ==========================================
         // 2. 發展心理學全套實時內容數據庫 (The Complete Content DB)
         // ==========================================
@@ -375,7 +565,7 @@
                                 <p>
                                     <b>2. 感官超載崩潰 (Meltdown) — 「神經系統超載防禦」：</b><br>
                                     這完全是自主神經系統的徹底超負荷（例如：去完刺耳、嘈雜、強光刺激的玩具賣場後，大腦杏仁核發出極度恐懼信號）。這時孩子已經完全失去了自控力，進入了「戰或逃」的驚恐防禦狀態。<br>
-                                    <div class="text-emerald-700 bg-emerald-50 p-4 rounded-xl font-medium border border-emerald-100">
+                                    <div class="text-emerald-700 bg-emerald-50 p-4 rounded-xl font-medium border border-emerald-100 text-sm sm:text-base">
                                         👉 <b>專家處方：</b>此時任何說理、斥責或懲罰只會加劇威脅，造成二次創傷。家長應立刻將孩子帶離高感官刺激環境，給予安靜的靜默陪伴，等大腦神經風暴自然平息。
                                     </div>
                                 </p>
@@ -392,11 +582,11 @@
                                 </p>
                                 <p>
                                     <b>特教提醒與痛點：</b><br>
-                                    SEN 學童（如發展遲緩或小肌肉弱的孩子）在自理動作協調上天生需要更長時間，自行嘗試時常會弄得一團糟。這時，如果身邊的家長因為趕時間或不耐煩而大聲責備（如：「穿得咁慢，等媽媽穿啦！」）或強行代勞，會在幼兒心中深埋下<b>「我不行、我好蠢、我很差」</b>的無能自責，進而扼殺其探索的勇氣。
+                                    SEN 學童（如發展遲緩或小肌肉弱的孩子）在自理動作協調上天生需要更長時間，自行嘗試時常會弄得一團糟。這時，如果身邊的家長因為趕時間或不耐煩大聲責備（如：「穿得咁慢，等媽媽穿啦！」）或強行代勞，會在幼兒心中深埋下<b>「我不行、我好蠢、我很差」</b>的無能自責，進而扼殺其探索的勇氣。
                                 </p>
                                 <div class="text-rose-700 bg-rose-50/50 p-4 rounded-xl font-medium border border-rose-100">
                                     👉 <b>支架引導術 (Scaffolding)：</b><br>
-                                    家長應充當外在的「鷹架」——只幫忙扶穩杯腳，讓孩子自己把水倒入；只幫忙扶住鞋舌，讓孩子自己貼上魔術貼。讓孩子在被支持的「安全範圍」中獲取「我可以」的心理自主掌控感。
+                                    家長應充當外在的「鷹架」——只幫慢扶穩杯腳，讓孩子自己把水倒入；只幫忙扶住鞋舌，讓孩子自己貼上魔術貼。讓孩子在被支持的「安全範圍」中獲取「我可以」的心理自主掌控感。
                                 </div>
                             </div>
                         `
@@ -447,38 +637,55 @@
                         <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
                             <b>探索任務：成長思維煉金術 (Transmuter)。</b>小學生在面對學業/生活挫敗時，大腦極易固化為「我很笨、我永遠學不會」的固定思維（Fixed Mindset）。請點擊以下固定思維卡，將它們投入<b>「心理學轉換爐」</b>，實時淬煉成強大的成長思維：
                         </p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="mindset-cards">
+                        <div class="mindset-grid" id="mindset-cards">
                             <button onclick="transmuteMindset('dumb')" class="mindset-transmute-card p-4 rounded-xl text-sm sm:text-base">
-                                <span class="font-bold text-slate-700">「我數學次次不合格，我天生冇數理大腦。」</span>
-                                <i class="fa-solid fa-arrow-right-to-bracket text-rose-400 text-lg"></i>
+                                <span class="font-bold text-slate-700 flex items-center gap-2">
+                                    <span class="text-rose-500">❌</span>
+                                    <span>「我數學次次不合格，我天生冇數理大腦。」</span>
+                                </span>
+                                <span class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 shadow-sm font-bold text-sm transition-colors">➔</span>
                             </button>
                             <button onclick="transmuteMindset('mistake')" class="mindset-transmute-card p-4 rounded-xl text-sm sm:text-base">
-                                <span class="font-bold text-slate-700">「我默書又寫錯字，我好憎做錯嘢，好丟架。」</span>
-                                <i class="fa-solid fa-arrow-right-to-bracket text-rose-400 text-lg"></i>
+                                <span class="font-bold text-slate-700 flex items-center gap-2">
+                                    <span class="text-rose-500">❌</span>
+                                    <span>「我默書又寫錯字，我好憎做錯嘢，好丟架。」</span>
+                                </span>
+                                <span class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 shadow-sm font-bold text-sm transition-colors">➔</span>
                             </button>
                             <button onclick="transmuteMindset('social')" class="mindset-transmute-card p-4 rounded-xl text-sm sm:text-base">
-                                <span class="font-bold text-slate-700">「大家都唔想同我玩，我真係一個好討人厭、好失敗嘅人。」</span>
-                                <i class="fa-solid fa-arrow-right-to-bracket text-rose-400 text-lg"></i>
+                                <span class="font-bold text-slate-700 flex items-center gap-2">
+                                    <span class="text-rose-500">❌</span>
+                                    <span>「大家都唔想同我玩，我真係一個好討人厭、好失敗嘅人。」</span>
+                                </span>
+                                <span class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 shadow-sm font-bold text-sm transition-colors">➔</span>
                             </button>
                             <button onclick="transmuteMindset('sports')" class="mindset-transmute-card p-4 rounded-xl text-sm sm:text-base">
-                                <span class="font-bold text-slate-700">「我點練都踢唔好班際足球賽，我根本冇健身體育細胞。」</span>
-                                <i class="fa-solid fa-arrow-right-to-bracket text-rose-400 text-lg"></i>
+                                <span class="font-bold text-slate-700 flex items-center gap-2">
+                                    <span class="text-rose-500">❌</span>
+                                    <span>「我點練都踢唔好班際足球賽，我根本冇健身體育細胞。」</span>
+                                </span>
+                                <span class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 shadow-sm font-bold text-sm transition-colors">➔</span>
                             </button>
                             <button onclick="transmuteMindset('routine')" class="mindset-transmute-card p-4 rounded-xl text-sm sm:text-base">
-                                <span class="font-bold text-slate-700">「我又忘記帶手冊被老師罵，我真係一隻記性差嘅垃圾。」</span>
-                                <i class="fa-solid fa-arrow-right-to-bracket text-rose-400 text-lg"></i>
+                                <span class="font-bold text-slate-700 flex items-center gap-2">
+                                    <span class="text-rose-500">❌</span>
+                                    <span>「我又忘記帶手冊被老師罵，我真係一隻記性差嘅垃圾。」</span>
+                                </span>
+                                <span class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 shadow-sm font-bold text-sm transition-colors">➔</span>
                             </button>
                         </div>
                         <!-- 煉金爐本體 (Canvas與動畫模擬) -->
-                        <div class="bg-slate-950 border-2 border-slate-800 rounded-2xl p-5 flex flex-col items-center justify-center space-y-3 furnace-glow animate-pulse" id="transmute-furnace">
+                        <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border-2 border-indigo-500/30 rounded-3xl p-6 flex flex-col items-center justify-center space-y-3 furnace-glow" id="transmute-furnace">
                             <div class="flex items-center gap-3">
                                 <span class="text-3xl animate-pulse">⚗️</span>
                                 <div class="text-center">
                                     <h5 class="text-sm sm:text-base font-black text-orange-400 uppercase tracking-wider" id="furnace-status">思維轉換爐準備就緒</h5>
-                                    <span class="text-xs sm:text-sm text-slate-500 block mt-0.5">請點選上方卡片投入爐中進行認知重塑</span>
+                                    <span class="text-xs sm:text-sm text-slate-400 block mt-0.5">請點選上方卡片投入爐中進行認知重塑</span>
                                 </div>
                             </div>
-                            <p class="text-sm sm:text-base text-slate-300 italic text-center min-h-[40px] flex items-center justify-center px-4" id="furnace-result"></p>
+                            <div id="furnace-result-container" class="w-full text-center">
+                                <p class="text-sm sm:text-base text-slate-300 italic text-center min-h-[40px] flex items-center justify-center px-4" id="furnace-result"></p>
+                            </div>
                         </div>
                     </div>
                 `,
@@ -549,7 +756,7 @@
                             <div class="w-12 h-12 bg-rose-100 text-rose-700 rounded-2xl flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-user-doctor text-2xl"></i></div>
                             <div>
                                 <h4 class="font-extrabold text-slate-800 text-base">臨床專家共情講堂</h4>
-                                <span class="text-xs text-slate-400 font-bold block mt-0.5">學齡期發展心理學觀點</span>
+                                <span class="text-xs sm:text-sm text-slate-400 font-bold block mt-0.5">學齡期發展心理學觀點</span>
                             </div>
                         </div>
                         <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-600">
@@ -597,17 +804,17 @@
                 articles: [
                     {
                         icon: "fa-arrows-to-eye",
-                        title: "埃里克森自我認同階段：為什麼孩子寧願聽同儕的，也不聽您的？",
+                        title: "埃里克森自我認同階段：為什麼孩子寧願聽朋輩的，也不聽您的？",
                         content: `
                             <div class="space-y-4">
                                 <p class="border-l-4 border-rose-400 pl-4 italic text-slate-500 text-sm sm:text-base">
                                     進入 12-18 歲的青少年期，學童大腦的「情感邊緣系統」正極速發育，他們對「歸屬感與朋輩接納」的社交渴求，在生理層面會達到一生中的最高峰。
                                 </p>
                                 <p>
-                                    這解釋了為什麼他們開始鎖上房門、渴望在穿衣風格、興趣愛好上與同學群組高度一致，並對家長日常的「關愛嘮叨」展現出強烈的不耐煩與迴避。<br><br>
+                                    防範。這解釋了為什麼他們開始鎖上房門、渴望在穿衣風格、興趣愛好上與同學群組高度一致，並對家長日常的「關愛嘮叨」展現出強烈的不耐煩與迴避。<br><br>
                                     這在發展心理學上，被稱為<b>「個體化進程 (Individuation)」</b>，並非孩子學壞了，而是他們脫離家庭、建立健全社會化邊界的必然生理表徵。<br><br>
                                     <span class="text-rose-800 font-bold">💡 家長優雅轉型：</span><br>
-                                    家長此時如果仍一味採取沒收手機、強制規定、口頭斥責等「高壓控制（Manager）」手段，無疑於將其心門完全推向對立。您必須學會從「管理者」轉型為「教練顧問（Coach）」——給予其適度的隱私與空間，多採用開放式發問（如：「你點睇？」、「你打算點安排時間？」），逐步將人生的主導權與承擔權交回到孩子自己手中。
+                                    家長此時如果仍一味採取沒收手機、強制規定、口頭斥責等「高壓控制（Manager）」手段，無疑於將其心門完全推向對立。您必須學會從「管理者」轉型為「教練顧問（Coach）」——給予其適度的隱私與空間，多採用開放式發問（如：「你點睇？」節、「你打算點安排時間？」），逐步將人生的主導權與承擔權交回到孩子自己手中。
                                 </p>
                             </div>
                         `
@@ -647,7 +854,7 @@
                     },
                     feedbackDesc: {
                         A: `<b>臨床分析：</b>強行破門 and 貶低其特殊興趣，對敏感的 ASD 青少年來說是嚴重的「人格侵害與感官威脅」。這會引發他底層杏仁核的專制反抗，令他對家長完全關閉心扉，徹底切斷親子溝通橋樑。`,
-                        B: `<b>臨床分析：</b>無懈可擊！您做對了兩大心理學策略：1. <b>保護個人空間與特殊興趣</b>：理解這是他的自體平衡和自我認同。2. <b>簡潔、不強迫的愛</b>：放一碗飯（規則），提供安全邊緣而不加評判。當他感到安全且邊界受到尊重時，他的對抗情緒會迅速退潮。`,
+                        B: `<b>臨床分析：</b>無懈可擊！您做對了兩大心理學策略：1. <b>保護個人空間與特殊興趣</b>：理解這是他的自體平衡 and 認同。2. <b>簡潔、不強迫的愛</b>：放一碗飯（規則），提供安全邊緣而不加評判。當他感到安全且邊界受到尊重時，他的對抗情緒會迅速退潮。`,
                         C: `<b>臨床分析：</b>冷戰與情感遺棄只會給大腦杏仁核輸入傷感的「無愛信念」，導致青少年在房間裡更加自閉，甚至可能演變為重度的隱蔽青年、抑鬱症 or 精神疾患。`
                     }
                 },
@@ -684,22 +891,22 @@
             if (behavior === 'bite') {
                 title.innerHTML = '<i class="fa-solid fa-face-angry text-rose-500 animate-pulse text-lg sm:text-xl"></i> 密碼解析：搶玩具咬人 ➔ 「我面臨社交挫敗，且工作語言未發育完全」';
                 desc.innerHTML = `
-                    <b>臨床分析：</b>3-4 歲的幼兒，負責社交溝通的額葉尚未發育，工作語言卡關。當搶不過對方時，大腦會本能地採用最原始的肢體本能（咬人、動手）來宣示主權。<br><br>
+                    <b>臨床分析：</b>3-4 歲的逆兒，負責社交溝通的額葉尚未發育，工作語言卡關。當搶不過對方時，大腦會本能地採用最原始的肢體本能（咬人、動手）來宣示主權。<br><br>
                     <b>家長黃金介入：</b><br>
                     1. <b>不進行道德批判：</b>不要罵他「壞孩子、沒教養」。<br>
-                    2. <b>教他替代性工具：</b>抓住他的手，教他指著玩具大聲說：「等一陣、輪流玩、或者同媽媽講。」提供工作言語的「外在支架」。
+                    2. <b>教他替代性工具：</b>抓住 his 手，教他指著玩具大聲說：「等一陣、輪流玩、或者同媽媽講。」提供工作言語的「外在支架」。
                 `;
             } else if (behavior === 'scream') {
                 title.innerHTML = '<i class="fa-solid fa-volume-high text-orange-500 animate-pulse text-lg sm:text-xl"></i> 密碼解析：在餐廳高尖叫 ➔ 「我的感官過載，神經系統崩潰了」';
                 desc.innerHTML = `
                     <b>臨床分析：</b>旺角或嘈雜茶餐廳的燈光、高分貝餐具撞擊聲對 3-5 歲幼兒（特別是 ASD/ADHD）的神經系統來說，是一場<b>「感官海嘯 (Sensory overload)」</b>。尖叫是他大腦自發排解、降低壓力皮質醇的痛苦呼救。<br><br>
                     <b>家長黃金介入：</b><br>
-                    不要在現場強行喝止或打手板。應立刻抱孩子離場，去商場走廊或車上等安靜、光線暗淡的「安全撤退空間」降溫。
+                    ignore 現場喧嘩。應立刻抱孩子離場，去商場走廊或車上等安靜、光線暗淡的「安全撤退空間」降溫。
                 `;
             } else if (behavior === 'cling') {
                 title.innerHTML = '<i class="fa-solid fa-hands-holding-child text-amber-500 animate-pulse text-lg sm:text-xl"></i> 密碼解析：死抱著大哭 ➔ 「我的依附系統拉響了『恐懼與被遺棄』警報」';
                 desc.innerHTML = `
-                    <b>臨床分析：</b>返學小一或幼兒園門口，強行拖走或大罵「你膽小鬼」會讓大腦中負責生存安全的杏仁核發出絕望驚恐。此時的分離焦慮是孩子本能中對安全基地（家長）流失的生存防衛。<br><br>
+                    <b>臨床分析：</b>返學小一或幼兒園門口，強行拖走或大罵「你膽小鬼」會讓大腦中負責生存安全的杏仁核發出極望驚恐。此時的分離焦慮是孩子本能中對安全基地（家長）流失的生存防衛。<br><br>
                     <b>家長黃金介入：</b><br>
                     蹲下來溫柔擁抱他，明確給予「可預測的時間承諾」：「媽媽知道 Sunny 好驚，媽媽會在下午 3 點鐘（下課鐘一響）喺門口接你，媽媽一定第一個等 Sunny。」建立時間預期。
                 `;
@@ -718,22 +925,26 @@
 
             furnaceStatus.innerText = "🌀 正在進行心理認知重塑...";
             furnaceResult.innerText = "大腦突觸正在激活，重塑神經迴路...";
+            furnaceResult.classList.remove('animate-fade-slide-up');
             furnace.className = "bg-slate-950 border-2 border-orange-500 rounded-2xl p-5 flex flex-col items-center justify-center space-y-3 furnace-glow transition-all duration-300";
 
             setTimeout(() => {
                 playSuccessSound();
                 furnaceStatus.innerText = "✨ 成長思維重塑成功！";
-                furnace.className = "bg-slate-950 border-2 border-emerald-500 rounded-2xl p-5 flex flex-col items-center justify-center space-y-3 transition-all duration-300";
+                furnace.className = "bg-slate-950 border-2 border-emerald-500 rounded-2xl p-5 flex flex-col items-center justify-center space-y-3 transition-all duration-300 shadow-lg shadow-emerald-950/20";
+                
+                // 加上淡入和向上推升動畫
+                furnaceResult.classList.add('animate-fade-slide-up');
 
                 if (type === 'dumb') {
                     furnaceResult.innerHTML = `
-                        <span class="text-emerald-400 font-bold text-sm sm:text-base">✨ 重塑成果：</span>
-                        <span class="text-white text-sm sm:text-base">「我目前只是『尚未學會 (Not Yet)』這門數學概念，我之前的練習策略需要微調。只要我嘗試畫圖、拆解步驟，我的大腦就會長出新的數理神經元！」</span>
+                        <span class="text-emerald-400 font-extrabold text-base sm:text-lg block mb-1">✨ 煉金重塑成果：</span>
+                        <span class="text-yellow-300 text-sm sm:text-base font-medium">「我目前只是『尚未學會 (Not Yet)』這門數學概念，我之前的練習策略需要微調。只要我嘗試畫圖、拆解步驟，我的大腦就會長出新的數理神經元！」</span>
                     `;
                 } else if (type === 'mistake') {
                     furnaceResult.innerHTML = `
-                        <span class="text-emerald-400 font-bold text-sm sm:text-base">✨ 重塑成果：</span>
-                        <span class="text-white text-sm sm:text-base">「做錯生字代表大腦發現了未建立完整的神經迴路！太好了，每一次糾正錯字都是一次大腦增長肌肉、進行突觸升級的完美機會！」</span>
+                        <span class="text-emerald-400 font-extrabold text-base sm:text-lg block mb-1">✨ 煉金重塑成果：</span>
+                        <span class="text-yellow-300 text-sm sm:text-base font-medium">「做錯生字代表大腦發現了未建立完整的神經迴路！太好了，每一次糾正錯字都是一次大腦增長肌肉、進行突觸升級的完美機會！」</span>
                     `;
                 } else if (type === 'social') {
                     furnaceResult.innerHTML = `
@@ -742,13 +953,13 @@
                     `;
                 } else if (type === 'sports') {
                     furnaceResult.innerHTML = `
-                        <span class="text-emerald-400 font-bold text-sm sm:text-base">✨ 重塑成果：</span>
-                        <span class="text-white text-sm sm:text-base">「技能是透過正確練習累積的！目前的失敗只代表我需要調整踢球姿勢或請教教練，大腦正在透過錯誤修正神經連結。」</span>
+                        <span class="text-emerald-400 font-bold text-base sm:text-lg block mb-1">✨ 煉金重塑成果：</span>
+                        <span class="text-yellow-300 text-sm sm:text-base font-medium">「技能是透過正確練習累積的！目前的失敗只代表我需要調整踢球姿勢或請教教練，大腦正在透過錯誤修正神經連結。」</span>
                     `;
                 } else if (type === 'routine') {
                     furnaceResult.innerHTML = `
-                        <span class="text-emerald-400 font-bold text-sm sm:text-base">✨ 重塑成果：</span>
-                        <span class="text-white text-sm sm:text-base">「被提醒代表現有的記性方法需要升級。我可以和家長一起設計一個『出門前檢查清單』貼在門口，用系統化工具幫忙大腦！」</span>
+                        <span class="text-emerald-400 font-bold text-base sm:text-lg block mb-1">✨ 煉金重塑成果：</span>
+                        <span class="text-yellow-300 text-sm sm:text-base font-medium">「被提醒代表現有的記性方法需要升級。我可以和家長一起設計一個『出門前檢查清單』貼在門口，用系統化工具幫忙大腦！」</span>
                     `;
                 }
             }, 1200);
@@ -802,6 +1013,156 @@
         }
 
         // ==========================================
+        // 5.5. 30秒正念呼吸緩壓艙 (Mindfulness Breath Guide) 控制器邏輯
+        // ==========================================
+        function toggleMindfulBreathing() {
+            initAudio();
+            const btn = document.getElementById('mindful-breath-btn');
+            const btnText = document.getElementById('mindful-breath-btn-text');
+            const btnIcon = document.getElementById('mindful-breath-icon');
+            const circle = document.getElementById('mindful-breath-circle');
+            const txt = document.getElementById('mindful-breath-text');
+
+            if (breathActive) {
+                // 停止練習
+                clearInterval(breathTimer);
+                breathTimer = null;
+                breathActive = false;
+                btnText.innerText = "開始練習";
+                btnIcon.className = "fa-solid fa-play";
+                circle.style.transform = "scale(1)";
+                txt.innerText = "點擊開始";
+                document.getElementById('mindful-breath-guide-sub').innerText = "吸氣 (4s) ➔ 屏氣 (4s) ➔ 呼氣 (4s)";
+                showToast("呼吸練習已暫停", "info");
+            } else {
+                // 啟動練習
+                breathActive = true;
+                btnText.innerText = "暫停練習";
+                btnIcon.className = "fa-solid fa-pause";
+                showToast("🧘‍♂️ 正念呼吸引導開始，請放鬆身體...", "success");
+                
+                breathSec = 0;
+                runBreathTick();
+                breathTimer = setInterval(runBreathTick, 1000);
+            }
+        }
+
+        function runBreathTick() {
+            const circle = document.getElementById('mindful-breath-circle');
+            const txt = document.getElementById('mindful-breath-text');
+            const sub = document.getElementById('mindful-breath-guide-sub');
+            
+            // 4s 吸氣, 4s 屏氣, 4s 呼氣 = 共 12 秒為一循環
+            const cycleSec = breathSec % 12;
+            
+            if (cycleSec === 0) {
+                // 吸氣開始
+                circle.style.transform = "scale(1.4)";
+                txt.innerText = "吸氣...";
+                sub.innerText = "吸入平靜 (4秒)";
+                playBreathTone(340); // 暖心低頻
+            } else if (cycleSec === 4) {
+                // 屏息開始
+                circle.style.transform = "scale(1.4)";
+                txt.innerText = "屏息...";
+                sub.innerText = "安頓大腦 (4秒)";
+                playBreathTone(432); // 黃金療癒頻率
+            } else if (cycleSec === 8) {
+                // 呼氣開始
+                circle.style.transform = "scale(1.0)";
+                txt.innerText = "呼氣...";
+                sub.innerText = "釋放焦慮 (4秒)";
+                playBreathTone(280); // 深沉降溫
+            } else {
+                // 中間秒數遞減倒數
+                if (cycleSec < 4) {
+                    sub.innerText = `吸入平靜 (${4 - cycleSec}秒)`;
+                } else if (cycleSec < 8) {
+                    sub.innerText = `安頓大腦 (${8 - cycleSec}秒)`;
+                } else {
+                    sub.innerText = `釋放焦慮 (${12 - cycleSec}秒)`;
+                }
+            }
+            breathSec++;
+        }
+
+        // ==========================================
+        // 5.8. 自我照顧清單 (Self-Care Checklist) 控制器與 localStorage 緩存
+        // ==========================================
+        function updateSelfCareCheck() {
+            const checkboxes = [
+                document.getElementById('sc-chk-1'),
+                document.getElementById('sc-chk-2'),
+                document.getElementById('sc-chk-3'),
+                document.getElementById('sc-chk-4'),
+                document.getElementById('sc-chk-5')
+            ];
+
+            let completedCount = 0;
+            checkboxes.forEach((chk, index) => {
+                const label = chk.closest('.self-care-item');
+                if (chk.checked) {
+                    completedCount++;
+                    label.classList.add('self-care-checked');
+                    localStorage.setItem(`self_care_chk_${index + 1}`, 'true');
+                } else {
+                    label.classList.remove('self-care-checked');
+                    localStorage.setItem(`self_care_chk_${index + 1}`, 'false');
+                }
+            });
+
+            // 更新自護達成率與進度條
+            const progressPercent = (completedCount / checkboxes.length) * 100;
+            document.getElementById('checklist-progress-bar').style.width = `${progressPercent}%`;
+            document.getElementById('checklist-progress-text').innerText = `${completedCount} / ${checkboxes.length} 完成`;
+
+            const hintBox = document.getElementById('self-care-hint-box');
+            const hintTxt = document.getElementById('self-care-hint-text');
+            const celebBox = document.getElementById('self-care-celebration-box');
+            const celebDesc = document.getElementById('self-care-celebration-desc');
+
+            if (completedCount > 0 && completedCount < checkboxes.length) {
+                celebBox.classList.add('hidden');
+                hintBox.classList.remove('hidden');
+                // 根據勾選數量隨機推薦
+                const randMsg = selfCareEncouragements[completedCount % selfCareEncouragements.length];
+                hintTxt.innerText = randMsg;
+            } else if (completedCount === checkboxes.length) {
+                hintBox.classList.add('hidden');
+                celebBox.classList.remove('hidden');
+                celebDesc.innerText = "非常精彩！您今天完整地守護了自己的心靈。請記住：『家長先照顧好自己，才是送給孩子最好的禮物。』明天也請對自己溫柔一點。";
+                playSuccessSound();
+                createConfettiShower(); // 激發大範圍碎紙屑特效
+            } else {
+                hintBox.classList.add('hidden');
+                celebBox.classList.add('hidden');
+            }
+        }
+
+        function loadSelfCareCache() {
+            const checkboxes = [
+                document.getElementById('sc-chk-1'),
+                document.getElementById('sc-chk-2'),
+                document.getElementById('sc-chk-3'),
+                document.getElementById('sc-chk-4'),
+                document.getElementById('sc-chk-5')
+            ];
+
+            checkboxes.forEach((chk, index) => {
+                if (chk) {
+                    const val = localStorage.getItem(`self_care_chk_${index + 1}`);
+                    if (val === 'true') {
+                        chk.checked = true;
+                    } else {
+                        chk.checked = false;
+                    }
+                }
+            });
+
+            updateSelfCareCheck();
+        }
+
+        // ==========================================
         // 6. 整合動態渲染引擎 (The Dynamic Template Injector)
         // ==========================================
         function renderStageContent() {
@@ -816,11 +1177,8 @@
             articlesContainer.innerHTML = '';
             
             db.articles.forEach((art, index) => {
-                const isFirst = index === 0;
                 const cardEl = document.createElement('div');
-                
-                // 動態設定初始的展開樣式與高亮框線
-                const borderClass = isFirst ? 'border-rose-300 ring-2 ring-rose-100/50 bg-white' : 'border-slate-150 bg-white';
+                const borderClass = 'border-slate-150 bg-white';
                 
                 cardEl.className = `article-card ${borderClass} border rounded-2xl p-5 hover:border-rose-200 transition-all duration-300 shadow-sm cursor-pointer card-transition`;
                 cardEl.id = `article-card-${index}`;
@@ -834,11 +1192,11 @@
                             </div>
                             <h4 class="font-black text-slate-800 text-base sm:text-lg leading-snug pr-4">${art.title}</h4>
                         </div>
-                        <div class="card-arrow text-slate-400 transition-transform duration-300 ${isFirst ? 'rotate-180' : ''} mt-1 shrink-0">
+                        <div class="card-arrow text-slate-400 transition-transform duration-300 mt-1 shrink-0">
                             <i class="fa-solid fa-chevron-down"></i>
                         </div>
                     </div>
-                    <div class="card-content mt-4 pl-14 text-slate-700 article-card-content border-t border-slate-100 pt-4 leading-relaxed text-left transition-all duration-300 ${isFirst ? 'block' : 'hidden'}">
+                    <div class="card-content mt-4 pl-14 text-slate-700 article-card-content border-t border-slate-100 pt-4 leading-relaxed text-left transition-all duration-300 hidden">
                         ${art.content}
                     </div>
                 `;
@@ -922,7 +1280,7 @@
             if (choice === db.quiz.answer) {
                 fIcon.innerHTML = '✅';
                 fTitle.innerText = db.quiz.feedbackTitle[choice];
-                fTitle.className = "font-black text-emerald-800 text-sm sm:text-base";
+                fTitle.className = "font-black text-emerald-800 text-base sm:text-lg";
                 fDesc.innerHTML = db.quiz.feedbackDesc[choice];
                 feedback.className = "p-5 rounded-2xl border border-emerald-100 bg-emerald-50/40 text-emerald-950 shadow-sm";
                 playSuccessSound();
@@ -930,7 +1288,7 @@
             } else {
                 fIcon.innerHTML = '❌';
                 fTitle.innerText = db.quiz.feedbackTitle[choice];
-                fTitle.className = "font-black text-rose-800 text-sm sm:text-base";
+                fTitle.className = "font-black text-rose-800 text-base sm:text-lg";
                 fDesc.innerHTML = db.quiz.feedbackDesc[choice];
                 feedback.className = "p-5 rounded-2xl border border-rose-100 bg-rose-50/40 text-rose-950 shadow-sm";
                 playErrorSound();
@@ -943,6 +1301,7 @@
         // ==========================================
         function showToast(message, type = "success") {
             const container = document.getElementById('toast-container');
+            if (!container) return;
             const toast = document.createElement('div');
             toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
             
@@ -995,9 +1354,9 @@
             tabs.forEach(t => {
                 const btn = document.getElementById(`tab-${t}`);
                 if (t === stageKey) {
-                    btn.className = "flex items-center gap-2 px-5 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-rose-700 bg-rose-50 border border-rose-100 shadow-sm";
+                    btn.className = "flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-rose-700 bg-rose-50 border border-rose-100 shadow-sm";
                 } else {
-                    btn.className = "flex items-center gap-2 px-5 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-slate-600 hover:bg-slate-50";
+                    btn.className = "flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-slate-600 hover:bg-slate-50";
                 }
             });
 
@@ -1013,6 +1372,7 @@
         // ==========================================
         window.onload = function() {
             syncA11ySettings();
+            loadSelfCareCache(); // 自我照顧狀態載入
             switchStageTab('preschool'); // 預設加載第一大 Tab
         };
     </script>
