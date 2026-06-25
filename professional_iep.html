@@ -3,22 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI 智能 IEP 報告生成器 | 專業特教協作專區</title>
-    <!-- 引入 Tailwind CSS -->
+    <title>個別學習計劃 (IEP) 撰寫助手</title>
+    <!-- 引入 Tailwind CSS 進行精緻排版 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 Font Awesome -->
+    <!-- 引入 Font Awesome 專業圖標 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
         body {
-            font-family: 'Inter', 'Noto Sans HK', sans-serif;
-            background-color: #f8fafc; 
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f8fafc;
         }
-        
-        /* 自訂核取方塊與狀態樣式 */
+        /* 自訂核取方塊樣式 */
         .custom-checkbox input:checked + div {
             background-color: #10b981;
             border-color: #10b981;
@@ -26,139 +22,133 @@
         .custom-checkbox input:checked + div svg {
             display: block;
         }
-        
-        /* 捲軸美化 */
-        ::-webkit-scrollbar { width: 6px; }
+        /* 自訂表格編輯樣式 */
+        .iep-editor-table th, .iep-export-table th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+            color: #334155;
+        }
+        .iep-editor-table td, .iep-editor-table th,
+        .iep-export-table td, .iep-export-table th {
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            vertical-align: top;
+        }
+        /* 滾動條美化 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* 列印與表格特殊樣式 */
-        .iep-table th { background-color: #f1f5f9; font-weight: 700; color: #1e293b; border: 1px solid #94a3b8; }
-        .iep-table td { border: 1px solid #cbd5e1; padding: 0.75rem; vertical-align: top; }
-        
+        /* 列印專用媒體查詢：隱藏所有UI與輸入框，只顯示高質量靜態紙張 */
         @media print {
-            body { background: white; font-size: 11px; color: #000; }
-            .no-print { display: none !important; }
-            .print-area { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
-            .iep-table td, .iep-table th { padding: 0.5rem; font-size: 10px; border: 1px solid #475569 !important; }
-            * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-container {
+                display: block !important;
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+            /* 確保背景色在打印時呈現 */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
         }
     </style>
 </head>
-<body class="text-slate-800 flex flex-col min-h-screen pb-12">
+<body class="text-slate-800 min-h-screen flex flex-col pb-12">
 
-    <nav class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 no-print border-b border-slate-100">
+    <!-- 頂部協作導航欄 (不打印) -->
+    <nav class="bg-indigo-900 text-white shadow-md no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="text-emerald-600 text-xl font-black tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-graduation-cap"></i> SEN Care Professional
-                </span>
+            <div class="flex items-center gap-4">
+                <!-- 返回協作平台首頁按鈕 -->
+                <a href="index.html" class="flex items-center gap-2 bg-indigo-800 hover:bg-indigo-700 px-3 py-2 rounded-xl transition text-indigo-100 hover:text-white shadow-inner">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回首頁</span>
+                </a>
+                
+                <div class="flex flex-col justify-center border-l border-indigo-700/50 pl-4">
+                    <h1 class="text-xs sm:text-sm font-black tracking-tight leading-none">IEP 個別學習計劃撰寫助手</h1>
+                    <span class="text-[9px] text-indigo-200 font-bold block mt-1 uppercase tracking-widest">School-Based IEP Writer (Local & Safe)</span>
+                </div>
             </div>
-            <div class="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-emerald-100">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> 專業校園輔助工具 (IEP 專家端)
+
+            <!-- 右上角功能導出按鈕組 -->
+            <div class="flex items-center gap-2">
+                <button onclick="exportToWord()" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] sm:text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-file-word"></i> <span class="hidden md:inline">導出 Word</span>
+                </button>
+                <button onclick="exportToExcel()" class="bg-teal-600 hover:bg-teal-700 text-white text-[11px] sm:text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-file-excel"></i> <span class="hidden md:inline">導出 Excel</span>
+                </button>
+                <button onclick="prepareAndPrint()" class="bg-slate-700 hover:bg-slate-800 text-white text-[11px] sm:text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-print"></i> 打印 / PDF
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- 根據 "螢幕截圖 2026-06-24 下午2.56.44.png" 的無 Jockey Club 專業 UI 設計 -->
-    <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full no-print">
-        <div class="bg-gradient-to-r from-teal-700 via-emerald-600 to-emerald-500 rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
-            <i class="fa-solid fa-bezier-curve absolute -right-6 -bottom-6 text-[150px] text-white opacity-10"></i>
-            <div class="relative z-10">
-                <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-1 rounded-full mb-3 inline-block backdrop-blur-sm tracking-wider uppercase">
-                    aligned with EDB HK Standards (3-Tier Support)
-                </span>
-                <h1 class="text-2xl sm:text-3xl font-extrabold mb-2 flex items-center gap-2.5">
-                    <i class="fa-solid fa-brain-circuit animate-pulse"></i> AI 智能三層支援 IEP 報告生成系統
-                </h1>
-                <p class="text-emerald-50 max-w-3xl text-xs sm:text-sm leading-relaxed">
-                    根據最新《學習、社交及情緒適應問卷 (LSEAQ-II)》常模，深度匹配教育局三層支援框架。系統支持多種特殊教育診斷之交叉篩選，自動輸出精準之 SMART 目標計畫。
-                </p>
-            </div>
+    <!-- 本地安全隱私宣告橫幅 (不打印) -->
+    <div class="bg-indigo-50 border-b border-indigo-100 py-2.5 px-4 no-print">
+        <div class="max-w-7xl mx-auto flex items-center gap-2.5 text-xs text-indigo-900">
+            <i class="fa-solid fa-shield-halved text-emerald-600 text-base shrink-0 animate-pulse"></i>
+            <span>
+                <strong>🔒 本地安全隱私宣告：</strong>
+                本工具完全在您的瀏覽器本地端運行。學生檔案與填寫內容不會上傳雲端，全力維護隱私。
+            </span>
         </div>
-    </header>
+    </div>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 w-full flex-grow">
+    <!-- 主編輯介面：採取左側控制面板，右側即時生成可點擊編輯的 IEP 大表 (不打印) -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 no-print">
         
-        <!-- 左側：多選配置與觀察問卷指標 -->
-        <div class="lg:col-span-5 space-y-6 no-print">
+        <!-- 左側控制面板 (不打印) -->
+        <div class="lg:col-span-4 space-y-5">
             
-            <!-- 模塊 1：基本檔案與能力 -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
-                <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
-                    <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">1</div>
-                    <h2 class="text-base font-bold text-slate-800">學生基本檔案與現況</h2>
+            <!-- 模塊 1：主要發展挑戰 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-150 p-5 space-y-3">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                    <div class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-black text-sm">1</div>
+                    <h2 class="text-base font-bold text-slate-800">主要診斷與發展挑戰</h2>
                 </div>
-                
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1">學生姓名</label>
-                            <input type="text" id="studentName" placeholder="例: 陳大文" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-1">年級/班別</label>
-                            <input type="text" id="studentGrade" placeholder="例: 中一 (1D)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none transition">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 mb-1">主要教育診斷 / 發展挑戰 (可多選)</label>
-                        <div class="grid grid-cols-2 gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                <input type="checkbox" name="senType" value="ASD" class="rounded text-emerald-600 focus:ring-emerald-500"> 自閉症 (ASD)
-                            </label>
-                            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                <input type="checkbox" name="senType" value="ADHD" class="rounded text-emerald-600 focus:ring-emerald-500"> 注意力不足過動 (ADHD)
-                            </label>
-                            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                <input type="checkbox" name="senType" value="SpLD" class="rounded text-emerald-600 focus:ring-emerald-500"> 讀寫障礙 (SpLD)
-                            </label>
-                            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                <input type="checkbox" name="senType" value="SLI" class="rounded text-emerald-600 focus:ring-emerald-500"> 言語障礙 (SLI)
-                            </label>
-                            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                <input type="checkbox" name="senType" value="ID" class="rounded text-emerald-600 focus:ring-emerald-500"> 智力障礙 (ID)
-                            </label>
-                            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                <input type="checkbox" name="senType" value="Borderline" class="rounded text-emerald-600 focus:ring-emerald-500"> 有限智能 (Borderline)
-                            </label>
-                            <label class="flex items-center gap-2 text-xs font-semibold text-teal-800 cursor-pointer">
-                                <input type="checkbox" name="senType" value="PD" class="rounded text-teal-600 focus:ring-teal-500"> 肢體殘障 (PD)
-                            </label>
-                            <label class="flex items-center gap-2 text-xs font-semibold text-sky-800 cursor-pointer">
-                                <input type="checkbox" name="senType" value="HI" class="rounded text-sky-600 focus:ring-sky-500"> 聽力障礙 (HI)
-                            </label>
-                            <label class="flex items-center gap-2 text-xs font-semibold text-rose-800 cursor-pointer">
-                                <input type="checkbox" name="senType" value="MI" class="rounded text-rose-600 focus:ring-rose-500"> 精神病範疇 (MI)
-                            </label>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-emerald-600 mb-1">強項及興趣 (必填以建立成功感)</label>
-                        <textarea id="studentStrengths" rows="2" placeholder="例：記憶力佳、對電腦與數理有高度熱忱，樂於協助老師操作課室設備..." class="w-full bg-emerald-50/55 border border-emerald-100 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none transition resize-none"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-rose-600 mb-1">主要弱項或限制 (為其設計代價或防禦常規)</label>
-                        <textarea id="studentWeaknesses" rows="2" placeholder="例：遇挫折易激動抗拒，小組協商時較堅持己見，組織個人物品及時間規劃能力偏弱..." class="w-full bg-rose-50/55 border border-rose-100 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none transition resize-none"></textarea>
-                    </div>
+                <div class="grid grid-cols-2 gap-2 text-xs text-slate-700 font-medium">
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senType" value="ASD" class="rounded text-indigo-600 focus:ring-indigo-500"> 自閉症 (ASD)</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senType" value="ADHD" class="rounded text-indigo-600 focus:ring-indigo-500"> 專注力不足/過度活躍 (ADHD)</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senType" value="SpLD" class="rounded text-indigo-600 focus:ring-indigo-500"> 讀寫障礙 (SpLD)</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senType" value="SLI" class="rounded text-indigo-600 focus:ring-indigo-500"> 言語障礙 (SLI)</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senType" value="ID" class="rounded text-indigo-600 focus:ring-indigo-500"> 智力障礙 (ID)</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senType" value="Borderline" class="rounded text-indigo-600 focus:ring-indigo-500"> 有限智能 (Borderline)</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senType" value="PD" class="rounded text-indigo-600 focus:ring-indigo-500"> 肢體殘障 (PD)</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senType" value="HI" class="rounded text-indigo-600 focus:ring-indigo-500"> 聽力障礙 (HI)</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senType" value="VI" class="rounded text-indigo-600 focus:ring-indigo-500"> 視力障礙 (VI)</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senType" value="MI" class="rounded text-indigo-600 focus:ring-indigo-500"> 精神病範疇 (MI)</label>
                 </div>
             </div>
 
-            <!-- 模塊 2：LSEAQ-II 觀察指標多選 (對齊最新的四大適應範疇) -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+            <!-- 模塊 2：LSEAQ-II 觀察指標多選 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-150 p-5">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
                     <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">2</div>
                     <h2 class="text-base font-bold text-slate-800">LSEAQ-II 觀察指標篩選</h2>
                 </div>
 
-                <div class="space-y-6 max-h-[380px] overflow-y-auto pr-2">
+                <div class="space-y-6 max-h-[300px] overflow-y-auto pr-2">
                     
                     <!-- 1. 學習適應範疇 -->
                     <div>
                         <h3 class="text-xs font-bold text-blue-700 mb-2.5 bg-blue-50 px-2.5 py-1.5 rounded-lg flex items-center justify-between">
                             <span>甲部、學習適應範疇</span>
-                            <span class="text-[9px] text-blue-500">常模項目 A / B</span>
+                            <span class="text-[9px] text-blue-500">常模項目 A / B / 認知</span>
                         </h3>
                         <div class="space-y-2">
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
@@ -184,13 +174,13 @@
                                 </div>
                                 <span class="text-xs text-slate-600 group-hover:text-slate-800 transition-colors">B2/B3 未能從多角度思考及掌握審題答題技巧</span>
                             </label>
-                            
+
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
                                 <input type="checkbox" class="hidden behavior-cb" value="sli_comprehension">
                                 <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
                                     <svg class="w-2.5 h-2.5 text-white hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 </div>
-                                <span class="text-xs text-slate-600 group-hover:text-slate-800 transition-colors">6.3 語言理解與指令接收 (語言及溝通挑戰)</span>
+                                <span class="text-xs text-slate-600 group-hover:text-slate-800 transition-colors">SLI-6.3 語言理解與指令接收 (語言及溝通挑戰)</span>
                             </label>
 
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
@@ -198,7 +188,7 @@
                                 <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
                                     <svg class="w-2.5 h-2.5 text-white hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 </div>
-                                <span class="text-xs text-slate-600 group-hover:text-slate-800 transition-colors">15.1 基礎概念理解與任務步驟拆解 (認知與適應問題)</span>
+                                <span class="text-xs text-slate-600 group-hover:text-slate-800 transition-colors">ID-15.1 基礎概念理解與任務步驟拆解 (認知與適應問題)</span>
                             </label>
                         </div>
                     </div>
@@ -210,7 +200,6 @@
                             <span class="text-[9px] text-purple-500">常模項目 C / D / E / 溝通</span>
                         </h3>
                         <div class="space-y-2">
-                            <!-- ASD 社交細分 -->
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
                                 <input type="checkbox" class="hidden behavior-cb" value="asd_nonverbal">
                                 <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
@@ -224,7 +213,7 @@
                                 <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
                                     <svg class="w-2.5 h-2.5 text-white hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 </div>
-                                <span class="text-xs text-purple-900 font-medium group-hover:text-purple-950 transition-colors">ASD-缺社交迴響：難雙向對話、單向轟炸興趣話題</span>
+                                <span class="text-xs text-purple-900 font-medium group-hover:text-purple-950 transition-colors">ASD-缺社交迴響：難雙向對話、單向話題轟炸</span>
                             </label>
 
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
@@ -235,7 +224,6 @@
                                 <span class="text-xs text-purple-900 font-medium group-hover:text-purple-950 transition-colors">ASD-難融入群體：不理社交規則、小組堅持己見不妥協</span>
                             </label>
 
-                            <!-- ADHD 社交細分 -->
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
                                 <input type="checkbox" class="hidden behavior-cb" value="adhd_interruption">
                                 <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
@@ -252,7 +240,6 @@
                                 <span class="text-xs text-teal-800 font-semibold group-hover:text-teal-900 transition-colors">ADHD-難守規則：缺乏耐性輪候(如排隊)、易起肢體碰撞</span>
                             </label>
 
-                            <!-- SLI 社交退縮 -->
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
                                 <input type="checkbox" class="hidden behavior-cb" value="sli_withdrawal">
                                 <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
@@ -278,7 +265,6 @@
                                 <span class="text-xs text-slate-600 group-hover:text-slate-800 transition-colors">I23 缺乏基礎或進階情緒詞彙來表達內心感受</span>
                             </label>
 
-                            <!-- ASD 與 ADHD 挫折容忍度 -->
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
                                 <input type="checkbox" class="hidden behavior-cb" value="asd_adhd_frustration">
                                 <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
@@ -287,7 +273,6 @@
                                 <span class="text-xs text-rose-800 font-semibold group-hover:text-rose-900 transition-colors">ASD/ADHD-挫折容忍度低：常規突變或輸掉比賽易崩潰大哭</span>
                             </label>
 
-                            <!-- EBD / 精神健康障礙 -->
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
                                 <input type="checkbox" class="hidden behavior-cb" value="ebd_anxiety">
                                 <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
@@ -313,7 +298,6 @@
                             <span class="text-[9px] text-amber-500">自閉症與過動症專用</span>
                         </h3>
                         <div class="space-y-2">
-                            <!-- ASD 固執與感官 -->
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
                                 <input type="checkbox" class="hidden behavior-cb" value="asd_stereotyped">
                                 <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
@@ -330,7 +314,6 @@
                                 <span class="text-xs text-amber-900 font-medium group-hover:text-amber-950 transition-colors">ASD-感官過敏：對鐘聲/裝修聲極敏感、捂耳或崩潰過載</span>
                             </label>
 
-                            <!-- ADHD 身體多動 -->
                             <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
                                 <input type="checkbox" class="hidden behavior-cb" value="adhd_sitting">
                                 <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
@@ -349,478 +332,811 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <button onclick="generateIEP()" class="w-full mt-5 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> 立即生成三層支援 IEP
+            <!-- 模塊 3：全人支援與非指標調適維度 -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-150 p-5 space-y-3">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                    <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-black text-sm">3</div>
+                    <h2 class="text-base font-bold text-slate-800">全人支援與非指標調適維度</h2>
+                </div>
+                <div class="space-y-2">
+                    <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
+                        <input type="checkbox" class="hidden behavior-cb" value="curriculum_adapt">
+                        <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
+                            <svg class="w-2.5 h-2.5 text-white hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <span class="text-xs text-slate-600 group-hover:text-slate-800 transition-colors">📖 <strong>學科與課業難度調適</strong> (如：功課減半/心智圖框架)</span>
+                    </label>
+
+                    <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
+                        <input type="checkbox" class="hidden behavior-cb" value="assistive_tech">
+                        <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
+                            <svg class="w-2.5 h-2.5 text-white hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <span class="text-xs text-slate-600 group-hover:text-slate-800 transition-colors">🖥️ <strong>輔助科技與物理環境調適</strong> (如：FM 系統及調適)</span>
+                    </label>
+
+                    <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
+                        <input type="checkbox" class="hidden behavior-cb" value="crisis_intervention">
+                        <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
+                            <svg class="w-2.5 h-2.5 text-white hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <span class="text-xs text-slate-600 group-hover:text-slate-800 transition-colors">⚠️ <strong>情緒危機應變與安全網</strong> (如：冷靜避風安心卡)</span>
+                    </label>
+
+                    <label class="custom-checkbox flex items-start gap-2.5 cursor-pointer group">
+                        <input type="checkbox" class="hidden behavior-cb" value="life_transition">
+                        <div class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center mt-0.5 group-hover:border-emerald-400 transition-colors shrink-0">
+                            <svg class="w-2.5 h-2.5 text-white hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <span class="text-xs text-slate-600 group-hover:text-slate-800 transition-colors">🎓 <strong>生涯規劃與轉銜支援</strong> (如：獨立適應/升學面試)</span>
+                    </label>
+                </div>
+
+                <button onclick="autoPopulateFromLseaq()" class="w-full mt-4 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold py-3 rounded-xl shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> 生成個別學習計劃策略
                 </button>
             </div>
         </div>
 
-        <!-- 右側：AI 實時生成結果區 -->
-        <div class="lg:col-span-7">
-            <div id="initialState" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 h-full flex flex-col items-center justify-center text-center no-print min-h-[500px]">
-                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-5 text-slate-300 border border-slate-100">
-                    <i class="fa-solid fa-table-list text-3xl"></i>
-                </div>
-                <h3 class="text-lg font-bold text-slate-700 mb-1.5">等待數據輸入</h3>
-                <p class="text-slate-500 text-xs max-w-sm leading-relaxed">請在左側配置學生基本資料，勾選診斷類型並勾選《LSEAQ-II》評估特徵，隨後點擊「立即生成」以生成完整的智慧型 IEP 表格。</p>
-            </div>
+        <!-- 右側可編輯 IEP 大表 (不打印) -->
+        <div class="lg:col-span-8 space-y-6">
+            
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
+                <!-- 第一部分：基本檔案 -->
+                <div>
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                        <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-graduation-cap text-indigo-600"></i> (一) 學生基本資料
+                        </h2>
+                        <div class="flex items-center gap-1.5 text-xs text-slate-400 font-bold">
+                            <span>學校名稱：</span>
+                            <input type="text" id="schoolName" value="（學校名稱）" class="border-b border-slate-200 focus:border-indigo-500 focus:outline-none px-2 py-0.5 text-slate-700 font-bold text-right w-44">
+                        </div>
+                    </div>
 
-            <!-- 載入動畫狀態 -->
-            <div id="loadingState" class="hidden bg-white rounded-2xl shadow-sm border border-emerald-100 p-8 h-full flex flex-col items-center justify-center text-center min-h-[500px]">
-                <div class="relative w-16 h-16 mb-6">
-                    <div class="absolute inset-0 border-4 border-emerald-100 rounded-full"></div>
-                    <div class="absolute inset-0 border-4 border-emerald-500 rounded-full border-t-transparent animate-spin"></div>
-                    <i class="fa-solid fa-brain absolute inset-0 flex items-center justify-center text-emerald-600 text-xl animate-pulse"></i>
-                </div>
-                <h3 class="text-base font-bold text-emerald-800 mb-3" id="loadingText">分析 LSEAQ-II 常模資料中...</h3>
-                <div class="w-60 bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                    <div id="loadingBar" class="bg-gradient-to-r from-teal-500 to-emerald-500 h-full w-0 transition-all duration-300"></div>
-                </div>
-            </div>
-
-            <!-- IEP 報告結果 (支援線上隨時點擊修改與列印) -->
-            <div id="resultState" class="hidden bg-white rounded-2xl shadow-md border border-slate-200 p-6 sm:p-8 print-area relative">
-                
-                <!-- 列印按鈕區 -->
-                <div class="absolute top-4 right-4 flex gap-2 no-print">
-                    <button onclick="window.print()" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-emerald-50 text-slate-600 hover:text-emerald-600 flex items-center justify-center transition border border-slate-200 shadow-sm" title="一鍵列印紙質檔案 / 儲存為 PDF">
-                        <i class="fa-solid fa-print text-sm"></i>
-                    </button>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-bold text-slate-500">
+                        <div>
+                            <label class="block mb-1">學生姓名</label>
+                            <input type="text" id="studentName" placeholder="例如：陳大文" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-800 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1">年級 (年齡)</label>
+                            <input type="text" id="studentClass" placeholder="例如：中一 (12歲)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-800 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1">討論日期</label>
+                            <input type="text" id="discussDate" placeholder="例如：2026年6月25日" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-800 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1">施行時段</label>
+                            <input type="text" id="duration" placeholder="例如：2026年9月 至 2027年1月" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-800 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition">
+                        </div>
+                    </div>
                 </div>
 
-                <div id="reportContent" class="text-slate-700 w-full">
-                    <!-- 動態報告內容將注入於此 -->
+                <!-- 第二部分：現況能力 (改為純引導例子) -->
+                <div>
+                    <h2 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-brain text-indigo-600"></i> (二) 學生的現況能力
+                    </h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold text-slate-500">
+                        <div>
+                            <label class="block mb-1 text-emerald-700">🌟 強項及興趣 (例子)：</label>
+                            <textarea id="strengths" rows="3" class="w-full bg-emerald-50/20 border border-emerald-100 rounded-xl p-3 text-slate-800 font-medium focus:ring-1 focus:ring-emerald-500 focus:outline-none transition leading-relaxed" placeholder="（請在此處輸入學生強項。例子：記憶力強，能記住細節和重要資訊；喜歡電腦科和編程，學習表現不錯。）"></textarea>
+                        </div>
+                        <div>
+                            <label class="block mb-1 text-rose-700">⚠️ 弱項與適應限制 (例子)：</label>
+                            <textarea id="weaknesses" rows="3" class="w-full bg-rose-50/20 border border-rose-100 rounded-xl p-3 text-slate-800 font-medium focus:ring-1 focus:ring-rose-500 focus:outline-none transition leading-relaxed" placeholder="（請在左側選擇觀察指標自動填充，或在此直接手動輸入弱項限制。例子：在小組討論中，有時堅持己見，較難與同學達成共識；有時錯誤地解讀他人的行為，進而引起衝突。）"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第三部分：長期目標 (改為純引導例子) -->
+                <div>
+                    <h2 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye text-indigo-600"></i> (三) 長期發展目標 (Long-term Goals)
+                    </h2>
+                    <textarea id="longTermGoals" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-700 font-medium focus:ring-1 focus:ring-indigo-500 focus:outline-none transition leading-relaxed" placeholder="（請在此處輸入計劃之長期發展目標。例子：1. 能合宜地參與小組討論； 2. 能理解及運用恰當的非語言訊息來溝通； 3. 能自律調控情緒。）"></textarea>
+                </div>
+
+                <!-- 第四部分：核心短期目標支援大表 -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-table-list text-indigo-600"></i> (四) 本學年為上述學生提供之核心計劃矩陣
+                        </h2>
+                        <button onclick="addRow()" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xs font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                            <i class="fa-solid fa-plus"></i> 新增空白目標列
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-inner">
+                        <table class="w-full min-w-[1000px] text-xs iep-editor-table border-collapse">
+                            <thead>
+                                <tr>
+                                    <th class="w-[8%] text-center" rowspan="2">範疇</th>
+                                    <th class="w-[18%] text-center" rowspan="2">短期目標</th>
+                                    <th class="text-center" colspan="3">支援策略 (全校三層支援模式)</th>
+                                    <th class="w-[12%] text-center" rowspan="2">家校合作</th>
+                                    <th class="w-[12%] text-center" rowspan="2">成功指標</th>
+                                    <th class="w-[12%] text-center" colspan="3">達標情況</th>
+                                    <th class="w-[5%] text-center" rowspan="2">操作</th>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <th class="w-[14%] text-center">第一層針對性 (普通班課堂)</th>
+                                    <th class="w-[14%] text-center">第二層 (小組支援)</th>
+                                    <th class="w-[14%] text-center">第三層 (個別化)</th>
+                                    <th class="w-[4%] text-center">完全</th>
+                                    <th class="w-[4%] text-center">部分</th>
+                                    <th class="w-[4%] text-center">尚未</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody" class="divide-y divide-slate-100 text-xs">
+                                <!-- 預設首行空白 -->
+                                <tr class="hover:bg-slate-50/50 transition">
+                                    <td class="p-2 border-r border-slate-200">
+                                        <input type="text" placeholder="範疇區塊" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none font-bold text-slate-800">
+                                    </td>
+                                    <td class="p-2 border-r border-slate-200">
+                                        <textarea rows="4" placeholder="請輸入短期目標..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-200">
+                                        <textarea rows="4" placeholder="課堂支援技巧..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-200">
+                                        <textarea rows="4" placeholder="小組抽離支援..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-200">
+                                        <textarea rows="4" placeholder="個別化抽離訓練..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-200">
+                                        <textarea rows="4" placeholder="家長居家配合點..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-200">
+                                        <textarea rows="4" placeholder="評估達標量化條件..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                                    </td>
+                                    <td class="p-2 border-r border-slate-200 text-center align-middle">
+                                        <input type="radio" name="status_0" value="完全" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                                    </td>
+                                    <td class="p-2 border-r border-slate-200 text-center align-middle">
+                                        <input type="radio" name="status_0" value="部分" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                                    </td>
+                                    <td class="p-2 border-r border-slate-200 text-center align-middle">
+                                        <input type="radio" name="status_0" value="尚未" checked class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                                    </td>
+                                    <td class="p-2 text-center align-middle">
+                                        <button onclick="deleteRow(this)" class="text-rose-500 hover:text-rose-700 p-1.5 transition">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+            
         </div>
+
     </main>
 
-    <!-- 自訂 Toast 提示工具 -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-white border border-slate-150 rounded-2xl shadow-lg py-3.5 px-5 flex items-center gap-3 opacity-0 translate-y-10 transition-all duration-300 pointer-events-none z-50 no-print">
-        <i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
+    <!-- 打印/導出靜態生成容器 (默認隱藏，打印時由JS動態生成並唯一顯示) -->
+    <div id="printContainer" class="hidden print-container max-w-4xl mx-auto bg-white p-8">
+        <!-- 打印時動態注入高仿真 EDB 表格 -->
+    </div>
+
+    <!-- Toast 提示組件 (不打印) -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-white border border-slate-200 rounded-2xl shadow-lg py-3 px-5 flex items-center gap-3 opacity-0 translate-y-10 transition-all duration-300 pointer-events-none z-50 no-print">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
         <span id="toastMsg" class="text-xs font-bold text-slate-700"></span>
     </div>
 
+    <!-- 底部隱私政策頁腳 (不打印) -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 text-center text-[10px] text-slate-400 border-t border-slate-200 py-6 w-full no-print">
+        <p>🔒 本系統完全不進行後台數據上傳，所有生成工作皆於您的本地內置存取中完成。導出後請自行將文件存於學校受保護的硬碟。</p>
+        <p>© 2026 IEP 個別學習計劃本地輔助生成工具. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript 業務邏輯及本地導出引擎 -->
     <script>
-        const lseaqDb = {
-            // 甲部 學習適應
-            'A1_A5': {
+        // EDB 臨床大綱特教數據庫 (包含 18 項 LSEAQ-II 觀察指標及全人支援非指標調適)
+        const lseaqClinicDb = {
+            "A1_A5": {
                 domain: "學習適應",
-                title: "A1/A5 課堂注意力與持續專注",
-                shortTermGoal: "<strong>目標 1.1: 提升持續專注力</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>學生能在普通課堂上（如中文科），經口頭提示最多1次下，能維持專注安坐並自行完成任務達 15 分鐘。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 安排學生坐在課室前排近教師位置，遠離門窗等干擾源。<br>• 採用高結構化指令，將工作分拆成小步驟 (Chunking)。<br>• 配合視覺計時器提示工作剩餘時間。",
-                tier2: "<strong>小組支援:</strong><br>• 參加「專注力與學習自我監控訓練小組」 (每週1節)。<br>• 指導學生學習使用「專注檢核卡」，於每10分鐘進行自我行為確認。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 在個別課堂中，定時抽樣記錄學生的專注時長表現並予以代幣表揚。",
-                homeSchool: "家長在家溫習時配合計時器，完成 15 分鐘即可獲取一顆代幣以累積獎勵。",
-                successIndicator: "學生在為期3個月的課堂觀察和自評表中，有 80% 的課堂可以維持專注安坐並獨力完成任務達15分鐘。"
+                st_goal: "上課時能保持專注聆聽，並在口頭提示最多1次下持續完成指定工作達 15 分鐘。",
+                t1: "安排近師座位，將冗長工作分拆成 15 分鐘微型挑戰，配合視覺計時器提示工作時間。",
+                t2: "參加專注力訓練小組，配合使用「專注自我監控檢核卡」學習每10分鐘進行行為標記。",
+                t3: "教學助理在課堂進行適時的非言語專注手勢提示，並抽樣記錄學生專注表現。",
+                home: "家長在家中配合使用計時器進行功課訓練，每完成 15 分鐘專注即給予一顆獎勵星星。",
+                success: "在未來 2 個月內，學生在中文科能維持專注聆聽並獨力完成工作達 15 分鐘的達標率達 80% 以上。"
             },
-            'A6': {
+            "A6": {
                 domain: "學習適應",
-                title: "A6 工作組織力與先後次序規劃",
-                shortTermGoal: "<strong>目標 1.2: 提升日常規劃組織力</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>學生在每天放學收拾書包及排序今日功課時，能獨立參照「收拾檢核表」及「功課排序矩陣」，達標率達 80% 以上。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 每日放學前在黑板上列明功課，引導全班將功課標記「紅/黃/綠」三色代表重要緊急程度。<br>• 每堂結束前預留1分鐘收拾具體指示。",
-                tier2: "<strong>小組支援:</strong><br>• 納入「執行功能(EF)提升訓練小組」。<br>• 利用「工作分拆法」和收拾大富翁遊戲，指導學生學習規劃先後次序。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 每日放學前15分鐘進行一對一輔導，引導其完成當日功課排序並督促收拾。",
-                homeSchool: "家長在家中配合提供相同規格的「收納整理視覺指示圖」，每天簽署手冊完成進度。",
-                successIndicator: "連續兩週由 TA 在放學前隨機抽檢學生的書包整齊度，正確達標率達 85% 以上。"
+                st_goal: "能運用「收拾檢核表」及「工作排序矩陣」獨立建立工作排序與整理物件常規。",
+                t1: "放學前在黑板上列明功課，配合「紅/黃/綠」三色代表重要緊急程度，留出最後1分鐘收拾收拾。",
+                t2: "納入「執行功能提升小組」，利用收拾大富翁遊戲指導學生建立物件分類與先後規劃技巧。",
+                t3: "教學助理在放學前15分鐘進行一對一輔導，督促核對收拾檢視表以確保功課攜帶正確。",
+                home: "家長在家配合張貼「收納整理視覺指示圖」，每天放學核對並簽署手冊完成進度。",
+                success: "連續兩週由教學助理在放學前隨機抽檢，學生書包及課桌整齊合格率達 80% 以上。"
             },
-            'B2_B3': {
+            "B2_B3": {
                 domain: "學習適應",
-                title: "B2/B3 多角度思考與答題技巧",
-                shortTermGoal: "<strong>目標 1.3: 高階思維與審題答題技巧</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>學生在完成各科閱讀理解或論述題時，能自主運用「心智圖 (Mindmap)」或「多角度思考思考卡」，從至少2個角度羅列論據。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 授課時採用普遍設計 (UDL) 教案，多用視覺化概念圖示講解課本內容。<br>• 工作紙預留「思考提示泡泡」。",
-                tier2: "<strong>小組支援:</strong><br>• 在「高階思維引導小組」中，社工運用日常案例引導學生進行思考。教導審題技巧（圈出題眼關鍵字）。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 針對其學科弱點，進行一對一試卷題目重構剖析，示範如何拆解長題目並訂立寫作大綱。",
-                homeSchool: "家長在家與學生就某家庭決定（如週末去處）討論，引導學生口頭從不同角度各提一個論點。",
-                successIndicator: "在隨後舉行的各科單元評估或測驗中，學生在長答題的審題及論證上分數能比上一次提升 10% 以上。"
+                st_goal: "在完成學科論述題時，能嘗試圈出審題關鍵字（如原因、影響）並羅列思考角度。",
+                t1: "設計工作紙時加闊行距，字體拉大至 14pt，預留「思考提示泡泡」輔助學生拓展思路。",
+                t2: "參加「高階思維引導小組」，教授審題技巧，引導使用心智圖羅列至少兩個正反論據點。",
+                t3: "教學助理針對其學科弱點，進行一對一試卷題目重構剖析，示範如何拆解長題目大綱。",
+                home: "家長在日常家庭討論中，鼓勵學生口頭從「好處」和「壞處」多角度各提一個論點。",
+                success: "在隨後舉行的各科單元評估或測驗中，長答題的審題正確率及分數能比上一次提升 10%。"
             },
-            'sli_comprehension': {
-                domain: "言語與溝通",
-                title: "6.3 語言理解與多重指令接收能力",
-                shortTermGoal: "<strong>目標 1.4: 提升多重步驟指令理解與執行力</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>在接收多於兩個步驟的複合指令時，學生能主動口頭複述指令關鍵字，並在沒有他人貼身督導下正確完成相應任務（正確率達80%）。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 老師發出指令時，每次只給予1-2個步驟，並在黑板寫下步驟簡字。<br>• 配合眼神接觸與具體手勢。",
-                tier2: "<strong>小組支援:</strong><br>• 參與「聽力與理解特訓小組」或言語治療小組訓練。進行「聽指令解任務」等模擬訓練。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 在大班指令下達後，私下引導學生說出：「老師剛才說的第一步與第二步是什麼？」",
-                homeSchool: "家長在家中分派家事或課業任務時，每次只給一個清晰指令，要求孩子先口頭複述後再開始執行。",
-                successIndicator: "在為期3個月的課堂觀察中，學生在沒有輔助提醒下正確執行雙重及多重指令的成功率達 80% 以上。"
+            "sli_comprehension": {
+                domain: "語言及溝通",
+                st_goal: "能正確理解並自主執行老師發布的二步複合指令，並主動做複述確認。",
+                t1: "老師每次授課發言或指令不超過兩個步驟，並在黑板配以具體圖片或指示牌輔助。",
+                t2: "參加言語治療師 (ST) 的小組語音、語用訓練，演練「聽令尋寶」多步驟指令接收與複述。",
+                t3: "特教助理每天下午進行一對一引導，要求學生複述「今天功課手冊上要完成的項目與次序」。",
+                home: "家長在家配合，給予日常自理指令時先要求孩子「覆述一遍」，確認理解後再執行。",
+                success: "學生在隨後一個月內，能不依賴他人重複提示、自主執行課堂雙步驟指令的成功率達 80% 以上。"
             },
-            'id_cognitive_step': {
+            "id_cognitive_step": {
                 domain: "認知與適應",
-                title: "15.1 基礎概念理解與任務步驟拆解",
-                shortTermGoal: "<strong>目標 1.5: 掌握學術概念與工作步驟拆解</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>面對新學的學術概念（如數學公式）或複雜任務時，學生能配合「具體實物/視覺圖卡」，獨立按部就班完成已拆解為 3 個子步驟的基礎任務（達80%成功率）。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 多採用具體物件實物教學法。<br>• 簡化教材難度，減少工作紙上的冗長與抽象文字。",
-                tier2: "<strong>小組支援:</strong><br>• 參與特教組「基礎認知與邏輯推理訓練小組」。透過生活模擬場景（如模擬買賣、時間辨識）加強抽象概念與實際的連結。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 進行一對一「工作細步分析法 (Task Analysis)」輔導教學。製作「口袋概念速查本」。",
-                homeSchool: "家長在家中溫習時多利用家中實物（如水果、積木）進行具體操作，並協助將作業溫習劃分為超微型步驟。",
-                successIndicator: "學科單元基礎概念任務的獨立完成率由原來的 40% 提升至 80% 以上，且無明顯抗拒情緒。"
+                st_goal: "能利用具體分解步驟圖卡，正確完成大班課堂中的基礎步驟概念性學術練習。",
+                t1: "採用普遍學習設計 (UDL) 教案，將抽象概念以實物、具體圖片替代，降低教材認知跨度。",
+                t2: "參加校本「功能性自理與適應訓練組」，反覆模擬演練日常生活常規、物品歸類大作戰。",
+                t3: "教學助理 (TA) 進行一對一工作分解（Task Analysis）指導，一步一提示，及時給予代幣肯定。",
+                home: "家長在家張貼相同排版的自理步驟海報，督促孩子每天放學回家核對並獨立收拾個人用具。",
+                success: "在連續 10 次的課堂練習抽檢中，學生能依靠步驟提示圖獨立完成任務的次數達 8 次以上。"
+            },
+            "asd_nonverbal": {
+                domain: "社交適應",
+                st_goal: "能與對話者維持至少3秒眼神接觸，並在對話中主動辨識對方的非語言表情訊號。",
+                t1: "科任老師在大班分組討論前，提供「想法解讀卡」及常用臉部表情、身體距離提示圖卡。",
+                t2: "在「社交思考 (Social Thinking) 小組」中，利用微表情圖片和錄像重播，訓練眼神聚焦與情感識別。",
+                t3: "教學助理或社工每週定時一對一引導其繪製當週社交衝突的「表情想法泡泡解讀漫畫」。",
+                home: "家長每天小息或放學後，與孩子共同觀看電視，引導其透過劇中人物的面部表情推測心理感受。",
+                success: "在社交情境解讀測試中，能正確指出別人的情緒和想法，且眼神接觸及格率達 80% 以上。"
+            },
+            "asd_reciprocity": {
+                domain: "社交適應",
+                st_goal: "在對話時不獨佔或單向轟炸感興趣的話題，並在對方說完後給予至少 1 句合宜「接球回應」。",
+                t1: "科任老師在課室中推廣「話題乒乓球：輪流說話」規則，並在分組活動中配備發言代幣限制次數。",
+                t2: "參加社交溝通小組：訓練「話題維持與切換」技巧，利用乒乓球實物傳遞演練輪流溝通。",
+                t3: "特教老師每天利用 5 分鐘與學生進行「日常話題對話練習」，糾正並記錄非雙向對話偏差。",
+                home: "家長每天晚飯後與學生進行「5分鐘今日對談」遊戲，引導其在話題內維持雙向傾聽與回應。",
+                success: "小組導師在訓練課堂中隨機觀察學生的雙向對話表現，合宜接話成功率在 5 次演練中達 4 次以上。"
+            },
+            "asd_compromise": {
+                domain: "社交適應",
+                st_goal: "在分組研習討論或集體遊戲面臨意見分歧時，能同意採取協商並遵照妥協方案。",
+                t1: "老師在分組活動前，向小組成員提供「妥協折衷句式卡」，定下輪流發言與民主表決守則。",
+                t2: "在「社交小組」中，透過實戰合作型桌遊，強迫學生面對意見相左的場景，訓練「折衷與妥協」方案。",
+                t3: "在分組討論前，由教學助理 (TA) 進行預熱輔助，與學生約定「若意見不一，先深呼吸並向組長求助」。",
+                home: "家長在家中就家庭週末行程或晚餐進行模擬協商，引導孩子練習「一人退讓一步」的妥協方法。",
+                success: "在接下來 3 次跨科小組報告討論環節中，有 80% 以上的觀察次數能做到不與組員發生肢體或激烈的語言衝突。"
+            },
+            "adhd_interruption": {
+                domain: "社交適應",
+                st_goal: "在課堂或集體遊戲中能克制插嘴衝動，在獲得老師允許後才開始舉手發言。",
+                t1: "大堂授課時實行舉手常規，配合無聲視覺提示卡（如舉手圖卡、安靜圖卡）提醒班規。",
+                t2: "利用「紅綠燈自我監控法」：想說話時先在心裡數三下（紅燈停、黃燈想、綠燈行），確認舉手才說話。",
+                t3: "特教老師或 TA 每天下午與其進行 5 分鐘複盤，檢視其今日課堂插嘴或搶答次數並記錄在卡上。",
+                home: "家長在家中與孩子聊天時，刻意演練不隨便打斷別人發言，建立輪流對話的居家生活常規。",
+                success: "學生在未來三週內，課堂頻繁搶答、插嘴或干擾同學的行為次數能減少 80% 以上。"
+            },
+            "adhd_rules": {
+                domain: "社交適應",
+                st_goal: "在群體遊戲及小息排隊等候時能保持耐性，不與同學發生肢體或激烈語言碰撞。",
+                t1: "排隊或小息前，老師預先向其指出具體排隊位置，並給予清晰口頭指令與行為期望預告。",
+                t2: "在「行為調控小組」中進行排隊耐性脫敏演練，教導學生在輪候時默唸冷靜咒語或專注自我呼吸。",
+                t3: "TA 或值日老師在小息活動時進行現場視線覆蓋與抽樣觀察，發現排隊表現良好時即時給予蓋章肯定。",
+                home: "家長帶孩子到公共場所（如超市、遊樂場）時，共同實踐排隊耐性檢核，並給予正面精神鼓勵。",
+                success: "學生因排隊缺乏耐性而與同學發生口角、推撞等肢體衝突的次數在未來 1 個月內下降至 0 次。"
+            },
+            "sli_withdrawal": {
+                domain: "社交適應",
+                st_goal: "能克服溝通挫敗引起的焦慮，在小組社交活動中主動配合完成合宜的非口語或基礎口語角色任務。",
+                t1: "在分組時安排溫和友善的「同儕小天使」同組，並在小組任務中為其分派較低口語要求的角色（如計時員）。",
+                t2: "在言語輔助社交小組中，演練小組活動中的「打招呼、配合與求助」三大高頻率社交句型。",
+                t3: "教學助理在課堂討論期間給予非言語眼神鼓勵，並每天預留3分鐘與學生傾談，疏導溝通挫敗情緒。",
+                home: "家長多鼓勵孩子口頭分享在校快樂點滴，建立正面表達的安全感，避免對口語不流暢進行批評。",
+                success: "在隨後一個月內的小組活動中，學生主動參與並不發言社交退縮的次數有 80% 以上的改善。"
+            },
+            "I23": {
+                domain: "情緒適應",
+                st_goal: "能正確且合宜地運用 5 個中進階情緒詞彙描述自己或他人的感受，代替單一發脾氣或放棄行為。",
+                t1: "在語文或班會課中推廣「情緒豐富度詞彙卡」，張貼於教室牆壁，並帶領全班學習情緒細微強度區分。",
+                t2: "參加情緒理解小組：運用「情緒晴雨表」和情境卡，學習將模糊的不舒服感受標記為「沮喪」或「內疚」。",
+                t3: "TA 每天放學前引導學生勾選並填寫「今日情緒日記卡」，教導使用特定進階情緒詞語並拼讀口述原因。",
+                home: "家長每天晚飯後引導孩子使用特定進階詞彙（如「尷尬」、「自豪」）描述今天學校發生的事情。",
+                success: "在輔導日誌的隨機訪談記錄中，學生能自主且合宜地調用進階情緒詞語表達感受的成功率達 80% 以上。"
+            },
+            "asd_adhd_frustration": {
+                domain: "情緒適應",
+                st_goal: "在面臨突發常規更改、比賽輸掉或被老師糾正時，能冷靜5秒並自主前往避風角調控情緒。",
+                t1: "在教室後方配置溫馨冷靜角，張貼「情緒溫度計海報」。在常規或活動轉折前，老師給予學生提前5分鐘預告。",
+                t2: "參加「情緒急救箱小組」，反覆學習「深吸慢吐腹式呼吸法（5秒降溫法）」以及「Plan B 彈性思維法」。",
+                t3: "教學助理為其設計隨身攜帶的「口袋冷靜三部曲卡」：1. 停下、2. 深呼吸、3. 出示卡片前往冷靜角。",
+                home: "家長在家中建構相同的冷靜避風港，孩子生氣時不訓斥、不講理，先配合「口袋卡」引導孩子過渡。",
+                success: "本學年度在校內因受挫折而導致摔東西、哭鬧大吼等嚴重情緒崩溃的發生次數降為 0 次。"
+            },
+            "ebd_anxiety": {
+                domain: "情緒適應",
+                st_goal: "能在考評或人際焦慮升高前，主動辨識身體不適並利用「安心卡」常規前往輔導室放鬆降溫。",
+                t1: "科任老師熟悉焦慮生驚恐前驅身體表徵（手震、呼吸急促），主動遞送暖水袋，必要時引導前往冷靜區。",
+                t2: "由社工帶領正念與認知行為治療（CBT）小組，指導學生認識焦慮與軀體化的連繫，練習肌肉漸進放鬆。",
+                t3: "由 EP 及輔導團隊擬定其校本「安心卡常規」：學生感到焦慮難耐時，可無聲出示安心卡，自主前往輔導室休息 10 分鐘。",
+                home: "家長在家中維持低壓、接納的溝通氣氛，密切注意孩子晨間軀體化腹痛，並與特殊教育主任（SENCO）保持聯絡。",
+                success: "學生因焦慮引致在校內驚恐發作（Panic Attack）或拒學肚痛等危機事件發生頻率降至 0 次。"
+            },
+            "ebd_depression": {
+                domain: "情緒適應",
+                st_goal: "能克服無動力消沉狀態，在提示下參與日常學術與特定強項活動，重拾校園歸屬感與生活自信。",
+                t1: "科任老師分配低難度、高成就感的班級角色（如電腦管理員、課堂投影助手），給予即時讚賞與肯定。",
+                t2: "加入「抗逆力與生活激活小組」，引導將大目標拆分成微小、易實現的日程計劃，主動激活大腦成功感。",
+                t3: "輔導人員每週預留15分鐘與孩子進行一對一關懷對話，了解其興趣與困擾，建立安全、接納的防線關係。",
+                home: "家長每天發掘孩子的強項優勢（如電腦編程或畫畫），進行正面支持，避免對成績進行單一施壓。",
+                success: "學生在隨後兩個月內的各科課堂參與度、班級職責執行率和作業交齊率能提升至 80% 以上。"
+            },
+            "asd_stereotyped": {
+                domain: "特殊行為",
+                st_goal: "在課堂學習中，能以合宜、無聲之替代動作釋放自我刺激需求，減少轉筆、排列物品頻率。",
+                t1: "科任老師不對無害自我刺激行為（如轉筆、微弱搖晃）進行高頻粗暴干涉，避免誘發次級社交焦慮衝突。",
+                t2: "在「自理與行為調解小組」中，指導學生熟悉並接納自己的感官需求，演練無聲的精細手部肌肉替代動作。",
+                t3: "教學助理協助在課桌底下黏貼「粗糙魔術貼毛氈片」，容許學生在大班聽講時在桌下觸摸，隱蔽無聲地提供物理輸入通道。",
+                home: "家長在家中督導溫習時，提供軟捏捏球或減壓指尖陀螺，教導其在高度專注後合宜釋放需求。",
+                success: "在未來3個月內，學生因在班中進行干擾性刻板轉筆或搖晃而被老師口頭糾正的次數降低 80% 以上。"
+            },
+            "asd_sensory": {
+                domain: "特殊行為",
+                st_goal: "在面臨環境感官刺激（如鐘聲、裝修噪音）過載時，能主動配戴防噪耳罩維持情緒穩定。",
+                t1: "班中備妥可調低眩光的窗簾及防噪耳罩。當環境產生不可避免之突發噪音時，老師主動提前給予學生口頭預告。",
+                t2: "在感官調解與適應訓練中，引導其識別體內感官過載前兆（胸悶、耳鳴），演練自主配戴耳罩及前往冷靜角。",
+                t3: "TA 協助其管理並攜帶便攜式耳塞或減敏觸覺球，在大禮堂集會或突發火警演習時，全程在旁給予安全守護。",
+                home: "家長與學校保持密切防線配合。居家房間避免使用閃爍白光燈，配置適當柔和暖光源以助感官降溫。",
+                success: "學生在面對學校集會或體育課等嘈雜嘈音環境下，能維持感官平穩且不發生捂耳驚恐尖叫的達標率達 90% 以上。"
+            },
+            "adhd_sitting": {
+                domain: "特殊行為",
+                st_goal: "在課堂上能減少隨意編造理由（如頻繁削筆、上洗手間）離座行為，在安坐達 15 分鐘後才主動申請移動。",
+                t1: "科任老師為其分配合理的「動態班級任務」（如派發講義、擦黑板），滿足其在課堂內合規移動的身體需求。",
+                t2: "在「行為與常規自理小組」中，利用定時挑戰和代幣機制，訓練安坐 15 分鐘不離開座位的小技巧。",
+                t3: "在學生的課椅椅腳加裝高阻力「椅腳減壓彈力帶 (Bouncy Band)」，容許學生雙腳在課桌下擺動舒壓而不離座。",
+                home: "家長在家中也建立 20 分鐘安坐温習代幣盤，養成「專注完成一節、放鬆移動5分鐘」的規律時間規約。",
+                success: "本學年度內，學生在一節課中無故擅自離座或藉口外出次數能控制在 1 次以內。"
+            },
+            "adhd_fidgeting": {
+                domain: "特殊行為",
+                st_goal: "在課堂聽講時，手腳抖動或玩弄手邊多餘物件干擾大班的次數每節課不超過 1 次。",
+                t1: "實施「乾淨課桌常規」：上課時桌上僅限擺放一本書和一支筆，將鉛筆袋、量角器等分心物件收入抽屜。",
+                t2: "學習自我監控：手心癢時將雙手手指合攏互握置於膝蓋，或在大腿下放置靜音指捏矽膠軟球釋放手指張力。",
+                t3: "TA 定時進行暗號提示，每當發現其手腳抖動幅度過大時，給予預先約定的手勢，引導其自主調回常規坐姿。",
+                home: "家長每天核對其鉛筆盒，確保不攜帶非教學需要的發光、變形、有多功能按鍵的分心玩具回校。",
+                success: "經各科科任老師三週聯名隨機抽樣觀察，學生因玩弄多餘文具而被收去或口頭警告的次數成功降至 0 次。"
             },
 
-            // 乙部 社交適應 (對應最新細分項目)
-            'asd_nonverbal': {
-                domain: "社交適應",
-                title: "ASD-非語言溝通與眼神解讀弱",
-                shortTermGoal: "<strong>目標 2.1: 提升眼神接觸與非語言解讀</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>當與師長或同學進行雙向交談時，能主動維持眼神接觸 3-5 秒，並在引導下根據「面部表情情緒圖卡」正確說出對方的感受意圖。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 在課堂對談時主動停頓，給予學生 5 秒的非語言眼神交會緩衝時間。<br>• 日常教學多用「我的心情日記」看板提示全班表情符號含義。",
-                tier2: "<strong>小組支援:</strong><br>• 納入社工/心理學家主持的「社交思考特訓班 (Social Thinking)」。<br>• 利用鏡子、錄影回放進行眼神接觸、面部微表情解碼角色扮演。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• 配合<strong>學生個別訓練進度記錄表</strong>：TA 每天中午運用「情境解讀漫畫」，與學生回顧及拆解當天發生的人際事件，加深對非語言線索的感知能力。",
-                homeSchool: "家長在家與孩子講話時，溫和提示「請看著爸爸/媽媽的眼睛」，並在看電視時暫停畫面，詢問主角的表情感受。",
-                successIndicator: "在接下來的3個月裡，學生在學校輔導室、課室或操場上，與師長同學對談時，眼神接觸成功率由 20% 提升至 80% 以上。"
+            // ===== [新增非指標維度策略數據庫] =====
+            "curriculum_adapt": {
+                domain: "學科適應",
+                st_goal: "能適應主流學科難度，在提供學科詞彙框架與步驟拆解下，按時交齊至少 80% 的課堂功課。",
+                t1: "提供單元詞彙圖解框架，將長篇功課份量合理調適（如抄寫減半），並將繁複任務分拆（Chunking）教學。",
+                t2: "小組導師指導孩子運用「學外功課規劃矩陣」和「自我檢核表」，排解課業組織困難。",
+                t3: "教學助理 (TA) 進行一對一課業重構指導，排除理解障礙，幫助學生標記長文章重點。",
+                home: "家長每日協助孩子核對功課手冊，配合使用居家步驟拆解表，維持溫馨低壓力的督導。",
+                success: "在未來 3 個月內，學生主要科目功課的按時交齊率由 50% 提升至 80% 以上。"
             },
-            'asd_reciprocity': {
-                domain: "社交適應",
-                title: "ASD-缺乏社交迴響與單向話題轟炸",
-                shortTermGoal: "<strong>目標 2.2: 掌握雙向「對話乒乓球」溝通習慣</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>在與他人討論非自身興趣的話題時，能主動維持對話至少三個來回 (接球)，不主動打斷並詢問對方一次意見。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 全班課堂建立「輪流接球」交談文化，課桌貼上「先聽、後問、再講」對話三部曲提示。<br>• 提供「話題乒乓球」句型板輔助。",
-                tier2: "<strong>小組支援:</strong><br>• 納入「話題接球手社交小組」。<br>• 透過桌遊、合作任務限制每人發言時長，練習「當聽眾」時的口頭接球、不強行偏離話題的技巧。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 與其建立「話題代幣合約」，限定每天「我感興趣的话題」最多分享兩次，其餘時間必須配合完成大班話題練習。",
-                homeSchool: "家長在家進行「5分鐘晚餐話題對話」練習，規定孩子在父母講述工作/日常時，必須問至少一個關聯問題。",
-                successIndicator: "在學校輔導小組或大班午膳時間，學生在與同學非特定興趣主題之互動中，維持三輪以上合宜雙向對談的機率達 80% 並且無打斷行為。"
+            "assistive_tech": {
+                domain: "輔助科技與環境",
+                st_goal: "能獨立且合宜地操作校本輔助科技器材（如FM調頻系統或語音轉文字平板），提升課堂參與效能。",
+                t1: "任課教師授課時配戴好 FM 系統無線發射器，考卷提供放大高對比度排版，教室座位避開炫光。",
+                t2: "由校本職業治療 (OT) 或言語治療 (ST) 輔助訓練小組，指導學生調試、清潔及維護個人電子輔助器材。",
+                t3: "TA 每天早上確認設備電量，課堂上輔助其使用語音轉換文字平板進行寫作，或操作軌跡球滑鼠答題。",
+                home: "家長每日在家督促孩子充電並保養相關輔助器材，並配合進行居家語音輸入輔導訓練。",
+                success: "學生能自主操作並合適配戴輔具上課，因設備故障或漏電導致無法書寫或聽清指令的頻率降為 0。"
             },
-            'asd_compromise': {
-                domain: "社交適應",
-                title: "ASD-難融入群體與小組堅持己見",
-                shortTermGoal: "<strong>目標 2.3: 掌握小組協商與妥協雙贏策略</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>在進行跨學科小組討論或分組活動時，當意見與組員不合，能自主出示「妥協卡」，同意折衷或由小組進行多數投票表決，不發生抗拒或爭執。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 小組討論前，老師宣讀「妥協是雙贏」規則，並派發「小組討論常規卡」和指定角色分工。<br>• 示範「我明白你的觀點，我的建議是...」句式。",
-                tier2: "<strong>小組支援:</strong><br>• 安排加入「團隊協商與抗挫折工作坊」。<br>• 透過「拼圖合作」桌遊，強迫每人妥協自己的步驟去配合大局，練習「折衷方案」之談判流程。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• 在高難度分組活動前 5 分鐘，TA 進行一對一「預熱預告」，預先探討「若小組不採用我的想法」之 Plan B 行為對策。",
-                homeSchool: "家長在家與孩子商議家庭周末活動時，不採取父母命令，改由「妥協折衷制」投票，讓孩子在家中練習退一步的雙贏感。",
-                successIndicator: "在隨後3次分組課堂觀察中，學生在組員不同意其意見時，能成功運用「折衷方案」或配合表決的成功率達 80% 以上。"
+            "crisis_intervention": {
+                domain: "危機應變及安全",
+                st_goal: "在面臨焦慮過載或驚恐發作時，能主動出示口袋「安心卡」常規，自主前往指定冷靜避風港平復情緒。",
+                t1: "科任老師熟悉學生的驚恐前驅身體表徵（如手震、急促呼吸），提前予以冷靜提示，避免當眾指責。",
+                t2: "社工提供正念與認知行為治療（CBT）小組，演練「5秒腹式呼吸法」與壓力自我降溫。",
+                t3: "輔導團隊制定「安心卡避險常規」，學生可無聲出示安心卡，自主前往輔導室由社工緩衝10分鐘。",
+                home: "家長在家中配合建構冷靜角，當情緒爆發時不硬踫硬，引導孩子按照危機降溫步驟進行情緒過渡。",
+                success: "本學期學生在校內面臨極度挫折時，能在不發生肢體衝突或暴力破壞的情況下安全降溫、平復情緒。"
             },
-            'adhd_interruption': {
-                domain: "社交適應",
-                title: "ADHD-衝動插嘴搶答與打斷他人行為",
-                shortTermGoal: "<strong>目標 2.4: 提升課堂/社交等候與舉手常規</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>在普通班級課堂或與他人遊戲時，在感到想發言或插嘴前能做到：1. 閉嘴 2. 先舉手 3. 獲允許後方才開口發言，非授權插嘴頻率減至每節課 1 次以下。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 課室推行「手舉起、嘴合上」手勢，並採用「不舉手、不回應」的忽視策略，正面強化舉手答題的同儕。<br>• 使用「發言代幣/發言券」控制全班發言次數。",
-                tier2: "<strong>小組支援:</strong><br>• 參與「自我監控與衝動調控特訓小組」。<br>• 指導使用「紅綠燈自我監控卡」：紅燈（想插嘴時先閉嘴等 3 秒）、黃燈（舉手）、綠燈（獲准說話）。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 桌上擺放「等待視覺標示」，當學生試圖插嘴時，TA 僅需不發聲指點「等待標示」以減少言語刺激，引導其行為自我降溫。",
-                homeSchool: "家長在家中吃飯或交談時建立「輪流發言圈」，當有人講話時，其他人必須保持安靜不打斷，違反則扣除當日娛樂時間。",
-                successIndicator: "連續兩週由科任老師在堂上抽查，學生在上課期間非授權插嘴、搶答或打斷活動的次數由平均每堂 5 次以上降至 1 次或以下。"
-            },
-            'adhd_rules': {
-                domain: "社交適應",
-                title: "ADHD-難守規則、無法耐性輪候",
-                shortTermGoal: "<strong>目標 2.5: 提升團隊遊戲規則遵守與輪候能力</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>在體育課、小息或集體遊戲中，學生能耐心在隊伍中輪候至少 3 分鐘，不搶先、不推擠同學，遇到衝突時口頭尋求老師協助。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 隊伍排隊或遊戲前，再次明確重溫規則與獎懲代價。安排熱心穩重的同儕小天使貼身隨行排隊。<br>• 體育或課外活動前設定實體「輪候地貼/格線」提示身體距離。",
-                tier2: "<strong>小組支援:</strong><br>• 參加「守規則同樂小組」。<br>• 透過快節奏與慢節奏交替的桌遊與戶外合作遊戲，培訓學生面對等待時的「心率自我調節技巧」與合宜口頭反饋。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• 集隊或排隊時，TA 在近旁進行低度伴隨，當學生出現焦躁推擠苗頭，即時口頭提示「深呼吸，再等一下」並給予代幣貼紙正面肯定。",
-                homeSchool: "家長在日常出行（如搭巴士、買食物排隊）時，不代孩子排隊或提前離場，指導孩子在排隊時默數 50 下，轉移焦慮感。",
-                successIndicator: "在為期 3 個月內，學生在校園體育課與集隊中因無法耐心等待而引發的口角或肢體碰撞行為，次數降低 90% 以上。"
-            },
-            'sli_withdrawal': {
-                domain: "社交適應",
-                title: "SLI-溝通挫折型社交退縮",
-                shortTermGoal: "<strong>目標 2.6: 減少社交退縮，提升主動交往嘗試</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>在需要口語互動的小組遊戲中，在 1 名同儕小天使主動邀請下，不退縮拒絕，能嘗試安坐並使用至少 2 次口語或手勢回饋參與其中。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 設計低口語門檻、著重手部操作的小組遊戲。全班推行「聽不懂沒關係，多包容、多示範」的友善課室氛圍。<br>• 不在班中點名強迫該生進行長篇大論的閱讀或即興口述。",
-                tier2: "<strong>小組支援:</strong><br>• 與言語治療師配合，納入「漸進式社交信心重塑小組」。<br>• 學習社交必備的萬能輔助句型（如：「可以再說一次嗎？」、「我可以用畫的/指的嗎？」），克服害怕被取笑的障礙。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 在遊戲前與其一同預習流行語、笑話或同儕遊戲規則。設計「友誼小手冊」，記錄其每次主動參與社交的小成就。",
-                homeSchool: "家長多帶孩子與熟悉的鄰居玩伴進行小規模、無語言壓力之戶外運動（如踩單車、游水），慢慢建立社交自豪感。",
-                successIndicator: "學生在為期3個月的日常觀察記錄中，面對小組口語溝通活動時主動沉默不語或藉故離席避開的頻率降低 75% 以上。"
-            },
-
-            // 丙部 情緒適應 (對應最新細分項目)
-            'I23': {
-                domain: "情緒適應",
-                title: "I23 情緒理解與豐富詞彙表達",
-                shortTermGoal: "<strong>目標 3.1: 豐富情緒表達詞彙量</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>學生能流暢且正確地運用至少5個「進階情緒詞彙」（如：沮喪、內疚、受驚、自豪）來具體表達自己或別人的心理狀態。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 語文課閱讀理解時，老師多重提煉人物的進階情緒描述。<br>• 課室明顯處張貼「情緒晴雨表詞語卡」及「情緒表情輪」海報。",
-                tier2: "<strong>小組支援:</strong><br>• 納入「情緒管理與表達提升小組」。<br>• 運用「情緒大富翁」以遊戲化方式引導其學習分辨同等情緒類別下的不同細微強度層次。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 每天放學前利用「今日情绪檢視卡」，引導學生勾選今天的情緒詞並當面講述背後原因。",
-                homeSchool: "家長每天小息或晚餐時間詢問：「今天在學校有沒有感到『自豪』或『沮喪』的事情？」鼓勵主動使用進階情緒詞表達。",
-                successIndicator: "在輔導日誌的隨機訪談記錄中，學生能自主且合宜地調用進階情緒詞語表達感受的成功率達 80% 以上。"
-            },
-            'asd_adhd_frustration': {
-                domain: "情緒適應",
-                title: "ASD/ADHD-挫折容忍度低、易激動崩潰",
-                shortTermGoal: "<strong>目標 3.2: 挫折防禦與常規突變降溫</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>當面臨挫折（如默書退步、比賽輸了、日程更改）感到憤怒或極度焦慮時，不摔桌椅、不哭鬧抗拒，能在自我提示下自主申請前往「冷靜角」或向師長出示「冷靜卡」。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 在教室後方配置溫馨冷靜角，張貼「情緒溫度計海報」與降溫 3 步驟指示。<br>• 熟悉其情緒瀕臨失控的「黃金前兆」，合時引導轉換環境。",
-                tier2: "<strong>小組支援:</strong><br>• 參加「情緒急救箱與壓力調解小組」。<br>• 演練與學習「深吸慢吐腹式呼吸法」、「肌肉漸進放鬆法」等即時身體物理降溫。學習「預先 Plan B 思維」演練常規突變情境。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 為其設計「口袋危機處理卡 (Meltdown SOS Card)」，隨身攜帶，標示：1. 閉眼深呼吸 2. 握拳 3. 找 TA / 社工求助三部曲。",
-                homeSchool: "家長在家中配合建構冷靜避風港，當孩子生氣時不硬碰硬、不訓斥，指導其依「口袋危機處理卡」進行情緒過渡。",
-                successIndicator: "本學期在校園內因挫折導致暴力、自傷或破壞物件的情緒大崩潰 (Meltdown) 發生頻率由每學期 3 次以上下降至 0 次。"
-            },
-            'ebd_anxiety': {
-                domain: "情緒適應",
-                title: "EBD-焦慮過度擔憂與軀體化反應",
-                shortTermGoal: "<strong>目標 3.3: 減輕精神焦慮、緩解軀體化不適症狀</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>當面對考試、課業壓力而感到極度驚恐，或開始主訴肚子痛、頭痛時，能主動自評情緒分數 (1-10分)，並配合安心呼吸法 5 分鐘，焦慮感緩解並安坐回原位。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 任課教師對精神焦慮危險訊號（如手抖、過度呼吸、眼神空洞）保持高度警覺。避免在大班公開宣讀成績排名、考卷發放。<br>• 允許其課堂上將一瓶熱水暖水袋置於腹部（緩解軀體痛感障礙）。",
-                tier2: "<strong>小組支援:</strong><br>• 安排參與由社工或心理學家帶領之「認知行為療法 (CBT) 焦慮調減工作坊」。<br>• 學習壓力情境拆解：理清「非理性的災難化想法」，建立健康的心理防線。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• 製作客製化「安心卡」，TA 每日早晨會面，溫和關懷其身體狀況並檢測心情溫度。當其痛苦主訴出現時，提供 10 分鐘輔導室安全緩衝時間，再引導回課堂。",
-                homeSchool: "家長每日聆聽孩子心聲，不給予指責、施壓，建立低壓力期待，並與校方及主治精神科醫生/輔導員保持緊密聯繫。",
-                successIndicator: "因考試、壓力而引發的嚴重焦慮肚痛/頭痛躯體不適頻率，在 3 個月內減少 80% 以上，能按時完成日常考評。"
-            },
-            'ebd_depression': {
-                domain: "情緒適應",
-                title: "EBD-長期情緒消沉與無動力退縮",
-                shortTermGoal: "<strong>目標 3.4: 提升校園參與感，激活興趣成功感</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>每天能自主挑選並主動參與 1 項與個人強項或感興趣（如電腦編程/體育活動）相關的課堂任務或職責，維持基本的活力反饋與主動配合度。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 班主任在班級內為其量身定制「低壓力高成就感」的班級職責（如：電腦設備管理員、圖書角落登記員）。<br>• 教師多發現並肯定其特長，在班內創造被需要的安全感。",
-                tier2: "<strong>小組支援:</strong><br>• 納入「正向心理與自我價值重塑小組」。<br>• 透過興趣分享、同儕互助讚賞常規，重新激活其內在主動性，打破消沉僵局。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 與其建立「每日成功記錄本」，用照片或貼紙記下每一件小成就（例如成功操作電腦、與同學合作等）。<br>• 允許其在精神極度低落時，申請前往社工室進行安靜充電。",
-                homeSchool: "家長在家中減少課業成績催促，每日花 10 分鐘關注其心理需求，肯定其興趣愛好，避免責怪其消極、懶惰或逃避行為。",
-                successIndicator: "在接下來的3個月裡，學生表現出極度消沉、對所有事物完全不感興趣、抗拒或無故缺課的日數下降 75% 以上。"
-            },
-
-            // 丁部 特殊行為與感官範疇 (自閉症與過動症專用)
-            'asd_stereotyped': {
-                domain: "特殊行為",
-                title: "ASD-刻板重覆、轉筆排列與仿說行為",
-                shortTermGoal: "<strong>目標 4.1: 引導刻板重複行為轉化為合宜替代動作</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>在課堂上感到焦慮、試圖重覆搖晃身體或瘋狂排列物件時，能在自我提示下自主使用「替代舒壓小物」（如捏捏樂軟膠、無聲旋轉小球），不干擾課室秩序。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 實行包容性 UDL 環境：對無聲、不干擾他人的自我刺激行為（如輕微轉筆、輕晃身體）予以包容，不公開斥責以防引發更大焦慮。<br>• 當其出現重覆仿說（語延）時，教師溫和口頭轉換焦點。",
-                tier2: "<strong>小組支援:</strong><br>• 參加「自我刺激替代常規訓練小組」。<br>• 學習「無聲替代物」的適宜運用場景（如：桌下貼毛氈提供觸覺輸入，取代轉筆和排列物件的視覺固執行為）。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 為其桌下張貼「觸覺貼」，或者在其外套口袋內放置無聲舒壓軟球。TA 當發現其刻板行為強度增加時，以溫和手勢（非斥責口吻）指引其轉換為觸覺替代舒壓。",
-                homeSchool: "家長在家中避免用嚴厲或暴力方式強行制止孩子的自我刺激行為，多配合提供無聲舒壓小物並建立規律的作息常規。",
-                successIndicator: "學生在普通堂上因刻板重複行為（如排列物品、搖晃身體、高聲轉筆）而遭受老師投訴或干擾課室秩序的次數降低至 0 次。"
-            },
-            'asd_sensory': {
-                domain: "特殊行為",
-                title: "ASD-感官過敏、捂耳及崩潰過載防護",
-                shortTermGoal: "<strong>目標 4.2: 建立感官過載保護與應對常規</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>當面臨環境尖銳聲響（如小息鐘聲、突發裝修聲、火警演習）導致極度焦躁捂耳時，能自主取出隨身攜帶之「降噪耳罩」戴上，並前往冷靜角避險。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 對班內多重感官刺激物進行優化：不貼反光炫目的裝飾，保持低噪聲環境。<br>• 提前 3 分鐘為其口頭預告「待會將有突發巨響（如火警演習）」，給予心裡防備與逃避過渡時間。",
-                tier2: "<strong>小組支援:</strong><br>• 物理/職業治療師 (PT/OT) 協同指導「感官統合調適训练」。<br>• 訓練學生自我評估「感官過載程度」（如：1級可以忍受、5級必須避險），演練戴耳罩及前往冷靜室的安全動線。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 協助學生在其書包、課桌固定位置常備一副高性能降噪耳塞。TA 在轉堂或學校集會等嘈雜情境提供伴隨，必要時引導前往社工室避難。",
-                homeSchool: "家長在週末帶孩子去人流密集、雜音多之公共場所時，務必攜帶相同的耳塞或降噪耳罩，訓練其自我佩戴，不強行刺激。",
-                successIndicator: "在遭受突發學校巨響或感官過載情境下，學生能自主調用降噪耳罩並成功預防 Meltdown 情緒崩潰的成功率達 100%。"
-            },
-            'adhd_sitting': {
-                domain: "特殊行為",
-                title: "ADHD-無法安坐與頻繁尋找藉口離座",
-                shortTermGoal: "<strong>目標 4.3: 減少無故離座，提升合宜課堂安坐時長</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>在每節 35 分鐘的普通學科堂內，能連續安坐桌前不無故起立（無故離座、藉口削筆或上洗手間頻率由每節堂 3 次降至最多 1 次，並先舉手獲得允許）。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 建立「有規律的活動離座常規」：允許該生擔任「收集功課本」、「分發工作紙」等合宜離座助手，把精力轉化為正面任務。<br>• 限制削鉛筆和無故上洗手間的次數，並採用「視覺日程計時器」提示下課時間。",
-                tier2: "<strong>小組支援:</strong><br>• 參加「自我行為管理監控工作坊」。<br>• 學習「分段計時挑戰卡」：在 15 分鐘、25 分鐘分段不離座後，允許自己獲得一枚行為貼紙作為獎勵，逐步拉長安坐時間。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 在其課椅上配備「減壓彈力帶 (Bouncy Band)」，讓學生雙腳踩在上面晃動，以物理方式釋放多餘多動能量，但不影響安坐。<br>• 每天由 TA 小結「安坐代幣盤」。",
-                homeSchool: "家長在家中做作業時，允許孩子做 20 分鐘作業、站立或拉伸 5 分鐘，建立規律的分段安坐和健康運動釋放習慣。",
-                successIndicator: "在為期 3 個月內，學生在語文、數理等主科堂上無故起立或藉故離座干擾秩序次數由每堂平均 3 次下降至每堂不超過 1 次。"
-            },
-            'adhd_fidgeting': {
-                domain: "特殊行為",
-                title: "ADHD-手腳抖動、玩弄物件等小動作不斷",
-                shortTermGoal: "<strong>目標 4.4: 減少非教學小動作，提升手部專注力</strong><br><br><span class='text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded inline-block mt-1 font-semibold border border-indigo-100'>SMART 原則:</span><br><span class='text-slate-600 mt-1 block'>在上課聽講時，手腳能保持基本平穩安靜，玩弄文具（如尺子、橡皮擦）導致發聲或分心行為，經提示一次後，能自主收起文具維持 10 分鐘，成功率達 80% 以上。</span>",
-                tier1: "<strong>科任老師 (全班):</strong><br>• 實施「課桌簡約政策」：上課時，課桌上只能擺放當前正在使用的書本和一支筆，其餘所有干擾文具（如多色原子筆、尺、橡皮）一律收進抽屜。<br>• 教師講課時多使用肢體語言吸引其注意力。",
-                tier2: "<strong>小組支援:</strong><br>• 參加「手部精細活動自我調節與專注控制班」。<br>• 指導使用「手指黏土/壓力軟膠」等專門手部發洩小物，限定僅在課堂聽講時置於課桌底下操作，不發出聲音且雙眼必須注視黑板。",
-                tier3: "<strong>個別化/教學助理 (TA):</strong><br>• TA 在其課桌上粘貼「專注圈」格線，規定所有筆記和雙手必須保持在格線內。當學生手腳劇烈抖動或敲擊文具時，TA 給予無聲肢體輕觸提示。",
-                homeSchool: "家長在家中溫習環境中落實相同的課桌簡潔常規。每晚輔導時引導孩子手捏舒壓小物，提高手腳平穩度並減少小動作次數。",
-                successIndicator: "連續 4 週由課堂科任老師抽樣記錄學生的手腳抖動、敲打筆、玩玩弄橡皮等非學習小動作，發生次數降至每節堂不超過 2 次。"
+            "life_transition": {
+                domain: "生涯規劃與轉銜",
+                st_goal: "能掌握基本的生涯規劃與獨立生活技能，主動搜集並分析至少 2 個感興趣的升學或就業方向。",
+                t1: "班主任提供大專升學調適指南、DSE 考評調適攻略，大班分享大專組員合作與社交生存守則。",
+                t2: "參加「拉闊校園升學/職場轉銜小組」，進行模擬面試演練、大專選科諮詢與社區出行訓練。",
+                t3: "特教老師進行一對一職涯諮詢，結合學生的強項與電腦等興趣，擬定具體可行的生涯發展方向。",
+                home: "家長多帶孩子參與社區獨立出行與社交，並與學校 SENCO 共同商討畢業後的轉銜支援方向。",
+                success: "學生能獨立搜集並完成至少 2 份感興趣的升學或職場面試準備材料，並對前路表現出正向態度。"
             }
         };
 
-        function generateIEP() {
-            const name = document.getElementById('studentName').value || '未提供姓名';
-            const grade = document.getElementById('studentGrade').value || '未提供年級';
-            
-            // 獲取多個核取方塊的教育診斷類別
-            const senCheckboxes = document.querySelectorAll('input[name="senType"]:checked');
-            const selectedSens = Array.from(senCheckboxes).map(cb => {
-                return cb.closest('label').textContent.trim();
-            });
-            const senTypeStr = selectedSens.length > 0 ? selectedSens.join('、') : '未有提供確診類別';
+        let rowCount = 1;
 
-            const strengths = document.getElementById('studentStrengths').value || '未有特別觀察記錄。';
-            const weaknesses = document.getElementById('studentWeaknesses').value || '未有特別觀察記錄。';
-            
-            // 獲取勾選的行為特徵
-            const checkboxes = document.querySelectorAll('.behavior-cb:checked');
-            const selectedKeys = Array.from(checkboxes).map(cb => cb.value);
+        function addRow() {
+            const tbody = document.getElementById('tableBody');
+            const newRow = document.createElement('tr');
+            newRow.className = "hover:bg-slate-50/50 transition";
+            newRow.innerHTML = `
+                <td class="p-2 border-r border-slate-200">
+                    <input type="text" placeholder="範疇區塊" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none font-bold text-slate-800">
+                </td>
+                <td class="p-2 border-r border-slate-200">
+                    <textarea rows="4" placeholder="請輸入短期目標..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                </td>
+                <td class="p-2 border-r border-slate-200">
+                    <textarea rows="4" placeholder="課堂支援技巧..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                </td>
+                <td class="p-2 border-r border-slate-200">
+                    <textarea rows="4" placeholder="小組抽離支援..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                </td>
+                <td class="p-2 border-r border-slate-200">
+                    <textarea rows="4" placeholder="個別化抽離訓練..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                </td>
+                <td class="p-2 border-r border-slate-200">
+                    <textarea rows="4" placeholder="家長居家配合點..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                </td>
+                <td class="p-2 border-r border-slate-200">
+                    <textarea rows="4" placeholder="評估達標量化條件..." class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed"></textarea>
+                </td>
+                <td class="p-2 border-r border-slate-200 text-center align-middle">
+                    <input type="radio" name="status_${rowCount}" value="完全" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                </td>
+                <td class="p-2 border-r border-slate-200 text-center align-middle">
+                    <input type="radio" name="status_${rowCount}" value="部分" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                </td>
+                <td class="p-2 border-r border-slate-200 text-center align-middle">
+                    <input type="radio" name="status_${rowCount}" value="尚未" checked class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                </td>
+                <td class="p-2 text-center align-middle">
+                    <button onclick="deleteRow(this)" class="text-rose-500 hover:text-rose-700 p-1.5 transition">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(newRow);
+            rowCount++;
+        }
+
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            if (document.querySelectorAll('#tableBody tr').length > 1) {
+                row.remove();
+            } else {
+                showToast('請至少保留一項短期目標計劃內容項目。', 'error');
+            }
+        }
+
+        // 智能 AI 臨床策略填充引擎 (根據左側指標與維度勾選組合，動態組裝右側大表與弱項)
+        function autoPopulateFromLseaq() {
+            const cbs = document.querySelectorAll('.behavior-cb:checked');
+            const selectedKeys = Array.from(cbs).map(cb => cb.value);
 
             if (selectedKeys.length === 0) {
-                showToast('請至少勾選一項 LSEAQ-II 觀察指標', 'error');
+                showToast("請至少在左側的 LSEAQ-II 觀察指標或全人支援維度中勾選一項！", "error");
                 return;
             }
 
-            document.getElementById('initialState').classList.add('hidden');
-            document.getElementById('resultState').classList.add('hidden');
-            document.getElementById('loadingState').classList.remove('hidden');
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = ''; // 清空右側大表
 
-            simulateAILoading(() => {
-                const reportHTML = buildReportHTML(name, grade, senTypeStr, strengths, weaknesses, selectedKeys);
-                document.getElementById('reportContent').innerHTML = reportHTML;
-                
-                document.getElementById('loadingState').classList.add('hidden');
-                document.getElementById('resultState').classList.remove('hidden');
-                showToast('IEP 報告已成功生成！', 'success');
+            selectedKeys.forEach((key, index) => {
+                const data = lseaqClinicDb[key];
+                if (!data) return;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/50 transition";
+                tr.innerHTML = `
+                    <td class="p-2 border-r border-slate-200">
+                        <input type="text" value="${data.domain}" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none font-bold text-slate-800">
+                    </td>
+                    <td class="p-2 border-r border-slate-200">
+                        <textarea rows="4" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed">${data.st_goal}</textarea>
+                    </td>
+                    <td class="p-2 border-r border-slate-200">
+                        <textarea rows="4" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed">${data.t1}</textarea>
+                    </td>
+                    <td class="p-2 border-r border-slate-200">
+                        <textarea rows="4" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed">${data.t2}</textarea>
+                    </td>
+                    <td class="p-2 border-r border-slate-200">
+                        <textarea rows="4" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed">${data.t3}</textarea>
+                    </td>
+                    <td class="p-2 border-r border-slate-200">
+                        <textarea rows="4" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed">${data.home}</textarea>
+                    </td>
+                    <td class="p-2 border-r border-slate-200">
+                        <textarea rows="4" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-indigo-500 rounded p-1 outline-none resize-none leading-relaxed">${data.success}</textarea>
+                    </td>
+                    <td class="p-2 border-r border-slate-200 text-center align-middle">
+                        <input type="radio" name="status_${index}" value="完全" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                    </td>
+                    <td class="p-2 border-r border-slate-200 text-center align-middle">
+                        <input type="radio" name="status_${index}" value="部分" checked class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                    </td>
+                    <td class="p-2 border-r border-slate-200 text-center align-middle">
+                        <input type="radio" name="status_${index}" value="尚未" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500">
+                    </td>
+                    <td class="p-2 text-center align-middle">
+                        <button onclick="deleteRow(this)" class="text-rose-500 hover:text-rose-700 p-1.5 transition">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
+
+            // 同步整理重組學生的「弱項」與「長期目標」
+            let dynamicWeaknesses = [];
+            let dynamicGoals = [];
+            selectedKeys.forEach((key, index) => {
+                const data = lseaqClinicDb[key];
+                dynamicWeaknesses.push(`${index+1}. ${data.st_goal}`);
+                dynamicGoals.push(`${index+1}. 能在${data.domain}中建立替代行為常規並改善弱項適應能力。`);
+            });
+
+            document.getElementById('weaknesses').value = dynamicWeaknesses.join('\n');
+            document.getElementById('longTermGoals').value = dynamicGoals.join('\n');
+
+            showToast("成功依指標與維度組裝對應三層策略！");
         }
 
-        function simulateAILoading(callback) {
-            const steps = [
-                "分析 LSEAQ-II 常模臨床指標...",
-                "正在進行多重特殊診斷之因果匹配...",
-                "正在為所選項目建構 SMART 目標...",
-                "正在整合校園一、二、三層支援計畫...",
-                "正在規劃家校協作常規與評估指標...",
-                "排版完成，報告裝配中..."
-            ];
-            let currentStep = 0;
-            const loadingText = document.getElementById('loadingText');
-            const loadingBar = document.getElementById('loadingBar');
+        // 高質量靜態數據轉換器 (專門用於打印及 Word/Excel 導出，隔離 LSEAQ 觀察面板)
+        function generateHighFidelityStaticHtml() {
+            const school = document.getElementById('schoolName').value || '（學校名稱）';
+            const name = document.getElementById('studentName').value || '未填寫';
+            const sClass = document.getElementById('studentClass').value || '未填寫';
+            const discussDate = document.getElementById('discussDate').value || '未填寫';
+            const duration = document.getElementById('duration').value || '未填寫';
             
-            const interval = setInterval(() => {
-                currentStep++;
-                loadingText.innerText = steps[min(currentStep, steps.length - 1)];
-                loadingBar.style.width = `${(currentStep / steps.length) * 100}%`;
-                if (currentStep >= steps.length) {
-                    clearInterval(interval);
-                    setTimeout(callback, 300); 
-                }
-            }, 450); 
-            
-            function min(a, b) {
-                return a < b ? a : b;
-            }
-        }
+            const cbs = document.querySelectorAll('input[name="senType"]:checked');
+            const senTypesMapping = {
+                "ASD": "自閉症 (ASD)", "ADHD": "專注力不足/過度活躍 (ADHD)", "SpLD": "讀寫障礙 (SpLD)", 
+                "SLI": "言語障礙 (SLI)", "ID": "智力障礙 (ID)", "Borderline": "有限智能 (Borderline)",
+                "PD": "肢體殘障 (PD)", "HI": "聽力障礙 (HI)", "VI": "視力障礙 (VI)", "MI": "精神病範疇 (MI)"
+            };
+            const sensText = Array.from(cbs).map(cb => senTypesMapping[cb.value] || cb.value).join("、");
 
-        function buildReportHTML(name, grade, senType, strengths, weaknesses, selectedKeys) {
-            const d = new Date();
-            const year = d.getFullYear();
-            const periodStr = `${year}年${d.getMonth()+1}月${d.getDate()}日 至 ${year}年${d.getMonth()+4}月${d.getDate()}日 (約3個月)`;
+            const strengths = document.getElementById('strengths').value.replace(/\n/g, '<br>');
+            const weaknesses = document.getElementById('weaknesses').value.replace(/\n/g, '<br>');
+            const ltg = document.getElementById('longTermGoals').value.replace(/\n/g, '<br>');
 
-            // 1. 整理學生勾選的「現況特徵表現」
-            let currentConditionsHTML = selectedKeys.map(key => {
-                const item = lseaqDb[key];
-                return `<li class="ml-4 list-disc text-slate-700 font-medium">${item.title}</li>`;
-            }).join('');
+            let tableRowsHtml = "";
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach((row, rowIndex) => {
+                const inputs = row.querySelectorAll('input[type="text"]');
+                const textareas = row.querySelectorAll('textarea');
+                const radios = row.querySelectorAll('input[type="radio"]');
 
-            // 2. 整理長期目標 (依據勾選領域動態拼接)
-            let uniqueDomains = [...new Set(selectedKeys.map(k => lseaqDb[k].domain))];
-            let longTermGoalsArray = [];
-            if (uniqueDomains.includes("學習適應")) longTermGoalsArray.push("提升課堂持續專注及獨立工作能力、建立工作排序與自我組織管理習慣。");
-            if (uniqueDomains.includes("言語與溝通")) longTermGoalsArray.push("加強口頭主謂賓完整句型表達能力、掌握雙重與複合多步指令執行力。");
-            if (uniqueDomains.includes("認知與適應")) longTermGoalsArray.push("掌握學術概念的細步分解學習法、運用具體物件和公式卡片克服抽象思維限制。");
-            if (uniqueDomains.includes("社交適應")) longTermGoalsArray.push("掌握雙向互動話題接球對話、能主動解讀表情並理解他人觀點、在小組合作討論中達成雙贏折衷。");
-            if (uniqueDomains.includes("情緒適應")) longTermGoalsArray.push("豐富進階情緒表達詞彙、掌握情緒溫度計及口袋危機冷緊降溫技巧以有效預防失控。");
-            if (uniqueDomains.includes("特殊行為")) longTermGoalsArray.push("引導刻板與重複行為轉化為合宜之替代舒壓習慣、調適感官過敏、減緩過動離座或敲打小動作、穩定維持課堂學習紀律。");
-            
-            const longTermGoalText = longTermGoalsArray.join('；');
+                const domain = inputs[0] ? inputs[0].value : '';
+                const stg = textareas[0] ? textareas[0].value.replace(/\n/g, '<br>') : '';
+                const t1 = textareas[1] ? textareas[1].value.replace(/\n/g, '<br>') : '';
+                const t2 = textareas[2] ? textareas[2].value.replace(/\n/g, '<br>') : '';
+                const t3 = textareas[3] ? textareas[3].value.replace(/\n/g, '<br>') : '';
+                const home = textareas[4] ? textareas[4].value.replace(/\n/g, '<br>') : '';
+                const success = textareas[5] ? textareas[5].value.replace(/\n/g, '<br>') : '';
 
-            // 3. 生成個別範疇的表格 Row
-            let tableRows = selectedKeys.map(key => {
-                const row = lseaqDb[key];
-                return `
-                    <tr class="hover:bg-slate-50/50 transition-colors">
-                        <td class="font-bold text-center text-slate-800 bg-slate-50/20" contenteditable="true">${row.domain}</td>
-                        <td class="text-xs text-slate-700 leading-relaxed" contenteditable="true">${row.shortTermGoal}</td>
-                        <td class="text-xs text-slate-600 leading-relaxed" contenteditable="true">${row.tier1}</td>
-                        <td class="text-xs text-slate-600 leading-relaxed" contenteditable="true">${row.tier2}</td>
-                        <td class="text-xs text-slate-600 leading-relaxed" contenteditable="true">${row.tier3}</td>
-                        <td class="text-xs text-slate-600 leading-relaxed" contenteditable="true">${row.homeSchool}</td>
-                        <td class="font-bold text-xs text-emerald-700 leading-relaxed" contenteditable="true">${row.successIndicator}</td>
+                let checkFull = '';
+                let checkPart = '';
+                let checkNotyet = '';
+
+                radios.forEach(radio => {
+                    if (radio.checked) {
+                        if (radio.value === '完全') checkFull = '✓';
+                        if (radio.value === '部分') checkPart = '✓';
+                        if (radio.value === '尚未') checkNotyet = '✓';
+                    }
+                });
+
+                tableRowsHtml += `
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top;">${domain}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top;">${stg}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top;">${t1}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top;">${t2}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top;">${t3}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top;">${home}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top;">${success}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: middle; text-align: center; font-weight: bold;">${checkFull}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: middle; text-align: center; font-weight: bold;">${checkPart}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: middle; text-align: center; font-weight: bold;">${checkNotyet}</td>
                     </tr>
                 `;
-            }).join('');
+            });
 
             return `
-                <div class="text-center mb-6 border-b border-slate-800 pb-4">
-                    <h2 class="text-xl font-bold text-slate-800 mb-1" contenteditable="true">[請點擊輸入學校名稱]</h2>
-                    <h1 class="text-2xl font-black text-slate-900 tracking-widest" contenteditable="true">個別學習計劃 (IEP)</h1>
-                    <p class="text-[10px] text-slate-500 mt-2 font-mono uppercase tracking-wider">CONFIDENTIAL / 機密專業文件</p>
-                </div>
-
-                <!-- 學生基本資料 -->
-                <table class="w-full text-sm mb-6 border-collapse">
-                    <tr class="border-b border-slate-200">
-                        <td class="py-2 w-1/4 font-bold text-slate-600">學生姓名：</td>
-                        <td class="py-2 w-1/4 text-slate-900 font-semibold" contenteditable="true">${name}</td>
-                        <td class="py-2 w-1/4 font-bold text-slate-600">班級/年級：</td>
-                        <td class="py-2 w-1/4 text-slate-900 font-semibold" contenteditable="true">${grade}</td>
-                    </tr>
-                    <tr class="border-b border-slate-200">
-                        <td class="py-2 font-bold text-slate-600">主要發展挑戰 / SEN 確診：</td>
-                        <td class="py-2 text-slate-900 font-semibold" colspan="3" contenteditable="true">${senType}</td>
-                    </tr>
-                    <tr>
-                        <td class="py-2 font-bold text-slate-600">施行時段：</td>
-                        <td class="py-2 text-slate-900 font-medium" colspan="3" contenteditable="true">${periodStr}</td>
-                    </tr>
-                </table>
-
-                <!-- 現況能力與強弱項 (PLOP) -->
-                <div class="mb-6 border-l-4 border-emerald-500 pl-4">
-                    <h3 class="font-bold text-base text-slate-800 mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-user-gear text-emerald-600"></i> 學生的現況能力與挑戰 (PLOP)
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs mb-3">
-                        <div class="bg-emerald-50/80 p-3 rounded-xl border border-emerald-100">
-                            <span class="font-bold text-emerald-700 block mb-1">🌟 強項與特點：</span>
-                            <p class="text-slate-700 leading-relaxed" contenteditable="true">${strengths}</p>
-                        </div>
-                        <div class="bg-rose-50/80 p-3 rounded-xl border border-rose-100">
-                            <span class="font-bold text-rose-700 block mb-1">⚠️ 弱項與限制挑戰：</span>
-                            <p class="text-slate-700 leading-relaxed" contenteditable="true">${weaknesses}</p>
-                        </div>
+                <div style="font-family: Arial, 'Microsoft JhengHei', sans-serif; line-height: 1.6; color: #000000; background: #ffffff; padding: 20px;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h2 style="margin: 0; font-size: 18px; font-weight: bold;">${school}</h2>
+                        <h1 style="margin: 5px 0 0 0; font-size: 22px; font-weight: 900; letter-spacing: 2px;">個別學習計劃 (IEP)</h1>
+                        <p style="margin: 5px 0 0 0; font-size: 10px; font-family: monospace; color: #555555; text-transform: uppercase; letter-spacing: 1px;">CONFIDENTIAL / 內部機密文件</p>
                     </div>
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs mt-2">
-                        <span class="font-bold text-slate-700 block mb-1">📊 LSEAQ-II 問卷篩選高關注項目：</span>
-                        <ul class="list-disc pl-2 space-y-1">
-                            ${currentConditionsHTML}
-                        </ul>
-                    </div>
-                </div>
 
-                <!-- 長期目標 -->
-                <div class="mb-6">
-                    <div class="bg-slate-100 p-4 rounded-xl border border-slate-200 text-xs">
-                        <h4 class="font-bold text-slate-800 mb-1 flex items-center gap-1.5">
-                            <i class="fa-solid fa-bullseye text-indigo-600"></i> IEP 協商長期學習目標 (Long-term Goals)
-                        </h4>
-                        <p class="text-slate-700 mt-1 leading-relaxed font-semibold" contenteditable="true">${longTermGoalText}</p>
-                    </div>
-                </div>
-
-                <!-- 核心 IEP 表格 (三層支援模式) -->
-                <p class="text-[10px] text-slate-400 mb-2 no-print flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> 提示：生成的表格欄位均可直接點擊進行文字編輯與自訂調整。</p>
-                <table class="w-full text-xs iep-table border-collapse text-left shadow-sm rounded-lg overflow-hidden">
-                    <thead>
+                    <!-- 基本檔案表格 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; border: 1px solid #000000;" border="1">
                         <tr>
-                            <th rowspan="2" class="w-[8%] text-center align-middle">範疇</th>
-                            <th rowspan="2" class="w-[18%] align-middle">短期目標<br><span class="text-[10px] font-normal text-slate-500">(SMART 原則)</span></th>
-                            <th colspan="3" class="text-center bg-emerald-50 text-emerald-800 border-b-slate-300 border-b py-2">支援策略 (三層支援模式)</th>
-                            <th rowspan="2" class="w-[12%] align-middle">家校合作</th>
-                            <th rowspan="2" class="w-[12%] align-middle">成功指標</th>
+                            <td style="padding: 8px; border: 1px solid #000000; font-weight: bold; background-color: #f2f2f2; width: 15%;">學生姓名：</td>
+                            <td style="padding: 8px; border: 1px solid #000000; width: 35%;">${name}</td>
+                            <td style="padding: 8px; border: 1px solid #000000; font-weight: bold; background-color: #f2f2f2; width: 15%;">班級 (年齡)：</td>
+                            <td style="padding: 8px; border: 1px solid #000000; width: 35%;">${sClass}</td>
                         </tr>
-                        <tr class="bg-slate-100">
-                            <th class="w-[16%] py-1">第一層針對性<br><span class="text-[9px] font-normal text-slate-500">(普通課堂/科任老師)</span></th>
-                            <th class="w-[16%] py-1">第二層<br><span class="text-[9px] font-normal text-slate-500">(小組支援)</span></th>
-                            <th class="w-[16%] py-1">第三層<br><span class="text-[9px] font-normal text-slate-500">(個別化/教學助理)</span></th>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #000000; font-weight: bold; background-color: #f2f2f2;">需要類別：</td>
+                            <td style="padding: 8px; border: 1px solid #000000;">${sensText}</td>
+                            <td style="padding: 8px; border: 1px solid #000000; font-weight: bold; background-color: #f2f2f2;">討論日期：</td>
+                            <td style="padding: 8px; border: 1px solid #000000;">${discussDate}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        ${tableRows}
-                    </tbody>
-                </table>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #000000; font-weight: bold; background-color: #f2f2f2;">計劃施行時段：</td>
+                            <td style="padding: 8px; border: 1px solid #000000;" colspan="3">${duration}</td>
+                        </tr>
+                    </table>
 
-                <div class="mt-10 pt-6 border-t border-slate-300 grid grid-cols-3 gap-4 text-xs text-center font-bold text-slate-500 no-print">
-                    <div>
-                        <div class="border-b border-slate-400 pb-1 w-3/4 mx-auto mb-2"></div>
-                        <span>科任老師簽署</span>
-                    </div>
-                    <div>
-                        <div class="border-b border-slate-400 pb-1 w-3/4 mx-auto mb-2"></div>
-                        <span>特殊教育統籌主任 (SENCO)</span>
-                    </div>
-                    <div>
-                        <div class="border-b border-slate-400 pb-1 w-3/4 mx-auto mb-2"></div>
-                        <span>家長簽署</span>
-                    </div>
+                    <!-- 強弱項分析表格 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; border: 1px solid #000000;" border="1">
+                        <tr style="background-color: #f2f2f2; font-weight: bold;">
+                            <td style="padding: 8px; border: 1px solid #000000; width: 50%;">🌟 學生的強項及興趣</td>
+                            <td style="padding: 8px; border: 1px solid #000000; width: 50%;">⚠️ 弱項及限制挑戰</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #000000; vertical-align: top; min-height: 80px;">${strengths}</td>
+                            <td style="padding: 10px; border: 1px solid #000000; vertical-align: top; min-height: 80px;">${weaknesses}</td>
+                        </tr>
+                    </table>
+
+                    <!-- 長期目標 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; border: 1px solid #000000;" border="1">
+                        <tr style="background-color: #f2f2f2; font-weight: bold;">
+                            <th style="padding: 8px; text-align: left;">長期目標 (Long-term Goals)</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #000000;">${ltg}</td>
+                        </tr>
+                    </table>
+
+                    <!-- 核心計劃內容矩陣 -->
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid #000000;" border="1">
+                        <thead>
+                            <tr style="background-color: #d9d9d9;">
+                                <th style="padding: 6px; font-size: 12px; border: 1px solid #000000;" rowspan="2">範疇</th>
+                                <th style="padding: 6px; font-size: 12px; border: 1px solid #000000;" rowspan="2">短期目標</th>
+                                <th style="padding: 6px; font-size: 12px; border: 1px solid #000000; text-align: center;" colspan="3">支援策略 (全校三層支援模式)</th>
+                                <th style="padding: 6px; font-size: 12px; border: 1px solid #000000;" rowspan="2">家校合作</th>
+                                <th style="padding: 6px; font-size: 12px; border: 1px solid #000000;" rowspan="2">成功指標</th>
+                                <th style="padding: 6px; font-size: 12px; border: 1px solid #000000; text-align: center;" colspan="3">達標情況</th>
+                            </tr>
+                            <tr style="background-color: #e6e6e6;">
+                                <th style="padding: 6px; border: 1px solid #000000; font-size: 10px; width: 14%;">第一層課堂</th>
+                                <th style="padding: 6px; border: 1px solid #000000; font-size: 10px; width: 14%;">第二層小組</th>
+                                <th style="padding: 6px; border: 1px solid #000000; font-size: 10px; width: 14%;">第三層個別</th>
+                                <th style="padding: 6px; border: 1px solid #000000; font-size: 10px; width: 4%;">完全</th>
+                                <th style="padding: 6px; border: 1px solid #000000; font-size: 10px; width: 4%;">部分</th>
+                                <th style="padding: 6px; border: 1px solid #000000; font-size: 10px; width: 4%;">尚未</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRowsHtml}
+                        </tbody>
+                    </table>
                 </div>
             `;
         }
 
-        // Toast 提示工具
+        // 1. 物理打印 / 存為高質量 PDF
+        function prepareAndPrint() {
+            const printContainer = document.getElementById('printContainer');
+            const staticHtml = generateHighFidelityStaticHtml();
+            
+            // 寫入打印緩衝區
+            printContainer.innerHTML = staticHtml;
+            
+            // 調用打印
+            window.print();
+        }
+
+        // 2. 本地導出為 Word 文件 (.doc - 具備標准 HTML 兼容)
+        function exportToWord() {
+            const name = document.getElementById('studentName').value || '學個案';
+            const staticHtml = generateHighFidelityStaticHtml();
+            
+            // 使用 Microsoft Word 專屬的 XML & 樣式頭部
+            // 增加頁碼頁尾定義
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+                           "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+                           "xmlns='http://www.w3.org/TR/REC-html40'>" +
+                           "<head><meta charset='utf-8'><title>個別學習計劃(IEP)</title>" +
+                           "<style>" +
+                           "table {border-collapse:collapse; width:100%;} " +
+                           "td, th {border:1px solid #000000; padding:6px;} " +
+                           "@page WordSection1 {" +
+                           "    size: 8.5in 11.0in; " +
+                           "    margin: 1.0in 1.0in 1.0in 1.0in; " +
+                           "    mso-header-margin: .5in; " +
+                           "    mso-footer-margin: .5in; " +
+                           "    mso-footer: f1; " +
+                           "}" +
+                           "div.WordSection1 { page: WordSection1; }" +
+                           "p.MsoFooter, li.MsoFooter, div.MsoFooter {" +
+                           "    margin: 0in; " +
+                           "    margin-bottom: .0001pt; " +
+                           "    mso-pagination: widow-orphan; " +
+                           "    tab-stops: center 3.0in right 6.0in; " +
+                           "    font-size: 9.0pt; " +
+                           "    font-family: Arial; " +
+                           "}" +
+                           "</style>" +
+                           "</head><body>" +
+                           "<div class='WordSection1'>";
+            
+            // 加入動態 Word 動態頁尾：顯示動態頁數
+            const wordFooter = "<div style='mso-element:footer' id='f1'>" +
+                               "    <p class='MsoFooter' style='text-align:center; color:#555555;'>" +
+                               "        第 <span style='mso-field-code:\"PAGE\"'></span> 頁" +
+                               "    </p>" +
+                               "</div>";
+                               
+            const footer = "</div>" + wordFooter + "</body></html>";
+            
+            const fullContent = header + staticHtml + footer;
+            const blob = new Blob([fullContent], { type: 'application/msword;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `個別學習計劃_IEP_${name}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("IEP Word 文件導出成功！");
+        }
+
+        // 3. 本地導出為 Excel 計劃矩陣表 (.xls)
+        function exportToExcel() {
+            const name = document.getElementById('studentName').value || '學個案';
+            const staticHtml = generateHighFidelityStaticHtml();
+            
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+                           "xmlns:x='urn:schemas-microsoft-com:office:excel' " +
+                           "xmlns='http://www.w3.org/TR/REC-html40'>" +
+                           "<head><meta charset='utf-8'><title>IEP Matrix</title>" +
+                           "<style>table {border-collapse:collapse;} td, th {border:0.5pt solid #555555; vertical-align: top;}</style>" +
+                           "</head><body>";
+            const footer = "</body></html>";
+            
+            const fullContent = header + staticHtml + footer;
+            const blob = new Blob([fullContent], { type: 'application/vnd.ms-excel;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `個別學習計劃矩陣_Excel_${name}.xls`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("IEP Excel 表格矩陣導出成功！");
+        }
+
+        // Toast 消息提示工具
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
             const msgEl = document.getElementById('toastMsg');
-            const iconEl = toast.querySelector('i');
-            
+            const iconEl = document.getElementById('toastIcon');
+
             msgEl.innerText = msg;
-            
             if (type === 'error') {
-                iconEl.className = 'fa-solid fa-circle-exclamation text-rose-500 text-lg';
+                iconEl.className = "fa-solid fa-circle-exclamation text-rose-500 text-lg";
             } else {
-                iconEl.className = 'fa-solid fa-circle-check text-emerald-500 text-lg';
+                iconEl.className = "fa-solid fa-circle-check text-emerald-500 text-lg";
             }
 
             toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
             toast.classList.add('opacity-100', 'translate-y-0');
-            
+
             setTimeout(() => {
                 toast.classList.remove('opacity-100', 'translate-y-0');
                 toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
