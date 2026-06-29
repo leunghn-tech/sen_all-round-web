@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>同工精神健康與實戰輔導技巧庫</title>
+    <!-- 引入 Tailwind CSS 進行精緻排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 專業圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f8fafc;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* 靜觀動畫統一樣式 */
+        .anim-circle { transform-origin: center; transition: all 0.5s ease; }
+        
+        /* 4-7-8 呼吸動畫 (19s) */
+        @keyframes breathe478 {
+            0% { transform: scale(1); opacity: 0.6; }
+            21% { transform: scale(1.6); opacity: 1; } /* 4s */
+            58% { transform: scale(1.6); opacity: 1; } /* 7s */
+            100% { transform: scale(1); opacity: 0.6; } /* 8s */
+        }
+        .mode-478 { animation: breathe478 19s infinite linear; }
+
+        /* 盒式呼吸動畫 (16s) */
+        @keyframes breatheBox {
+            0% { transform: scale(1); opacity: 0.6; border-radius: 50%; }
+            25% { transform: scale(1.5); opacity: 1; border-radius: 20%; } /* 4s 吸 */
+            50% { transform: scale(1.5); opacity: 1; border-radius: 20%; } /* 4s 憋 */
+            75% { transform: scale(1); opacity: 0.6; border-radius: 50%; } /* 4s 呼 */
+            100% { transform: scale(1); opacity: 0.6; border-radius: 50%; } /* 4s 憋 */
+        }
+        .mode-box { animation: breatheBox 16s infinite linear; }
+
+        /* 肌肉放鬆動畫 (15s) */
+        @keyframes musclePulse {
+            0% { transform: scale(1); opacity: 0.8; background-color: #fca5a5; }
+            33% { transform: scale(0.7); opacity: 1; background-color: #ef4444; } /* 5s 緊繃 */
+            35% { transform: scale(1.3); opacity: 0.5; background-color: #86efac; } /* 瞬間釋放 */
+            100% { transform: scale(1); opacity: 0.8; background-color: #86efac; } /* 10s 放鬆 */
+        }
+        .mode-muscle { animation: musclePulse 15s infinite linear; }
+
+        /* 五感著陸與無限符號 (純文字與微緩動) */
+        @keyframes gentleFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .mode-gentle { animation: gentleFloat 6s infinite ease-in-out; }
+
+        /* 輔導工具卡片 Hover */
+        .counseling-card { transition: all 0.3s ease; cursor: pointer; }
+        .counseling-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .counseling-card.active { border: 2px solid #6366f1; background-color: #eff6ff; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 內容區塊樣式 */
+        .content-section h4 { font-weight: 800; margin-top: 12px; margin-bottom: 6px; font-size: 13px; }
+        .content-section ul { list-style-type: none; padding-left: 0px; margin-bottom: 10px; }
+        .content-section li { margin-bottom: 8px; position: relative; padding-left: 18px; line-height: 1.6; }
+        .content-section li::before { content: "🔹"; position: absolute; left: 0; font-size: 10px; top: 2px; }
+        
+        /* 實例對話卡片樣式 */
+        .example-card { background-color: white; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02); }
+        .example-card h5 { font-weight: 900; margin-bottom: 0.75rem; color: #334155; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; font-size: 13px; }
+        .dialogue-t { color: #0f766e; background: #f0fdf4; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; border-left: 3px solid #10b981; font-size: 12px; line-height: 1.5; }
+        .dialogue-s { color: #475569; background: #f1f5f9; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; border-left: 3px solid #94a3b8; font-size: 12px; line-height: 1.5; }
+        .dialogue-note { font-size: 11px; color: #64748b; font-style: italic; margin-bottom: 6px; padding-left: 4px; }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col pb-12 bg-slate-50/50">
+
+    <!-- 頂部導航欄 -->
+    <nav class="bg-indigo-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="professional_dashboard.html" class="flex items-center gap-2 bg-indigo-800 hover:bg-indigo-700 px-3 py-2 rounded-xl transition text-indigo-100 hover:text-white shadow-inner">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回協作平台</span>
+                </a>
+                <div class="flex flex-col justify-center border-l border-indigo-800 pl-4">
+                    <h1 class="text-xs sm:text-sm font-black tracking-tight leading-none">同工精神健康與實戰輔導技巧庫</h1>
+                    <span class="text-[9px] text-indigo-200 font-bold block mt-1 uppercase tracking-widest">Wellness & Micro-Counseling Tools</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="bg-indigo-800/50 text-indigo-100 text-[10px] px-3 py-1.5 rounded-full border border-indigo-700 font-medium">
+                    <i class="fa-solid fa-heart-pulse mr-1"></i> 先照顧自己，再照顧學生
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full flex-grow space-y-8">
+        
+        <!-- 頂部橫幅 -->
+        <div class="bg-gradient-to-r from-indigo-800 via-purple-700 to-fuchsia-600 rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
+            <i class="fa-solid fa-seedling absolute -right-4 -bottom-4 text-[160px] text-white opacity-10"></i>
+            <div class="relative z-10">
+                <h1 class="text-2xl sm:text-3xl font-extrabold mb-2 flex items-center gap-2.5">
+                    <i class="fa-solid fa-mug-hot animate-pulse"></i> 教師專屬喘息與微型輔導站
+                </h1>
+                <p class="text-indigo-100 text-xs sm:text-sm max-w-4xl leading-relaxed">
+                    陪伴特教學生是一場馬拉松。這裡為您提供個人的「同情疲勞自評」與「5大多感官靜觀降溫」，並將深奧的 9 大心理輔導學派轉化為具備「詳細對話劇本」的 15 分鐘微型輔導指南。
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- 左側：同工精神健康區 (Wellness) -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- 1. 同情疲勞自評表 -->
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-battery-quarter"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-black text-slate-800">同情疲勞 (Compassion Fatigue) 自評</h2>
+                            <p class="text-[10px] text-slate-500 font-bold">憑過去兩週直覺作答 (完全不記名)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3 text-[11px] font-bold text-slate-600 h-[380px] overflow-y-auto pr-2" id="quizContainer">
+                        <!-- Q1 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <p class="mb-2">1. 想到要處理學生的突發情緒，我會感到心跳加速或極度抗拒。</p>
+                            <div class="flex gap-2">
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q1" value="0" class="hidden"> 很少</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q1" value="1" class="hidden"> 有時</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q1" value="2" class="hidden"> 經常</label>
+                            </div>
+                        </div>
+                        <!-- Q2 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <p class="mb-2">2. 對於學生重複犯錯，我發現自己比以前更快失去耐性或想發脾氣。</p>
+                            <div class="flex gap-2">
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q2" value="0" class="hidden"> 很少</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q2" value="1" class="hidden"> 有時</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q2" value="2" class="hidden"> 經常</label>
+                            </div>
+                        </div>
+                        <!-- Q3 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <p class="mb-2">3. 下班後，我依然無法停止思考學校的問題，甚至影響睡眠品質。</p>
+                            <div class="flex gap-2">
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q3" value="0" class="hidden"> 很少</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q3" value="1" class="hidden"> 有時</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q3" value="2" class="hidden"> 經常</label>
+                            </div>
+                        </div>
+                        <!-- Q4 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <p class="mb-2">4. 我覺得自己付出了很多，但似乎對學生的改變無能為力 (無力感)。</p>
+                            <div class="flex gap-2">
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q4" value="0" class="hidden"> 很少</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q4" value="1" class="hidden"> 有時</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q4" value="2" class="hidden"> 經常</label>
+                            </div>
+                        </div>
+                        <!-- Q5 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <p class="mb-2">5. 我開始對學生的遭遇感到麻木，不再像以前那樣容易產生同理心。</p>
+                            <div class="flex gap-2">
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q5" value="0" class="hidden"> 很少</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q5" value="1" class="hidden"> 有時</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q5" value="2" class="hidden"> 經常</label>
+                            </div>
+                        </div>
+                        <!-- Q6 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <p class="mb-2">6. 我會刻意避開某些同事或學生，以減少情緒上的消耗與麻煩。</p>
+                            <div class="flex gap-2">
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q6" value="0" class="hidden"> 很少</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q6" value="1" class="hidden"> 有時</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q6" value="2" class="hidden"> 經常</label>
+                            </div>
+                        </div>
+                        <!-- Q7 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <p class="mb-2">7. 我覺得工作上的壓力已經嚴重影響了我的私人生活和人際關係。</p>
+                            <div class="flex gap-2">
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q7" value="0" class="hidden"> 很少</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q7" value="1" class="hidden"> 有時</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q7" value="2" class="hidden"> 經常</label>
+                            </div>
+                        </div>
+                        <!-- Q8 -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <p class="mb-2">8. 即使週末休息過後，星期一早上我依然感到身心疲憊，無法恢復能量。</p>
+                            <div class="flex gap-2">
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q8" value="0" class="hidden"> 很少</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q8" value="1" class="hidden"> 有時</label>
+                                <label class="flex-1 text-center bg-white border border-slate-200 rounded py-1.5 cursor-pointer hover:bg-rose-50 transition"><input type="radio" name="q8" value="2" class="hidden"> 經常</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculateBurnout()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-lg transition shadow-sm mt-4 font-bold text-xs">
+                        <i class="fa-solid fa-stethoscope mr-1"></i> 分析我的狀態
+                    </button>
+
+                    <!-- 結果顯示區 -->
+                    <div id="quizResult" class="hidden mt-4 p-4 rounded-xl text-xs leading-relaxed font-bold fade-in shadow-inner"></div>
+                    
+                    <!-- 5 大紓緩方法建議 -->
+                    <div id="reliefSuggestions" class="hidden mt-4 bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-[11px] fade-in shadow-inner">
+                        <h4 class="font-black text-indigo-800 mb-2.5 text-xs"><i class="fa-solid fa-leaf"></i> 5 個為老師充電的紓緩建議：</h4>
+                        <ol class="list-decimal pl-4 space-y-2 text-indigo-900 font-medium">
+                            <li><strong>設定微邊界 (Micro-boundaries)：</strong> 離開校門後設定「斷網時間」，關閉工作 WhatsApp 群組通知。</li>
+                            <li><strong>建立「過渡儀式」：</strong> 下班回家路上聽一首喜歡的歌，或在進家門前深呼吸，把工作的煩惱留在門外。</li>
+                            <li><strong>慶祝微小勝利：</strong> 每天在備忘錄記錄一件今天做得不錯的小事（例如：成功讓學生安靜了 1 分鐘）。</li>
+                            <li><strong>尋求同儕心理支援：</strong> 與信任的老師分享感受，允許自己展現脆弱，知道自己並不孤單。</li>
+                            <li><strong>強制「Me Time」：</strong> 每週至少安排一小時做自己真正享受、與教育完全無關的事（追劇、運動、吃甜點）。</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- 2. 5大緊急靜觀降溫動畫區 -->
+                <div class="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-3xl border border-teal-100 p-6 shadow-sm text-center">
+                    <div class="mb-4">
+                        <h2 class="text-sm font-black text-teal-800 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-wind"></i> 緊急靜觀與降溫動畫
+                        </h2>
+                        <p class="text-[10px] text-teal-600 font-bold mt-1">在處理完危機後，給自己 3 分鐘重置大腦</p>
+                    </div>
+
+                    <!-- 模式選擇器 -->
+                    <select id="relaxModeSelect" onchange="changeRelaxMode()" class="w-full bg-white border border-teal-200 text-teal-800 text-xs font-bold rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer shadow-sm">
+                        <option value="478">4-7-8 呼吸法 (深層放鬆神經)</option>
+                        <option value="box">盒式呼吸法 Box Breathing (海豹部隊抗壓)</option>
+                        <option value="grounding">五感著陸法 5-4-3-2-1 (防驚恐/解離)</option>
+                        <option value="infinity">無限符號呼吸 (柔和視線追蹤)</option>
+                        <option value="muscle">漸進式肌肉放鬆 (釋放身體緊繃張力)</option>
+                    </select>
+                    
+                    <div class="relative w-40 h-40 mx-auto flex items-center justify-center my-4 bg-white/40 rounded-3xl border border-teal-100/50 shadow-inner">
+                        <!-- 動態動畫圖層 -->
+                        <div id="animLayer1" class="absolute w-24 h-24 bg-teal-200/50 rounded-full anim-circle"></div>
+                        <div id="animLayer2" class="absolute w-20 h-20 bg-teal-300/60 rounded-full anim-circle"></div>
+                        <!-- 文字提示 -->
+                        <div id="breatheText" class="relative z-10 text-teal-900 font-black text-xs tracking-widest drop-shadow-sm px-2 text-center leading-relaxed">請選擇模式<br>並按開始</div>
+                    </div>
+                    
+                    <button id="btnBreathe" onclick="toggleBreathing()" class="mt-2 bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-bold px-6 py-2.5 rounded-full transition shadow-sm w-full">
+                        <i class="fa-solid fa-play mr-1"></i> 開始靜觀降溫
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- 右側：9大微型輔導技巧庫 (Micro-Counseling) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm min-h-full flex flex-col">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                        <div>
+                            <h2 class="text-base font-black text-indigo-900">💬 9 大輔導學派：實戰對話劇本與解說庫</h2>
+                            <p class="text-[10px] text-slate-500 font-bold mt-0.5">點擊學派，獲取基本理念、實例對話卡片與視覺化教具</p>
+                        </div>
+                    </div>
+
+                    <!-- 9 宮格按鈕 -->
+                    <div class="grid grid-cols-3 md:grid-cols-3 gap-2 sm:gap-3 mb-6">
+                        <div class="counseling-card bg-white border border-slate-200 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5" onclick="showCounselingTool('sfbt', this)">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-lightbulb"></i></div>
+                            <span class="text-[10px] font-bold text-slate-700">尋解導向 (SFBT)</span>
+                        </div>
+                        <div class="counseling-card bg-white border border-slate-200 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5" onclick="showCounselingTool('act', this)">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-compass"></i></div>
+                            <span class="text-[10px] font-bold text-slate-700">接納與承諾 (ACT)</span>
+                        </div>
+                        <div class="counseling-card bg-white border border-slate-200 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5" onclick="showCounselingTool('mi', this)">
+                            <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-arrows-spin"></i></div>
+                            <span class="text-[10px] font-bold text-slate-700">動機式訪談 (MI)</span>
+                        </div>
+                        <div class="counseling-card bg-white border border-slate-200 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5" onclick="showCounselingTool('tic', this)">
+                            <div class="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fa-solid fa-hands-holding-child"></i></div>
+                            <span class="text-[10px] font-bold text-slate-700">創傷知情 (TIC)</span>
+                        </div>
+                        <div class="counseling-card bg-white border border-slate-200 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5" onclick="showCounselingTool('narrative', this)">
+                            <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-book-open"></i></div>
+                            <span class="text-[10px] font-bold text-slate-700">敘事治療</span>
+                        </div>
+                        <div class="counseling-card bg-white border border-slate-200 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5" onclick="showCounselingTool('cbt', this)">
+                            <div class="w-8 h-8 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center"><i class="fa-solid fa-brain"></i></div>
+                            <span class="text-[10px] font-bold text-slate-700">認知行為 (CBT)</span>
+                        </div>
+                        <div class="counseling-card bg-white border border-slate-200 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5" onclick="showCounselingTool('rebt', this)">
+                            <div class="w-8 h-8 rounded-full bg-fuchsia-100 text-fuchsia-600 flex items-center justify-center"><i class="fa-solid fa-bolt"></i></div>
+                            <span class="text-[10px] font-bold text-slate-700">理情行為 (REBT)</span>
+                        </div>
+                        <div class="counseling-card bg-white border border-slate-200 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5" onclick="showCounselingTool('eft', this)">
+                            <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center"><i class="fa-solid fa-water"></i></div>
+                            <span class="text-[10px] font-bold text-slate-700">情緒導向 (EFT)</span>
+                        </div>
+                        <div class="counseling-card bg-white border border-slate-200 rounded-xl p-2 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5" onclick="showCounselingTool('pct', this)">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fa-solid fa-ear-listen"></i></div>
+                            <span class="text-[10px] font-bold text-slate-700">個人中心 (PCT)</span>
+                        </div>
+                    </div>
+
+                    <!-- 詳細內容展示區 (預設顯示指引) -->
+                    <div id="counselingDetail" class="flex-grow bg-slate-50 border border-slate-200 rounded-2xl p-5 fade-in content-section text-[11px] sm:text-xs overflow-y-auto max-h-[600px]">
+                        <div class="h-full flex flex-col items-center justify-center text-slate-400 py-10">
+                            <i class="fa-solid fa-book-medical text-4xl mb-3 opacity-50"></i>
+                            <p class="font-bold">請點擊上方學派按鈕，展開詳盡的輔導技巧與實例卡片。</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast 提示組件 -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-white border border-slate-200 rounded-2xl shadow-lg py-3 px-5 flex items-center gap-3 opacity-0 translate-y-10 transition-all duration-300 pointer-events-none z-[200]">
+        <i class="fa-solid fa-circle-check text-indigo-500 text-lg"></i>
+        <span id="toastMsg" class="text-xs font-bold text-slate-700"></span>
+    </div>
+
+    <!-- 底部版權 -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 text-center text-[10px] text-slate-400 border-t border-slate-200 py-6 w-full">
+        <p>© 2026 SEN Care Professional. All rights reserved. (不留存任何測驗數據，保障同工隱私)</p>
+    </footer>
+
+    <script>
+        // --------------------------------------------------------
+        // 1. 同情疲勞自評邏輯 (Burnout Calculator - 8題)
+        // --------------------------------------------------------
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const name = this.name;
+                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    r.parentElement.classList.remove('bg-rose-100', 'border-rose-400');
+                    r.parentElement.classList.add('bg-white', 'border-slate-200');
+                });
+                this.parentElement.classList.add('bg-rose-100', 'border-rose-400');
+            });
+        });
+
+        function calculateBurnout() {
+            let score = 0;
+            let answered = 0;
+            const names = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8'];
+            
+            names.forEach(name => {
+                const selected = document.querySelector(`input[name="${name}"]:checked`);
+                if(selected) {
+                    score += parseInt(selected.value);
+                    answered++;
+                }
+            });
+
+            if(answered < 8) {
+                showToast("請回答所有 8 條問題再作分析。", "error");
+                return;
+            }
+
+            const resultEl = document.getElementById('quizResult');
+            const reliefEl = document.getElementById('reliefSuggestions');
+            resultEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-amber-100', 'text-amber-800', 'bg-rose-100', 'text-rose-800');
+            reliefEl.classList.remove('hidden');
+
+            if(score <= 5) {
+                resultEl.classList.add('bg-emerald-100', 'text-emerald-800');
+                resultEl.innerHTML = "<i class='fa-solid fa-leaf mr-1'></i> <strong>狀態良好：</strong> 您目前的心理韌性不錯！請繼續保持這份能量，並記得每天給自己留一點專屬的休息時間。";
+            } else if(score <= 11) {
+                resultEl.classList.add('bg-amber-100', 'text-amber-800');
+                resultEl.innerHTML = "<i class='fa-solid fa-battery-half mr-1'></i> <strong>同情疲勞警號：</strong> 您的心理電量正在流失。最近可能承擔了過多學生的情緒。建議試著使用下方的「5大靜觀降溫法」，或在下班後徹底關閉工作群組。";
+            } else {
+                resultEl.classList.add('bg-rose-100', 'text-rose-800');
+                resultEl.innerHTML = "<i class='fa-solid fa-triangle-exclamation mr-1'></i> <strong>高度耗竭風險 (Burnout)：</strong> 老師，您辛苦了。您的神經系統已處於過載狀態。請暫停對自己的批判，接納這份無力感。強烈建議您尋求同儕或專業心理支援，<strong>先照顧自己，才能照顧學生</strong>。";
+            }
+        }
+
+        // --------------------------------------------------------
+        // 2. 5大緊急靜觀降溫動畫 (Animation Engine)
+        // --------------------------------------------------------
+        let relaxInterval;
+        let isRelaxing = false;
+        let currentMode = '478';
+
+        // 動畫腳本定義
+        const relaxScripts = {
+            '478': { css: 'mode-478', steps: [{t: "深吸氣...", s:4}, {t: "保持憋氣...", s:7}, {t: "慢慢呼出...", s:8}] },
+            'box': { css: 'mode-box', steps: [{t: "吸氣...", s:4}, {t: "屏息...", s:4}, {t: "呼氣...", s:4}, {t: "屏息...", s:4}] },
+            'muscle': { css: 'mode-muscle', steps: [{t: "用力握緊拳頭/肩膀...", s:5}, {t: "瞬間放鬆，感受溫暖...", s:10}] },
+            'grounding': { css: 'mode-gentle', steps: [
+                {t: "👀 找 5 件你看到的東西", s:8}, {t: "🖐️ 找 4 件你摸到的東西", s:8}, 
+                {t: "👂 找 3 種你聽到的聲音", s:8}, {t: "👃 找 2 種你聞到的味道", s:8}, {t: "👄 深呼吸，放鬆", s:5}
+            ]},
+            'infinity': { css: 'mode-gentle', steps: [{t: "眼睛看著左邊，慢慢吸氣...", s:5}, {t: "眼睛看著右邊，慢慢呼氣...", s:5}] }
+        };
+
+        function changeRelaxMode() {
+            if(isRelaxing) toggleBreathing(); // 若正在運行，先停止
+            currentMode = document.getElementById('relaxModeSelect').value;
+            document.getElementById('breatheText').innerHTML = "請按開始";
+        }
+
+        function toggleBreathing() {
+            const btn = document.getElementById('btnBreathe');
+            const textEl = document.getElementById('breatheText');
+            const l1 = document.getElementById('animLayer1');
+            const l2 = document.getElementById('animLayer2');
+            
+            if(!isRelaxing) {
+                isRelaxing = true;
+                btn.innerHTML = "<i class='fa-solid fa-stop mr-1'></i> 停止靜觀";
+                btn.classList.replace('bg-teal-600', 'bg-rose-500');
+                btn.classList.replace('hover:bg-teal-700', 'hover:bg-rose-600');
+                
+                // 清除所有舊動畫
+                l1.className = "absolute w-24 h-24 bg-teal-200/50 rounded-full anim-circle";
+                l2.className = "absolute w-20 h-20 bg-teal-300/60 rounded-full anim-circle";
+                
+                // 附加新動畫 Class
+                const script = relaxScripts[currentMode];
+                l1.classList.add(script.css);
+                l2.classList.add(script.css);
+                l2.style.animationDelay = "-0.5s";
+
+                // 啟動文字輪播器
+                let stepIndex = 0;
+                let timer = 0;
+                textEl.innerHTML = script.steps[0].t;
+                
+                relaxInterval = setInterval(() => {
+                    timer++;
+                    if(timer >= script.steps[stepIndex].s) {
+                        timer = 0;
+                        stepIndex = (stepIndex + 1) % script.steps.length;
+                        textEl.innerHTML = script.steps[stepIndex].t;
+                    }
+                }, 1000);
+
+            } else {
+                isRelaxing = false;
+                btn.innerHTML = "<i class='fa-solid fa-play mr-1'></i> 開始靜觀降溫";
+                btn.classList.replace('bg-rose-500', 'bg-teal-600');
+                btn.classList.replace('hover:bg-rose-600', 'hover:bg-teal-700');
+                
+                clearInterval(relaxInterval);
+                textEl.innerHTML = "請選擇模式<br>並按開始";
+                
+                l1.className = "absolute w-24 h-24 bg-teal-200/50 rounded-full anim-circle";
+                l2.className = "absolute w-20 h-20 bg-teal-300/60 rounded-full anim-circle";
+            }
+        }
+
+        // --------------------------------------------------------
+        // 3. 微型輔導技巧庫 (全面擴充版 Database - 對話劇本版)
+        // --------------------------------------------------------
+        const counselingDb = {
+            "sfbt": {
+                title: "尋解導向治療 (Solution-Focused Brief Therapy)",
+                color: "blue",
+                target: "🎯 最佳適用時機：當學生覺得問題太大無法解決、缺乏動力，或陷入「我做不到」的死胡同裡。",
+                warning: "⚠️ 避雷提醒：不要一開始就問奇蹟問題，先肯定學生的困難，否則學生會覺得你不切實際。",
+                concept: "SFBT 認為「了解問題的成因，不一定能解決問題」。它假設學生本身就擁有解決問題的資源與能力，輔導者的角色是引導他們看到「目標」和「過往成功的經驗」，而非深挖創傷。",
+                skills: `
+                    <li><strong>奇蹟問題 (Miracle Question)：</strong> 幫助深陷泥沼的學生跳出框框，具體描繪出「問題解決後的美好生活」，從而確立輔導目標。</li>
+                    <li><strong>評分尺 (Scaling)：</strong> 將抽象的狀態量化為 1-10 分。不追求完美的 10 分，只關注如何進步 1 分。</li>
+                    <li><strong>尋找例外 (Exception Finding)：</strong> 沒有一個問題是 24 小時發生的。找出「問題沒有發生」的時刻，分析當時做對了甚麼。</li>
+                `,
+                examples: `
+                    <div class="example-card">
+                        <h5>實例 1：奇蹟問題 (Miracle Question)</h5>
+                        <div class="dialogue-note">情境：學生覺得自己「永遠學不會數學」，打算完全放棄。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「想像一下，今晚你睡覺的時候，發生了一個奇蹟。你最討厭的『數學學不會』的問題突然解決了。但你睡著了不知道。明早你醒來，你第一眼會看到甚麼不同？你會做甚麼來讓我知道奇蹟發生了？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「我可能...不用再被媽媽因為數學功課而罵。我回到學校不用怕數學測驗。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「所以奇蹟發生的畫面是，你不用再被罵，心裡覺得輕鬆一點。如果我們要讓這個奇蹟實現一小部分，我們今天只做 3 題數學，你覺得可以嗎？」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 2：1-10 分評分尺 (Scaling)</h5>
+                        <div class="dialogue-note">情境：學生表示對溫習「零動力」。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「如果 10分是非常有動力，1分是完全不想溫習，你現在是幾分？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「3 分。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「太好了，竟然有 3 分而不是 1 分！是甚麼讓你擁有這 3 分的動力的？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「因為不想留班囉。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「明白。那你覺得要怎樣做，才能從 3 分進步到 4 分？只需要進步 1 分就好。」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 3：尋找例外 (Exception Finding)</h5>
+                        <div class="dialogue-note">情境：學生經常在小組討論中發脾氣打人。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我留意到上星期三的小組討論，你雖然也不同意同學的意見，但你那次沒有動手。那一次你是怎麼控制住自己的？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「因為那次我拿著一個扭計骰在玩，就沒那麼生氣。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「原來扭計骰是你的超能力法寶！那我們下次小組討論，你也帶著它，看看能不能再次成功控制脾氣，好嗎？」</div>
+                    </div>
+                `,
+                toolName: "「奇蹟問題」與「1-10分評分尺」視覺卡",
+                toolContent: `
+                    <h2 style="color: #2563eb; text-align: center;">尋解導向：1-10分 狀態評分尺</h2>
+                    <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 14pt; margin: 20px 0;" border="1" cellpadding="10">
+                        <tr><td colspan="10" style="background-color: #eff6ff; font-weight: bold;">你現在的動力/心情是幾分？</td></tr>
+                        <tr style="font-weight: bold;">
+                            <td style="background-color: #fee2e2;">1</td><td style="background-color: #fee2e2;">2</td><td style="background-color: #fee2e2;">3</td>
+                            <td style="background-color: #fef08a;">4</td><td style="background-color: #fef08a;">5</td><td style="background-color: #fef08a;">6</td><td style="background-color: #fef08a;">7</td>
+                            <td style="background-color: #dcfce7;">8</td><td style="background-color: #dcfce7;">9</td><td style="background-color: #dcfce7;">10</td>
+                        </tr>
+                    </table>
+                    <p style="font-size: 14pt;"><strong>奇蹟問題畫紙：</strong><br>請在框內畫出：如果明天奇蹟發生，你的煩惱消失了，你第一件會做的事是甚麼？</p>
+                    <div style="border: 2px dashed #2563eb; height: 300px; width: 100%;"></div>
+                `
+            },
+            "act": {
+                title: "接納與承諾治療 (ACT)",
+                color: "emerald",
+                target: "🎯 最佳適用時機：當學生被強烈的焦慮、負面思想困住，不斷與自己的情緒「拔河」時。",
+                warning: "⚠️ 避雷提醒：不要告訴學生「不要緊張」或「不要想太多」，這等同於叫他們更用力拔河。",
+                concept: "ACT 認為人類的痛苦源於不斷與無法控制的想法/情緒「拔河」。它的核心在於提升「心理彈性 (Psychological Flexibility)」，教導學生接納不可控的情緒，並將精力集中在「承諾」採取符合自己價值觀的行動上。",
+                skills: `
+                    <li><strong>認知解離 (Cognitive Defusion)：</strong> 教導學生不要把想法當作絕對的真理。把「我是個失敗者」轉化為「我大腦產生了一個想法」。</li>
+                    <li><strong>接納 (Acceptance)：</strong> 停止與焦慮怪獸拔河，允許負面情緒存在，為它騰出空間。</li>
+                    <li><strong>價值觀澄清 (Values)：</strong> 找出學生真正重視的事物（如：想成為一個負責任的人），以此作為行動指南針。</li>
+                `,
+                examples: `
+                    <div class="example-card">
+                        <h5>實例 1：認知解離 (Cognitive Defusion)</h5>
+                        <div class="dialogue-note">情境：學生滿腦子都是「我一定會考砸，大家都會笑我」。</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「我好蠢，我一定會考砸，我甚麼都不懂！」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我聽到你大腦裡現在有一個聲音，一直在播放『我會考砸』這首難聽的歌。」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「對啊，我就是沒用。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我們試著在這句話前面加幾個字：『我注意到我大腦現在產生了一個想法，這個想法是我會考砸』。你跟我唸一次。這只是一個大腦自動彈出的想法，它不代表你真的是這樣。」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 2：放下拔河繩 (Acceptance)</h5>
+                        <div class="dialogue-note">情境：學生因為害怕上台報告而一直抗拒發抖。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「想像你正在跟一隻叫『害怕』的怪獸拔河。你越用力拉想把它拉走，牠也越用力，雙方都好累。如果我們現在把繩子放下呢？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「可是怪獸還在那裡看著我啊！」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「沒錯，怪獸還在旁邊，但你的雙手自由了。你可以帶著這隻怪獸，一起走上台嗎？允許它在那裡，但你繼續做你該做的事。」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 3：價值觀指南針 (Values)</h5>
+                        <div class="dialogue-note">情境：學生因為和好朋友吵架覺得沒面子，不想回學校面對。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我知道你現在覺得很尷尬，不想見到他。但如果你看看心裡那個『價值觀指南針』，你想成為一個逃避問題的人，還是想成為一個重視友誼、願意解決問題的人？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「我想跟他和好，但我覺得好難為情...」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我明白。那麼，就算帶著這份難為情，如果你的指南針是指著『重視友誼』的，你願意帶著這份尷尬，明天回校主動跟他說一聲早安嗎？」</div>
+                    </div>
+                `,
+                toolName: "「心理彈性指南針」與解離練習表",
+                toolContent: `
+                    <h2 style="color: #059669; text-align: center;">ACT：放下拔河繩 & 價值觀指南針</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14pt; margin: 20px 0;" border="1" cellpadding="15">
+                        <tr style="background-color: #dcfce7; font-weight: bold;"><td colspan="2" style="text-align: center;">🏷️ 認知解離：給想法貼標籤</td></tr>
+                        <tr><td style="width: 50%;">我大腦現在彈出了一個想法：</td><td style="width: 50%;">______________________________</td></tr>
+                        <tr><td>我大腦現在彈出了一種情緒：</td><td>______________________________</td></tr>
+                        <tr style="background-color: #dcfce7; font-weight: bold;"><td colspan="2" style="text-align: center;">🧭 價值觀指南針 (我想成為怎樣的人)</td></tr>
+                        <tr><td colspan="2" style="text-align: center; height: 150px; color: #666;">(在此畫出指南針，寫上：勇敢、負責任、好朋友等)</td></tr>
+                    </table>
+                `
+            },
+            "mi": {
+                title: "動機式訪談 (Motivational Interviewing)",
+                color: "amber",
+                target: "🎯 最佳適用時機：當學生對改變毫無動機（如沉迷打機、拒交功課），表現出強烈抗拒或辯護時。",
+                warning: "⚠️ 避雷提醒：切忌與學生爭辯或講大道理（「你這樣下去會畢不到業的」），這會讓學生更用力捍衛自己的不改變。",
+                concept: "面對零動機的學生，直接說教往往會引起抗拒。MI 的核心是「不辯論、不說教」，透過引導，讓學生自己說出改變的理由（誘發改變語句），化解內心的矛盾。",
+                skills: `
+                    <li><strong>OARS 技巧：</strong> <strong>O</strong>pen questions (開放式提問)、<strong>A</strong>ffirmation (肯定)、<strong>R</strong>eflection (反映式聆聽)、<strong>S</strong>ummarizing (總結)。</li>
+                    <li><strong>與抗拒共舞 (Rolling with Resistance)：</strong> 當學生反駁時，老師不與之爭辯，而是順勢反映其情緒。</li>
+                    <li><strong>探索矛盾 (Developing Discrepancy)：</strong> 溫和地指出學生目前的行為與其長遠目標之間的差距。</li>
+                `,
+                examples: `
+                    <div class="example-card">
+                        <h5>實例 1：OARS (反映式聆聽與肯定)</h5>
+                        <div class="dialogue-note">情境：學生抱怨功課太多，堅決不想做。</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「功課多到根本做不完，我寧願不交被罰！」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>(R-反映)「聽起來你覺得功課的份量已經完全超出了你的負荷，讓你覺得透不過氣來，甚至覺得放棄比較輕鬆。」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「對啊，我都沒時間休息。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>(A-肯定)「我很欣賞你今天願意這麼誠實地告訴我你的真實感受，這不容易。我們來看看可以怎麼稍微減輕一點壓力。」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 2：與抗拒共舞 (Rolling with Resistance)</h5>
+                        <div class="dialogue-note">情境：學生大聲反駁讀書無用論。</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「我就是不想讀書！讀書沒用，出來也是幫人打工！」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>（不爭辯）「你現在非常肯定讀書對你來說沒有意義，你覺得這是在浪費時間。」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「對，我只想快點出來賺錢自己做老闆。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「你想做老闆，掌握自己的生活。那要做老闆，你覺得現在有甚麼是你需要準備的？」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 3：探索矛盾 (Developing Discrepancy)</h5>
+                        <div class="dialogue-note">情境：學生想考入某間心儀的中學，但經常遲到曠課。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「你之前提過很希望能跟好朋友一起考入那間中學（目標），因為那邊籃球隊很強。」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「是啊。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「但我留意到最近一個月，你每個星期都有三天遲到或不交功課（現狀）。這兩件事好像有點衝突，你覺得這樣下去，會對你進籃球隊的目標有甚麼影響？」</div>
+                    </div>
+                `,
+                toolName: "「改變輪盤」與矛盾秤",
+                toolContent: `
+                    <h2 style="color: #d97706; text-align: center;">MI：改變的尺 & 矛盾秤</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14pt; text-align: center; margin: 20px 0;" border="1" cellpadding="15">
+                        <tr style="background-color: #fef3c7; font-weight: bold;"><td colspan="2">⚖️ 矛盾秤 (Decision Balance)</td></tr>
+                        <tr style="background-color: #fde68a;">
+                            <td style="width: 50%;">維持現狀的【好處】(如：繼續不交功課)</td>
+                            <td style="width: 50%;">維持現狀的【壞處】(如：繼續不交功課)</td>
+                        </tr>
+                        <tr><td style="height: 100px; color:#666;">(例：可以多玩手機)</td><td style="color:#666;">(例：被老師罵、會留班)</td></tr>
+                        <tr style="background-color: #fde68a;">
+                            <td style="width: 50%;">改變的【壞處】(如：開始做功課)</td>
+                            <td style="width: 50%;">改變的【好處】(如：開始做功課)</td>
+                        </tr>
+                        <tr><td style="height: 100px; color:#666;">(例：很累、沒時間玩)</td><td style="color:#666;">(例：會有成功感、不被罰)</td></tr>
+                    </table>
+                `
+            },
+            "tic": {
+                title: "創傷知情實踐 (Trauma-Informed Care)",
+                color: "rose",
+                target: "🎯 最佳適用時機：當學生出現極端的反應（如突然暴怒打人、或者完全僵住發呆），且反應程度與事件不成比例時。",
+                warning: "⚠️ 避雷提醒：當學生處於過激反應（戰鬥/逃跑狀態）時，大腦掌管邏輯的前額葉已關閉，此時切忌說教或處罰，只會火上加油。",
+                concept: "TIC 認為學生極端的反抗、逃跑或發呆，是大腦受過往創傷經驗影響而觸發的「求生反應（Fight, Flight, Freeze）」，並非故意作對。建立安全感是首要任務。",
+                skills: `
+                    <li><strong>共同調節 (Co-regulation)：</strong> 老師用自己平靜的聲線和穩定的情緒，去感染並平復學生激動的神經系統（Hyperarousal）。</li>
+                    <li><strong>接地技巧 (Grounding)：</strong> 針對僵住或解離（Hypoarousal）的學生，利用五感將他們拉回現實。</li>
+                    <li><strong>轉換視角 (Reframing)：</strong> 將「你到底有甚麼問題？」轉換為「你經歷了甚麼事？」。</li>
+                `,
+                examples: `
+                    <div class="example-card">
+                        <h5>實例 1：共同調節 (處理過激反應)</h5>
+                        <div class="dialogue-note">情境：學生因為被同學碰到桌子，突然暴怒摔椅子大叫，準備打人。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>（保持兩米距離，雙手自然垂下，聲線放低放慢）「大文，我看到你現在非常生氣，而且心跳很快。你現在很安全，老師在這裡，我不會傷害你。」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「他撞我的桌子！我要打死他！」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「他撞到你了，這讓你覺得被侵犯。我們先離開這裡，去走廊用力踏步 10 下，把能量放出來，然後再處理這件事好嗎？」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 2：接地技巧 (處理過低反應)</h5>
+                        <div class="dialogue-note">情境：學生在上課時突然眼神空洞，對外界叫喚毫無反應（解離狀態）。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>（溫和靠近側面，不直視施壓）「大文，你聽得到我的聲音嗎？看著我手上的綠色筆。」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>（緩慢轉頭，沒有說話）</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「很好。你感覺到你的雙腳正踩在地板上嗎？踩一踩。現在告訴我，你看到課室裡有甚麼東西是綠色的？」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 3：建立安全感與視角轉換</h5>
+                        <div class="dialogue-note">情境：學生害怕老師靠近，縮在牆角。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「老師知道你現在覺得不安全、很害怕。我會站在這條線後面，不會再走近。」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「走開！不要過來！」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我退後一步。我不問你剛才做錯了甚麼，我只想知道剛才發生了甚麼事讓你這麼害怕。當你準備好的時候，你可以向我點點頭。」</div>
+                    </div>
+                `,
+                toolName: "「容納之窗」視覺解說圖",
+                toolContent: `
+                    <h2 style="color: #e11d48; text-align: center;">TIC：容納之窗 (Window of Tolerance)</h2>
+                    <table style="width: 80%; margin: 0 auto; border-collapse: collapse; font-size: 14pt; text-align: center;" border="1" cellpadding="20">
+                        <tr style="background-color: #fee2e2; color: #991b1b; font-weight: bold;">
+                            <td>🔥 過激反應區 (Hyperarousal)<br><span style="font-size: 10pt; font-weight: normal;">戰鬥或逃跑：憤怒、焦慮、失控、打人</span></td>
+                        </tr>
+                        <tr style="background-color: #dcfce7; color: #166534; font-weight: bold;">
+                            <td>✅ 最佳容納之窗 (Optimal Zone)<br><span style="font-size: 10pt; font-weight: normal;">安全、平靜、可以專心學習及溝通</span></td>
+                        </tr>
+                        <tr style="background-color: #e0e7ff; color: #3730a3; font-weight: bold;">
+                            <td>❄️ 過低反應區 (Hypoarousal)<br><span style="font-size: 10pt; font-weight: normal;">僵住、發呆、靈魂出竅、無法回應</span></td>
+                        </tr>
+                    </table>
+                `
+            },
+            "narrative": {
+                title: "敘事治療 (Narrative Therapy)",
+                color: "purple",
+                target: "🎯 最佳適用時機：當學生長期被負面標籤（如「懶惰」、「壞學生」），內化了這些標籤並感到自卑無力時。",
+                warning: "⚠️ 避雷提醒：不要急著否定學生的負面故事，先接納這個怪獸對他們的影響，再慢慢尋找反擊的時刻。",
+                concept: "敘事治療相信「人不是問題，問題才是問題」。當學生長期被標籤，他們會內化這些主流故事。敘事治療旨在幫助他們拆解負面標籤，重寫屬於自己有力量的「替代故事」。",
+                skills: `
+                    <li><strong>問題外化 (Externalizing the Problem)：</strong> 將問題擬人化（如：拖延怪、生氣蟲），將問題從學生身上剝離，讓學生和老師結盟對抗怪獸。</li>
+                    <li><strong>尋找獨特結果 (Unique Outcomes)：</strong> 發掘被負面故事掩蓋的微小成功經驗，證明怪獸並非不可戰勝。</li>
+                    <li><strong>解構標籤 (Deconstructing Labels)：</strong> 探討是誰給他貼上了這個標籤，這個標籤合理嗎？</li>
+                `,
+                examples: `
+                    <div class="example-card">
+                        <h5>實例 1：問題外化</h5>
+                        <div class="dialogue-note">情境：學生因為一直無法準時交功課而覺得自己「沒救了，我就是個懶人」。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「聽起來，並不是你這個人沒救，而是最近有一隻『拖延怪獸』一直跑出來搗亂，把你的專注力偷走了，對嗎？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「對，我一翻開書它就叫我玩手機。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「這隻怪獸真狡猾。它通常甚麼時候最喜歡出來騙你？我們來想辦法一起對付它。」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 2：尋找閃亮時刻 (Unique Outcomes)</h5>
+                        <div class="dialogue-note">情境：學生覺得自己每天都在發脾氣，是個壞孩子。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「你說『生氣怪獸』每天都控制你。可是我記得星期二的時候，同學撞到你，你竟然沒有被它控制，反而自己安靜了下來。」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「因為那天我心裡只想著快點下課去打球，不想理他。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「原來『想著打球』是你的超能力武器！你用了這個武器打敗了生氣怪獸。你覺得下次怪獸再來，你能再用一次這武器嗎？」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 3：解構負面標籤</h5>
+                        <div class="dialogue-note">情境：學生說：「所有老師都覺得我是垃圾。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「『垃圾』這個詞聽起來很沉重。是誰把這個標籤貼在你的身上的？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「以前的小學老師，因為我總是考包尾。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「原來是以前的成績讓你背上了這個標籤。但如果我們看看你現在在美術課上畫的畫，你覺得這個『垃圾』的標籤還適合貼在你身上嗎？」</div>
+                    </div>
+                `,
+                toolName: "「打敗怪獸」問題外化工作紙",
+                toolContent: `
+                    <h2 style="color: #7e22ce; text-align: center;">敘事治療：畫出你的搗亂怪獸</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14pt; margin: 20px 0;" border="1" cellpadding="15">
+                        <tr style="background-color: #f3e8ff; font-weight: bold;"><td colspan="2" style="text-align: center;">👾 這是我的「_____________ 怪獸」</td></tr>
+                        <tr>
+                            <td style="width: 50%; height: 200px; text-align: center; color: #94a3b8;">(在此畫出怪獸的樣子)</td>
+                            <td style="width: 50%; vertical-align: top;">
+                                <strong>怪獸最喜歡做的事：</strong><br><br><br>
+                                <strong>怪獸騙我說的話：</strong><br><br><br>
+                            </td>
+                        </tr>
+                        <tr style="background-color: #f3e8ff; font-weight: bold;"><td colspan="2" style="text-align: center;">🛡️ 我的打怪超能力武器是：___________________</td></tr>
+                    </table>
+                `
+            },
+            "cbt": {
+                title: "認知行為治療 (CBT)",
+                color: "cyan",
+                target: "🎯 最佳適用時機：當學生出現強烈的負面情緒（如焦慮、抑鬱），且明顯受到不合理的負面思想（如非黑即白）影響時。",
+                warning: "⚠️ 避雷提醒：不要直接說「你這樣想是錯的」，要用提問的方式引導學生自己找出想法的漏洞。",
+                concept: "CBT 的核心是「A (事件) ➔ B (信念/想法) ➔ C (情緒/行為)」。真正讓我們痛苦的往往不是事件本身，而是我們對事件的「扭曲想法」。只要改變想法，就能改變情緒和行為。",
+                skills: `
+                    <li><strong>捕捉 ANTs (自動化負面思考)：</strong> 幫助學生察覺腦海中那些一閃而過、不理性的負面聲音（如：非黑即白、過度概括、讀心術）。</li>
+                    <li><strong>尋找證據 (Check it)：</strong> 像小偵探一樣，要求學生為自己的負面想法尋找支持和反對的證據。</li>
+                    <li><strong>替代想法 (Alternative Thought)：</strong> 用基於事實、更平衡的想法來取代負面想法。</li>
+                `,
+                examples: `
+                    <div class="example-card">
+                        <h5>實例 1：捕捉想法 (Catching ANTs)</h5>
+                        <div class="dialogue-note">情境：學生因為測驗錯了一題而崩潰哭泣。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「你剛才撕掉測驗卷（行為），是因為看到錯了一題（事件），然後心裡馬上彈出了一句話：『我全部都不會，我完全沒救了』（想法），所以覺得很害怕（情緒）對嗎？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>（點頭）「對，我每次都這樣。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「這叫做『非黑即白』的想法陷阱。錯了一題，大腦就騙你說你『全部』都不會。」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 2：尋找證據 (Checking Evidence)</h5>
+                        <div class="dialogue-note">情境：學生堅信自己「全部都不會」。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我們來做小偵探找證據。這張卷子有 10 題，你錯了 1 題。這能證明你『全部』都不會嗎？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「可是那一題很簡單我都錯了...」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我明白。但有沒有反對『你全部都不會』這個想法的證據？你看這 9 題，都是誰答對的？」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 3：替換想法 (Alternative Thought)</h5>
+                        <div class="dialogue-note">情境：學生過度擔憂未來的表現。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「如果我們把『我完全沒救了』這個想法換掉，換成一個比較公平的想法，我們可以怎麼說？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「我答對了大部分，只是一題不懂。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「很好！當你心裡想著『我答對了大部分，只是一題不懂，我可以問老師』，你的崩潰感會不會從 9 分降到 4 分？」</div>
+                    </div>
+                `,
+                toolName: "ANTs 捕捉器與思想紀錄表",
+                toolContent: `
+                    <h2 style="color: #0891b2; text-align: center;">CBT：思想紀錄表 (Thought Record)</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12pt; text-align: center;" border="1" cellpadding="10">
+                        <tr style="background-color: #cffafe; font-weight: bold;">
+                            <td style="width: 20%;">發生甚麼事？<br>(Situation)</td>
+                            <td style="width: 25%;">我大腦想甚麼？<br>(負面想法 ANTs)</td>
+                            <td style="width: 20%;">我的情緒<br>(0-10分)</td>
+                            <td style="width: 35%;">尋找證據，換個想法！<br>(替代想法)</td>
+                        </tr>
+                        <tr>
+                            <td style="height: 100px;">(例：測驗派卷錯了一題)</td>
+                            <td>(例：我好蠢，我完全沒救了)</td>
+                            <td>(例：崩潰 9分)</td>
+                            <td>(例：其實我答對了 9 題，我只是不懂這題，我可以問人。)</td>
+                        </tr>
+                        <tr><td style="height: 100px;"></td><td></td><td></td><td></td></tr>
+                    </table>
+                `
+            },
+            "rebt": {
+                title: "理情行為治療 (REBT)",
+                color: "fuchsia",
+                target: "🎯 最佳適用時機：當學生對自己、他人或世界抱有「必須/應該」的絕對化要求，一旦落空便引發極度憤怒或崩潰時。",
+                warning: "⚠️ 避雷提醒：駁斥時語氣要溫和帶點幽默，避免變成嚴厲的質疑或說教。",
+                concept: "REBT 是 CBT 的延伸，它特別針對引發強烈情緒的「非理性信念 (Irrational Beliefs)」。它認為痛苦源自於我們的「絕對化要求（Musts/Shoulds/必須）」和「災難化思考（世界末日）」。",
+                skills: `
+                    <li><strong>辨識 Musturbation (必須/應該)：</strong> 找出學生話語中的「絕對詞」，如「他『一定』要聽我的」、「我『必須』考第一」。</li>
+                    <li><strong>災難化破解 (Anti-Catastrophizing)：</strong> 直接挑戰「如果發生了，真的是世界末日嗎？」。</li>
+                    <li><strong>建立理性偏好 (Rational Preference)：</strong> 教導學生將「絕對化要求」降級為「理性的希望/偏好」。</li>
+                `,
+                examples: `
+                    <div class="example-card">
+                        <h5>實例 1：辨識與駁斥絕對化要求 (Musturbation)</h5>
+                        <div class="dialogue-note">情境：學生因為同學不配合他定的遊戲規則而大發脾氣打人。</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「他們不聽我的，他們『必須』按照我說的規則玩！」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「你覺得同學『必須』聽你的？是誰規定同學『一定』要聽你的呢？法律有寫這條規定嗎？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「沒有...但他們不聽我就很生氣。」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 2：災難化破解 (Catastrophizing)</h5>
+                        <div class="dialogue-note">情境：學生覺得同學不聽他的就是世界末日。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「如果他們不聽你的，這真的是世界末日、完全無法忍受嗎？還是其實只是『有點遺憾或不高興』？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「是有點不高興，但我不想跟他們玩了。」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「對，不高興是很正常的，但不到世界末日的程度，對吧？」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 3：建立理性希望 (Preference)</h5>
+                        <div class="dialogue-note">情境：學生學會放下執著。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我們試著把『必須』換成『希望』：『我希望同學聽我的，但如果他不聽，我也有點不高興，但我可以接受，我不需要因此打人。』這樣想會不會舒服一點？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「好吧，那我下次就自己玩別的。」</div>
+                    </div>
+                `,
+                toolName: "「災難化破解」工作紙",
+                toolContent: `
+                    <h2 style="color: #c026d3; text-align: center;">REBT：災難化破解器</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14pt; margin: 20px 0;" border="1" cellpadding="15">
+                        <tr style="background-color: #fae8ff; font-weight: bold;"><td colspan="2">🧨 我的「絕對化要求 (Must/Should)」</td></tr>
+                        <tr><td colspan="2" style="height: 80px;">我認為：________________________________ 必須 / 一定要發生！</td></tr>
+                        <tr style="background-color: #fae8ff; font-weight: bold;"><td colspan="2">⚖️ 駁斥與轉換成「理性希望」</td></tr>
+                        <tr>
+                            <td style="width: 50%; vertical-align: top;">如果這件事沒有發生，真的是世界末日嗎？最壞的情況是甚麼？<br><br><br></td>
+                            <td style="width: 50%; vertical-align: top;">我把「必須」換成「希望」：<br><br>我希望 ____________，但如果沒有，我也能接受。</td>
+                        </tr>
+                    </table>
+                `
+            },
+            "eft": {
+                title: "情緒導向治療 (EFT)",
+                color: "teal",
+                target: "🎯 最佳適用時機：當學生表現出強烈的攻擊性或憤怒，但你感覺到這只是用來掩飾內心的受傷、羞恥或恐懼時。",
+                warning: "⚠️ 避雷提醒：切忌在冰山水面（表層情緒）與學生爭論對錯，這會讓他們立刻關閉心門並加強防衛。",
+                concept: "EFT 認為「情緒是行動的驅動力」。我們平常看到的憤怒、攻擊往往只是防衛性的「次級情緒 (Secondary Emotion)」，在其冰山底下，隱藏著真正脆弱的「初級情緒 (Primary Emotion)」，如恐懼、羞恥或孤獨。必須處理底層情緒，行為才會改變。",
+                skills: `
+                    <li><strong>同理表層情緒：</strong> 先接納並驗證學生的表面情緒（如憤怒），不作批判。</li>
+                    <li><strong>探索冰山底層：</strong> 透過共情猜測，引導學生看見隱藏在憤怒背後的脆弱感受。</li>
+                    <li><strong>驗證未滿足的需求：</strong> 每一種情緒背後都有未滿足的需求（如羞恥需要被接納），協助學生合宜地表達需求。</li>
+                `,
+                examples: `
+                    <div class="example-card">
+                        <h5>實例 1：同理表層情緒</h5>
+                        <div class="dialogue-note">情境：學生被同學取笑後，生氣地摔書包。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我看到你剛才大發脾氣把書包摔在地上。你看起來非常憤怒，甚至氣到發抖。如果是我被那樣說，我也會覺得很生氣。你有權利感到生氣。」（先肯定情緒的合理性，不談對錯）</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 2：探索冰山底層 (Primary Emotion)</h5>
+                        <div class="dialogue-note">情境：學生情緒稍微平復後。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「有時候生氣就像冰山露在水面的部分。在水底，當同學剛才笑你答錯問題時，除了生氣，你心裡是不是其實也覺得有點『受傷』，或者『覺得很丟臉』？」</div>
+                        <div class="dialogue-s"><strong>學生：</strong>（低頭流淚）「我覺得他們都覺得我很蠢...」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 3：驗證與滿足底層需求</h5>
+                        <div class="dialogue-note">情境：學生承認了羞恥感。</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「覺得丟臉和委屈是很正常的，我不覺得你蠢。你需要老師怎麼幫你？下次如果你覺得受傷，我們試著跟對方說『你這樣笑我，我覺得很難堪』，而不是用生氣摔書來保護自己好嗎？」</div>
+                    </div>
+                `,
+                toolName: "「情緒冰山圖」視覺卡",
+                toolContent: `
+                    <h2 style="color: #0f766e; text-align: center;">EFT：我的情緒冰山</h2>
+                    <table style="width: 80%; margin: 0 auto; border-collapse: collapse; text-align: center; font-size: 14pt;" border="1" cellpadding="15">
+                        <tr>
+                            <td style="background-color: #ccfbf1; font-weight: bold; border-bottom: 3px dashed #0f766e;">
+                                🌊 水面上的表層情緒 (通常是：憤怒 / 煩躁 / 攻擊)<br><br>
+                                我表現出來的是：____________________
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #115e59; color: white; height: 150px;">
+                                🧊 水面下的脆弱情緒 (悲傷 / 恐懼 / 羞恥 / 孤獨)<br><br>
+                                其實我心裡真正覺得：____________________
+                            </td>
+                        </tr>
+                    </table>
+                `
+            },
+            "pct": {
+                title: "個人中心治療 (Person-Centered Therapy)",
+                color: "orange",
+                target: "🎯 最佳適用時機：當學生情緒低落、哭泣，或只是需要一個安全的空間傾訴，而不需要你立刻幫他解決問題時。",
+                warning: "⚠️ 避雷提醒：忍住想給建議或「教導」的衝動。過早給建議會打斷學生探索自我感受的過程。",
+                concept: "由 Carl Rogers 提出，相信每個人都有自我實現的潛力。輔導的關鍵不在於老師給予多麼高明的「建議」或「指導」，而是提供一個安全、接納的心理環境，讓學生自己找到答案。",
+                skills: `
+                    <li><strong>同理心聆聽 (Empathic Listening)：</strong> 設身處地進入學生的世界，並準確反映出他們的感受（捕捉情緒，不只是重覆話語）。</li>
+                    <li><strong>無條件積極關注 (Unconditional Positive Regard)：</strong> 傳達「我可能不贊同你的行為，但我接納並關心你這個人」的訊息。</li>
+                    <li><strong>引導自我探索：</strong> 不急於給答案，把解決問題的權力交還給學生。</li>
+                `,
+                examples: `
+                    <div class="example-card">
+                        <h5>實例 1：同理心聆聽 (Empathic Listening)</h5>
+                        <div class="dialogue-note">情境：學生哭訴自己被排擠。</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「都沒有人願意跟我同組！他們每次都丟下我！」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>（反映感受，不評價）「聽起來，你覺得自己被排擠了，這讓你感到非常孤單和委屈，而且很難過。」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 2：無條件積極關注</h5>
+                        <div class="dialogue-note">情境：學生因為作弊被抓到，充滿防衛心。</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「我就是壞學生！你們都想趕我走！」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>「我知道你現在很害怕被處罰。無論你剛才在班上做錯了甚麼，老師現在坐在這裡，是因為我關心你這個人，我想陪你一起面對這個困難，我不會因為這件事就討厭你。」</div>
+                    </div>
+                    <div class="example-card">
+                        <h5>實例 3：不給建議，引導探索</h5>
+                        <div class="dialogue-note">情境：學生對人際關係感到迷惘。</div>
+                        <div class="dialogue-s"><strong>學生：</strong>「那我現在應該怎麼辦？我要去道歉嗎？」</div>
+                        <div class="dialogue-t"><strong>老師：</strong>（不直接提供答案）「這對你來說真的是一個很艱難的決定。你自己心裡有沒有稍微偏向哪一個做法？或者有甚麼顧慮讓你不敢去道歉？」</div>
+                    </div>
+                `,
+                toolName: "「同理心對話」檢核清單",
+                toolContent: `
+                    <h2 style="color: #c2410c; text-align: center;">個人中心：同理心對話防線</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14pt; margin: 20px 0;" border="1" cellpadding="15">
+                        <tr style="background-color: #ffedd5; font-weight: bold;"><td>✅ 應該說的「同理」句式</td><td>❌ 不該說的「評價/說教」句式</td></tr>
+                        <tr>
+                            <td style="vertical-align: top; line-height: 2;">
+                                「聽起來你覺得很...」<br>
+                                「難怪你會這麼生氣。」<br>
+                                「我陪著你。」<br>
+                                「慢慢說，我願意聽。」<br>
+                                「這對你來說一定很不容易。」
+                            </td>
+                            <td style="color: #991b1b; vertical-align: top; line-height: 2;">
+                                「你應該要...」 (給建議)<br>
+                                「這有甚麼好哭的？」 (否定感受)<br>
+                                「我早就跟你說過啦！」 (事後諸葛)<br>
+                                「別人比你更慘呢。」 (比較)<br>
+                                「你只要樂觀一點就好啦。」 (淡化問題)
+                            </td>
+                        </tr>
+                    </table>
+                `
+            }
+        };
+
+        let currentActiveKey = null;
+
+        function showCounselingTool(key, element) {
+            currentActiveKey = key;
+            const data = counselingDb[key];
+            const detailPanel = document.getElementById('counselingDetail');
+            
+            // UI 更新
+            document.querySelectorAll('.counseling-card').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            
+            detailPanel.classList.remove('hidden');
+            
+            // 注入內容 (新增 Concept, Skills 解析與實例卡片區塊)
+            detailPanel.innerHTML = `
+                <div class="flex items-start justify-between border-b border-slate-200 pb-3 mb-4 sticky top-0 bg-slate-50 pt-2 z-10">
+                    <h3 class="text-base font-black text-${data.color}-700 flex items-center gap-2">
+                        ${data.title}
+                    </h3>
+                    <button onclick="exportCounselingWord()" class="bg-${data.color}-600 hover:bg-${data.color}-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5 shrink-0">
+                        <i class="fa-solid fa-file-word"></i> 下載教具
+                    </button>
+                </div>
+                <div class="space-y-4 content-section">
+                    
+                    <p class="font-bold text-${data.color}-700 bg-${data.color}-50 p-2 rounded">${data.target}</p>
+
+                    <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="text-${data.color}-800 !mt-0 flex items-center gap-1.5"><i class="fa-solid fa-lightbulb"></i> 基本理念 (Core Concept)</h4>
+                        <p class="text-slate-600 mb-0">${data.concept}</p>
+                    </div>
+
+                    <div class="bg-slate-100/50 p-3.5 rounded-xl border border-slate-200">
+                        <h4 class="text-slate-700 !mt-0 flex items-center gap-1.5"><i class="fa-solid fa-toolbox"></i> 實用技巧解析 (Practical Skills)</h4>
+                        <ul class="text-slate-600 mb-0">
+                            ${data.skills}
+                        </ul>
+                    </div>
+
+                    <div class="bg-${data.color}-50/30 p-3.5 rounded-xl border border-${data.color}-100">
+                        <h4 class="text-${data.color}-800 !mt-0 flex items-center gap-1.5"><i class="fa-solid fa-comments"></i> 15 分鐘實戰話術範例</h4>
+                        <div class="mt-3">
+                            ${data.examples}
+                        </div>
+                        <p class="font-bold text-rose-600 mt-3 text-[11px]">${data.warning}</p>
+                    </div>
+
+                    <div class="mt-2 pt-2 border-t border-slate-200 flex justify-between items-center">
+                        <span class="text-[11px] font-bold text-slate-500">📎 附帶視覺教具：${data.toolName} (可點擊右上方按鈕下載)</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function exportCounselingWord() {
+            if(!currentActiveKey) return;
+            const data = counselingDb[currentActiveKey];
+            
+            const content = `
+                <div style="font-family: 'Microsoft JhengHei', sans-serif; color: #000;">
+                    <h1 style="text-align: center; font-size: 18pt; border-bottom: 2px solid #000; padding-bottom: 10px;">${data.title} - 實戰輔導資源</h1>
+                    
+                    <h3 style="color: #333; margin-top: 20px;">💡 基本理念：</h3>
+                    <p style="font-size: 12pt; line-height: 1.6;">${data.concept}</p>
+
+                    <h3 style="color: #333; margin-top: 20px;">🗣️ 核心話術劇本 (參考)：</h3>
+                    <div style="line-height: 1.6;">
+                        ${data.examples.replace(/<div class="example-card">/g, '<div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">')}
+                    </div>
+                    
+                    <hr style="margin: 30px 0;">
+                    
+                    ${data.toolContent}
+                </div>
+            `;
+            
+            exportGenericWord(data.title, content, `MicroCounseling_${data.title.split(' ')[0]}`);
+        }
+
+        // 通用 Word 導出引擎 (帶 BOM 防亂碼)
+        function exportGenericWord(title, contentHTML, filename) {
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><title>" + title + "</title></head><body>";
+            const footer = "</body></html>";
+            const sourceHTML = header + contentHTML + footer;
+
+            const blob = new Blob(['\ufeff', sourceHTML], { type: 'application/msword;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); 
+            a.href = url; 
+            a.download = filename + '.doc';
+            document.body.appendChild(a); 
+            a.click(); 
+            document.body.removeChild(a); 
+            URL.revokeObjectURL(url);
+            showToast(`已成功導出「${filename}」Word 文件！`);
+        }
+
+        // 提示工具
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            msgEl.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
