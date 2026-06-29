@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>個別行為介入計劃 (BIP) 撰寫助手</title>
+    <!-- 引入 Tailwind CSS 進行精緻排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 專業圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* 自訂核取方塊與輸入樣式 */
+        .custom-checkbox input:checked + div {
+            background-color: #10b981;
+            border-color: #10b981;
+        }
+        .custom-checkbox input:checked + div svg {
+            display: block;
+        }
+        /* 滾動條美化 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col pb-12 bg-slate-50/50">
+
+    <!-- 頂部協作導航欄 -->
+    <nav class="bg-indigo-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <!-- 返回協作平台首頁 -->
+                <a href="professional_dashboard.html" class="flex items-center gap-2 bg-indigo-800 hover:bg-indigo-700 px-3 py-2 rounded-xl transition text-indigo-100 hover:text-white shadow-inner">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回協作平台</span>
+                </a>
+                
+                <div class="flex flex-col justify-center border-l border-indigo-700/50 pl-4">
+                    <h1 class="text-xs sm:text-sm font-black tracking-tight leading-none">個別行為介入計劃 (BIP) 撰寫助手</h1>
+                    <span class="text-[9px] text-indigo-200 font-bold block mt-1 uppercase tracking-widest">Behavior Intervention Plan Writer (Local & Safe)</span>
+                </div>
+            </div>
+
+            <!-- 右上角功能導出按鈕組 -->
+            <div class="flex items-center gap-2">
+                <button onclick="exportBipToWord()" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] sm:text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm shrink-0">
+                    <i class="fa-solid fa-file-word"></i> 導出 Word 文件
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 本地安全隱私宣告橫幅 -->
+    <div class="bg-indigo-50 border-b border-indigo-100 py-2.5 px-4">
+        <div class="max-w-7xl mx-auto flex items-center gap-2.5 text-xs text-indigo-900">
+            <i class="fa-solid fa-shield-halved text-emerald-600 text-base shrink-0"></i>
+            <span>
+                <strong>🔒 本地安全隱私宣告：</strong>
+                本工具完全在您的瀏覽器本地端運行。所有勾選與輸入內容皆<strong>不會</strong>上傳雲端，保障極致校政隱私安全。
+            </span>
+        </div>
+    </div>
+
+    <!-- 主編輯介面 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- 左側互動勾選區 (ABC 行為分析與 BIP 快速建構) -->
+        <div class="lg:col-span-5 xl:col-span-4 space-y-5">
+            
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-base shadow-inner">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-black text-slate-800 leading-tight">ABC 臨床行為分析構建器</h2>
+                        <span class="text-[10px] text-slate-400 font-bold block mt-0.5">多維度勾選，一鍵拼裝高保真校本 BIP</span>
+                    </div>
+                </div>
+
+                <!-- 步驟 1: 複選主要 SEN 類別 (滿足多於一項要求) -->
+                <div class="space-y-3">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60 space-y-2">
+                        <label class="block text-[11px] font-bold text-slate-500"><i class="fa-solid fa-tags text-emerald-600 mr-1"></i> 1. 學生主要 SEN 類別 (可多選)</label>
+                        <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-700">
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="bipSenCheck" value="ASD" class="rounded text-emerald-600"> 自閉症 (ASD)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="bipSenCheck" value="ADHD" class="rounded text-emerald-600"> 過度活躍 (ADHD)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="bipSenCheck" value="EBD" class="rounded text-emerald-600"> 情緒健康 (EBD/MI)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="bipSenCheck" value="ID" class="rounded text-emerald-600"> 智力障礙 (ID)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="bipSenCheck" value="SpLD" class="rounded text-emerald-600"> 讀寫障礙 (SpLD)</label>
+                        </div>
+                    </div>
+
+                    <!-- A (前因) 快速勾選清單 (擴充至 10 個核心選項) -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60 space-y-2">
+                        <label class="block text-[11px] font-bold text-slate-500"><i class="fa-regular fa-bell text-amber-500 mr-1"></i> A (前因 Antecedent) 快速勾選清單</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] text-slate-700">
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="antCheck" value="環境常規突變" class="rounded text-emerald-600"> 環境常規突變</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="antCheck" value="感官過敏過載(噪音/強光)" class="rounded text-emerald-600"> 感官過敏過載</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="antCheck" value="任務難度過高/文字海" class="rounded text-emerald-600"> 任務過難/文字海</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="antCheck" value="同儕社交衝突/意見不合" class="rounded text-emerald-600"> 同儕社交衝突</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="antCheck" value="缺乏即時關注與肯定提示" class="rounded text-emerald-600"> 缺乏即時關注</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="antCheck" value="活動與課堂過渡轉折期" class="rounded text-emerald-600"> 課堂轉折過渡期</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="antCheck" value="被當眾點名批評/口頭糾正" class="rounded text-emerald-600"> 當眾點名批評</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="antCheck" value="漫長靜態等待/缺乏動能宣洩" class="rounded text-emerald-600"> 漫長靜態等待</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="antCheck" value="高壓考評/公開競爭情境" class="rounded text-emerald-600"> 高壓考評與競爭</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="antCheck" value="生理不適(如疲勞/飢餓)" class="rounded text-emerald-600"> 生理不適(疲勞)</label>
+                        </div>
+                    </div>
+
+                    <!-- B (行為) 客觀量化輔助器 (擴充至 10 個核心選項) -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60 space-y-2.5">
+                        <label class="block text-[11px] font-bold text-slate-500"><i class="fa-solid fa-chart-line text-rose-500 mr-1"></i> B (行為 Behavior) 客觀描述輔助</label>
+                        
+                        <div>
+                            <label class="block text-[10px] text-slate-400 font-bold mb-1">行為挑戰類型</label>
+                            <select id="bipBehaviorSelect" onchange="updateObjectiveTranslator()" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-[11px] focus:outline-none focus:ring-1 focus:ring-emerald-500 font-semibold text-slate-700 cursor-pointer">
+                                <option value="">-- 請選擇挑戰行為 --</option>
+                                <option value="aggression">1. 肢體衝突與推撞打人 (Physical Aggression)</option>
+                                <option value="refusal">2. 拒絕指令與拒學逃避 (Refusal/Escape)</option>
+                                <option value="meltdown">3. 情緒過載崩潰大叫 (Meltdown)</option>
+                                <option value="escape">4. 課堂逃跑與擅自離開安全範圍 (Elopement)</option>
+                                <option value="verbal">5. 言語攻擊與挑釁對抗 (Verbal Aggression)</option>
+                                <option value="outofseat">6. 頻繁隨意離座與室內遊走 (Out of Seat)</option>
+                                <option value="stereotyped">7. 刻板重複動作與無聲尋求 (如轉筆/抖腳)</option>
+                                <option value="inattention">8. 望窗發呆與注意力不專神遊 (Inattention)</option>
+                                <option value="destruction">9. 亂拋、摔物或損壞文具教具 (Property Damage)</option>
+                                <option value="turntaking">10. 搶奪同儕物件、不守輪流規則 (Turn-taking Deficit)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-[10px]">
+                            <div>
+                                <label class="block text-slate-400 font-bold mb-1">發生頻率 (次數/節)</label>
+                                <input type="number" id="bFreq" value="3" oninput="updateObjectiveTranslator()" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-center font-bold text-slate-800">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 font-bold mb-1">持續時間 (分鐘)</label>
+                                <input type="number" id="bDuration" value="5" oninput="updateObjectiveTranslator()" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-center font-bold text-slate-800">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] text-slate-400 font-bold mb-1">嚴重程度與大班中斷影響</label>
+                            <select id="bIntensity" onchange="updateObjectiveTranslator()" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:ring-1 focus:ring-emerald-500 text-slate-600 cursor-pointer">
+                                <option value="中度 (中斷大班授課約5-10分鐘)">中度 (中斷大班授課約5-10分鐘)</option>
+                                <option value="嚴重 (具安全威脅，需即時抽離)">嚴重 (具安全威脅，需即時抽離)</option>
+                                <option value="輕微 (可在課堂內小聲提示調整)">輕微 (可在課堂內小聲提示調整)</option>
+                            </select>
+                        </div>
+
+                        <!-- B 實戰翻譯卡 -->
+                        <div class="bg-emerald-50/50 p-2.5 rounded-lg border border-emerald-100 text-[10px]">
+                            <span class="font-bold text-emerald-800 block mb-1">✍️ 客觀行為翻譯器：</span>
+                            <div class="text-slate-400 line-through">「佢上堂好曳，完全唔聽講！」</div>
+                            <div class="text-emerald-950 font-semibold mt-1" id="objectivePreview">
+                                ➜ 請先選擇上方行為挑戰類型。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- C (後果) 與功能假設 (擴充至 8 個核心選項) -->
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60 space-y-2">
+                        <label class="block text-[11px] font-bold text-slate-500"><i class="fa-regular fa-compass text-indigo-500 mr-1"></i> C (後果 Consequence) 與功能假設</label>
+                        <div class="grid grid-cols-1 gap-1.5 text-[10px] text-slate-700">
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="conCheck" value="逃避繁重學術任務/功課/朗讀要求" class="rounded text-emerald-600"> 逃避繁重學術要求 (Academic Escape)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="conCheck" value="獲取同儕同情、關注或課堂主導權" class="rounded text-emerald-600"> 獲取同儕同情關注 (Peer Attention)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="conCheck" value="獲取教職員即時的安撫與單對單輔導" class="rounded text-emerald-600"> 獲取老師即時安撫 (Teacher Attention)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="conCheck" value="釋放內在感官刺激、滿足本體覺與體能消耗需求" class="rounded text-emerald-600"> 釋放本體感官刺激需求 (Sensory)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="conCheck" value="逃避被公開糾正產生的難堪與焦慮" class="rounded text-emerald-600"> 逃避被點名難堪焦慮 (Avoid Shame)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="conCheck" value="獲取環境秩序控制感、維持固執常規" class="rounded text-emerald-600"> 獲取環境秩序控制感 (Environmental Control)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="conCheck" value="成功拖延時間以推遲任務的開始" class="rounded text-emerald-600"> 成功拖延推遲任務開始 (Delay Task)</label>
+                            <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="conCheck" value="藉由強烈物理反饋提升大腦覺醒度" class="rounded text-emerald-600"> 藉由行為反饋提升大腦覺醒度 (Arousal)</label>
+                        </div>
+                    </div>
+
+                    <button onclick="buildBipFromABC()" class="w-full mt-2 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> 智能導入右側 BIP 計劃表
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側可編輯 BIP 計畫書大表 -->
+        <div class="lg:col-span-7 xl:col-span-8 space-y-6">
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                
+                <!-- 標題與學校名稱 -->
+                <div class="text-center border-b border-slate-200 pb-4">
+                    <div class="flex justify-center items-center gap-2 mb-1">
+                        <input type="text" id="schoolName" value="（學校名稱）" class="border-b border-slate-300 text-lg font-bold text-slate-800 text-center focus:border-emerald-500 focus:outline-none px-2 py-0.5 max-w-[280px]">
+                    </div>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-wide">學生個別行為介入計劃 (BIP)</h1>
+                    <span class="text-[10px] text-slate-400 font-bold block mt-1">CONFIDENTIAL / 特殊教育支援團隊機密文件</span>
+                </div>
+
+                <!-- 1. 基本資料 -->
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2 border-l-4 border-emerald-600 pl-2">
+                        一、 學生基本資料
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-bold text-slate-500">
+                        <div>
+                            <label class="block mb-1">學生姓名</label>
+                            <input type="text" id="studentName" value="陳大文" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1">班別 (年齡)</label>
+                            <input type="text" id="studentGrade" value="中一 (12歲)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1">討論日期</label>
+                            <input type="text" id="discussDate" value="2026年6月26日" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block mb-1">計劃施行時段</label>
+                            <input type="text" id="duration" value="2026年9月 至 2027年1月" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none transition">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 目標行為之功能性評估 (ABC 分析) -->
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2 border-l-4 border-emerald-600 pl-2">
+                        二、 目標介入行為與功能性評估 (ABC 行為分析)
+                    </h3>
+                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-4">
+                        <div>
+                            <label class="block font-bold text-slate-600 mb-1 text-xs">🚨 需要介入的挑戰行為 (Behavior - 客觀量化描述)：</label>
+                            <textarea id="targetBehavior" rows="3" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none resize-none leading-relaxed" placeholder="請詳細描述問題行為發生的頻率、強度與具體表現..."></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold text-slate-600 mb-1 text-xs">🔔 前因與觸發點 (Antecedent - A)：</label>
+                                <textarea id="antecedent" rows="3" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none resize-none leading-relaxed" placeholder="行為發生前，環境中出現了甚麼刺激或要求？"></textarea>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-600 mb-1 text-xs">📢 後果與維持因素 (Consequence - C)：</label>
+                                <textarea id="consequence" rows="3" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none resize-none leading-relaxed" placeholder="行為發生後，環境作出了甚麼反饋？（學生是否成功逃避了要求，或獲取了注意力？）"></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-600 mb-1 text-xs">🧠 臨床行為功能假設 (Behavioral Function Hypothesis)：</label>
+                            <textarea id="functionHypothesis" rows="2" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:ring-1 focus:ring-emerald-500 focus:outline-none resize-none leading-relaxed" placeholder="例如：學生試圖透過此行為[逃避複雜的文字功課/獲取老師即時的關注]..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 三大核心介入策略 -->
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2 border-l-4 border-emerald-600 pl-2">
+                        三、 核心介入與調適策略
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-bold text-slate-500">
+                        <!-- A. 前因預防策略 -->
+                        <div class="border border-slate-200 bg-white p-4 rounded-xl space-y-2">
+                            <span class="text-sm font-black text-slate-800 block border-b border-slate-100 pb-1.5"><i class="fa-solid fa-shield-halved text-teal-600"></i> (一) 預防性策略 (Preventative)</span>
+                            <textarea id="tier1Strategy" rows="8" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none resize-none leading-relaxed" placeholder="請輸入預防性調適策略..."></textarea>
+                        </div>
+
+                        <!-- B. 替代行為教學 -->
+                        <div class="border border-slate-200 bg-white p-4 rounded-xl space-y-2">
+                            <span class="text-sm font-black text-slate-800 block border-b border-slate-100 pb-1.5"><i class="fa-solid fa-graduation-cap text-indigo-600"></i> (二) 替代行為教學 (Replacement)</span>
+                            <textarea id="tier2Strategy" rows="8" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none resize-none leading-relaxed" placeholder="教導學生使用甚麼合宜的行為來替代挑戰行為？..."></textarea>
+                        </div>
+
+                        <!-- C. 後果處理與增強 -->
+                        <div class="border border-slate-200 bg-white p-4 rounded-xl space-y-2">
+                            <span class="text-sm font-black text-slate-800 block border-b border-slate-100 pb-1.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> (三) 危機應對處置 (Reactive)</span>
+                            <textarea id="tier3Strategy" rows="8" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none resize-none leading-relaxed" placeholder="當學生出現替代行為或適當行為時，給予甚麼即時增強與處理？..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. 情緒危機處理預案與安全指引 -->
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2 border-l-4 border-emerald-600 pl-2">
+                        四、 課室情緒危機處理預案與安全指引 (Crisis Plan)
+                    </h3>
+                    <div class="bg-rose-50/40 border border-rose-100 p-4 rounded-2xl space-y-3">
+                        <label class="block font-bold text-rose-800 text-xs"><i class="fa-solid fa-triangle-exclamation"></i> 突發嚴重失控時的即時介入步驟（口頭話術劇本與安全措施）：</label>
+                        <textarea id="crisisPlan" rows="4" class="w-full bg-white border border-rose-200 rounded-xl p-3 text-xs text-slate-800 focus:ring-1 focus:ring-rose-500 focus:outline-none resize-none leading-relaxed" placeholder="請在此處填寫突發嚴重失控時的介入步驟（首30秒安全阻斷、降溫期安全轉移、話術示範）..."></textarea>
+                    </div>
+                </div>
+
+                <!-- 5. 家校合作與評估基準 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-bold text-slate-500">
+                    <div class="border border-slate-200 bg-white p-4 rounded-xl space-y-2">
+                        <span class="text-sm font-black text-slate-800 block border-b border-slate-100 pb-1.5"><i class="fa-solid fa-house-chimney-user text-amber-600"></i> 五、 家校合作與居家訓練</span>
+                        <textarea id="homeCollab" rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none resize-none leading-relaxed" placeholder="家長在家中如何配合及維持一致的管教尺度？..."></textarea>
+                    </div>
+                    <div class="border border-slate-200 bg-white p-4 rounded-xl space-y-2">
+                        <span class="text-sm font-black text-slate-800 block border-b border-slate-100 pb-1.5"><i class="fa-solid fa-chart-line text-blue-600"></i> 六、 評估基準與成效追蹤</span>
+                        <textarea id="evaluationCriteria" rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-emerald-500 outline-none resize-none leading-relaxed" placeholder="設定甚麼量化目標以衡量計劃成效？..."></textarea>
+                    </div>
+                </div>
+
+                <!-- 聯絡與簽名 -->
+                <div class="border border-slate-200 bg-slate-50 p-4 rounded-2xl grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-bold text-slate-600">
+                    <div>
+                        <p class="mb-2">特殊教育需要統籌主任 (SENCO) 簽署：_____________________</p>
+                        <p>日期：_____________________</p>
+                    </div>
+                    <div>
+                        <p class="mb-2">家長 / 監護人確認簽署：_____________________</p>
+                        <p>日期：_____________________</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast 提示組件 -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-white border border-slate-200 rounded-2xl shadow-lg py-3 px-5 flex items-center gap-3 opacity-0 translate-y-10 transition-all duration-300 pointer-events-none z-[200]">
+        <i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
+        <span id="toastMsg" class="text-xs font-bold text-slate-700"></span>
+    </div>
+
+    <!-- 底部版權 -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 text-center text-[10px] text-slate-400 border-t border-slate-200 py-6 w-full">
+        <p>© 2026 SEN Care Professional. All rights reserved. (BIP 本地離線生成模組，安全保障隱私)</p>
+    </footer>
+
+    <!-- JavaScript 智能生成與 Word 導出引擎 -->
+    <script>
+        // 10大 SEN 特徵資料庫 (支援 comorbid 多重選擇拼裝)
+        const senProfiles = {
+            "ASD": { name: "自閉症 (ASD)", deficit: "大腦中央統整能力及心智解讀能力弱，常伴隨感官過敏過載、完美主義與單一固執思維", home: "需與學校協調統一視覺化流程，不隨意在臨睡前 or 出門前改變既定指令" },
+            "ADHD": { name: "專注力不足/過度活躍 (ADHD)", deficit: "大腦前額葉多巴胺分泌不平衡，引致執行功能缺損、極難維持專注、抑制衝動及延遲滿足能力弱", home: "配合學校建立「代幣獎勵合約」，給予即時、高頻率、具刺激感的正面反饋" },
+            "EBD": { name: "情緒健康/精神病 (EBD/MI)", deficit: "自主神經系統常處於高警覺狀態（戰或逃反應），易因微小壓力與挫敗引發情緒驚恐或防衛性反抗", home: "維持低壓接納氛圍，密切注意軀體化不適，發現驚恐前驅徵兆即時通報學校" },
+            "ID": { name: "智力障礙 (ID)", deficit: "抽象思維、邏輯推理與高階處理弱，在日常與學業中需要大量具體、重複及功能性的步驟拆解", home: "將家中生活自理常規製作成彩色照片步驟圖卡，督促孩子每天按圖索驥" },
+            "SpLD": { name: "讀寫障礙 (SpLD)", deficit: "語音編碼及字形空間記憶較弱，解碼文字時需要消耗大腦極大能量，極易產生學習疲勞與自卑拒學感", home: "減少機械式抄寫功課，發掘其非學術才藝以重建整體自我價值感" }
+        };
+
+        // 10大校園高頻行為挑戰場景及對應策略
+        const scenarios = {
+            "aggression": { 
+                name: "肢體衝突與推撞打人", 
+                immediate: "➤ **立刻隔離雙方**：用平靜堅定的語氣給予指令（「手放低，分開站」），首要保護現場其他學生。\n➤ **先冷靜後對錯**：不要立刻問「誰先動手」，讓雙方冷靜5分鐘。",
+                t1: "預防策略：在分組或排隊時由 TA 指定起點與同儕防線，避免突發性空間侵犯。提供充足物理安全間距。",
+                t2: "替代行為：教導使用「暫停手勢」或大聲說出「請等等，我有不同意見」來代替直接動手搶奪或推撞。",
+                t3: "後果處置：當能使用替代手勢，立即給予課堂合作貼紙。若發生衝突，立即暫停其該輪遊戲特權（Time-out）。"
+            },
+            "refusal": { 
+                name: "拒絕指令與拒學逃避", 
+                immediate: "➤ **停止當眾對質**：立即停止口頭催促或高壓威脅，防止衝突升級。\n➤ **給予大腦休息**：給予 3 分鐘大腦放空休息（Brain Break），暫時收走繁重工作紙。",
+                t1: "預防策略：課業拆解成小步驟（如每次只要求完成一行）。大篇幅抄寫加寬行距並放大字體。",
+                t2: "替代行為：教導主動遞送「求助卡」或「暫停卡」（如：老師，我需要休息2分鐘），以合規、低耗能溝通代替抗拒。",
+                t3: "後果處置：主動要求小休時立即批准。功課在學近平復後必須親自（或在 TA 協助下）降階完成，確保無法完全逃避。"
+            },
+            "meltdown": { 
+                name: "情緒過載崩潰大叫", 
+                immediate: "➤ **危機阻斷**：清空周邊危險物品。切忌講道理或大聲喝止，保持安全距離。\n➤ **慢速話術**：用低音量、慢語速說：「你在這裡是安全的，老師陪著你，我們先深呼吸。」",
+                t1: "預防策略：在吵雜或常規轉折前 5 分鐘給予清晰視覺卡提示。環境吵雜時，允許該生配戴防噪耳罩。",
+                t2: "替代行為：指導學生學習「情緒溫度計」，在感覺心跳加速、過載前主動走向後方冷靜避風角。",
+                t3: "後果處置：主動前往冷靜角時立即予以貼紙獎勵。大叫哭鬧時，老師冷處理不給予語言對話（大腦此時已無法解碼）。"
+            },
+            "escape": { 
+                name: "課堂逃跑遊走", 
+                immediate: "➤ **安全跟隨**：TA 在後保持安全距離跟隨，不作強行拉扯，防止其慌不擇路跑下樓梯發生危險。\n➤ **溫和召回**：在安全處使用「安心卡」引導至輔導室。",
+                t1: "預防策略：將座位調整至靠近課室後方，且遠離前門口。在課室後方設置「合法冷靜沙發區」。",
+                t2: "替代行為：教導學生在感覺坐立難安、想逃跑前，主動出示「散步卡」由 TA 陪同在走廊快步走 1 分鐘後回班。",
+                t3: "後果處置：若學生選擇走向後方沙發冷靜區而非跑出課室，平復後給予高度代幣鼓勵；若衝出，避免大喊名字。"
+            },
+            "verbal": { 
+                name: "言語攻擊與挑釁對抗", 
+                immediate: "➤ **中性無視**：老師保持面部冷靜、不怒、不回罵。直接指引大班繼續活動，冷處理其挑釁對抗。\n➤ **低調移開視線**：不提供全班同學起鬨之增強環境。",
+                t1: "預防策略：實施「私下小聲提示常規」。指出其錯處時必須走到其身旁小聲進行，絕不在全班面前公開點名。",
+                t2: "替代行為：教授如何合宜接受他人指正；練習使用「老師，我聽不明白，可不可以下課私下教我」句式。",
+                t3: "後果處置：私下提示後能點頭修正，私下給予貼紙或特權獎勵。若大骂頂嘴，直接無視，下課後再行跟進。"
+            },
+            "outofseat": { 
+                name: "頻繁隨意離座與室內遊走", 
+                immediate: "➤ **不作當眾指責**：不要大聲命令「立刻回座」，避免觸發其防衛對抗。\n➤ **非語言引導**：行近其身旁，小聲指引或以手勢引導回座。",
+                t1: "預防策略：安排「課堂合法移動任務」（如擔任派紙員、抹黑板小幫手，每15分鐘自動觸發一次合法移動）。",
+                t2: "替代行為：教導手腳抖動難忍時，使用「椅腳減壓拉力帶 (Bouncy Band)」踩動，原地消耗生理張力。",
+                t3: "後果處置：若安坐滿 15 分鐘並能舉手申請，立即予以代幣。無故離座時由 TA 小聲拍肩引導，不提供大班注目。"
+            },
+            "stereotyped": { 
+                name: "刻板重複動作與無聲尋求 (如轉筆/抖腳)", 
+                immediate: "➤ **功能性包容**：只要該刻板動作無聲、不具破壞性且不干擾他人，科任老師應選擇「默許包容」。",
+                t1: "預防策略：若刻板小動作發出噪聲，溫和低調遞送替代物（如：矽膠捏捏球、無聲轉筆器），不公開批評。",
+                t2: "替代行為：參加手部精細動作調解，教導使用桌椅底下黏貼的「魔術貼毛氈片」，在桌下摩挲釋放觸覺壓力。",
+                t3: "後果處置：當能主動配合使用桌底毛氈片，給予正面肯定。對其無干擾性的微弱搖晃，不予高頻干涉。"
+            },
+            "inattention": { 
+                name: "望窗發呆與注意力不專神遊", 
+                immediate: "➤ **溫和觸覺喚醒**：走到其身旁，輕輕敲擊其桌面兩下，或遞送一個工作紙引導其動手，將思緒拉回當下。",
+                t1: "預防策略：座位安排在低干擾區（避開走廊、窗戶與垃圾桶），靠近黑板。講課每 10 分鐘變換一次語調與節奏。",
+                t2: "替代行為：教導使用「視覺化倒數計時器 (Visual Timer)」，讓其清楚看到還需維持專注幾分鐘即可小休。",
+                t3: "後果處置：每當專注完成一小節（10分鐘）任務並舉手示意，立即給予代幣蓋章。大意漏看指令時小聲提醒。"
+            },
+            "destruction": { 
+                name: "損壞文具教具或大力摔物", 
+                immediate: "➤ **物理隔離物件**：立即收走其課桌上其餘可拋擲之重物、鐵尺或玻璃器皿。\n➤ **冷靜防線**：給予指令「手放膝蓋」，保持安全距離防範自傷 or 傷人。",
+                t1: "預防策略：課桌實施「極簡常規」，只允許擺放當堂必備文具。大班教學中使用耐摔之實體塑料或木製教具。",
+                t2: "替代行為：教導在感到極度沮喪時，大力「撕毀廢紙」或「緊捏抗壓沙包」來釋放強烈物理張力。",
+                t3: "後果處置：破損之課本、文具平復後必須由學生在 TA 協助下用膠帶黏貼修復，確保其無法逃避破壞行為之後果。"
+            },
+            "turntaking": { 
+                name: "搶奪同儕物件不守輪流規則", 
+                immediate: "➤ **物歸原主**：老師平靜收回搶奪之教具物件並交還同儕。\n➤ **視覺排序**：出示「沙漏」或「輪候字卡」，指出現在輪到誰。",
+                t1: "預防策略：在任何需要輪候的活動（如玩桌遊）中，預先為其派發一個代表號碼牌，指出具體等待人數。",
+                t2: "替代行為：教導使用「輪流句式」（如：可唔可以借我玩5分鐘？）或主動出示「借物卡」，等待同儕回應。",
+                t3: "後果處置：能耐心等待並出示借物卡時立即予以讚賞與貼紙。一旦發生強搶，立即取消其本輪遊戲參與特權。"
+            }
+        };
+
+        // BIP 核心特教臨床數據矩陣 (40 種專屬干預組合)
+        const bipMatrixDb = {
+            "ASD": {
+                "aggression": {
+                    t1: "在所有分組活動前，提供視覺化「協作發言順序表」及「妥協折衷句式卡」。安排溫和友善的同儕同組，並在桌面上畫出明確的「教具邊界線」。避免突發性的空間侵犯。",
+                    t2: "教導學生使用「折衷卡」或大聲說出「請等等，我有不同意見」來代替肢體搶奪；於社交小組演練心智解讀 (Theory of Mind) 技能。",
+                    t3: "【預防性與正向增強】當學生在面臨意見分歧時能使用「折衷句式」表達，立即給予課堂合作貼紙或代幣獎勵。\n【消退與危機處置】若出現推搡搶奪行為，立即沒收該組教具或暫停討論，確保問題行為無法幫助其獲取環境秩序控制力。"
+                },
+                "refusal": {
+                    t1: "優化普遍學習設計 (UDL)：將長篇工作紙版面加闊，字體放大至14pt並提供重點標記螢光筆。將任務分拆（如每次只要求完成兩行書寫），大幅降低前因文字量。",
+                    t2: "教導學生使用「求助卡」或「暫停卡」（如：老師，我需要休息2分鐘），以合規、低耗能的溝通替代直接抗拒與拋筆行為。",
+                    t3: "【預防性與正向增強】當學生主動出示「暫停卡」要求小休，老師立即批准，並在小休後獎勵其完成一行書寫。\n【消退與危機處置】停止當眾與其對質。若其抗拒，不給予過多個人關注，暫時收回多餘文具，確保問題行為無法幫助其完全免除課業要求。"
+                },
+                "meltdown": {
+                    t1: "在任何鐘聲、演習或常規更改前 5 分鐘，由 TA 給予個別口頭預告及視覺卡提示。環境嘈雜時，允許該生配戴防噪耳罩。",
+                    t2: "指導學生學習「情緒溫度計」，認識自己的感官過載臨界點；於低壓環境演練使用「安心卡」離開座位降溫。",
+                    t3: "【預防性與正向增強】當學生感到不適並能主動出示「安心卡」前往冷靜角，老師立即給予獎勵貼紙。\n【消退與危機處置】若出現崩潰，不給予過多口頭說教，由 TA 安靜陪伴前進至指定避風港，待平復後再行介入。"
+                },
+                "escape": {
+                    t1: "將座位調整至靠近課室後方，且遠離前門口。在課室後方設置「合法冷靜沙發區」，與學生約定：「如果好想走，後面的沙發就是你合法的冷靜區。」",
+                    t2: "教導學生在感覺到想逃跑前，主動遞送「安心卡」給科任老師，以合規途徑由 TA 陪同前往輔導室。",
+                    t3: "【預防性與正向增強】若學生選擇走向後方沙發冷靜區而非跑出課室，在平復後給予高度口頭肯定與代幣獎勵。\n【消退與危機處置】若跑出課室，TA 在後保持安全距離（不追趕以免刺激其跑得更快），不作過多口頭指責，靜靜跟隨並引導回防線。"
+                },
+                "verbal": {
+                    t1: "實施「低調私下提示常規」：老師需要指出錯誤或修正其行為時，必須走到該生身旁、小聲且溫和地進行，絕不在全班面前公開點名。",
+                    t2: "參加「社交語用小組」，教授如何合宜接受他人指正；練習使用「我現在覺得有點難堪，我想靜一靜」等自我保護句式。",
+                    t3: "【預防性與正向增強】當學生在被指出錯處時能點頭修正，私下給予貼紙或大假獎勵。\n【消退與危機處置】當其大罵挑釁時，老師保持中性冷靜（不回應、不生氣、不爭辯），直接翻過該頁繼續大班授課，使其挑釁無法發揮「轉移注意力」的功效。"
+                }
+            },
+            "ADHD": {
+                "aggression": {
+                    t1: "排隊前由班主任明確指定其位置（如排第一位或最後一位由 TA 陪同），給予清晰的輪候時間長度視覺倒數提示。縮短等待時間。",
+                    t2: "教導學生使用「數手指呼吸法」（數一下深呼吸一次）進行體內降溫；練習在輪候時默唸「紅綠燈冷靜咒語」。",
+                    t3: "【預防性與正向增強】當學生在輪候玩桌遊時能成功克制推撞並排隊達 3 分鐘，立即給予代幣蓋章或額外自由時間。\n【消退與危機處置】一旦發生推撞，立即取消其本輪遊戲參與權（Time-out 2分鐘），確保問題行為無法幫助其快速得到遊戲權利。"
+                },
+                "refusal": {
+                    t1: "實施「乾淨課室抽屜常規」：上課時課桌上僅限擺放當堂書本與筆，收走分心物件。將指令分拆為 10 分鐘一小節，配合視覺計時器。",
+                    t2: "教導學生使用「番茄鐘自我調控清單」，每完成一小節學術抄寫，可自主打勾並申請 1 分鐘的手部伸展小休。",
+                    t3: "【預防性與正向增強】每當學生完成一小節（10分鐘）抄寫，立即給予代幣或蓋章肯定。\n【消退與危機處置】當學生扔文具時，老師不作口頭訓斥（不提供關注），中性地將扔掉的筆撿回（或引導其平復後自己撿起），確保抄寫任務「必須完成，無法逃避」。"
+                },
+                "meltdown": {
+                    t1: "考評或發還試卷時私下進行，絕不在班中公開宣讀成績。在課桌椅腳加裝拉力帶，座位安排在近師角落以便隨時給予私下情緒支持。",
+                    t2: "參加「CBT 行為管理小組」，學習「大腦急急降溫三部曲」卡片（停下、深呼吸、握抗壓球）。",
+                    t3: "【預防性與正向增強】當學生被指出大意錯誤時能平靜接受並修正，私下給予高度讚賞與額外代幣。\n【消退與危機處置】撕碎的試卷在其平復後，必須由其親自用膠帶黏貼修復，確保破壞行為無法使其「免除面對失敗後果」。"
+                },
+                "escape": {
+                    t1: "安排「課堂移動常規」（如：由該生擔任派紙員、擦黑板小幫手，每15分鐘自動觸發一次合法移動）。在椅腳安裝椅腳拉力帶 (Bouncy Band)。",
+                    t2: "教導學生在感覺到坐立難耐時，主動出示「5分鐘散步卡」，由 TA 陪同在走廊進行快步走 1 分鐘後回班。",
+                    t3: "【預防性與正向增強】當學生在安坐 15 分鐘後能主動舉手申請散步卡，立即批准並獎勵代幣。\n【消退與危機處置】若無故離座，科任老師避免大聲叫名字（不提供大班注視之增強），由 TA 低調走到其身旁給予觸覺拍肩提示引導回座。"
+                },
+                "verbal": {
+                    t1: "實施「低調私下提示暗號」：老師與該生預先約定一個手勢（如敲擊兩下），每當發現其分心時，老師給予暗號提示，不公開點名批評。",
+                    t2: "參加「自信心重建與社交溝通班」，學習「如何與老師合作」；練習使用「老師，我聽不明白，可不可以私下教我」句式。",
+                    t3: "【預防性與正向增強】當學生在接受私下提示後能點頭收起玩具，課後私下給予加倍獎勵。\n【消退與危機處置】一旦發生公開頂嘴頂撞，老師保持中性不怒，不給予其大聲辯論之機會，直接給予指令（「下課後我們私下傾」），隨即轉向大班授課，使其「頂嘴」無法得逞。"
+                }
+            },
+            "EBD": {
+                "aggression": {
+                    t1: "在大班討論前，向該生提供「情緒晴雨卡」，容許其在感覺憤怒升高時主動亮起「紅燈」要求抽離。提供冷靜空間。",
+                    t2: "參加「CBT 情緒調控與社交小組」，學習識別憤怒身體特徵，練習「5秒冷靜法」與溝通話術。",
+                    t3: "【預防性與正向增強】當能克制憤怒並主動出示晴雨卡，立即給予高度正向代幣鼓勵。\n【消退與危機處置】一旦發生肢體對抗，立即由危機小組介入，沒收其遊戲權利，確保問題行為無法幫助其獲得優勢。"
+                },
+                "refusal": {
+                    t1: "提供無壓力的學術鷹架，將長篇工作紙拆解，提供「完成一行即蓋章」的即時正向反饋。避免大班公開施壓。",
+                    t2: "指導使用「我需要休息 5 分鐘」提示卡，以合規抽離代替發脾氣對抗。學習壓力釋放。",
+                    t3: "【預防性與正向增強】當主動出示休息卡時予以准許並蓋章。\n【消退與危機處置】若出現撕簿，不作過多個人關注。在其情緒平復後，原有要求（或降階要求的功課）必須重新完成，確保其無法逃避學術底線。"
+                },
+                "meltdown": {
+                    t1: "在發還考卷前進行私下個別小提示，座位安排在近門口安全區，避免被全班注視。提供充足心理彈性預告。",
+                    t2: "社工提供正念放鬆訓練小組，指導學生認識焦慮與軀體不適的連繫，練習大腦放鬆技巧。",
+                    t3: "【預防性與正向增強】當被指出大意錯誤時能平靜接受並修正，私下給予高度讚賞。\n【消退與危機處置】制定安心卡常規：允許在情緒崩潰大叫前無聲出示安心卡，前往輔導室由社工陪伴降溫，不予以大班特權增強。"
+                },
+                "escape": {
+                    t1: "在課室後方設置「合法冷靜沙發區」，與學生約定：「如果好想走，後面的沙發就是你合法的冷靜區。」避免極端邊緣化情緒。",
+                    t2: "教導學生在感覺到想逃跑前，主動遞送「安心卡」給科任老師，以合規途途徑由 TA 陪同前往輔導室。",
+                    t3: "【預防性與正向增強】若學生選擇走向後方沙發冷靜區而非跑出課室，在平復後給予高度口頭肯定與代幣獎勵。\n【消退與危機處置】若跑出課室，TA 在後保持安全距離（不追趕），不作過多口頭指責，靜靜跟隨並引導回防線。"
+                },
+                "verbal": {
+                    t1: "實施「低調私下提示常規」：老師需要指出錯誤或修正其行為時，必須走到該生身旁、小聲且溫和地進行，裝有特定視覺提示標籤。",
+                    t2: "參加「語用調控與社交技巧班」，學習如何合宜接受他人指正；練習使用「老師，我聽不明白，可不可以私下教我」句式。",
+                    t3: "【預防性與正向增強】當學生在接受私下提示後能點頭修正，私下給予貼紙或大假獎勵。\n【消退與危機處置】一旦發生公開頂嘴頂撞，老師保持中性冷靜，不給予大聲辯論機會，直接給予指令（「下課後我們私下傾」），隨即轉向大班授課。"
+                }
+            },
+            "ID": {
+                "aggression": {
+                    t1: "排隊或移動時，由 TA 牽手或安排在隊伍前方，給予最清晰具體的行為期望（例如：手放膝蓋），擴大座位間距。",
+                    t2: "透過社交故事反覆演練「排隊時手要放哪裡」；利用圖卡配對，教導分辨好壞行為（「手要放好」）。",
+                    t3: "【預防性與正向增強】當其在排隊時能成功克制推撞並排隊達 3 分鐘，立即給予代幣蓋章或貼紙肯定。\n【消退與危機處置】一旦發生碰撞，立即將其帶離活動，進行短暫抽離隔離 (Time-out)，不給予其關注度。"
+                },
+                "refusal": {
+                    t1: "採用普遍學習設計 (UDL)：將抽象概念以實物、具體圖片替代，降低教材認知跨度。分拆任務（每次只要求完成一個步驟）。",
+                    t2: "生活技能與學科基礎概念反覆演練班。指導使用「我需要休息」提示卡，以合規抽離代替發脾氣對抗。",
+                    t3: "【預防性與正向增強】當其完成一個小步驟，立即給予代幣或蓋章肯定。\n【消退與危機處置】若其抗拒，不給予過多個人關注，暫時收回多餘文具，確保問題行為無法幫助其完全免除課業要求。"
+                },
+                "meltdown": {
+                    t1: "使用簡單直接語句安撫，轉移視線至感興趣的實物上。在常規改變前元給予清晰的視覺圖片預告與步驟卡。",
+                    t2: "透過社交故事反覆演練「生氣時該怎麼做」；訓練識別「生氣身體信號」（如手出汗、心跳）。",
+                    t3: "【預防性與正向增強】進行功能性行為分析 (ABC)，找出觸發點並移除。當其主動走向冷靜角，立即給予最實質獎勵（如貼紙）。\n【消退與危機處置】大哭時不給予口頭對答（大腦無法解碼），保持安全距離在旁安靜守護。"
+                },
+                "escape": {
+                    t1: "在課室地板上貼上「腳印貼紙」，明確指示「腳放這裡」。在門口加裝安全無聲圍欄阻隔。每10分鐘給予動態任務。",
+                    t2: "透過遊戲訓練「木頭人」靜止控制。教導舉起「我要去洗手間」的圖像牌進行合規移動。",
+                    t3: "【預防性與正向增強】TA 在旁陪伴，每專注 or 定座 5 分鐘即給予貼紙增強。\n【消退與危機處置】若擅自離開，低調引導回座，不給予過多口頭指責或追逐（以免其當成捉迷藏遊戲）。"
+                },
+                "verbal": {
+                    t1: "給予簡單直接、不帶複雜語氣的指令。指出錯處時語氣必須平靜溫和，小聲私下進行，不當眾斥責。",
+                    t2: "社交自理班反覆模擬演練如何向他人道歉或求助；練習使用「請幫幫我」圖卡，提高口語表達能力。",
+                    t3: "【預防性與正向增強】當接受私下提示並修正行為，立即給予加倍貼紙獎勵。\n【消退與危機處置】一旦大叫挑釁，老師保持表情中性不回應，直接指引大班繼續活動，冷處理其言語頂嘴行為。"
+                }
+            }
+        };
+
+        // 快速填充
+        function askPresetQuestion(sen, scenario) {
+            // 清空所有 SEN 複選
+            document.querySelectorAll('input[name="bipSenCheck"]').forEach(cb => cb.checked = false);
+            // 勾選指定主要 SEN
+            const targetCb = document.querySelector(`input[name="bipSenCheck"][value="${sen}"]`);
+            if (targetCb) targetCb.checked = true;
+
+            document.getElementById('bipBehaviorSelect').value = scenario;
+            updateObjectiveTranslator();
+            buildBipFromABC();
+        }
+
+        // 獲取多選核取方塊數值
+        function getCheckedValues(name) {
+            return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
+        }
+
+        // 實時更新 B (行為) 描述翻譯器內容
+        function updateObjectiveTranslator() {
+            const bSelect = document.getElementById('bipBehaviorSelect');
+            const bFreq = document.getElementById('bFreq').value || '3';
+            const bDuration = document.getElementById('bDuration').value || '5';
+            const bIntensityRaw = document.getElementById('bIntensity').value || '';
+            
+            const bType = bSelect.options[bSelect.selectedIndex] ? bSelect.options[bSelect.selectedIndex].text : '';
+            const previewEl = document.getElementById('objectivePreview');
+
+            if (!bSelect.value) {
+                previewEl.innerHTML = "➜ 請先選擇上方行為挑戰類型。";
+                return;
+            }
+
+            const intensity = bIntensityRaw.split(' ')[0]; // 提取中度/嚴重/輕微
+            previewEl.innerHTML = `➜ 客觀量化描述：<br>「當面臨[前因]時，學生陳大文會平均每節課出現 <strong class="text-rose-600">${bFreq}</strong> 次『<strong class="text-rose-600">${bType}</strong>』，每次持續約 <strong class="text-rose-600">${bDuration}</strong> 分鐘，強度達 <strong class="text-rose-600">${intensity}</strong> 級，顯著中斷了大班教學。」`;
+        }
+
+        // 動態融合引擎：若無 explicitMatrix，則智慧動態組裝
+        function generateDynamicResponse(senKey, sceneKey) {
+            const sen = senProfiles[senKey];
+            const scene = scenarios[sceneKey];
+            return {
+                t1: `【環境預防】針對 ${sen.name} 學生，在發生「${scene.name}」時，${scene.t1}`,
+                t2: `【技能教學】針對其 ${sen.deficit}，${scene.t2}`,
+                t3: `【後果消退】由 SENCO 及團隊介入，${scene.t3} 並聯絡專責人員跟進。`
+            };
+        }
+
+        // 行動方案與 ABC 智能導入大表核心
+        function buildBipFromABC() {
+            const checkedSens = getCheckedValues('bipSenCheck');
+            const behaviorKey = document.getElementById('bipBehaviorSelect').value;
+
+            if (checkedSens.length === 0) {
+                showToast("請在左側複選清單中至少勾選一項「SEN 類別」！", "error");
+                return;
+            }
+            if (!behaviorKey) {
+                showToast("請在左側選單中選擇「行為挑戰類型」！", "error");
+                return;
+            }
+
+            const checkedAnts = getCheckedValues('antCheck');
+            const checkedCons = getCheckedValues('conCheck');
+
+            const antText = checkedAnts.length > 0 ? checkedAnts.join('、') : "在面臨特定環境常規突變、感官壓力或學術工作紙高壓要求";
+            const conText = checkedCons.length > 0 ? checkedCons.join('、') : "逃避繁重之學術挫敗感，或藉此釋放內在感官刺激、獲取教職員即時關注";
+
+            const studentName = document.getElementById('studentName').value || '陳大文';
+            const grade = document.getElementById('studentGrade').value || '中一 (12歲)';
+            const freq = document.getElementById('bFreq').value || '3';
+            const duration = document.getElementById('bDuration').value || '5';
+            const intensityRaw = document.getElementById('bIntensity').value;
+            const intensity = intensityRaw.split(' ')[0];
+
+            // 獲取行為挑戰客觀中文名稱
+            const bSelect = document.getElementById('bipBehaviorSelect');
+            const behaviorNameHtml = bSelect.options[bSelect.selectedIndex] ? bSelect.options[bSelect.selectedIndex].text : '';
+            const behaviorName = behaviorNameHtml.split('. ')[1] ? behaviorNameHtml.split('. ')[1].split(' (')[0] : behaviorNameHtml;
+
+            // 1. 組裝目標行為 (Behavior - B)
+            const generatedTarget = `當面臨[${antText}]等前因刺激時，學生 ${studentName} (${grade}) 會出現『${behaviorName}』挑戰行為。平均每節課出現 ${freq} 次，每次持續約 ${duration} 分鐘，強度評估為 ${intensity}，顯著中斷大班教學流程。`;
+
+            // 2. 組裝前因與觸發點 (Antecedent - A)
+            const generatedAntecedent = `大班授課時，環境出現：${antText}。此時學生容易因為大腦處理過載而誘發焦慮或多動生理張力。`;
+
+            // 3. 組裝後果與維持因素 (Consequence - C)
+            const generatedConsequence = `行為發生後，授課短暫中斷。學生藉此成功達到[${conText}]，從而獲取短期緩衝與生理宣洩。這維持了該挑戰行為的發生率。`;
+
+            // 4. 行為功能假設
+            const generatedHypothesis = `學生企圖透過『${behaviorName}』挑戰行為，來達到「${conText}」之目的。`;
+
+            // 5. 智慧拼裝預防、替代、危機處置策略 (支援 Comorbid 多重 SEN 融合)
+            let combinedT1 = "";
+            let combinedT2 = "";
+            let combinedT3 = "";
+            let combinedCrisis = "";
+            let combinedHome = "";
+
+            const sceneData = scenarios[behaviorKey];
+
+            checkedSens.forEach((senKey, sIdx) => {
+                const senInfo = senProfiles[senKey] || { name: senKey, deficit: "特定認知與適應困難", home: "" };
+                const senPrefix = `【${senInfo.name}】`;
+
+                // 試圖調用 Hardcoded 精細策略，否則使用通用場景策略
+                let currentT1 = "";
+                let currentT2 = "";
+                let currentT3 = "";
+
+                if (bipMatrixDb[senKey] && bipMatrixDb[senKey][behaviorKey]) {
+                    currentT1 = bipMatrixDb[senKey][behaviorKey].t1;
+                    currentT2 = bipMatrixDb[senKey][behaviorKey].t2;
+                    currentT3 = bipMatrixDb[senKey][behaviorKey].t3;
+                } else {
+                    currentT1 = sceneData.t1;
+                    currentT2 = `針對其 ${senInfo.deficit}，${sceneData.t2}`;
+                    currentT3 = sceneData.t3;
+                }
+
+                combinedT1 += `${sIdx+1}. ${senPrefix}${currentT1}\n`;
+                combinedT2 += `${sIdx+1}. ${senPrefix}${currentT2}\n`;
+                combinedT3 += `${sIdx+1}. ${senPrefix}${currentT3}\n`;
+                combinedHome += `• ${senPrefix}${senInfo.home || '居家維持與學校一致管教尺度與獎勵合約。'}\n`;
+            });
+
+            // 危機處理預案
+            combinedCrisis = `🚨 突發嚴重失控時的介入步驟：\n${sceneData.immediate}\n\n🗣️ 首 30 秒危機介入話術示範：「${studentName}，老師知道你現在很難過/生氣。你在這裡是安全的，老師會陪著你。我們手放低，我們先深呼吸。」`;
+
+            // 6. 將數據注入右側 BIP 大表
+            document.getElementById('targetBehavior').value = generatedTarget;
+            document.getElementById('antecedent').value = generatedAntecedent;
+            document.getElementById('consequence').value = generatedConsequence;
+            document.getElementById('functionHypothesis').value = generatedHypothesis;
+            document.getElementById('tier1Strategy').value = combinedT1.trim();
+            document.getElementById('tier2Strategy').value = combinedT2.trim();
+            document.getElementById('tier3Strategy').value = combinedT3.trim();
+            document.getElementById('crisisPlan').value = combinedCrisis;
+            document.getElementById('homeCollab').value = combinedHome.trim() + `\n• 家長在家配合：當挑戰行為發生時，家長保持面部平靜冷靜，先引導孩子呼吸降溫，不作訓斥。`;
+            document.getElementById('evaluationCriteria').value = `1. 未來三個月內，學生的「${behaviorName}」挑戰行為發生頻率由每堂 ${freq} 次降至 1 次以內。\n2. 當感到挫敗或感官不適時，學生能主動舉「求助卡」或出示「安心卡」要求合法抽離的成功率達 80% 以上。`;
+
+            showToast("BIP 行為介入計劃表已成功根據多重 A-B-C 交叉組裝生成！");
+        }
+
+        // 兼容舊有單純生成
+        function generateBipTemplate() {
+            buildBipFromABC();
+        }
+
+        // --------------------------------------------------------
+        // 4. BIP Word 導出引擎 (精美排版升級 + BOM 防止中文亂碼)
+        // --------------------------------------------------------
+        function exportBipToWord() {
+            const school = document.getElementById('schoolName').value || '（學校名稱）';
+            const name = document.getElementById('studentName').value || '未填寫';
+            const sClass = document.getElementById('studentGrade').value || '未填寫';
+            const discussDate = document.getElementById('discussDate').value || '未填寫';
+            const duration = document.getElementById('duration').value || '未填寫';
+
+            const targetBehavior = document.getElementById('targetBehavior').value.replace(/\n/g, '<br>');
+            const antecedent = document.getElementById('antecedent').value.replace(/\n/g, '<br>');
+            const consequence = document.getElementById('consequence').value.replace(/\n/g, '<br>');
+            const functionHypothesis = document.getElementById('functionHypothesis').value.replace(/\n/g, '<br>');
+            
+            const t1 = document.getElementById('tier1Strategy').value.replace(/\n/g, '<br>');
+            const t2 = document.getElementById('tier2Strategy').value.replace(/\n/g, '<br>');
+            const t3 = document.getElementById('tier3Strategy').value.replace(/\n/g, '<br>');
+            
+            const crisis = document.getElementById('crisisPlan').value.replace(/\n/g, '<br>');
+            const home = document.getElementById('homeCollab').value.replace(/\n/g, '<br>');
+            const evalCriteria = document.getElementById('evaluationCriteria').value.replace(/\n/g, '<br>');
+
+            const wordContent = `
+                <div style="font-family: 'Microsoft JhengHei', Arial, sans-serif; line-height: 1.6; color: #000;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <p style="text-align: right; font-size: 10pt; color: #666; margin-bottom: 10px;">內部機密文件 / 特殊教育支援團隊</p>
+                        <h2 style="font-size: 14pt; margin: 0; padding-bottom: 5px;">\${school}</h2>
+                        <h1 style="font-size: 18pt; margin: 0; padding-bottom: 15px; border-bottom: 2px solid #000; font-weight: bold;">個別行為介入計劃 (BIP)</h1>
+                    </div>
+
+                    <!-- 一、基本資料 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt;" border="1" cellpadding="6">
+                        <tr>
+                            <td colspan="4" style="background-color: #e2e8f0; font-weight: bold; font-size: 12pt;">一、 學生基本資料</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 15%; background-color: #f1f5f9; font-weight: bold; text-align: center;">姓名：</td>
+                            <td style="width: 35%;">\${name}</td>
+                            <td style="width: 15%; background-color: #f1f5f9; font-weight: bold; text-align: center;">班別(年齡)：</td>
+                            <td style="width: 35%;">\${sClass}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f1f5f9; font-weight: bold; text-align: center;">討論日期：</td>
+                            <td>\${discussDate}</td>
+                            <td style="background-color: #f1f5f9; font-weight: bold; text-align: center;">計劃時段：</td>
+                            <td>\${duration}</td>
+                        </tr>
+                    </table>
+
+                    <!-- 二、功能性評估 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt;" border="1" cellpadding="6">
+                        <tr>
+                            <td colspan="2" style="background-color: #e2e8f0; font-weight: bold; font-size: 12pt;">二、 目標行為與功能性評估 (ABC 行為分析)</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 25%; background-color: #f1f5f9; font-weight: bold; text-align: right;">🚨 目標介入行為 (Behavior)：</td>
+                            <td style="width: 75%;">\${targetBehavior}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f1f5f9; font-weight: bold; text-align: right;">🔔 前因與觸發點 (Antecedent)：</td>
+                            <td>\${antecedent}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f1f5f9; font-weight: bold; text-align: right;">📢 後果維持因素 (Consequence)：</td>
+                            <td>\${consequence}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f1f5f9; font-weight: bold; text-align: right;">🧠 臨床行為功能假設：</td>
+                            <td>\${functionHypothesis}</td>
+                        </tr>
+                    </table>
+
+                    <!-- 三、三大介入策略 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt;" border="1" cellpadding="6">
+                        <tr>
+                            <td colspan="2" style="background-color: #e2e8f0; font-weight: bold; font-size: 12pt;">三、 核心介入與調適策略</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-weight: bold; text-align: right; background-color: #f1f5f9; vertical-align: top; padding: 10px;">🛡️ 預防性策略 (Preventative)：</td>
+                            <td style="width: 70%; padding: 10px;">\${t1}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold; text-align: right; background-color: #f1f5f9; vertical-align: top; padding: 10px;">🎓 替代行為教學 (Replacement)：</td>
+                            <td style="padding: 10px;">\${t2}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold; text-align: right; background-color: #f1f5f9; vertical-align: top; padding: 10px;">⚡ 危機應對處置 (Reactive)：</td>
+                            <td style="padding: 10px;">\${t3}</td>
+                        </tr>
+                    </table>
+
+                    <!-- 四、課室危機處理 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt;" border="1" cellpadding="6">
+                        <tr>
+                            <td style="background-color: #e2e8f0; font-weight: bold; font-size: 12pt; color: #b91c1c;">四、 課室情緒危機處理預案與安全指引 (Crisis Plan)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; background-color: #fffafb; border: 1px solid #fca5a5;">\${crisis}</td>
+                        </tr>
+                    </table>
+
+                    <!-- 五、家校與評估 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt;" border="1" cellpadding="6">
+                        <tr>
+                            <td style="width: 50%; background-color: #e2e8f0; font-weight: bold; font-size: 11pt;">🏠 五、 家校合作與居家訓練</td>
+                            <td style="width: 50%; background-color: #e2e8f0; font-weight: bold; font-size: 11pt;">📈 六、 評估基準與成效追蹤</td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top; height: 100px; padding: 10px;">\${home}</td>
+                            <td style="vertical-align: top; height: 100px; padding: 10px;">\${evalCriteria}</td>
+                        </tr>
+                    </table>
+
+                    <!-- 簽名欄 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 30px; font-size: 11pt;" border="1" cellpadding="8">
+                        <tr>
+                            <td style="width: 50%; height: 80px; vertical-align: top;">
+                                特殊教育需要統籌主任 (SENCO) 簽署：<br><br><br>
+                                日期：____________________
+                            </td>
+                            <td style="width: 50%; height: 80px; vertical-align: top;">
+                                家長 / 監護人確認簽署：<br><br><br>
+                                日期：____________________
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><title>個別行為介入計劃(BIP)</title></head><body>";
+            const footer = "</body></html>";
+            const sourceHTML = header + wordContent + footer;
+
+            // 注入 \ufeff BOM 防止中文字亂碼
+            const blob = new Blob(['\ufeff', sourceHTML], { type: 'application/msword;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = `個別行為介入計劃_BIP_\${name}.doc`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+            showToast("已成功導出精美排版 BIP Word 文件！");
+        }
+
+        // 提示工具
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            msgEl.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
