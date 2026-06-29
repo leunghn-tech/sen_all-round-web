@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>全校三層支援架構檢視與規劃工具</title>
+    <!-- 引入 Tailwind CSS 進行精緻排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 專業圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght=300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* 自訂核取方塊樣式 */
+        .custom-checkbox input:checked + div {
+            background-color: #0d9488;
+            border-color: #0d9488;
+        }
+        .custom-checkbox input:checked + div svg {
+            display: block;
+        }
+        /* 表格排版 */
+        .tier-table th {
+            background-color: #f1f5f9;
+            font-weight: 800;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            font-size: 13px;
+        }
+        .tier-table td {
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            vertical-align: top;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        /* 滾動條美化 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col pb-12 bg-slate-50/50">
+
+    <!-- 頂部導航欄 (不列印) -->
+    <nav class="bg-teal-900 text-white shadow-md no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <!-- 返回協作平台 -->
+                <a href="professional_dashboard.html" class="flex items-center gap-2 bg-teal-800 hover:bg-teal-700 px-3 py-2 rounded-xl transition text-teal-100 hover:text-white shadow-inner">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回協作平台</span>
+                </a>
+                
+                <div class="flex flex-col justify-center border-l border-teal-800 pl-4">
+                    <h1 class="text-xs sm:text-sm font-black tracking-tight leading-none">全校三層支援架構規劃與審計工具</h1>
+                    <span class="text-[9px] text-teal-200 font-bold block mt-1 uppercase tracking-widest">School-Based 3-Tier Support Framework Planner</span>
+                </div>
+            </div>
+
+            <!-- 右上角功能導出按鈕 -->
+            <div class="flex items-center gap-2">
+                <button onclick="exportThreeTierToWord()" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] sm:text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm shrink-0">
+                    <i class="fa-solid fa-file-word"></i> 導出規劃 Word
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 本地隱私保障宣告 -->
+    <div class="bg-teal-50 border-b border-teal-100 py-2.5 px-4 no-print">
+        <div class="max-w-7xl mx-auto flex items-center gap-2.5 text-xs text-teal-950">
+            <i class="fa-solid fa-user-shield text-teal-700 text-base shrink-0 animate-pulse"></i>
+            <span>
+                <strong>🔒 本地安全隱私與合規宣告：</strong>
+                本工具完全在您的瀏覽器本地運行。所有勾選、編輯與導出皆在您本地端進行，完全不收集任何校本與學生個資，保障資料安全與隱私。
+            </span>
+        </div>
+    </div>
+
+    <!-- 主編輯介面 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 no-print">
+        
+        <!-- 左側互動控制面板 (A. 選擇類別 | B. 選擇範疇) -->
+        <div class="lg:col-span-5 xl:col-span-4 space-y-5">
+            
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+                    <div class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-base shadow-inner">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-black text-slate-800 leading-tight">三層調適策略拼裝盤</h2>
+                        <span class="text-[10px] text-slate-400 font-bold block mt-0.5">點選類別與範疇，動態組裝校本大表</span>
+                    </div>
+                </div>
+
+                <!-- 1. 學生主要 SEN 類別複選 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-500"><i class="fa-solid fa-users text-teal-600 mr-1"></i> (一) 選擇全校涵蓋之 SEN 類別 (可多選)</label>
+                    <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senCheck" value="ASD" checked class="rounded text-teal-600"> 自閉症 (ASD)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senCheck" value="ADHD" checked class="rounded text-teal-600"> 多動/過動 (ADHD)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senCheck" value="SpLD" checked class="rounded text-teal-600"> 讀寫障礙 (SpLD)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senCheck" value="SLI" checked class="rounded text-teal-600"> 言語障礙 (SLI)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senCheck" value="ID" class="rounded text-teal-600"> 智力障礙 (ID)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senCheck" value="Borderline" class="rounded text-teal-600"> 有限智能 (Borderline)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senCheck" value="PD" class="rounded text-teal-600"> 肢體殘障 (PD)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senCheck" value="HI" class="rounded text-teal-600"> 聽力障礙 (HI)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senCheck" value="VI" class="rounded text-teal-600"> 視力障礙 (VI)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="senCheck" value="MI" checked class="rounded text-teal-600"> 情緒健康 (MI/EBD)</label>
+                    </div>
+                </div>
+
+                <!-- 2. 調適策略範疇 (新增第 6 大支援範疇：家校協作與社區資源) -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-500"><i class="fa-solid fa-list-check text-indigo-600 mr-1"></i> (二) 選擇調適與支援範疇 (可多選)</label>
+                    <div class="grid grid-cols-1 gap-1.5 text-[10px] text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="scopeCheck" value="teaching" checked class="rounded text-teal-600"> 📖 學科教學與課堂調適策略 (Curriculum)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="scopeCheck" value="exam" checked class="rounded text-teal-600"> 📝 特別測考與特別評估調適 (Assessment)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="scopeCheck" value="env" checked class="rounded text-teal-600"> 🖥️ 輔助科技與物理學習環境調適 (Environment)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="scopeCheck" value="social" checked class="rounded text-teal-600"> 🤝 社交、情緒與自理小組干預 (Social-Emotional)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" name="scopeCheck" value="transition" checked class="rounded text-teal-600"> 🎓 生涯規劃、轉銜與獨立生活支援 (Transition)</label>
+                        <label class="flex items-center gap-1.5 cursor-pointer font-bold text-indigo-950"><input type="checkbox" name="scopeCheck" value="homeschool" checked class="rounded text-teal-600"> 👨‍👩‍👧 家校協作與社區醫療/復康資源對接 (Partnership)</label>
+                    </div>
+                </div>
+
+                <button onclick="buildThreeTierMatrix()" class="w-full mt-2 bg-gradient-to-r from-teal-700 to-emerald-600 text-white font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> 智能組裝三層支援架構表
+                </button>
+            </div>
+
+            <!-- 💡 專業特教指南備忘 -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 space-y-3">
+                <h3 class="font-bold text-slate-800 text-xs flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                    <i class="fa-solid fa-circle-info text-teal-600"></i> 香港 EDB 三層支援標準
+                </h3>
+                <ul class="text-[11px] text-slate-500 space-y-2 leading-relaxed list-disc pl-4">
+                    <li><strong>第一層支援 (Tier 1)：</strong> 優化普通課堂教學。透過「普遍學習設計 (UDL)」，提供分層工作紙、視覺提示與家校日常溝通，惠及全班有輕微或暫時性困難的學生。</li>
+                    <li><strong>第二層支援 (Tier 2)：</strong> 加強個別/小組支援。針對有溫和特教需要的學生，提供課後小組、言語治療、社交訓練小組或家長管教工作坊。</li>
+                    <li><strong>第三層支援 (Tier 3)：</strong> 個別加強支援。為面臨嚴重挑戰或適應限制的學生擬定個別學習計劃 (IEP) / 行為介入計劃 (BIP) 或引入外部醫療、復康及就業轉介資源。</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 右側可編輯三層架構大表 -->
+        <div class="lg:col-span-7 xl:col-span-8 space-y-6">
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+                
+                <!-- 標題 -->
+                <div class="text-center border-b border-slate-200 pb-4">
+                    <div class="flex justify-center items-center gap-2 mb-1">
+                        <input type="text" id="schoolName" value="（學校名稱）" class="border-b border-slate-300 text-lg font-extrabold text-slate-800 text-center focus:border-teal-500 focus:outline-none px-2 py-0.5 max-w-[280px]">
+                    </div>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-wide">全校融合教育三層支援架構及調適指引藍圖</h1>
+                    <span class="text-[10px] text-slate-400 font-bold block mt-1">CONFIDENTIAL / 全校教師、特教團隊與教育局督導合規文件</span>
+                </div>
+
+                <!-- 1. 基本行政資料 -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-bold text-slate-500 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <div>
+                        <label class="block mb-1.5">負責部門/委員會</label>
+                        <input type="text" id="deptName" value="特殊教育需要支援小組 (SENST)" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:ring-1 focus:ring-teal-500 focus:outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block mb-1.5">特殊教育統籌主任 (SENCO)</label>
+                        <input type="text" id="sencoName" value="黃主任" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:ring-1 focus:ring-teal-500 focus:outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block mb-1.5">計劃適用學年</label>
+                        <input type="text" id="academicYear" value="2026 - 2027 學年" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-800 focus:ring-1 focus:ring-teal-500 focus:outline-none transition">
+                    </div>
+                </div>
+
+                <!-- 2. 核心大表 -->
+                <div class="space-y-4">
+                    <div class="overflow-x-auto border border-slate-200 rounded-2xl shadow-inner">
+                        <table class="w-full min-w-[1000px] text-xs tier-table border-collapse">
+                            <thead>
+                                <tr>
+                                    <th class="w-[14%] text-center">SEN 類別 & 範疇</th>
+                                    <th class="w-[26%] text-center">第一層支援 (Tier 1)<br><span class="text-[10px] font-medium block">優化課堂教學 (全班)</span></th>
+                                    <th class="w-[28%] text-center">第二層支援 (Tier 2)<br><span class="text-[10px] font-medium block">抽離/小組支援 (加強)</span></th>
+                                    <th class="w-[28%] text-center">第三層支援 (Tier 3)<br><span class="text-[10px] font-medium block">個別化支援 (IEP / BIP)</span></th>
+                                    <th class="w-[4%] text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tierTableBody" class="divide-y divide-slate-100 text-slate-700">
+                                <!-- 預設首行空白提示 -->
+                                <tr>
+                                    <td colspan="5" class="p-8 text-center text-slate-400 italic">
+                                        請在左側選擇「SEN 類別」與「調適範疇」，然後點按「智能組裝三層支援架構表」進行動態生成。
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast 提示組件 -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-white border border-slate-200 rounded-2xl shadow-lg py-3 px-5 flex items-center gap-3 opacity-0 translate-y-10 transition-all duration-300 pointer-events-none z-[200]">
+        <i class="fa-solid fa-circle-check text-teal-600 text-lg"></i>
+        <span id="toastMsg" class="text-xs font-bold text-slate-700"></span>
+    </div>
+
+    <!-- 底部版權 -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 text-center text-[10px] text-slate-400 border-t border-slate-200 py-6 w-full">
+        <p>© 2026 SEN Care Professional. All rights reserved. (全校三層支援架構本地離線生成模組)</p>
+    </footer>
+
+    <!-- JavaScript 核心矩陣資料與生成引擎 -->
+    <script>
+        // 10大 SEN 類別對照
+        const senMapping = {
+            "ASD": "自閉症 (ASD)",
+            "ADHD": "專注力不足/過度活躍 (ADHD)",
+            "SpLD": "讀寫障礙 (SpLD)",
+            "SLI": "言語障礙 (SLI)",
+            "ID": "智力障礙 (ID)",
+            "Borderline": "有限智能 (Borderline)",
+            "PD": "肢體殘障 (PD)",
+            "HI": "聽力障礙 (HI)",
+            "VI": "視力障礙 (VI)",
+            "MI": "情緒健康 (MI/EBD)"
+        };
+
+        // 6大範疇對照 (新增 homeschool)
+        const scopeMapping = {
+            "teaching": "學科教學調適",
+            "exam": "特別測考調適",
+            "env": "輔助科技與環境",
+            "social": "社交與情緒支援",
+            "transition": "生涯規劃與轉銜",
+            "homeschool": "家校協作與社區資源"
+        };
+
+        // 巨型 10x6 核心策略資料庫 (新增第 6 範疇 homeschool 數據，其餘 50 格已徹底補強)
+        const strategyDatabase = {
+            "ASD": {
+                "teaching": {
+                    t1: "常規或活動改變前5分鐘給予視覺卡提示，避免諷刺或暗喻之指令，講授字面化且清晰。",
+                    t2: "參加「LEGO 小組」或「社交思考小組」，學習協商與妥協的折衷社交對話常用句型。",
+                    t3: "召開 IEP 會議，為面臨嚴重抗拒社交組員的學生擬定個別化的學術分層目標與代幣增強契約。"
+                },
+                "exam": {
+                    t1: "允許在作答遇到極端困境時，跳過題目不作口頭斥責，減少完美主義引起的焦慮。",
+                    t2: "於特別考室考試，減少大班噪音對其專注力的干擾。",
+                    t3: "為嚴重固執的學生申請特殊考評調適（如：個別考室、大字試卷或額外 15 分鐘小休安排）。"
+                },
+                "env": {
+                    t1: "提供無聲觸覺替代物（如：桌底魔術貼毛氈片），允許在課堂上無聲觸摸以維持本體覺專注。",
+                    t2: "提供感統工具（如：Wobble Cushion 充氣坐墊、減壓捏捏球）在小組活動中使用。",
+                    t3: "配置高階防噪耳罩（防感官過載），於大禮堂早會或突發鐘聲時由 TA 協作配戴。"
+                },
+                "social": {
+                    t1: "分組討論前，提供視覺化「同儕社交圈順序表」及「妥協句卡」，預告社交順序與距離。",
+                    t2: "由言語治療師或社工帶領「心智解讀 (Theory of Mind) 社交故事訓練小組」，練習解讀他人表情。",
+                    t3: "針對嚴重的 Meltdown 情緒過載，擬定個別化行為介入計劃 (BIP)，設立「安心卡冷靜角常規」。"
+                },
+                "transition": {
+                    t1: "大班班會分享大專組員合作與社交生存守則，預告中學到大專/社會的物理環境改變。",
+                    t2: "參加「升中/大專轉銜小組」，模擬大專分組討論可能發生的意見衝突與應對話術。",
+                    t3: "由 SENCO 或社工提供一對一轉銜諮詢，對接外部復康或支援機構（如職業康復中心）。"
+                },
+                "homeschool": {
+                    t1: "每週以家課手冊或限定電子通訊，與家長分享學生的課堂適應正向點滴，建立互信。",
+                    t2: "開辦校本「ASD 家長同行互助小組」，邀請特教專家分享行為功能分析 (FBA) 及居家視覺流程圖建立技巧。",
+                    t3: "當出現嚴重失控時，啟動家校危機預案。協助家長對接醫管局「兒童及青少年精神科」及社會福利署之「早期教育及訓練中心」服務。"
+                }
+            },
+            "ADHD": {
+                "teaching": {
+                    t1: "實施「乾淨課桌常規」，桌面只留當堂筆墨。將長達 30 分鐘任務分拆成 10 分鐘一節的微挑戰。",
+                    t2: "參加「執行功能 (Executive Function) 提升小組」，利用番茄鐘清單練習任務拆解與時間規劃。",
+                    t3: "制定個別行為合約，設定每節課舉手次數增強，與家長每日雙向簽署代幣盤。"
+                },
+                "exam": {
+                    t1: "考卷頁面設計加寬行距，拉大字體。提示大意錯處（例如：漏做背面）。",
+                    t2: "申請特別考試調適：延長 25% 作答時間、特別考室，允許在兩節考試間有短暫生理伸展。",
+                    t3: "為極度多動之個案安排獨立考室，並配以每 30 分鐘可有 3 分鐘原地站立消耗體能之特別安排。"
+                },
+                "env": {
+                    t1: "安排靠近教師、遠離窗戶或走廊之「低干擾座位」。使用視覺化計時器提示賸餘時間。",
+                    t2: "於抽離小組教室配置椅腳拉力帶（Bouncy Band），讓腳部在課桌底下原地消耗動能。",
+                    t3: "配置個人平板電腦，在課堂抄寫任務繁重時，允許使用「語音轉文字」設備或拍攝板書。"
+                },
+                "social": {
+                    t1: "大班活動排隊或集會前，指定其位置（如第一位），並給予清晰的輪候倒計時心理建設。",
+                    t2: "參加「衝動控制桌遊小組」，透過高度刺激的卡牌遊戲，練習抑制衝動、輪流與延遲滿足。",
+                    t3: "擬定校本 BIP（行為介入計劃），當發生激烈推撞或拒學撕卷時，啟動「安全疏散與危機處理小組」。"
+                },
+                "transition": {
+                    t1: "生涯規劃中強調 ADHD 的動態強項（如行動力強），鼓勵發展創意、體育或實踐型學術方向。",
+                    t2: "參加「時間與任務管理轉銜工作坊」，學習在沒有老師監督下如何自我管理工作進度。",
+                    t3: "一對一轉銜支援：指導申請大專或職場的專注力特別調適與考評輔助配置。"
+                },
+                "homeschool": {
+                    t1: "每日提供精準的功課備忘清單，家長與學校每日對簽。家長不對大意過失作懲罰，改以正向加分制鼓勵。",
+                    t2: "舉辦「ADHD 親職行為管教工作坊」，培訓家長在家中實施「一致的代幣制度」，避免雙重標準。",
+                    t3: "協助對接精神科門診進行藥物與行為治療交叉評估；轉介「匡智會」或 NGO 社區家庭支援服務。"
+                }
+            },
+            "SpLD": {
+                "teaching": {
+                    t1: "試卷與工作紙字體放大至 14pt 以上，加寬行距，豁免機械式抄寫懲罰。多用多感官圖像教學法。",
+                    t2: "參加「讀寫策略班」，教授「拆字部首形義記憶法」及多感官聯想，訓練圈出長題目關鍵字。",
+                    t3: "在 IEP 中設定「免抄寫筆記」條款，由 TA 提供課堂板書影印本，全面實施口頭作答代替書寫。"
+                },
+                "exam": {
+                    t1: "大考工作紙不因錯別字而重複扣分。豁免朗讀題。加寬試卷中橫線格子之寬度。",
+                    t2: "特別考試安排：延長 25% 作答時間，於特別考室進行「讀卷」服務（使用校本電子讀卷工具）。",
+                    t3: "為重度個案申請測考「代筆」服務，或完全以語音輸入法代替鍵盤和筆試作答。"
+                },
+                "env": {
+                    t1: "提供雙色「護眼卡」（如：黃色或藍色透明擋板），減輕學生閱讀密集字海時的眼部肌肉疲勞。",
+                    t2: "小組輔導中引入平板電腦輔助學習，熟練操作語音報讀（Text-to-Speech）軟件。",
+                    t3: "提供專屬有聲電子書、電子點讀筆或語音輸入軟件，克服文字編碼與書寫的生理限制。"
+                },
+                "social": {
+                    t1: "課室中避免要求學生在全班面前大聲朗讀課文或公佈成績，全力保護其脆弱的學術自尊感。",
+                    t2: "參加「自信心重建小組」，發掘體育、視藝等非學術優勢，降低長期學術挫敗帶來的焦慮。",
+                    t3: "針對因課業嚴重受挫引發的拒學、發脾氣或撕卷行為，協同輔導員擬定「危機處理降溫預案展」。"
+                },
+                "transition": {
+                    t1: "提供大專升學調適指南、DSE 考評調適攻略。強調畢業生文字與語音輔助設備的轉銜。",
+                    t2: "參加「職場轉銜適應組」，學習如何使用辦公室電子報讀或聽寫系統，減輕文字書寫對工作的干擾。",
+                    t3: "一對一職涯規劃：對接教育局轉介渠道，將其 SpLD 歷史及特別考評安排安全轉介至大專院校。"
+                },
+                "homeschool": {
+                    t1: "家長在家減少以「字體不工整、寫錯字」為由撕簿或責罵，學校分享多感官認字居家小遊戲。",
+                    t2: "開辦「讀寫障礙家長減壓與策略工作坊」，教授如何運用語音讀書、語音輸入法督導居家課業。",
+                    t3: "協助家長向「香港讀寫障礙協會」或社區青年空間申請免費的專業學術輔導與課後托顧資源對接。"
+                }
+            },
+            "SLI": {
+                "teaching": {
+                    t1: "科任指令限於 1-2 個步驟，並配以豐富手勢或圖片。發問後預留至少 10 秒供學生組織語言。",
+                    t2: "參加言語治療師 (ST) 的「語用與句子組織班」，反覆練習「打招呼、借物、拒絕」等高頻社交句式。",
+                    t3: "擬定個別化言語支援計劃，課堂上由 TA 或小天使即時協助「覆述確認」，保證資訊不遺漏。"
+                },
+                "exam": {
+                    t1: "口試評估時允許給予更多思考等待時間。不因其發音不準、語速慢而扣分。允許使用字卡輔助。",
+                    t2: "特別測考安排：申請延長口試時間，或在特別考室中由熟悉學生的老師進行口語評估。",
+                    t3: "對於嚴重表達障礙個案，申請豁免全港性系統評估 (TSA) 的口試部分，或以筆試/圖示完全替代口試。"
+                },
+                "env": {
+                    t1: "在教室牆壁張貼「功能性表達圖卡看板」，方便學生在找不到詞彙時以手指認示意。",
+                    t2: "利用平板電腦中的「校本言語治療 APP」進行日常句子重構與語音校正練習。",
+                    t3: "配置高科技「替代與輔助溝通系統 (AAC)」，讓重度言語障礙學生能透過電子語音合成器發言。"
+                },
+                "social": {
+                    t1: "分組時安排溫和友善的同學同組，並在小組任務中為其分派較低口語要求之角色（如：計時員）。",
+                    t2: "參加言語輔助社交組，演練如何合宜地打斷別人、要求澄清，減少溝通受挫引起的行為退縮。",
+                    t3: "針對因口齒不清被嘲笑而引發的自傷或攻擊行為，社工介入進行一對一防線心理輔導。"
+                },
+                "transition": {
+                    t1: "教導學生在大專或職場面試中，主動且得體地向主考官說明自己的口語表達特徵與等候需求。",
+                    t2: "參加「模擬面試訓練班」，反覆練習用簡短、結構化的「STAR 原則」回答面試問題。",
+                    t3: "言語治療師 (ST) 提供一對一職業生涯溝用輔導，協助對接具備友善溝通環境的實習或工作職位。"
+                },
+                "homeschool": {
+                    t1: "家長每天在家預留 10 分鐘，不催促、不糾正發音，耐心聆聽孩子口頭分享，建立語言安全感。",
+                    t2: "言語治療師定期派發居家親子語用溝通遊戲卡，讓家長在日常家務中與孩子進行對話擴展練習。",
+                    t3: "對接「言語及溝通挑戰服務中心」或大學言語治療臨床學部，獲取長期的免費或低成本個別治療資源。"
+                }
+            },
+            "ID": {
+                "teaching": {
+                    t1: "採用 UDL 普遍學習設計：將抽象概念以實物、具體圖片替代，指令必須極簡直接（不超兩個步驟）。",
+                    t2: "參加校本「自理與功能性學術訓練小組」，利用日常生活實物反覆演練物品歸類與時間認讀。",
+                    t3: "大幅調整學術課程大綱。使用「工作分析法 (Task Analysis)」將任務拆解為極易成功的微小步驟。"
+                },
+                "exam": {
+                    t1: "提供大幅簡化的分層工作紙。不設長答題。增加選擇、連線與圖示配對的考評比例。",
+                    t2: "特別考試安排：申請免除大考，改為日常學習表現 (Portfolio) 多元化替代評估。",
+                    t3: "向教育局申請豁免公開考試，由特教團隊為其量身訂立「功能性生活適應評估表」作為結業指標。"
+                },
+                "env": {
+                    t1: "於課桌張貼彩色「個人物品對齊貼紙」（手冊放黃色框、筆放綠色框），明確視覺化桌面秩序。",
+                    t2: "利用抽離教室配置的生活化電子自理模擬系統（如：電子點餐、八達通增值）進行功能性訓練。",
+                    t3: "配置圖像化語音便條裝置。當學生在校園迷失或不記得常規時，點按按鈕即可播報語音提示。"
+                },
+                "social": {
+                    t1: "排隊或移動時由小天使牽手，科任老師給予最清晰直接的「手放好、排隊」行為期望暗示。",
+                    t2: "利用社交故事圖卡配對，反覆演練好壞行為（如：生氣時要握大沙包，不拍打同學）。",
+                    t3: "進行功能性行為分析 (ABC)，當出現躺地蹬腳哭鬧時，TA 保持安全距離安撫，實施消退法。"
+                },
+                "transition": {
+                    t1: "轉銜課程中著重「社區獨立生活自理」，教導學生獨立乘搭交通工具、超市買物的安全守則。",
+                    t2: "安排參加「庇護工場/匡智會庇護就業適應計畫」，提前模擬實習，適應工作常規。",
+                    t3: "一對一轉銜協作：與家長共同商討並遞交「特殊學校/庇護就業/展能中心」畢業後的安置申請。"
+                },
+                "homeschool": {
+                    t1: "家長在家配合張貼與學校相同規格的生活自理視覺步驟卡，維持全天候一致的行為習慣。",
+                    t2: "提供「智力障礙自理與行為塑造親職工作坊」，教導家長以「任務分解」訓練孩子居家自理。",
+                    t3: "對接「匡智會」、「扶康會」或「社會福利署」之殘疾人士日間訓練、展能中心及長期住宿輪候常規。"
+                }
+            },
+            "Borderline": {
+                "teaching": {
+                    t1: "資訊給予需「小步子、多段落」，給予指令後預留 5-10 秒「大腦處理時間」，不馬上催促。",
+                    t2: "參加「課業組織技巧小組」，學習如何使用「高階大綱圖」來梳理中長篇幅的學術長題大意。",
+                    t3: "IEP 團隊為其制定專屬「學業鷹架指引」，提供基礎提示字詞，減輕其大腦認知超載疲勞。"
+                },
+                "exam": {
+                    t1: "在大班小測中預留寬鬆時間。試卷題目簡化過度複雜之複合從句，將其拆解為多個單句。",
+                    t2: "特別考試安排：申請延長 25% 作答時間。提供「關鍵詞/概念公式」字典卡供測考查閱。",
+                    t3: "調整平時分與期末筆試比例（改為 5:5），增加專題實物報告、課堂演練等非文字考評權重。"
+                },
+                "env": {
+                    t1: "桌面擺放乾淨，提供三色「鷹架便簽貼紙」，引導其將當堂任務按「步驟一、二、三」黏貼在最醒目處。",
+                    t2: "小組練習中使用電子詞典或線上釋義工具，快速克服課堂詞彙理解遲緩障礙。",
+                    t3: "TA 協助其管理個人平板電腦中的「學科步驟提示圖」，在大班聽講跟不上時隨時點按觀看。"
+                },
+                "social": {
+                    t1: "調解同儕摩擦時給予充分時間解釋，不要催促。避免在大班課堂上公開點名其處理遲緩。",
+                    t2: "參加「社交解難能力訓練班」，教導一套固定的「道歉、妥協與和好」社交劇本流程。",
+                    t3: "設立每日「小成功紀錄卡」，累積微小社交自信。社工一對一疏導「怕被當成蠢」的強烈自卑感。"
+                },
+                "transition": {
+                    t1: "生涯規劃中避免空泛的大專學術導向，引導學生發掘手工、資訊技術或餐飲等功能實踐方向。",
+                    t2: "參加「實習轉銜訓練小組」，由特教小組帶領參觀各類專上學院及青年學院職訓課程。",
+                    t3: "一對一轉銜協助：與職訓局 VTC 保持聯繫，安全轉介其特教歷史，以無縫接軌適應職業訓練。"
+                },
+                "homeschool": {
+                    t1: "家長每日配合學校「重點功課登記簿」，不對其解題緩慢表現憤怒，給予其更長溫習小休。",
+                    t2: "開辦家長工作坊，指導家長如何發掘孩子的多元感官優勢，提升其個人自我效能感。",
+                    t3: "轉介社區「特殊青少年發展基金」或「鄰舍輔導會」，為其提供低成本課後興趣發展資源。"
+                }
+            },
+            "PD": {
+                "teaching": {
+                    t1: "體恤其物理操作與握筆困難，允許以口述錄音或語音輸入代替大篇幅書寫，提供粗身防滑筆套。",
+                    t2: "由職業治療師 (OT) 入校進行手部精細動作協調、課桌椅高度和傾斜度調試訓練。",
+                    t3: "為重度肌肉萎縮學生擬定 IEP 物理環境與輔具清單，課堂上由 TA 或小天使協助拿取重物及翻書。"
+                },
+                "exam": {
+                    t1: "不因其書寫字體不工整而重複扣分。豁免體育課術科評估，改為體育理論或裁判規則筆試。",
+                    t2: "特別考試安排：申請延長 30-50% 作答時間，於特別考室進行，並配以每 30 分鐘有 5 分鐘休息時間。",
+                    t3: "為無法執筆個案向 EDB 申請「代筆」服務或全電腦化/眼動追蹤電子系統作答特殊考評安排。"
+                },
+                "env": {
+                    t1: "課室動線暢通，黑板高度與輪椅平衡。大班聽講時允許在課桌椅加裝手部靠墊或腳踏墊。",
+                    t2: "由學校 OT/PT 協助評估並在抽離課室配置升降課桌椅、減壓防抓握餐具等感統用具。",
+                    t3: "配置高階語音輸入平板、眼動滑鼠系統或電動輪椅升降托盤，克服物理限制帶來的資訊障礙。"
+                },
+                "social": {
+                    t1: "確保大班集體活動或小息時，學生不會因行動不便而被孤立在角落。教導同學正確協助輪椅。",
+                    t2: "參加「無障礙共融社交小組」，舉辦生命教育分享，發掘其不需體能之智力型班級角色。",
+                    t3: "針對因生理痛楚或疲勞引發的情緒爆發，PT 物理治療師指導痛症舒緩，社工進行個別關懷防線。"
+                },
+                "transition": {
+                    t1: "生涯規劃中專攻無障礙職場適配。強調電子編程、平面設計等不需高強度體能之職業前景。",
+                    t2: "參觀大專院校無障礙設施，學習如何主動與未來大專學生支援部門對接申請物理設施調適。",
+                    t3: "協助對接特約僱主或勞工處展能就業科（SEL），確保畢業後的無障礙實習與就業接軌。"
+                },
+                "homeschool": {
+                    t1: "家校密切對接學生每日生理狀態與服藥時間（如：服食放鬆肌肉藥物易嗜睡），彈性調整上學時間。",
+                    t2: "提供「傷健共融親子關懷工作坊」，引導家長學會照顧者自我喘息 (Respite Care) 技巧，防範照顧過載。",
+                    t3: "對接「香港耀能協會」或「傷健協會」，為學生引進校外居家物理治療、無障礙出行與康樂資源支援。"
+                }
+            },
+            "HI": {
+                "teaching": {
+                    t1: "授課時面向學生，避免一邊寫黑板一邊說話，全程配戴無線 FM 發射器，發言語速均勻。",
+                    t2: "參加聽障語音、語調校正及溝通技巧輔導小組，練習如何在大班中自信清晰地發問與要求重複。",
+                    t3: "TA 協作：在老師下達指令後，於大班課堂上給予其小聲覆述確認，或在黑板上同步寫下核心家課提示。"
+                },
+                "exam": {
+                    t1: "口試評估時確保考官面向學生，說話清晰。不因其發音不準、語調不自然而加重扣分。",
+                    t2: "特別考試安排：申請免除中英文聆聽考試中的語音播放，改為文字朗讀或在特別考室中由真人讀卷。",
+                    t3: "為重度聽障個案申請特殊英語口試調適：豁免口語討論，改為單對單對話評估，或配以手語翻譯。"
+                },
+                "env": {
+                    t1: "課室安排在遠離馬路或裝修噪音之安靜區域。座位安排在第二排正中間（收音及看黑板最佳區域）。",
+                    t2: "每日早上由 TA 協助學生核對助聽器/FM 系統電量與運作，排除課堂背景噪聲帶來的音量衰減。",
+                    t3: "配置課堂即時字幕轉換系統（平板電腦），將老師的口語授課即時轉換為文字，補足資訊遺漏。"
+                },
+                "social": {
+                    t1: "小組討論座位排布改為「半圓形」，確保學生能看到所有組員說話時的嘴型及非語言訊號。",
+                    t2: "參加「社交重建小組」，教導同學拍膊頭引導其專注後才說話之「 HI 友善班級規則」。",
+                    t3: "社工一對一深度跟進：疏導因「聽漏、聽錯」引發同儕誤解而被孤立或取笑帶來的強烈孤獨與焦慮感。"
+                },
+                "transition": {
+                    t1: "教導學生大專或職場中如何正確使用 FM 器材，及得體、自信地請講師/主管「面向我說話」。",
+                    t2: "參加「聽障就業適應工作坊」，學習在職場多用電子郵件或文字通訊澄清工作細節的職業技巧。",
+                    t3: "一對一職涯對接：對接香港聾人福利促進會等外部組織，提供畢業後的生活適應與轉銜培訓。"
+                },
+                "homeschool": {
+                    t1: "家長定期與校本聽覺言語團隊對簽「設備日檢日誌」，確保其助聽器耳模無發炎或漏音現象。",
+                    t2: "開辦「聽障親子手語/雙語溝通技巧班」，教導家長如何在日常居家活動中提供高度視覺化的語言輸入環境。",
+                    t3: "協助家長對接「香港聾人福利促進會」或「聾人協進會」，獲取助聽器政府補貼申請與最新輔聽科技支援。"
+                }
+            },
+            "VI": {
+                "teaching": {
+                    t1: "講授時避免單純用「這個」、「那邊」等含糊詞彙，多用空間方位聲音導航（如：在你的兩點鐘方向）。",
+                    t2: "熟練點字 (Braille) 閱讀或螢幕報讀軟件 (Screen Reader) 操作訓練。大班分享抄寫分享常規。",
+                    t3: "EDB 特教團隊及視障特校老師定期入班，提供特製立體觸覺教具，將平面圖像立體化教學。"
+                },
+                "exam": {
+                    t1: "提供高對比度試卷（黑底白字或加寬格子）。允許使用放大鏡、閉路電視放大系統作答。",
+                    t2: "特別考試安排：申請 DSE 專屬點字試卷，或延長 30-50% 時間，於特別考室進行語音報讀及語音答卷。",
+                    t3: "為全盲個案申請點字摸讀、有聲有讀測考安排，豁免純視覺幾何繪圖题評估，改為口頭描述幾何關係。"
+                },
+                "env": {
+                    t1: "固定課室所有家具、垃圾桶與課桌椅位置，絕不隨意更改，防止視障生撞擊發生不必要危險。",
+                    t2: "在座位及個人抽屜、儲物櫃上貼上盲文或立體標籤。利用平板配置報讀軟件溫習。",
+                    t3: "配置高階盲文顯示器（Braille Display）、觸覺印圖儀及立體地圖導航，打通聽覺與觸覺感官防線。"
+                },
+                "social": {
+                    t1: "同學和老師走近視障生時，必須先主動出聲表明身分（如：大文，我是陳老師），防範突然碰觸引發驚嚇。",
+                    t2: "參加「視聽共融社交小組」，發揮其聽覺敏銳特徵，在班中分配聲音或播音、廣播劇角色角色建立信心。",
+                    t3: "社工介：處理因無法接收非語言訊息（如同學的白眼、微笑）引發之社交猜忌焦慮，建立安全感。"
+                },
+                "transition": {
+                    t1: "教導熟練操作社區定向行走 (Orientation & Mobility) 技能，熟悉未來大專校園或通勤路線的盲道與障礙物。",
+                    t2: "學習在大專學習平台上如何調用螢幕閱讀軟件與無障礙網頁瀏覽器的生涯技能。",
+                    t3: "轉介心光盲人院暨學校等專業機構，為畢業生提供升學、職場適應訓練與工作輔具申請政策支持。"
+                },
+                "homeschool": {
+                    t1: "家長與校方緊密聯繫，維持家中走廊與過道家具位置絕對固定，避免學生居家發生碰撞受傷。",
+                    t2: "提供「視障家長居家導航及自理培訓」，教導如何引導孩子在家中進行獨立洗漱、穿衣與收納等觸覺自理。",
+                    t3: "對接「香港盲人輔導會」或「盲人協進會」，為學生申請最新的點字書籍、生活津貼及輔助生活科技設備資助。"
+                }
+            },
+            "MI": {
+                "teaching": {
+                    t1: "免除大班公開點名競爭（不在全班面發佈成績或朗讀），多用加分制代替扣分，營造溫和包容氛圍。",
+                    t2: "指導使用「冷靜便簽條」，讓其在極度抑鬱消沉或恐慌時，可無聲遞給老師暫停聽講，大腦休息。",
+                    t3: "與醫療團隊及 EP、社工制定學期學業調適計劃，在抑鬱發作期，設定極低的「微小成功目標」防線。"
+                },
+                "exam": {
+                    t1: "不以「懶惰」或「消極」定義其因情緒引起的學業缺測，允許後補平時作業分，給予充分緩衝。",
+                    t2: "特別考試安排：申請延長作答時間。於特別獨立考室進行，避免大班集體焦慮氛圍誘發呼吸急促驚恐。",
+                    t3: "在情緒危機重度爆發期，與家長醫生協商暫停主要學科期末測考評估，以生理健康與心理重建為首要。"
+                },
+                "env": {
+                    t1: "課室備置「情緒晴雨表、安心卡、冷靜角」等自理緩壓教具。允許其在緊張時握著觸覺抗壓球溫水。",
+                    t2: "小組教室配置正念音樂或芳香感統安撫設備，提供生理警戒系統（戰或逃）的物理舒緩通道。",
+                    t3: "由 EP 及社工制定「安心卡冷靜常規」：驚恐發作時可直奔校本輔導室，全程由 TA 與社工安全守護。"
+                },
+                "social": {
+                    t1: "密切留意學生人際焦慮前驅徵兆（如：手指顫抖、發呆放空、退縮）。分組時指派溫和包容的同儕組隊。",
+                    t2: "參加「CBT 認知行為輔導小組」或「正念 (Mindfulness) 減壓組」，學習在緊張時自我呼吸拉回當下。",
+                    t3: "社工一對一深度輔導防線。制定防自殺、自傷危机介入指引，建立醫療-社工-學校黃金求助常規。"
+                },
+                "transition": {
+                    t1: "生涯規劃中重視學生成就感與抗壓力的平衡。指導學生認識並接納自己的心理特徵與職涯適配。",
+                    t2: "學習如何在面對升學或就業壓力升高時，主動尋求社區精神健康資源（如新建思維健康中心）的協助。",
+                    t3: "一對一轉銜追蹤：與醫護人員協同，制定長期藥物副作用（如：手震、嗜睡）下的畢業後轉銜發展方向。"
+                },
+                "homeschool": {
+                    t1: "建立「每日早晨情緒聯絡常規」。家長若發現孩子早上起床出現極端焦慮或腹痛肚痛，第一時間以短訊知會 SENCO 作好課堂照應。",
+                    t2: "開辦「精神健康家長學堂」，邀請心理學家或精神科醫生，教導家長如何識別孩子自傷、驚恐與重度抑鬱前兆及支援話術。",
+                    t3: "與醫管局「兒童及青少年精神科 (Liaison Team)」及「新生精神康復會」等社區危機介入網絡建立綠色轉介安全通道。"
+                }
+            }
+        };
+
+        let currentPaginatedData = [];
+
+        // 輔助函數：取得多選勾選盒的值 (解決 getCheckedValues 未定義之 ReferenceError)
+        function getCheckedValues(name) {
+            return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
+        }
+
+        // 核心矩陣動態組裝引擎
+        function buildThreeTierMatrix() {
+            const checkedSens = getCheckedValues('senCheck');
+            const checkedScopes = getCheckedValues('scopeCheck');
+
+            if (checkedSens.length === 0) {
+                showToast("請在左側選擇至少一項「SEN 類別」！", "error");
+                return;
+            }
+            if (checkedScopes.length === 0) {
+                showToast("請在左側選擇至少一項「調適與支援範疇」！", "error");
+                return;
+            }
+
+            const tbody = document.getElementById('tierTableBody');
+            tbody.innerHTML = ''; // 清空大表
+            currentPaginatedData = [];
+
+            checkedSens.forEach(sen => {
+                const senName = senMapping[sen] || sen;
+                
+                checkedScopes.forEach(scope => {
+                    const scopeName = scopeMapping[scope] || scope;
+                    
+                    // 提取策略，如果沒有 explicit 則使用萬用
+                    let t1Text = "";
+                    let t2Text = "";
+                    let t3Text = "";
+
+                    if (strategyDatabase[sen] && strategyDatabase[sen][scope]) {
+                        t1Text = strategyDatabase[sen][scope].t1;
+                        t2Text = strategyDatabase[sen][scope].t2;
+                        t3Text = strategyDatabase[sen][scope].t3;
+                    } else {
+                        // 兜底萬用策略
+                        t1Text = `針對 ${senName} 的 ${scopeName} 第一層：優化課堂普通教學，提供分層工作紙、視覺化步驟圖與清晰具體之指令，與家長進行常規溝通，惠及全班有類似困難的同學。`;
+                        t2Text = `針對 ${senName} 的 ${scopeName} 第二層：安排其參加校本小組支援（如：自理訓練、言語治療班、社交小組或家長喘息與教養工作坊），反覆進行功能演練。`;
+                        t3Text = `針對 ${senName} 的 ${scopeName} 第三層：由 SENCO、EP、社工及科任老師共同擬定個別學習計劃 (IEP) 或行為介入計畫 (BIP)，提供專責 SENTA 協作跟進與個別化調適、醫療復康對接。`;
+                    }
+
+                    const rowId = `row_${sen}_${scope}`;
+                    const rowData = {
+                        id: rowId,
+                        sen: sen,
+                        senName: senName,
+                        scope: scope,
+                        scopeName: scopeName,
+                        t1: t1Text,
+                        t2: t2Text,
+                        t3: t3Text
+                    };
+                    currentPaginatedData.push(rowData);
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50/50 transition-colors";
+                    tr.id = rowId;
+                    tr.innerHTML = `
+                        <td class="p-3 font-extrabold text-slate-800 border-r border-slate-200 bg-slate-50/30">
+                            <span class="block text-teal-800 font-black">${senName}</span>
+                            <span class="text-[10px] text-indigo-600 block mt-1 font-bold bg-indigo-50 px-1.5 py-0.5 rounded text-center border border-indigo-100">${scopeName}</span>
+                        </td>
+                        <td class="p-3 border-r border-slate-200">
+                            <textarea id="t1_${rowId}" rows="5" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-teal-500 rounded p-1 outline-none resize-none leading-relaxed">${t1Text}</textarea>
+                        </td>
+                        <td class="p-3 border-r border-slate-200">
+                            <textarea id="t2_${rowId}" rows="5" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-teal-500 rounded p-1 outline-none resize-none leading-relaxed">${t2Text}</textarea>
+                        </td>
+                        <td class="p-3 border-r border-slate-200">
+                            <textarea id="t3_${rowId}" rows="5" class="w-full bg-transparent focus:bg-white border border-transparent hover:border-slate-200 focus:border-teal-500 rounded p-1 outline-none resize-none leading-relaxed">${t3Text}</textarea>
+                        </td>
+                        <td class="p-3 text-center align-middle">
+                            <button onclick="deleteRow('${rowId}')" class="text-rose-500 hover:text-rose-700 p-2 transition">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+
+            showToast("成功依您勾選的類別與範疇動態組裝全校三層支援架構！");
+        }
+
+        function deleteRow(rowId) {
+            const row = document.getElementById(rowId);
+            if (row) {
+                row.remove();
+                currentPaginatedData = currentPaginatedData.filter(d => d.id !== rowId);
+            }
+            if (document.querySelectorAll('#tierTableBody tr').length === 0) {
+                document.getElementById('tierTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="5" class="p-8 text-center text-slate-400 italic">
+                            請在左側選擇「SEN 類別」與「調適範疇」，然後點按「智能組裝三層支援架構表」進行動態生成。
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        // --------------------------------------------------------
+        // 4. 三層架構大表一鍵導出精美 Word (防止亂碼 + 灰色網底表格樣式)
+        // --------------------------------------------------------
+        function exportThreeTierToWord() {
+            const school = document.getElementById('schoolName').value || '（學校名稱）';
+            const dept = document.getElementById('deptName').value || '特殊教育支援小組';
+            const senco = document.getElementById('sencoName').value || '黃主任';
+            const year = document.getElementById('academicYear').value || '2026-2027 學年';
+
+            const rows = document.querySelectorAll('#tierTableBody tr');
+            if (rows.length === 0 || rows[0].innerText.includes("請在左側選擇")) {
+                showToast("架構表目前為空，請先在左側組裝生成！", "error");
+                return;
+            }
+
+            let tableRowsHtml = "";
+            currentPaginatedData.forEach(data => {
+                // 從頁面當前的 textarea 中獲取可能被老師修改過的即時文字
+                const currentT1 = document.getElementById(`t1_${data.id}`) ? document.getElementById(`t1_${data.id}`).value.replace(/\n/g, '<br>') : data.t1;
+                const currentT2 = document.getElementById(`t2_${data.id}`) ? document.getElementById(`t2_${data.id}`).value.replace(/\n/g, '<br>') : data.t2;
+                const currentT3 = document.getElementById(`t3_${data.id}`) ? document.getElementById(`t3_${data.id}`).value.replace(/\n/g, '<br>') : data.t3;
+
+                tableRowsHtml += `
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top; font-weight: bold; background-color: #f8fafc; width: 15%;">
+                            <span style="font-size: 11pt; color: #0d9488; font-weight: bold; display: block;">${data.senName}</span><br>
+                            <span style="font-size: 9pt; color: #4338ca; font-weight: bold;">[${data.scopeName}]</span>
+                        </td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top; width: 28%; font-size: 10pt;">${currentT1}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top; width: 28%; font-size: 10pt;">${currentT2}</td>
+                        <td style="padding: 10px; border: 1px solid #000000; vertical-align: top; width: 28%; font-size: 10pt;">${currentT3}</td>
+                    </tr>
+                `;
+            });
+
+            const wordContent = `
+                <div style="font-family: 'Microsoft JhengHei', Arial, sans-serif; line-height: 1.6; color: #000;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <p style="text-align: right; font-size: 10pt; color: #555; margin-bottom: 10px;">校本融合教育合規備查檔案</p>
+                        <h2 style="font-size: 14pt; margin: 0; padding-bottom: 5px;">${school}</h2>
+                        <h1 style="font-size: 18pt; margin: 0; padding-bottom: 15px; border-bottom: 2px solid #000; font-weight: bold;">全校融合教育三層支援架構及調適指引藍圖</h1>
+                    </div>
+
+                    <!-- 一、基本資料 -->
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt;" border="1" cellpadding="6">
+                        <tr style="background-color: #e2e8f0; font-weight: bold;">
+                            <td colspan="4" style="padding: 8px; font-size: 12pt;">一、 行政管理與團隊設定</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 20%; background-color: #f1f5f9; font-weight: bold; text-align: center;">負責部門：</td>
+                            <td style="width: 30%;">${dept}</td>
+                            <td style="width: 20%; background-color: #f1f5f9; font-weight: bold; text-align: center;">統籌主任 (SENCO)：</td>
+                            <td style="width: 30%;">${senco}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f1f5f9; font-weight: bold; text-align: center;">適用學年：</td>
+                            <td colspan="3">${year}</td>
+                        </tr>
+                    </table>
+
+                    <!-- 二、三層支援架構核心表格 -->
+                    <table style="width: 100%; border-collapse: collapse; font-size: 10.5pt;" border="1" cellpadding="8">
+                        <thead>
+                            <tr style="background-color: #cbd5e1; font-weight: bold;">
+                                <th style="padding: 10px; border: 1px solid #000000; text-align: center; width: 15%;">SEN 類別 & 範疇</th>
+                                <th style="padding: 10px; border: 1px solid #000000; text-align: center; width: 28%;">第一層支援 (Tier 1)<br><span style="font-size: 8.5pt; font-weight: normal; display: block;">優化課堂教學 (全班)</span></th>
+                                <th style="padding: 10px; border: 1px solid #000000; text-align: center; width: 28%;">第二層支援 (Tier 2)<br><span style="font-size: 8.5pt; font-weight: normal; display: block;">抽離/小組支援 (加強)</span></th>
+                                <th style="padding: 10px; border: 1px solid #000000; text-align: center; width: 28%;">第三層支援 (Tier 3)<br><span style="font-size: 8.5pt; font-weight: normal; display: block;">個別化支援 (IEP / BIP)</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRowsHtml}
+                        </tbody>
+                    </table>
+
+                    <br><br>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 30px; font-size: 11pt;" border="1" cellpadding="8">
+                        <tr>
+                            <td style="width: 50%; height: 80px; vertical-align: top;">
+                                報告審核 (特殊教育主任 SENCO) 簽署：<br><br><br>
+                                日期：____________________
+                            </td>
+                            <td style="width: 50%; height: 80px; vertical-align: top;">
+                                報告備查 (校長 / 副校長) 簽署：<br><br><br>
+                                日期：____________________
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><title>全校三層支援架構規劃</title></head><body>";
+            const footer = "</body></html>";
+            const sourceHTML = header + wordContent + footer;
+
+            // 注入 \ufeff BOM 防止中文字亂碼
+            const blob = new Blob(['\ufeff', sourceHTML], { type: 'application/msword;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = `全校三層支援架構規劃指引藍圖_${year.replace(/ /g, '')}.doc`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+            showToast("已成功導出精美排版的全校三層支援架構 Word 文件！");
+        }
+
+        // 提示工具
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            msgEl.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
