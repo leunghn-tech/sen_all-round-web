@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>跨專業個案會議與家校協作平台</title>
+    <!-- 引入 Tailwind CSS 進行精緻排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 專業圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* 滾動條美化 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* 互動卡片 Hover */
+        .hover-card { transition: all 0.3s ease; }
+        .hover-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        
+        /* 表格輸入框去邊框 */
+        .table-input { width: 100%; border: none; background: transparent; resize: none; outline: none; }
+        .table-input:focus { background-color: #f8fafc; border-radius: 4px; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 雙色對話框設計 */
+        .dialogue-t {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-left: 4px solid #3b82f6;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #1e3a8a;
+        }
+        .dialogue-s {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #94a3b8;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #475569;
+        }
+
+        /* 打印專用樣式 */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+            #printableMinutes { width: 100%; padding: 0; margin: 0; border: none; box-shadow: none; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col pb-12 bg-slate-50/50">
+
+    <!-- 頂部導航欄 (不列印) -->
+    <nav class="bg-violet-900 text-white shadow-md sticky top-0 z-50 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="professional_dashboard.html" class="flex items-center gap-2 bg-violet-800 hover:bg-violet-700 px-3 py-2 rounded-xl transition text-violet-100 hover:text-white shadow-inner">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回協作平台</span>
+                </a>
+                <div class="flex flex-col justify-center border-l border-violet-800 pl-4">
+                    <h1 class="text-xs sm:text-sm font-black tracking-tight leading-none">跨專業個案會議與家校協作平台</h1>
+                    <span class="text-[9px] text-violet-200 font-bold block mt-1 uppercase tracking-widest">Case Conference & Collaboration</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <!-- 🌍 NCS 家長溝通錦囊按鈕 -->
+                <button onclick="toggleNcsModal(true)" class="bg-violet-700 hover:bg-violet-600 text-violet-100 text-[11px] font-bold px-3 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-globe animate-pulse"></i> 🌍 NCS 家長錦囊
+                </button>
+                <button onclick="exportConferenceWord()" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] sm:text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm shrink-0">
+                    <i class="fa-solid fa-file-word"></i> 導出會議紀錄
+                </button>
+                <button onclick="exportOnePagerWord()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm shrink-0">
+                    <i class="fa-solid fa-file-invoice"></i> 導出科任 1-Pager
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 本地安全宣告 -->
+    <div class="bg-violet-50 border-b border-violet-100 py-2.5 px-4 no-print">
+        <div class="max-w-7xl mx-auto flex items-center gap-2.5 text-xs text-violet-900">
+            <i class="fa-solid fa-shield-halved text-emerald-600 text-base shrink-0 animate-pulse"></i>
+            <span>
+                <strong>🔒 機密會議安全宣告：</strong>
+                本工具完全在您的瀏覽器本地端運行。個案會議與科任 1-Pager 內容涉及學生高度隱私，關閉網頁即自動清空。
+            </span>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full flex-grow space-y-8 no-print">
+        
+        <!-- 頂部橫幅 -->
+        <div class="bg-gradient-to-r from-violet-800 via-purple-700 to-indigo-600 rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
+            <i class="fa-solid fa-handshake-angle absolute -right-4 -bottom-4 text-[160px] text-white opacity-10"></i>
+            <div class="relative z-10">
+                <h1 class="text-2xl sm:text-3xl font-extrabold mb-2 flex items-center gap-2.5">
+                    <i class="fa-solid fa-comments"></i> 跨專業協作與家長溝通助手
+                </h1>
+                <p class="text-violet-100 text-xs sm:text-sm max-w-4xl leading-relaxed">
+                    一次成功的個案會議，能化解家校矛盾並促成共識。左側提供「會前準備」與「地獄難度家長溝通劇本」；右側會議紀錄內建<strong>「✨ AI 專業潤飾」</strong>功能，一鍵轉化為合規的 EDB 專業術語並導出為 Word 備查。
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- 左側：會議準備與溝通話術 -->
+            <div class="lg:col-span-5 xl:col-span-4 space-y-6">
+                
+                <!-- 1. 會議準備清單 (動態聯動) -->
+                <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-black text-slate-800">會議類型與會前準備清單</h2>
+                            <p class="text-[10px] text-slate-500 font-bold mt-0.5">選擇類型，自動同步對應的備查要求</p>
+                        </div>
+                    </div>
+                    
+                    <select id="meetingTypeSelect" onchange="updateChecklist()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer shadow-sm">
+                        <option value="iep">個別學習計劃 (IEP) 檢討會議</option>
+                        <option value="diagnosis">首次診斷報告解說及支援會議</option>
+                        <option value="crisis">嚴重行為/情緒危機介入會議 (Crisis)</option>
+                        <option value="transition">生涯轉銜與出路規劃會議 (Transition)</option>
+                    </select>
+
+                    <div id="checklistContent" class="space-y-3 fade-in text-xs">
+                        <!-- 內容由 JS 動態生成 -->
+                    </div>
+                </div>
+
+                <!-- 2. 拆解家長溝通困局 (橫向滑動 Tabs 卡片排版) -->
+                <div class="bg-gradient-to-br from-rose-50 to-orange-50 rounded-3xl border border-rose-100 p-5 shadow-sm">
+                    <div class="flex items-center gap-3 border-b border-rose-200 pb-3 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-rose-200 text-rose-700 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-black text-rose-900">家長溝通實戰劇本 (點選切換)</h2>
+                            <p class="text-[10px] text-rose-700 font-bold">精準話術，化解地獄級對立情境</p>
+                        </div>
+                    </div>
+
+                    <!-- 橫向滑動/Tab 按鈕列 -->
+                    <div class="flex gap-1.5 overflow-x-auto pb-2 mb-3 scrollbar-thin">
+                        <button onclick="switchParentTab('denial', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg active transition-all">1. 拒絕標籤</button>
+                        <button onclick="switchParentTab('blaming', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">2. 推卸責任</button>
+                        <button onclick="switchParentTab('demands', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">3. 期望過高</button>
+                        <button onclick="switchParentTab('medical', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">4. 建議醫療/藥物</button>
+                        <button onclick="switchParentTab('helicopter', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">5. 焦慮/直升機</button>
+                        <button onclick="switchParentTab('unresponsive', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">6. 零回應/放棄型</button>
+                    </div>
+
+                    <!-- Tab 內容卡片容器 -->
+                    <div id="parentTabContent" class="bg-white p-4 rounded-xl border border-rose-100 shadow-sm min-h-[300px] flex flex-col justify-between fade-in">
+                        <!-- 由 JS 動態注入對應情境內容 -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 右側：會議紀錄表 (Meeting Minutes) -->
+            <div class="lg:col-span-7 xl:col-span-8 space-y-6">
+                
+                <div id="printableMinutes" class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm min-h-full relative">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5 no-print">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-file-signature text-2xl text-violet-600"></i>
+                            <div>
+                                <h2 class="text-lg font-black text-slate-800">跨專業個案會議紀錄表</h2>
+                                <p class="text-[11px] text-slate-500 font-bold mt-0.5">內建 AI 智能潤飾，自動轉化口語為專業 EDB 術語</p>
+                            </div>
+                        </div>
+                        <input type="text" id="schoolName" value="（請輸入學校名稱）" class="border-b border-slate-300 text-sm font-bold text-slate-800 text-right focus:border-violet-500 focus:outline-none px-2 py-1 w-48 bg-transparent">
+                    </div>
+
+                    <!-- 表格主體 -->
+                    <div class="border border-slate-300 rounded-lg overflow-hidden">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <!-- 1. 基本資料 -->
+                            <tr class="bg-slate-100">
+                                <td colspan="4" class="p-2 border-b border-slate-300 font-black text-slate-800">甲、會議基本資料</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-r border-slate-300 bg-slate-50 font-bold w-[15%]">學生姓名：</td>
+                                <td class="p-2 border-b border-r border-slate-300 w-[35%]"><input type="text" id="mStudent" class="table-input font-bold text-slate-900" placeholder="陳大文"></td>
+                                <td class="p-2 border-b border-r border-slate-300 bg-slate-50 font-bold w-[15%]">班別 (學號)：</td>
+                                <td class="p-2 border-b border-slate-300 w-[35%]"><input type="text" id="mClass" class="table-input font-bold" placeholder="中二 (S201)"></td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-r border-slate-300 bg-slate-50 font-bold">會議日期：</td>
+                                <td class="p-2 border-b border-r border-slate-300"><input type="text" id="mDate" class="table-input" placeholder="2026年 10月 15日"></td>
+                                <td class="p-2 border-b border-r border-slate-300 bg-slate-50 font-bold">會議地點：</td>
+                                <td class="p-2 border-b border-slate-300"><input type="text" id="mLocation" class="table-input" placeholder="學校醫療室 / 輔導室"></td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-r border-slate-300 bg-slate-50 font-bold">與會人士：</td>
+                                <td colspan="3" class="p-2 border-b border-slate-300">
+                                    <div class="flex flex-wrap gap-4 font-medium text-slate-700">
+                                        <label><input type="checkbox" id="attSenco" checked class="mr-1"> SENCO</label>
+                                        <label><input type="checkbox" id="attEp" class="mr-1"> 心理學家 (EP)</label>
+                                        <label><input type="checkbox" id="attSw" checked class="mr-1"> 駐校社工</label>
+                                        <label><input type="checkbox" id="attTeacher" checked class="mr-1"> 科任老師</label>
+                                        <label><input type="checkbox" id="attParent" checked class="mr-1"> 家長</label>
+                                    </div>
+                                    <input type="text" id="mAttendeesOther" class="table-input mt-2 border-b border-slate-200" placeholder="其他出席者姓名 (如：陳媽媽)...">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-r border-slate-300 bg-slate-50 font-bold">會議目的：</td>
+                                <td colspan="3" class="p-2 border-b border-slate-300">
+                                    <input type="text" id="mPurpose" class="table-input font-medium" placeholder="例如：檢討 IEP 進度及商討測考調適安排">
+                                </td>
+                            </tr>
+
+                            <!-- 2. 現況評估 (加入 AI 潤飾按鈕) -->
+                            <tr class="bg-slate-100">
+                                <td colspan="4" class="p-2 border-b border-slate-300 font-black text-slate-800 flex items-center justify-between">
+                                    <span>乙、學生現況評估與多方觀察</span>
+                                    <span class="text-[10px] font-normal text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200 shadow-sm no-print">💡 提示：輸入口語筆記後點擊「AI 專業潤飾」</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-r border-slate-300 bg-emerald-50/50 font-bold text-emerald-800">學校/教師觀察<br>(學業與行為)：</td>
+                                <td colspan="3" class="p-2 border-b border-slate-300 relative">
+                                    <textarea id="mSchoolView" rows="3" class="table-input leading-relaxed pr-24" placeholder="例：阿文成日發脾氣、打人、做唔到功課..."></textarea>
+                                    <button onclick="aiPolish('mSchoolView')" class="absolute bottom-2 right-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm transition flex items-center gap-1 no-print border border-emerald-200">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI 專業潤飾
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-r border-slate-300 bg-blue-50/50 font-bold text-blue-800">家長意見<br>(居家狀況)：</td>
+                                <td colspan="3" class="p-2 border-b border-slate-300 relative">
+                                    <textarea id="mParentView" rows="3" class="table-input leading-relaxed pr-24" placeholder="例：老母話屋企管唔到佢，叫學校幫手..."></textarea>
+                                    <button onclick="aiPolish('mParentView')" class="absolute bottom-2 right-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm transition flex items-center gap-1 no-print border border-blue-200">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI 專業潤飾
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-r border-slate-300 bg-purple-50/50 font-bold text-purple-800">專家/社工意見<br>(專業建議)：</td>
+                                <td colspan="3" class="p-2 border-b border-slate-300 relative">
+                                    <textarea id="mExpertView" rows="3" class="table-input leading-relaxed pr-24" placeholder="例：EP話要加時，同埋要小休..."></textarea>
+                                    <button onclick="aiPolish('mExpertView')" class="absolute bottom-2 right-2 bg-purple-100 hover:bg-purple-200 text-purple-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm transition flex items-center gap-1 no-print border border-purple-200">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI 專業潤飾
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- 3. 共識與跟進行動 -->
+                            <tr class="bg-slate-100">
+                                <td colspan="4" class="p-2 border-b border-slate-300 font-black text-slate-800">丙、會議共識與跟進行動 (Action Plan)</td>
+                            </tr>
+                            <tr class="bg-slate-50 text-center font-bold border-b border-slate-300">
+                                <td colspan="2" class="p-2 border-r border-slate-300">具體跟進事項 (What)</td>
+                                <td class="p-2 border-r border-slate-300">負責人 (Who)</td>
+                                <td class="p-2">時間表 (When)</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="p-2 border-b border-r border-slate-300"><textarea id="mAction1" rows="2" class="table-input" placeholder="例：安排參加社交技巧小組"></textarea></td>
+                                <td class="p-2 border-b border-r border-slate-300"><input type="text" id="mWho1" class="table-input text-center" placeholder="社工"></td>
+                                <td class="p-2 border-b border-slate-300"><input type="text" id="mWhen1" class="table-input text-center" placeholder="11月起"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="p-2 border-b border-r border-slate-300"><textarea id="mAction2" rows="2" class="table-input" placeholder="例：申請考試加時 25% 及放大試卷"></textarea></td>
+                                <td class="p-2 border-b border-r border-slate-300"><input type="text" id="mWho2" class="table-input text-center" placeholder="SENCO"></td>
+                                <td class="p-2 border-b border-slate-300"><input type="text" id="mWhen2" class="table-input text-center" placeholder="即時生效"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="p-2 border-b border-r border-slate-300"><textarea id="mAction3" rows="2" class="table-input" placeholder="例：在家中實施代幣獎勵計畫"></textarea></td>
+                                <td class="p-2 border-b border-r border-slate-300"><input type="text" id="mWho3" class="table-input text-center" placeholder="家長"></td>
+                                <td class="p-2 border-b border-slate-300"><input type="text" id="mWhen3" class="table-input text-center" placeholder="每天"></td>
+                            </tr>
+
+                            <!-- 4. 科任教師 1-Pager 備忘欄 -->
+                            <tr class="bg-indigo-50">
+                                <td colspan="4" class="p-2 border-b border-slate-300 font-black text-indigo-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-file-powerpoint animate-pulse"></i> 丁、科任教師 1-Pager 備忘欄 (一鍵簡介專用，免開會同工亦一秒讀懂)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-r border-slate-300 bg-indigo-50/20 font-bold text-indigo-950">行為觸發前兆<br>(Triggers)：</td>
+                                <td colspan="3" class="p-2 border-b border-slate-300">
+                                    <textarea id="mOnePagerTriggers" rows="2" class="table-input leading-relaxed text-indigo-950" placeholder="當學生遇到甚麼前兆時，需要特別留意？例如：面臨大篇幅抄寫、組員不按規則發言、被當眾口頭批評時..."></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border-b border-r border-slate-300 bg-indigo-50/20 font-bold text-indigo-950">3 個全校統一<br>應對策略：</td>
+                                <td colspan="3" class="p-2 border-b border-slate-300 space-y-1">
+                                    <div class="flex items-center gap-1.5"><span class="font-bold text-indigo-800 shrink-0">1.</span> <input type="text" id="mOnePagerS1" class="table-input border-b border-slate-200" placeholder="例：功課減半，先做基礎題。"></div>
+                                    <div class="flex items-center gap-1.5"><span class="font-bold text-indigo-800 shrink-0">2.</span> <input type="text" id="mOnePagerS2" class="table-input border-b border-slate-200" placeholder="例：課堂中如發現分心抖腳，走到身旁輕輕敲桌面兩下，不公開點名。"></div>
+                                    <div class="flex items-center gap-1.5"><span class="font-bold text-indigo-800 shrink-0">3.</span> <input type="text" id="mOnePagerS3" class="table-input border-b border-slate-200" placeholder="例：允許在極度崩潰時，無聲向老師出示「安心卡」前往冷靜沙發區。"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- 🌍 NCS 非華語家長溝通錦囊 Modal -->
+    <div id="ncsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-all duration-300 no-print">
+        <div class="bg-white rounded-3xl max-w-2xl w-full mx-4 overflow-hidden shadow-2xl border border-slate-100">
+            <div class="bg-violet-900 p-5 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-globe text-xl"></i>
+                    <div>
+                        <h3 class="font-black text-sm">🌍 NCS (非華語) 家長溝通錦囊</h3>
+                        <p class="text-[10px] text-violet-200">香港學校常見南亞裔及非華語家長會議協作支援</p>
+                    </div>
+                </div>
+                <button onclick="toggleNcsModal(false)" class="text-white/80 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 space-y-5 max-h-[500px] overflow-y-auto text-xs">
+                
+                <div class="bg-amber-50 border border-amber-100 p-4 rounded-xl space-y-2">
+                    <h4 class="font-bold text-amber-800 flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation"></i> 🕋 穆斯林與南亞裔家長面談文化備忘</h4>
+                    <ul class="list-disc pl-4 space-y-1.5 text-amber-950 font-medium">
+                        <li><strong>異性社交界線：</strong> 與伊斯蘭教信徒家長面談時，男教師避免主動向女家長握手，反之亦然。點頭微笑示意即可。</li>
+                        <li><strong>飲食與禮儀：</strong> 若為家長準備茶水，確保使用乾淨紙杯。若提供茶點，需注意清真（Halal）禁忌。</li>
+                        <li><strong>委婉表達：</strong> 部分南亞裔文化極度重視家族名譽（Izzat），聽到孩子有「發展缺損」會感到強烈羞恥，話術上應極度避免使用「缺陷」，強調其「獨特學習風格」。</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl space-y-2">
+                    <h4 class="font-bold text-blue-800 flex items-center gap-1.5"><i class="fa-solid fa-language"></i> 🗣️ 教育局 NCS 免費翻譯及傳譯資源</h4>
+                    <p class="text-blue-950 font-medium leading-relaxed">
+                        學校可向教育局申請「融和（CHEER）」中心提供的免費電話傳譯或現場傳譯服務（支援烏爾都語、尼泊爾語、旁遮普語等）。<br>
+                        <a href="https://www.edb.gov.hk/tc/student-parents/ncs-students/about-ncs-students/index.html" target="_blank" class="text-violet-700 underline font-black">點擊前往：教育局非華語學生支援網頁 ➔</a>
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-file-contract"></i> 📝 English Consent & Confidentiality Template</h4>
+                        <button onclick="copyNcsTemplate()" class="bg-slate-800 hover:bg-slate-900 text-white text-[10px] px-2.5 py-1 rounded font-bold transition">一鍵複製</button>
+                    </div>
+                    <textarea id="ncsTemplateText" readonly class="w-full h-32 bg-white border border-slate-200 rounded-lg p-2 font-mono text-[9px] text-slate-600 focus:outline-none" rows="5">
+Dear Parents,
+
+This is to confirm that the Case Conference regarding your child has been held today. We have agreed on the Support Plan and accommodations to help your child.
+
+Confidentiality Agreement:
+All discussion, evaluations, and individual education plans (IEP) generated today are strictly confidential and protected under personal privacy laws.
+
+[  ] I AGREE with the support plan and accommodations proposed by the school.
+[  ] I DISAGREE with the proposed plan.
+
+Parent Signature: ________________________
+Date: ________________________
+                    </textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 提示組件 -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-white border border-slate-200 rounded-2xl shadow-lg py-3 px-5 flex items-center gap-3 opacity-0 translate-y-10 transition-all duration-300 pointer-events-none z-[200] no-print">
+        <i class="fa-solid fa-circle-check text-blue-500 text-lg" id="toastIcon"></i>
+        <span id="toastMsg" class="text-xs font-bold text-slate-700"></span>
+    </div>
+
+    <!-- 底部版權 -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 text-center text-[10px] text-slate-400 border-t border-slate-200 py-6 w-full no-print">
+        <p>© 2026 SEN Care Professional. All rights reserved. (不留存任何個案會議數據，保障學校與家長隱私)</p>
+    </footer>
+
+    <script>
+        // 1. 會議準備清單資料庫
+        const checklists = {
+            "iep": [
+                "<strong>SENCO / 教師會前準備：</strong>",
+                "✓ 整理並列印上一學期的 IEP 核心指標進度表。",
+                "✓ 收集各學科、術科老師對該生的日常行為與學習紀錄 (LSEAQ-II)。",
+                "✓ 準備未來一學年建議的 Tier 2/3 小組支援時間表及抽離課堂安排。",
+                "<strong class='mt-2.5 block'>家長準備：</strong>",
+                "✓ 預先思考孩子在家中的強項、近期最大的進步及挑戰。",
+                "✓ 如有在外接受私人言語治療 (ST) 或職業治療 (OT)，請攜帶進度報告。"
+            ],
+            "diagnosis": [
+                "<strong>SENCO / 社工會前準備：</strong>",
+                "✓ 詳閱教育心理學家 (EP) 或兒童精神科醫生發出的最新評估診斷報告。",
+                "✓ 準備 EDB 最新測考調適指引，向家長解釋可申請之權限 (如加時 25%/讀卷)。",
+                "✓ 準備一份「校本支援服務同意書」供家長簽署，以啟動小組訓練。",
+                "<strong class='mt-2.5 block'>專家 (EP) 準備：</strong>",
+                "✓ 將醫學/心理學術語轉化為家長易懂的日常生活例子進行解說。",
+                "✓ 強調學生的「強項與發展潛能」，避免單純聚焦病理缺損。"
+            ],
+            "crisis": [
+                "<strong>🚨 危機小組會前準備：</strong>",
+                "✓ 收集並整理受傷紀錄、突發事件經過（A-B-C 客觀行為描述紀錄表）。",
+                "✓ 評估現有課室與校園環境物理安全度，列出潛在危險物品。",
+                "✓ 擬定「暫時性校園安全計畫 (Safety Plan)」，包括指定安全聯絡人及冷靜防線。",
+                "<strong class='mt-2.5 block'>家長準備與支援：</strong>",
+                "✓ 梳理孩子近期在家中的睡眠、飲食及情緒波動規律。",
+                "✓ 會議場地備妥紙巾及溫水，允許家長攜帶一位可信任的親友陪同出席提供心理支持。"
+            ],
+            "transition": [
+                "<strong>🔀 轉銜小組會前準備：</strong>",
+                "✓ 收集學生歷年測考調適紀錄，以及特教津貼支援層級 (Tier 1-3) 歷史。",
+                "✓ 若為中六畢業生，需準備大專特殊入學調適 (SEN Support) 申報機制材料。",
+                "✓ 準備學生的生涯規劃意向、VTC 或展亮技能發展中心評估報告。",
+                "<strong class='mt-2.5 block'>家長與學生配合：</strong>",
+                "✓ 共同討論畢業後的去向意願（如升讀大專、職業訓練或庇護就業）。",
+                "✓ 準備學生最新的個人強項履歷表 (CV) 與作品集。"
+            ]
+        };
+
+        // 2. 雙色對話框：家長溝通劇本資料庫 (Tabs)
+        const parentScripts = {
+            "denial": {
+                scenario: "1. 拒絕標籤 (Denial)",
+                complaint: "家長：「我個仔只是遲開竅，他不是自閉，也不是過動，我不想他被貼上標籤！」",
+                technique: "💡 轉移焦點與資源導向話術",
+                dialogue: `
+                    <div class="dialogue-t"><strong>老師 (同理)：</strong>「陳媽媽，我非常明白您的顧慮，沒有任何一個家長會希望孩子背著標籤被議論。如果我是您，我也會有一樣的擔心。」</div>
+                    <div class="dialogue-t"><strong>老師 (轉移焦點)：</strong>「所以我們今天開會，完全不需要討論這個『醫學診斷名稱』。我們今天只談他在班上『坐立難安、極易分心抄寫』這個具體困難，您看好嗎？」</div>
+                    <div class="dialogue-s"><strong>家長：</strong>「嗯...如果只談這點是可以的。」</div>
+                    <div class="dialogue-t"><strong>老師 (資源引導)：</strong>「太好了！我們學校剛好有些『完全免費的小組訓練資源』，可以幫他建立專注力，不扣任何成績分。這能幫他讀書輕鬆一點。我們今天就幫他報名這個小組，不對外公開，好嗎？」</div>
+                `,
+                dont: "⚠️ 避雷提醒：切忌在會議中強迫家長口頭承認孩子的診斷，這會激發防衛心理，導致家長直接退席。"
+            },
+            "blaming": {
+                scenario: "2. 推卸責任 (Blaming)",
+                complaint: "家長：「他在家裡很乖的，是你們學校老師不會教，或者同學排擠他！」",
+                technique: "💡 同理與客觀陳述（向家長取經法）",
+                dialogue: `
+                    <div class="dialogue-t"><strong>老師 (肯定家長)：</strong>「聽得出您非常心痛孩子在學校遇到挫折。您說他在家裡很乖、很聽話，這證明您平時的家庭管教真的非常成功、很有方法！」</div>
+                    <div class="dialogue-s"><strong>家長：</strong>「那當然，他在家很聽我說話的。」</div>
+                    <div class="dialogue-t"><strong>老師 (引入學校情境)：</strong>「沒錯。但學校這個環境人多、規矩多，對任何孩子來說都是很大的挑戰。這也是我們今天邀請您來的原因——我們想向您『取經』，看看您在家是用甚麼好方法，我們老師也可以在課堂上借用過來？」</div>
+                    <div class="dialogue-s"><strong>家長：</strong>「呃...他在家如果分心，我會給他一個捏捏球，或者敲敲桌子。」</div>
+                    <div class="dialogue-t"><strong>老師：</strong>「這個方法太棒了！我們明天起就在他課桌也放一個捏捏球，我們科任老師也配合，這就是我們今天共同的 Action Plan 了！」</div>
+                `,
+                dont: "⚠️ 避雷提醒：不要當場與家長爭辯「他在學校有多不聽話」，要將家長的對立情緒轉化為「專業經驗輸出者」。"
+            },
+            "demands": {
+                scenario: "3. 期望過高/不合理調適 (Unrealistic Demands)",
+                complaint: "家長：「我要求學校免除他所有的中文功課，並且考試加時 50%！」",
+                technique: "💡 政策擋箭牌與折衷方案法 (Compromise)",
+                dialogue: `
+                    <div class="dialogue-t"><strong>老師 (同理焦慮)：</strong>「陳媽媽，我完全看到您非常想減輕他學習壓力的迫切心情。我也很希望他能讀得輕鬆一點。」</div>
+                    <div class="dialogue-s"><strong>家長：</strong>「那你們為甚麼不能答應我的要求？免除功課有甚麼難？」</div>
+                    <div class="dialogue-t"><strong>老師 (政策說明與折衷)：</strong>「是這樣的，關於測考調適，我們必須嚴格跟隨教育局 (EDB) 及教育心理學家報告的官方評估。報告建議最高是加時 25%。不過，在學校老師可控制的範圍內，我可以跟中文科主任協商，將他的『抄寫功課量減半』，並『允許使用讀卷平板』。這樣做既合規，也能切實幫到他，您覺得這個折衷方案如何？」</div>
+                    <div class="dialogue-s"><strong>家長：</strong>「...好，那先試試功課減半吧。」</div>
+                `,
+                dont: "⚠️ 避雷提醒：不要直接生硬回絕「不可能」，要使用「政策規定」作為第三方緩衝，並主動在校本權限內提供折衷禮包。"
+            },
+            "medical": {
+                scenario: "4. 建議醫療/藥物治療 (Medical Referral)",
+                complaint: "家長：「聽到看精神科或者食藥我就極度反感！你們是不是想我的孩子變成傻子、上癮？」",
+                technique: "💡 三文治表達法 與「生理視覺化」比喻",
+                dialogue: `
+                    <div class="dialogue-t"><strong>老師 (肯定)：</strong>「我完全理解您的擔憂，沒有父母會願意讓孩子隨便吃藥。您著緊孩子的健康是百分百正確的。」</div>
+                    <div class="dialogue-t"><strong>老師 (生理視覺化比喻)：</strong>「陳媽媽，其實這就像近視一樣。當孩子近視看不清黑板，我們會為他配戴一副『眼鏡』，對嗎？其實過動症的大腦，就像是前額葉缺了一點點『血清素小幫手』。吃藥，不是要把他變傻，而是像幫大腦戴上一副『隱形眼鏡』，讓他專注得不用那麼辛苦、那麼累。」</div>
+                    <div class="dialogue-s"><strong>家長：</strong>「但是食藥真的沒有副作用嗎？」</div>
+                    <div class="dialogue-t"><strong>老師 (解除焦慮)：</strong>「我們不是醫生，不會強迫孩子服藥。我們只是建議尋求兒童精神科專科醫生的專業評估。醫生會根據他的體重，開出最安全的劑量，而且我們學校的社工會全程追蹤他的適應情況。您看，我們先跨出第一步，去醫院諮詢一下，可以嗎？」</div>
+                `,
+                dont: "⚠️ 避雷提醒：教師絕不能以醫生口吻開處方或給予藥物診斷，必須強調是「建議尋求醫生專業諮詢」，並提供學校後勤安全網。"
+            },
+            "helicopter": {
+                scenario: "5. 焦慮/直升機家長 (Helicopter)",
+                complaint: "家長：「我每天晚上都要幫他檢查三次書包！他甚麼都不懂，我必須時時刻刻盯著他！」",
+                technique: "💡 建立界線與「失敗賦能（Empowerment）」對話",
+                dialogue: `
+                    <div class="dialogue-t"><strong>老師 (肯定付出)：</strong>「陳媽媽，您每天晚上幫他檢查三次書包，這真的需要極大的心力和無私的愛，您是一位非常盡責的媽媽！」</div>
+                    <div class="dialogue-s"><strong>家長：</strong>「不盯著不行啊，他明天一定會漏帶功課被投訴。」</div>
+                    <div class="dialogue-t"><strong>老師 (建立界線與賦能)：</strong>「我明白您的擔心。但他今年已經中二了，為了培養他升中的獨立生存能力，我們必須容許他有『跌倒並學習』的機會。我們這個月試著讓他『自己看著清單執書包』，您在旁只看不動手。」</div>
+                    <div class="dialogue-s"><strong>家長：</strong>「如果他漏帶了怎麼辦？」</div>
+                    <div class="dialogue-t"><strong>老師：</strong>「如果漏帶了，被老師記一次大意，這對他來說是極佳的學習契機！他會知道『原來不自己執，真的要承擔後果』。請您相信我們學校，我們會配合，這也是在保護和培養他的未來。我們約定先試兩星期，好嗎？」</div>
+                `,
+                dont: "⚠️ 避雷提醒：不要指責家長控制欲強，而是從「為了孩子未來的獨立能力」這一共同目標出發，邀請家長共同完成「放手計畫」。"
+            },
+            "unresponsive": {
+                scenario: "6. 零回應/放棄型家長 (Unresponsive)",
+                complaint: "家長：「我都教唔掂，隨便你哋啦！我返工好忙，開會不要找我了。」",
+                technique: "💡 降低門檻的同理對話，不談學業、先談關係",
+                dialogue: `
+                    <div class="dialogue-t"><strong>老師 (降低門檻)：</strong>「陳爸爸，我完全明白您平時上班非常辛苦，下班還要面對他的問題，換作是我，我也會覺得精疲力竭、好想放棄。我們今天開會，完全不用討論他的成績和功課。」</div>
+                    <div class="dialogue-s"><strong>家長 (稍微放鬆)：</strong>「...那你們找我做甚麼？」</div>
+                    <div class="dialogue-t"><strong>老師 (同理與合作)：</strong>「我們只是很關心他最近常常在學校發呆、不說話。我們很想知道，他在家有沒有甚麼好笑的事情？或者他喜歡吃甚麼？我們想在學校多跟他建立關係，讓他覺得學校是一個溫暖的地方。」</div>
+                    <div class="dialogue-s"><strong>家長：</strong>「他其實很喜歡玩貓，一看到貓就會笑。」</div>
+                    <div class="dialogue-t"><strong>老師：</strong>「原來他有一顆這麼溫柔的愛心！這資訊太重要了。我們明天起，嘗試在小組中多跟他聊聊小動物。謝謝您百忙中給我們這個重要關鍵！您的支持，對我們真的很重要。」</div>
+                `,
+                dont: "⚠️ 避雷提醒：切忌在一開始就向放棄型家長呈交「欠交功課清單」，這會讓他們因為挫敗感和防衛機制而徹底失聯。"
+            }
+        };
+
+        // 動態切換 Tabs
+        function switchParentTab(key, btnElement) {
+            document.querySelectorAll('.parent-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-rose-100', 'border-rose-400');
+                btn.classList.add('bg-white', 'border-rose-200');
+            });
+            btnElement.classList.remove('bg-white', 'border-rose-200');
+            btnElement.classList.add('bg-rose-100', 'border-rose-400');
+
+            const data = parentScripts[key];
+            const container = document.getElementById('parentTabContent');
+            container.innerHTML = `
+                <div class="space-y-3 flex-grow">
+                    <h4 class="font-extrabold text-rose-800 text-xs flex items-center gap-1.5 border-b border-rose-100 pb-1.5 mb-2">
+                        <i class="fa-solid fa-comments"></i> ${data.scenario}
+                    </h4>
+                    <p class="text-[10px] text-slate-500 font-bold mb-2">常態表現：${data.complaint}</p>
+                    <span class="text-[10px] bg-rose-50 text-rose-700 px-2 py-0.5 rounded font-bold">${data.technique}</span>
+                    
+                    <div class="mt-3 space-y-0 max-h-[220px] overflow-y-auto pr-1">
+                        ${data.dialogue}
+                    </div>
+                </div>
+                <p class="font-bold text-rose-600 mt-4 text-[9px] border-t border-rose-100 pt-2">${data.dont}</p>
+            `;
+        }
+
+        function updateChecklist() {
+            const type = document.getElementById('meetingTypeSelect').value;
+            const container = document.getElementById('checklistContent');
+            const items = checklists[type];
+            let html = '<ul class="space-y-1.5 bg-slate-50 border border-slate-200 p-3 rounded-xl">';
+            items.forEach(item => { html += `<li>${item}</li>`; });
+            html += '</ul>';
+            container.innerHTML = html;
+        }
+
+        // --------------------------------------------------------
+        // 3. ✨ AI 智能潤飾 (AI Polish) 模擬引擎
+        // --------------------------------------------------------
+        function aiPolish(textareaId) {
+            const el = document.getElementById(textareaId);
+            const originalText = el.value.trim();
+
+            if (!originalText) {
+                showToast("請先輸入簡單的口語筆記再進行潤飾！", "error");
+                return;
+            }
+
+            el.disabled = true;
+            el.value = "✨ AI 正在分析並轉化為專業 EDB 術語，請稍候...";
+            
+            setTimeout(() => {
+                let polishedText = "";
+                if (originalText.includes("發脾氣") || originalText.includes("打人") || originalText.includes("曳")) {
+                    polishedText = "學生近期在情緒調控及衝動抑制上遇到挑戰，偶有與同儕發生肢體碰撞的情況；在遵守課堂常規方面，建議進一步增設視覺提示與個別化引導。";
+                } else if (originalText.includes("老母") || originalText.includes("管唔到") || originalText.includes("屋企")) {
+                    polishedText = "家長表示在家中執行管教常規時面臨一定困難與挑戰，期望學校能提供一致的行為介入策略，以加強家校協作的效能。";
+                } else if (originalText.includes("加時") || originalText.includes("EP")) {
+                    polishedText = "教育心理學家 (EP) 經評估後建議，學生在測考時需要延長作答時間 (如 25%) 及安排短暫小休，以舒緩因專注力限制帶來的壓力。";
+                } else {
+                    polishedText = "該生在日常學習與適應上展現出特定需要，建議透過跨專業協作，並配合第一層至第三層的支援架構，為其提供適切的環境調適與情緒支援。";
+                }
+
+                el.value = polishedText;
+                el.disabled = false;
+                showToast("✨ AI 已成功為您潤飾為專業 EDB 術語！", "success");
+            }, 1200);
+        }
+
+        // --------------------------------------------------------
+        // 5. 導出功能 (Word / 1-Pager)
+        // --------------------------------------------------------
+        function toggleNcsModal(show) {
+            const modal = document.getElementById('ncsModal');
+            if (show) {
+                modal.classList.remove('hidden');
+                setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            } else {
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        function copyNcsTemplate() {
+            const textEl = document.getElementById('ncsTemplateText');
+            textEl.select();
+            document.execCommand('copy');
+            showToast("📋 English template copied successfully!", "success");
+        }
+
+        // 導出科任 1-Pager
+        function exportOnePagerWord() {
+            const school = document.getElementById('schoolName').value || '學校名稱';
+            const student = document.getElementById('mStudent').value || '陳大文';
+            const sClass = document.getElementById('mClass').value || '中二 (S201)';
+            const date = document.getElementById('mDate').value || '2026年10月15日';
+            
+            const triggers = document.getElementById('mOnePagerTriggers').value.replace(/\n/g, '<br>') || '請在系統中填寫行為觸發前兆';
+            const s1 = document.getElementById('mOnePagerS1').value || '第一項策略 (請於大表填寫)';
+            const s2 = document.getElementById('mOnePagerS2').value || '第二項策略 (請於大表填寫)';
+            const s3 = document.getElementById('mOnePagerS3').value || '第三項策略 (請於大表填寫)';
+
+            const content = `
+                <div style="font-family: 'Microsoft JhengHei', Arial, sans-serif; line-height: 1.6; color: #000000; padding: 20px;">
+                    <div style="text-align: center; border-bottom: 2px solid #4338ca; padding-bottom: 10px; margin-bottom: 20px;">
+                        <span style="font-size: 10pt; color: #666; text-align: right; display: block;">內部機密 / 課堂即時支援備忘錄</span>
+                        <h2 style="font-size: 13pt; margin: 0; color: #3730a3;">${school}</h2>
+                        <h1 style="font-size: 18pt; margin: 5px 0 0 0; font-weight: bold; color: #1e1b4b;">科任教師 1 分鐘個案精華 (One-Pager)</h1>
+                    </div>
+
+                    <p style="font-size: 11pt;">親愛的科任老師：本校特教支援小組 (SENST) 於 <strong>${date}</strong> 與家長及跨專業團隊召開個案小組會議。為了讓該生能順利在各學科中學習，<strong>請全體科任老師（包括術科、體育課）協助在堂上落實以下統一應對策略：</strong></p>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11pt;" border="1" cellpadding="10">
+                        <tr style="background-color: #f1f5f9;">
+                            <td style="width: 25%; font-weight: bold; background-color: #e0e7ff; color: #1e1b4b;">學生姓名：</td>
+                            <td style="width: 25%; font-weight: bold;">${student}</td>
+                            <td style="width: 25%; background-color: #e0e7ff; color: #1e1b4b; font-weight: bold;">班別：</td>
+                            <td style="width: 25%; font-weight: bold;">${sClass}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #fef2f2; color: #991b1b; font-weight: bold; vertical-align: top;">🚨 特別留意的行為前兆 (Triggers)：</td>
+                            <td colspan="3" style="vertical-align: top; line-height: 1.6; color: #7f1d1d; font-weight: bold;">${triggers}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f0fdf4; color: #166534; font-weight: bold; vertical-align: top;">🛡️ 3 個全校統一的課堂應對策略：</td>
+                            <td colspan="3" style="vertical-align: top; line-height: 1.8;">
+                                <strong>1.</strong> ${s1}<br><br>
+                                <strong>2.</strong> ${s2}<br><br>
+                                <strong>3.</strong> ${s3}
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="border: 2px dashed #4338ca; padding: 15px; margin-top: 30px; background-color: #faf5ff; font-size: 10pt;">
+                        <p style="margin: 0; font-weight: bold; color: #4338ca;">💡 溫馨提醒 (全校協作原則)：</p>
+                        <p style="margin: 5px 0 0 0; color: #5b21b6; line-height: 1.5;">請老師們將此 1-Pager 夾在該班點名簿或教案中。在課堂中如發現學生有情緒波動前兆，請立即低調施加上述策略，避免當眾對質引發更強烈的次級對立情緒。如有任何狀況，請立即知會特教組 (SENCO) 或駐校社工。感謝您的專業協作與付出！</p>
+                    </div>
+                </div>
+            `;
+
+            exportGenericWord(`科任老師1-Pager_${student}`, content, `科任老師_1Pager備忘_${student}`);
+        }
+
+        // 導出高保真完整會議紀錄 Word 引擎 (移除家長簽署欄位)
+        function exportConferenceWord() {
+            const school = document.getElementById('schoolName').value || '學校名稱';
+            const student = document.getElementById('mStudent').value || '未填寫';
+            const sClass = document.getElementById('mClass').value || '未填寫';
+            const date = document.getElementById('mDate').value || '未填寫';
+            const location = document.getElementById('mLocation').value || '未填寫';
+            const purpose = document.getElementById('mPurpose').value || '未填寫';
+            const attendeesOther = document.getElementById('mAttendeesOther').value || '';
+
+            let attendeesList = [];
+            // Check if element exists before reading .checked to avoid TypeError
+            if(document.getElementById('attSenco') && document.getElementById('attSenco').checked) attendeesList.push("SENCO");
+            if(document.getElementById('attEp') && document.getElementById('attEp').checked) attendeesList.push("教育心理學家");
+            if(document.getElementById('attSw') && document.getElementById('attSw').checked) attendeesList.push("駐校社工");
+            if(document.getElementById('attTeacher') && document.getElementById('attTeacher').checked) attendeesList.push("科任老師");
+            if(document.getElementById('attParent') && document.getElementById('attParent').checked) attendeesList.push("家長/監護人");
+            // The element with id 'attOther' was missing from HTML, causing the TypeError. Added safety check here, and ideally should add it back to HTML if needed.
+            if(document.getElementById('attOther') && document.getElementById('attOther').checked) attendeesList.push("治療師");
+            let attendeesStr = attendeesList.join('、 ');
+            if (attendeesOther) attendeesStr += `、 ${attendeesOther}`;
+
+            const schoolView = document.getElementById('mSchoolView').value.replace(/\n/g, '<br>') || '無記錄';
+            const parentView = document.getElementById('mParentView').value.replace(/\n/g, '<br>') || '無記錄';
+            const expertView = document.getElementById('mExpertView').value.replace(/\n/g, '<br>') || '無記錄';
+
+            const action1 = document.getElementById('mAction1').value.replace(/\n/g, '<br>');
+            const who1 = document.getElementById('mWho1').value;
+            const when1 = document.getElementById('mWhen1').value;
+            
+            const action2 = document.getElementById('mAction2').value.replace(/\n/g, '<br>');
+            const who2 = document.getElementById('mWho2').value;
+            const when2 = document.getElementById('mWhen2').value;
+            
+            const action3 = document.getElementById('mAction3').value.replace(/\n/g, '<br>');
+            const who3 = document.getElementById('mWho3').value;
+            const when3 = document.getElementById('mWhen3').value;
+
+            const triggers = document.getElementById('mOnePagerTriggers').value.replace(/\n/g, '<br>') || '未填寫';
+            const s1 = document.getElementById('mOnePagerS1').value || '未填寫';
+            const s2 = document.getElementById('mOnePagerS2').value || '未填寫';
+            const s3 = document.getElementById('mOnePagerS3').value || '未填寫';
+
+            const wordContent = `
+                <div style="font-family: 'Microsoft JhengHei', Arial, sans-serif; line-height: 1.6; color: #000;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <p style="text-align: right; font-size: 10pt; color: #666; margin-bottom: 10px;">內部機密文件 (CONFIDENTIAL)</p>
+                        <h2 style="font-size: 14pt; margin: 0; padding-bottom: 5px;">${school}</h2>
+                        <h1 style="font-size: 18pt; margin: 0; padding-bottom: 15px; border-bottom: 2px solid #000; font-weight: bold;">跨專業個案會議紀錄表 (Case Conference Minutes)</h1>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11pt; margin-bottom: 20px;" border="1" cellpadding="8">
+                        <tr style="background-color: #e2e8f0; font-weight: bold;"><td colspan="4">甲、會議基本資料</td></tr>
+                        <tr>
+                            <td style="width: 20%; background-color: #f8fafc; font-weight: bold;">學生姓名：</td><td style="width: 30%;">${student}</td>
+                            <td style="width: 20%; background-color: #f8fafc; font-weight: bold;">班別 (學號)：</td><td style="width: 30%;">${sClass}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f8fafc; font-weight: bold;">會議日期：</td><td>${date}</td>
+                            <td style="background-color: #f8fafc; font-weight: bold;">會議地點：</td><td>${location}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f8fafc; font-weight: bold;">與會人士：</td><td colspan="3">${attendeesStr}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f8fafc; font-weight: bold;">會議目的：</td><td colspan="3">${purpose}</td>
+                        </tr>
+                    </table>
+
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11pt; margin-bottom: 20px;" border="1" cellpadding="8">
+                        <tr style="background-color: #e2e8f0; font-weight: bold;"><td colspan="2">乙、學生現況評估與多方觀察</td></tr>
+                        <tr>
+                            <td style="width: 25%; background-color: #f8fafc; font-weight: bold; vertical-align: top;">學校/教師觀察<br>(學業與行為)：</td>
+                            <td style="width: 75%; vertical-align: top;">${schoolView}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f8fafc; font-weight: bold; vertical-align: top;">家長意見<br>(居家狀況)：</td>
+                            <td style="vertical-align: top;">${parentView}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f8fafc; font-weight: bold; vertical-align: top;">專家/社工意見<br>(專業建議)：</td>
+                            <td style="vertical-align: top;">${expertView}</td>
+                        </tr>
+                    </table>
+
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11pt; margin-bottom: 20px;" border="1" cellpadding="8">
+                        <tr style="background-color: #e2e8f0; font-weight: bold;"><td colspan="3">丙、會議共識與跟進行動 (Action Plan)</td></tr>
+                        <tr style="background-color: #f8fafc; font-weight: bold; text-align: center;">
+                            <td style="width: 50%;">具體跟進事項</td><td style="width: 25%;">負責人</td><td style="width: 25%;">時間表</td>
+                        </tr>
+                        <tr><td>${action1}</td><td style="text-align: center;">${who1}</td><td style="text-align: center;">${when1}</td></tr>
+                        <tr><td>${action2}</td><td style="text-align: center;">${who2}</td><td style="text-align: center;">${when2}</td></tr>
+                        <tr><td>${action3}</td><td style="text-align: center;">${who3}</td><td style="text-align: center;">${when3}</td></tr>
+                    </table>
+
+                    <!-- 丁部備查 -->
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11pt; margin-bottom: 20px;" border="1" cellpadding="8">
+                        <tr style="background-color: #dbeafe; font-weight: bold; color: #1e1b4b;"><td colspan="2">丁、科任教師 1-Pager 備忘錄 (全校備查)</td></tr>
+                        <tr>
+                            <td style="width: 25%; background-color: #f8fafc; font-weight: bold;">行為觸發前兆：</td>
+                            <td style="width: 75%;">${triggers}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #f8fafc; font-weight: bold;">全校統一應對策略：</td>
+                            <td>
+                                1. ${s1}<br>
+                                2. ${s2}<br>
+                                3. ${s3}
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            `;
+
+            exportGenericWord(`會議紀錄_${student}`, wordContent, `個案會議紀錄_${student}`);
+        }
+
+        // 初始化
+        window.onload = function() {
+            updateChecklist();
+            const denialBtn = document.querySelector('.parent-tab-btn');
+            if(denialBtn) switchParentTab('denial', denialBtn);
+        }
+
+        function exportGenericWord(title, contentHTML, filename) {
+            const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><title>" + title + "</title></head><body>";
+            const footer = "</body></html>";
+            const sourceHTML = header + contentHTML + footer;
+
+            const blob = new Blob(['\ufeff', sourceHTML], { type: 'application/msword;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); 
+            a.href = url; 
+            a.download = filename + '.doc';
+            document.body.appendChild(a); 
+            a.click(); 
+            document.body.removeChild(a); 
+            URL.revokeObjectURL(url);
+            showToast(`已成功導出「${filename}」文件！`, "success");
+        }
+
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            const icon = document.getElementById('toastIcon');
+            msgEl.innerText = msg;
+            
+            if (type === "error") {
+                icon.className = "fa-solid fa-circle-exclamation text-rose-500 text-lg";
+            } else {
+                icon.className = "fa-solid fa-circle-check text-emerald-500 text-lg";
+            }
+
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
