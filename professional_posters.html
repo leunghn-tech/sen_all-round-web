@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>特教視覺化圖卡與海報資源庫</title>
+    <!-- 引入 Tailwind CSS 進行精緻排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 專業圖標 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f8fafc;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* 畫廊卡片 Hover 效果 */
+        .poster-card { transition: all 0.3s ease; }
+        .poster-card:hover { transform: translateY(-4px); box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+        
+        /* 分類按鈕選中狀態 */
+        .category-btn.active { background-color: #0f766e; color: white; border-color: #0f766e; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ==========================================
+           ✏️ 內建即時編輯器樣式 (Live Edit)
+           ========================================== */
+        .editable-active {
+            outline: 3px dashed #3b82f6 !important;
+            outline-offset: 4px;
+            background-color: rgba(59, 130, 246, 0.1);
+            cursor: text;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+        .editable-active:hover {
+            outline: 3px solid #2563eb !important;
+            background-color: rgba(59, 130, 246, 0.15);
+        }
+        .editable-active:focus {
+            outline: 4px solid #10b981 !important;
+            background-color: rgba(16, 185, 129, 0.15);
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col pb-12 bg-slate-50/50">
+
+    <!-- 頂部導航欄 -->
+    <nav class="bg-teal-900 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="professional_dashboard.html" class="flex items-center gap-2 bg-teal-800 hover:bg-teal-700 px-3 py-2 rounded-xl transition text-teal-100 hover:text-white shadow-inner">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回協作平台</span>
+                </a>
+                <div class="flex flex-col justify-center border-l border-teal-800 pl-4">
+                    <h1 class="text-xs sm:text-sm font-black tracking-tight leading-none">特教視覺化圖卡與海報資源庫</h1>
+                    <span class="text-[9px] text-teal-200 font-bold block mt-1 uppercase tracking-widest">Visual Supports Gallery</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="bg-teal-800/50 text-teal-100 text-[10px] px-3 py-1.5 rounded-full border border-teal-700 font-medium">
+                    <i class="fa-solid fa-mobile-screen mr-1"></i> 專為螢幕截圖設計
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full flex-grow space-y-8">
+        
+        <!-- 頂部橫幅 -->
+        <div class="bg-gradient-to-r from-teal-800 via-emerald-700 to-green-600 rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
+            <i class="fa-solid fa-images absolute -right-4 -bottom-4 text-[160px] text-white opacity-10"></i>
+            <div class="relative z-10">
+                <h1 class="text-2xl sm:text-3xl font-extrabold mb-2 flex items-center gap-2.5">
+                    <i class="fa-solid fa-palette"></i> 視覺化教具畫廊 (Visual Support Gallery)
+                </h1>
+                <p class="text-teal-100 text-xs sm:text-sm max-w-4xl leading-relaxed">
+                    這裡的 30+ 款特教圖卡皆由 <strong>高對比色彩與直觀排版</strong> 構建而成。點擊教具後，您可以<strong>更換海報主題色</strong>，並即時<strong>點擊修改文字</strong>。完成客製化後，請直接使用裝置的截圖功能 (Cap 圖) 儲存！
+                </p>
+            </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- 左側分類導航 -->
+            <div class="lg:w-1/4 shrink-0 space-y-4">
+                <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm sticky top-24">
+                    <h2 class="text-sm font-black text-slate-800 mb-4 border-b border-slate-100 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-filter text-teal-600"></i> 教具分類篩選
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Tier 1 -->
+                        <div>
+                            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Tier 1 全校/全班常規</h3>
+                            <div class="flex flex-col gap-1.5">
+                                <button onclick="renderGallery('tier1')" class="category-btn active text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-teal-50 border border-transparent transition flex items-center justify-between group">
+                                    <span>🏫 課室常規與心態</span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 group-hover:opacity-100 transition"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tier 2 -->
+                        <div>
+                            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Tier 2 專屬小組 (每類3款)</h3>
+                            <div class="flex flex-col gap-1.5" id="tier2Categories">
+                                <!-- 由 JS 動態生成按鈕 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側畫廊展示區 (Gallery Grid) -->
+            <div class="lg:w-3/4">
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm min-h-[600px]">
+                    <div class="flex justify-between items-end mb-6 border-b border-slate-100 pb-4">
+                        <div>
+                            <h2 id="galleryTitle" class="text-lg font-black text-teal-900 flex items-center gap-2">🏫 Tier 1 課室常規與心態</h2>
+                            <p id="galleryDesc" class="text-xs text-slate-500 font-medium mt-1">適用於全班的基礎視覺化常規與情緒支援海報。</p>
+                        </div>
+                        <div class="text-[10px] bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-slate-500 font-bold hidden sm:block">
+                            共 <span id="itemCount" class="text-teal-600 font-black text-xs">0</span> 款教具
+                        </div>
+                    </div>
+
+                    <!-- 網格容器 -->
+                    <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 fade-in">
+                        <!-- 由 JS 動態渲染卡片 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 🖼️ 全螢幕海報展示與編輯視窗 (Modal) -->
+    <div id="posterModal" class="fixed inset-0 z-[100] hidden flex flex-col bg-slate-900/95 backdrop-blur-sm transition-opacity opacity-0 duration-300">
+        
+        <!-- 視窗標頭與工具列 (Toolbar) -->
+        <div id="posterModalHeader" class="bg-white p-4 border-b border-slate-300 flex flex-wrap lg:flex-nowrap justify-between items-center shrink-0 z-10 shadow-sm gap-4 transition-all duration-300">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 text-xl shrink-0"><i class="fa-solid fa-palette"></i></div>
+                <div class="hidden sm:block">
+                    <h3 id="modalTitleText" class="font-black text-slate-800 text-sm">海報預覽與編輯</h3>
+                    <p class="text-[10px] text-slate-500 font-bold">完美自適應螢幕，修改完成後請自行截圖</p>
+                </div>
+            </div>
+            
+            <!-- 中間客製化控制器 (只保留主題顏色切換) -->
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 p-2 rounded-2xl">
+                <span class="text-xs font-bold text-slate-500 hidden sm:inline-block pr-2 border-r border-slate-200">主題顏色：</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="changeTheme('blue')" class="w-7 h-7 rounded-full bg-blue-500 hover:scale-110 transition shadow-inner border border-white" title="藍色主題"></button>
+                    <button onclick="changeTheme('emerald')" class="w-7 h-7 rounded-full bg-emerald-500 hover:scale-110 transition shadow-inner border border-white" title="綠色主題"></button>
+                    <button onclick="changeTheme('rose')" class="w-7 h-7 rounded-full bg-rose-500 hover:scale-110 transition shadow-inner border border-white" title="粉紅主題"></button>
+                    <button onclick="changeTheme('amber')" class="w-7 h-7 rounded-full bg-amber-500 hover:scale-110 transition shadow-inner border border-white" title="橙黃主題"></button>
+                    <button onclick="changeTheme('purple')" class="w-7 h-7 rounded-full bg-purple-500 hover:scale-110 transition shadow-inner border border-white" title="紫色主題"></button>
+                    <button onclick="changeTheme('slate')" class="w-7 h-7 rounded-full bg-slate-600 hover:scale-110 transition shadow-inner border border-white" title="灰階主題"></button>
+                </div>
+            </div>
+
+            <div class="flex gap-3 items-center shrink-0">
+                <button id="editModeBtn" onclick="toggleEditMode()" class="bg-amber-100 hover:bg-amber-200 text-amber-700 border border-amber-200 font-bold px-4 py-2.5 rounded-xl transition text-xs sm:text-sm flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-pen"></i> 自訂文字
+                </button>
+
+                <button onclick="closePosterModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition flex items-center justify-center shadow-sm text-xs sm:text-sm gap-1">
+                    <i class="fa-solid fa-xmark"></i> 返回
+                </button>
+            </div>
+        </div>
+
+        <!-- 💡 提示字句 -->
+        <div class="w-full text-center text-slate-400 text-xs py-2">
+            💡 修改完成後，請直接使用您的裝置（手機、平板或電腦）進行螢幕截圖 (Cap 圖) 保存。
+        </div>
+
+        <!-- 海報渲染畫布容器 (確保絕對縮放與置中) -->
+        <div id="modalCanvasContainer" class="flex-grow flex items-center justify-center relative overflow-hidden px-4 pb-6">
+            <!-- 絕對縮放包裝器 -->
+            <div id="posterScaleWrapper" class="flex items-center justify-center" style="transform-origin: center center; transition: transform 0.2s ease;">
+                <!-- 真正的渲染區域，鎖定 1122x793 的絕對像素尺寸以防止破版 -->
+                <div id="posterPrintArea" class="bg-white shadow-2xl relative overflow-hidden flex flex-col border border-slate-200 shrink-0" style="width: 1122px; height: 793px;">
+                    <!-- 海報內容將被動態注入於此 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 提示組件 -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-white border border-slate-200 rounded-2xl shadow-lg py-3 px-5 flex items-center gap-3 opacity-0 translate-y-10 transition-all duration-300 pointer-events-none z-[300]">
+        <i class="fa-solid fa-circle-check text-teal-500 text-lg"></i>
+        <span id="toastMsg" class="text-xs font-bold text-slate-700"></span>
+    </div>
+
+    <script>
+        // ==========================================
+        // 核心資料庫：視覺化教具庫 (10 大類)
+        // ==========================================
+        const categoriesData = [
+            { id: "social", icon: "🗣️", name: "社交溝通類 (Social)" },
+            { id: "emotion", icon: "🚦", name: "情緒與行為管理 (Emotion)" },
+            { id: "executive", icon: "🧠", name: "執行功能與認知 (EF)" },
+            { id: "spld", icon: "📖", name: "讀寫與多感官學習 (SpLD)" },
+            { id: "mindfulness", icon: "🧘", name: "專注力與靜觀降溫 (Attention)" },
+            { id: "transition", icon: "🔀", name: "轉銜與校園適應 (Transition)" },
+            { id: "conflict", icon: "🤝", name: "朋輩衝突解決 (Conflict)" },
+            { id: "lifeskills", icon: "🎒", name: "自理與獨立生活 (Life Skills)" },
+            { id: "growth", icon: "🌟", name: "成長心態與自我肯定 (Growth)" },
+            { id: "sensory", icon: "🤸‍♀️", name: "感覺統合與動作 (Sensory)" }
+        ];
+
+        /* 💡 排版優化紀錄：
+           針對 1122x793 的畫布，已全面調小多項垂直排列海報的 margin (mb-16 -> mb-6)、
+           padding (p-12 -> p-6) 與字體 (text-7xl -> text-5xl)，並使用 flex-grow / justify-between
+           讓元素自動適應，徹底解決底部被裁切的問題。
+        */
+        const postersDb = {
+            "tier1": {
+                title: "🏫 Tier 1 課室常規與心態",
+                desc: "適用於全班的基礎視覺化常規與情緒支援海報，建立共融的課室環境。",
+                items: [
+                    {
+                        title: "成長心態 (Growth Mindset) 牆貼",
+                        desc: "「換個說法」系列。遇到困難時，提醒學生換個大腦思考路徑。",
+                        color: "emerald",
+                        html: `
+                            <div class="h-full w-full bg-emerald-50 p-6 flex flex-col items-center justify-center">
+                                <div class="text-center mb-6 w-full">
+                                    <h1 class="text-4xl font-black text-emerald-800 tracking-wider mb-2 drop-shadow-sm w-full">🌱 遇到困難，我們可以「換個說法」！</h1>
+                                    <p class="text-emerald-600 text-lg font-bold w-full">成長心態 (Growth Mindset)</p>
+                                </div>
+                                <div class="w-full max-w-5xl flex flex-col flex-grow justify-between gap-4 pb-2">
+                                    <div class="flex w-full bg-white rounded-2xl shadow-sm overflow-hidden border border-emerald-100 items-stretch flex-grow">
+                                        <div class="w-2/5 p-4 bg-rose-50 border-r-4 border-dashed border-rose-200 flex items-center justify-center text-center gap-3">
+                                            <span class="text-rose-500 text-3xl decoration-only">❌</span>
+                                            <p class="text-rose-700 font-black text-2xl line-through decoration-rose-400 decoration-4 w-full">我做不到！</p>
+                                        </div>
+                                        <div class="w-3/5 p-4 bg-emerald-50/50 flex items-center justify-center text-center gap-3">
+                                            <span class="text-emerald-500 text-3xl decoration-only">✅</span>
+                                            <p class="text-emerald-700 font-black text-2xl w-full">我只是「暫時」未做到，<br>我可以試其他方法！</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex w-full bg-white rounded-2xl shadow-sm overflow-hidden border border-emerald-100 items-stretch flex-grow">
+                                        <div class="w-2/5 p-4 bg-rose-50 border-r-4 border-dashed border-rose-200 flex items-center justify-center text-center gap-3">
+                                            <span class="text-rose-500 text-3xl decoration-only">❌</span>
+                                            <p class="text-rose-700 font-black text-2xl line-through decoration-rose-400 decoration-4 w-full">我好蠢，我放棄了。</p>
+                                        </div>
+                                        <div class="w-3/5 p-4 bg-emerald-50/50 flex items-center justify-center text-center gap-3">
+                                            <span class="text-emerald-500 text-3xl decoration-only">✅</span>
+                                            <p class="text-emerald-700 font-black text-2xl w-full">失敗是學習的一部分，<br>我下次會做得更好！</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex w-full bg-white rounded-2xl shadow-sm overflow-hidden border border-emerald-100 items-stretch flex-grow">
+                                        <div class="w-2/5 p-4 bg-rose-50 border-r-4 border-dashed border-rose-200 flex items-center justify-center text-center gap-3">
+                                            <span class="text-rose-500 text-3xl decoration-only">❌</span>
+                                            <p class="text-rose-700 font-black text-2xl line-through decoration-rose-400 decoration-4 w-full">這個太難了。</p>
+                                        </div>
+                                        <div class="w-3/5 p-4 bg-emerald-50/50 flex items-center justify-center text-center gap-3">
+                                            <span class="text-emerald-500 text-3xl decoration-only">✅</span>
+                                            <p class="text-emerald-700 font-black text-2xl w-full">這很有挑戰性，<br>我要請老師或同學幫忙！</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "萬用任務拆解清單",
+                        desc: "步驟拆解視覺化，幫助大腦降低執行功能的負荷。",
+                        color: "blue",
+                        html: `
+                            <div class="h-full w-full bg-slate-100 p-8 flex flex-col items-center justify-center font-sans">
+                                <div class="bg-white w-full max-w-4xl h-full rounded-[2rem] shadow-xl border-4 border-blue-200 p-8 flex flex-col">
+                                    <div class="bg-blue-100 rounded-xl p-4 mb-6 border-2 border-blue-300 flex items-center gap-4 shadow-sm shrink-0 w-full">
+                                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-black decoration-only">🎯</div>
+                                        <h1 class="text-3xl font-black text-blue-900 flex-grow w-full">今天的挑戰任務：<span class="border-b-4 border-blue-400 inline-block w-64 ml-2 decoration-only"></span></h1>
+                                    </div>
+                                    
+                                    <div class="flex-grow flex flex-col justify-between py-2 font-bold text-2xl text-slate-700 w-full">
+                                        <div class="flex items-center gap-6 w-full"><div class="w-12 h-12 border-4 border-slate-300 rounded-xl shrink-0 decoration-only"></div><p class="border-b-4 border-dashed border-slate-300 flex-grow pb-2 w-full">第一步：___________________</p></div>
+                                        <div class="flex items-center gap-6 w-full"><div class="w-12 h-12 border-4 border-slate-300 rounded-xl shrink-0 decoration-only"></div><p class="border-b-4 border-dashed border-slate-300 flex-grow pb-2 w-full">第二步：___________________</p></div>
+                                        <div class="flex items-center gap-6 w-full"><div class="w-12 h-12 border-4 border-slate-300 rounded-xl shrink-0 decoration-only"></div><p class="border-b-4 border-dashed border-slate-300 flex-grow pb-2 w-full">第三步：___________________</p></div>
+                                        <div class="flex items-center gap-6 w-full"><div class="w-12 h-12 border-4 border-slate-300 rounded-xl shrink-0 decoration-only"></div><p class="border-b-4 border-dashed border-slate-300 flex-grow pb-2 w-full">第四步：___________________</p></div>
+                                    </div>
+                                    
+                                    <div class="bg-emerald-100 rounded-xl p-4 mt-6 border-2 border-emerald-300 flex items-center gap-4 shadow-sm shrink-0 w-full">
+                                        <div class="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center text-white text-3xl font-black decoration-only">🎉</div>
+                                        <h1 class="text-3xl font-black text-emerald-900 flex-grow w-full">完成後我可以：<span class="border-b-4 border-emerald-400 inline-block w-64 ml-2 decoration-only"></span></h1>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "求助與休息卡 (桌面摺卡)",
+                        desc: "巨大的求助與休息視覺卡片，方便列印後對摺，立在桌面上使用。",
+                        color: "indigo",
+                        html: `
+                            <div class="h-full w-full bg-slate-50 p-8 flex flex-col items-center justify-center relative">
+                                <h1 class="text-3xl font-black text-slate-800 absolute top-6 w-full text-center">桌面提示卡 (請沿虛線對摺 ✂️)</h1>
+                                
+                                <!-- 對摺虛線 -->
+                                <div class="absolute inset-x-0 top-1/2 border-t-8 border-dashed border-slate-300 w-full z-0 flex justify-end pr-10 decoration-only">
+                                    <span class="text-3xl -mt-5 bg-slate-50 px-2 decoration-only">✂️ 摺線</span>
+                                </div>
+
+                                <div class="flex gap-8 w-full h-full justify-between py-16 z-10 items-stretch">
+                                    <!-- 左半部 (求助) -->
+                                    <div class="flex-1 w-full bg-white border-[8px] border-blue-400 rounded-[3rem] p-6 flex flex-col items-center justify-center text-center shadow-xl">
+                                        <span class="text-7xl mb-4 decoration-only">🙋‍♂️</span>
+                                        <h2 class="text-5xl font-black text-blue-600 mb-4 w-full">老師，<br>請幫幫我！</h2>
+                                        <p class="text-2xl font-bold text-slate-500 w-full">(我遇到困難，我不懂做)</p>
+                                    </div>
+                                    
+                                    <!-- 右半部 (休息) -->
+                                    <div class="flex-1 w-full bg-white border-[8px] border-emerald-400 rounded-[3rem] p-6 flex flex-col items-center justify-center text-center shadow-xl">
+                                        <span class="text-7xl mb-4 decoration-only">⏸️</span>
+                                        <h2 class="text-5xl font-black text-emerald-600 mb-4 w-full">我需要休息<br>3 分鐘</h2>
+                                        <p class="text-2xl font-bold text-slate-500 w-full">(我要去洗臉 / 喝水 / 放鬆)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            "social": {
+                title: "🗣️ Tier 2 社交溝通類",
+                desc: "具體化教導社交常規，減少因溝通不良引起的退縮或衝突。",
+                items: [
+                    {
+                        title: "對話乒乓球 (視覺海報)",
+                        desc: "用打乒乓球的圖像，具體化教導「有來有往」的對話原則。",
+                        color: "indigo",
+                        html: `
+                            <div class="h-full w-full bg-indigo-50 p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-indigo-900 mb-4 tracking-wide drop-shadow-sm w-full text-center">🏓 對話就像打乒乓球</h1>
+                                <p class="text-2xl text-indigo-700 font-bold mb-8 w-full text-center">不要一個人拿著球不放，要把球傳給對方！</p>
+                                
+                                <div class="flex items-stretch justify-center w-full gap-4 max-w-5xl flex-grow pb-4">
+                                    <!-- 發球 -->
+                                    <div class="flex-1 w-full bg-white p-6 rounded-[2rem] shadow-xl border-t-8 border-blue-500 text-center relative mt-8 flex flex-col">
+                                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-3xl font-black shadow-lg decoration-only">1</div>
+                                        <h2 class="text-3xl font-black text-blue-800 mt-8 mb-4 w-full">發球 (開話題)</h2>
+                                        <p class="text-lg text-slate-700 bg-blue-50 p-4 rounded-xl font-bold leading-relaxed flex-grow w-full text-center flex items-center justify-center">「你週末去哪裡玩？」<br><br>「你看過這套動漫嗎？」</p>
+                                    </div>
+                                    
+                                    <div class="flex items-center"><i class="fa-solid fa-arrow-right text-5xl text-indigo-300 decoration-only"></i></div>
+
+                                    <!-- 接球 -->
+                                    <div class="flex-1 w-full bg-white p-6 rounded-[2rem] shadow-xl border-t-8 border-emerald-500 text-center relative mb-8 flex flex-col">
+                                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-3xl font-black shadow-lg decoration-only">2</div>
+                                        <h2 class="text-3xl font-black text-emerald-800 mt-8 mb-4 w-full">接球 (回應)</h2>
+                                        <p class="text-lg text-slate-700 bg-emerald-50 p-4 rounded-xl font-bold leading-relaxed flex-grow w-full text-center flex items-center justify-center">「有啊，我去看了電影。」<br><br>「對呀，我覺得很好看。」</p>
+                                    </div>
+
+                                    <div class="flex items-center"><i class="fa-solid fa-arrow-right text-5xl text-indigo-300 decoration-only"></i></div>
+
+                                    <!-- 傳球 -->
+                                    <div class="flex-1 w-full bg-white p-6 rounded-[2rem] shadow-xl border-t-8 border-amber-500 text-center relative mt-8 flex flex-col">
+                                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-amber-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-3xl font-black shadow-lg decoration-only">3</div>
+                                        <h2 class="text-3xl font-black text-amber-800 mt-8 mb-4 w-full">傳球 (反問)</h2>
+                                        <p class="text-lg text-slate-700 bg-amber-50 p-4 rounded-xl font-bold leading-relaxed flex-grow w-full text-center flex items-center justify-center">「那你最喜歡哪個角色？」<br><br>「你呢？你週末做甚麼？」</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "輪流與等待 (雙面摺卡)",
+                        desc: "對摺後立於桌面，一面「到我了」，另一面「等待中」，適用於桌遊小組。",
+                        color: "emerald",
+                        html: `
+                            <div class="h-full w-full bg-slate-100 p-8 flex flex-col items-center justify-center gap-8 relative">
+                                <div class="text-center absolute top-6 z-10 w-full">
+                                    <h1 class="text-4xl font-black text-slate-800 mb-2 w-full">⏳ 輪流與等待卡 (請沿虛線對摺 ✂️)</h1>
+                                    <p class="text-slate-500 font-bold text-xl w-full">翻到綠色就是你的發言權！</p>
+                                </div>
+
+                                <!-- 對摺虛線 -->
+                                <div class="absolute inset-y-0 left-1/2 border-l-8 border-dashed border-slate-300 h-full z-0 decoration-only"></div>
+
+                                <div class="flex gap-12 w-full max-w-5xl h-[60%] z-10 mt-16 items-center">
+                                    <!-- 綠色面 (倒轉 180 度以便對摺立起) -->
+                                    <div class="flex-1 w-full h-full bg-green-50 rounded-[3rem] border-[10px] border-green-500 p-8 flex flex-col items-center justify-center text-center shadow-2xl transform rotate-180">
+                                        <div class="w-32 h-32 bg-green-500 rounded-full mb-6 shadow-inner flex items-center justify-center decoration-only">
+                                            <i class="fa-solid fa-microphone text-white text-6xl"></i>
+                                        </div>
+                                        <h2 class="text-6xl font-black text-green-700 tracking-widest mb-4 w-full">到我了</h2>
+                                        <p class="text-3xl font-black text-green-600/60 uppercase tracking-widest w-full">My Turn</p>
+                                    </div>
+                                    <!-- 紅色面 -->
+                                    <div class="flex-1 w-full h-full bg-red-50 rounded-[3rem] border-[10px] border-red-500 p-8 flex flex-col items-center justify-center text-center shadow-2xl">
+                                        <div class="w-32 h-32 bg-red-500 rounded-full mb-6 shadow-inner flex items-center justify-center decoration-only">
+                                            <i class="fa-solid fa-hand text-white text-6xl"></i>
+                                        </div>
+                                        <h2 class="text-6xl font-black text-red-700 tracking-widest mb-4 w-full">等待中</h2>
+                                        <p class="text-3xl font-black text-red-600/60 uppercase tracking-widest w-full">Waiting</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "社交距離與身體界線 (呼啦圈法則)",
+                        desc: "同心圓圖表展示親密度與社交距離，針對 ASD 學生極佳。",
+                        color: "blue",
+                        html: `
+                            <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-slate-800 mb-4 w-full text-center">📏 社交距離「呼啦圈法則」</h1>
+                                <p class="text-xl text-slate-500 font-bold mb-8 w-full text-center">每個人身邊都有一個隱形的呼啦圈，要保持禮貌的距離！</p>
+                                
+                                <div class="relative w-[500px] h-[500px] flex items-center justify-center decoration-only">
+                                    <!-- 陌生人 -->
+                                    <div class="absolute inset-0 rounded-full bg-slate-100 border-4 border-slate-300 flex justify-center pt-8 shadow-sm">
+                                        <div class="text-center w-full">
+                                            <span class="text-slate-600 font-black text-2xl w-full block">陌生人 (兩臂距離)</span>
+                                            <span class="text-slate-500 font-bold text-lg w-full block">不隨便靠近、不接觸</span>
+                                        </div>
+                                    </div>
+                                    <!-- 同學/老師 -->
+                                    <div class="absolute w-[80%] h-[80%] rounded-full bg-blue-50 border-4 border-blue-300 flex justify-center pt-8 shadow-sm">
+                                        <div class="text-center w-full">
+                                            <span class="text-blue-800 font-black text-2xl w-full block">同學 / 老師 (一臂)</span>
+                                            <span class="text-blue-600 font-bold text-lg w-full block">揮手打招呼、說話</span>
+                                        </div>
+                                    </div>
+                                    <!-- 好朋友 -->
+                                    <div class="absolute w-[55%] h-[55%] rounded-full bg-emerald-50 border-4 border-emerald-400 flex justify-center pt-6 shadow-sm">
+                                        <div class="text-center mt-2 w-full">
+                                            <span class="text-emerald-800 font-black text-2xl w-full block">好朋友 (半臂)</span>
+                                            <span class="text-emerald-600 font-bold text-lg w-full block">擊掌 (High-five)</span>
+                                        </div>
+                                    </div>
+                                    <!-- 家人 -->
+                                    <div class="absolute w-[30%] h-[30%] rounded-full bg-rose-100 border-4 border-rose-400 flex items-center justify-center shadow-lg z-10">
+                                        <div class="text-center w-full">
+                                            <span class="text-rose-800 font-black text-3xl mb-1 block w-full">家人</span>
+                                            <span class="text-rose-600 font-bold text-base w-full block">擁抱牽手</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            "emotion": {
+                title: "🚦 Tier 2 情緒與行為管理",
+                desc: "幫助學生具體化抽象的聲量與專注狀態，提升自我監控能力。",
+                items: [
+                    {
+                        title: "5 級聲量控制尺 (紅綠燈版)",
+                        desc: "將聲量分為 0(忍者) 到 4(操場)，導師可夾上夾子標示當下音量。",
+                        color: "amber",
+                        html: `
+                            <div class="h-full w-full bg-slate-800 p-6 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-white mb-6 tracking-widest drop-shadow-md w-full text-center">🚦 課室聲量控制尺</h1>
+                                <div class="bg-slate-700 p-6 rounded-[2rem] border-[8px] border-slate-600 flex flex-col flex-grow justify-between shadow-2xl w-full max-w-3xl pb-6">
+                                    <div class="flex items-center gap-6 bg-slate-800/50 p-4 rounded-2xl w-full">
+                                        <div class="w-16 h-16 shrink-0 rounded-full bg-red-500 border-4 border-red-300 shadow-[0_0_20px_rgba(239,68,68,0.6)] flex items-center justify-center text-3xl text-white font-black decoration-only">4</div>
+                                        <div class="text-white flex-grow"><p class="text-3xl font-black text-red-400 mb-1 w-full">操場聲 📢</p><p class="text-slate-300 font-bold text-lg w-full">只限戶外 / 操場使用</p></div>
+                                    </div>
+                                    <div class="flex items-center gap-6 bg-slate-800/50 p-4 rounded-2xl w-full">
+                                        <div class="w-16 h-16 shrink-0 rounded-full bg-orange-500 border-4 border-orange-300 shadow-[0_0_15px_rgba(249,115,22,0.5)] flex items-center justify-center text-3xl text-white font-black decoration-only">3</div>
+                                        <div class="text-white flex-grow"><p class="text-3xl font-black text-orange-400 mb-1 w-full">演講聲 🗣️</p><p class="text-slate-300 font-bold text-lg w-full">全班聽到 / 出來報告時</p></div>
+                                    </div>
+                                    <div class="flex items-center gap-6 bg-slate-800/50 p-4 rounded-2xl w-full">
+                                        <div class="w-16 h-16 shrink-0 rounded-full bg-yellow-400 border-4 border-yellow-200 shadow-[0_0_15px_rgba(250,204,21,0.5)] flex items-center justify-center text-3xl text-yellow-900 font-black decoration-only">2</div>
+                                        <div class="text-white flex-grow"><p class="text-3xl font-black text-yellow-400 mb-1 w-full">小組聲 👥</p><p class="text-slate-300 font-bold text-lg w-full">只有同組組員聽到</p></div>
+                                    </div>
+                                    <div class="flex items-center gap-6 bg-slate-800/50 p-4 rounded-2xl w-full">
+                                        <div class="w-16 h-16 shrink-0 rounded-full bg-green-500 border-4 border-green-300 shadow-[0_0_15px_rgba(34,197,94,0.5)] flex items-center justify-center text-3xl text-white font-black decoration-only">1</div>
+                                        <div class="text-white flex-grow"><p class="text-3xl font-black text-green-400 mb-1 w-full">悄悄話 🤫</p><p class="text-slate-300 font-bold text-lg w-full">只限旁邊的同學聽到</p></div>
+                                    </div>
+                                    <div class="flex items-center gap-6 bg-slate-800/50 p-4 rounded-2xl w-full">
+                                        <div class="w-16 h-16 shrink-0 rounded-full bg-blue-500 border-4 border-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.5)] flex items-center justify-center text-3xl text-white font-black decoration-only">0</div>
+                                        <div class="text-white flex-grow"><p class="text-3xl font-black text-blue-400 mb-1 w-full">忍者模式 🥷</p><p class="text-slate-300 font-bold text-lg w-full">絕對安靜 / 自己做功課</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "小組 Check-in 情緒停機坪",
+                        desc: "四象限情緒區域，學生進入小組時可將名字磁石貼在對應區域。",
+                        color: "rose",
+                        html: `
+                            <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-slate-800 mb-6 drop-shadow-sm w-full text-center">🛬 我的情緒停機坪</h1>
+                                <div class="grid grid-cols-2 gap-4 w-full max-w-4xl flex-grow">
+                                    <div class="bg-yellow-100 border-[4px] border-yellow-300 rounded-tl-[3rem] p-8 flex flex-col justify-center relative overflow-hidden shadow-inner w-full">
+                                        <div class="absolute -right-4 -bottom-4 text-8xl opacity-20 decoration-only">😄</div>
+                                        <h2 class="text-4xl font-black text-yellow-700 mb-2 z-10 w-full">開心 / 興奮</h2>
+                                        <p class="text-yellow-600 font-bold text-xl z-10 w-full">(能量很高)</p>
+                                    </div>
+                                    <div class="bg-red-100 border-[4px] border-red-300 rounded-tr-[3rem] p-8 flex flex-col justify-center relative overflow-hidden shadow-inner w-full">
+                                        <div class="absolute -right-4 -bottom-4 text-8xl opacity-20 decoration-only">😡</div>
+                                        <h2 class="text-4xl font-black text-red-700 mb-2 z-10 w-full">生氣 / 煩躁</h2>
+                                        <p class="text-red-600 font-bold text-xl z-10 w-full">(能量過載)</p>
+                                    </div>
+                                    <div class="bg-blue-100 border-[4px] border-blue-300 rounded-bl-[3rem] p-8 flex flex-col justify-center relative overflow-hidden shadow-inner w-full">
+                                        <div class="absolute -right-4 -bottom-4 text-8xl opacity-20 decoration-only">😢</div>
+                                        <h2 class="text-4xl font-black text-blue-700 mb-2 z-10 w-full">傷心 / 疲倦</h2>
+                                        <p class="text-blue-600 font-bold text-xl z-10 w-full">(能量極低)</p>
+                                    </div>
+                                    <div class="bg-purple-100 border-[4px] border-purple-300 rounded-br-[3rem] p-8 flex flex-col justify-center relative overflow-hidden shadow-inner w-full">
+                                        <div class="absolute -right-4 -bottom-4 text-8xl opacity-20 decoration-only">😨</div>
+                                        <h2 class="text-4xl font-black text-purple-700 mb-2 z-10 w-full">擔心 / 緊張</h2>
+                                        <p class="text-purple-600 font-bold text-xl z-10 w-full">(需要安全感)</p>
+                                    </div>
+                                </div>
+                                <div class="mt-6 px-8 py-4 bg-slate-100 rounded-full border-[4px] border-slate-300 font-black text-slate-500 text-2xl shadow-md w-full max-w-4xl text-center">
+                                    🧲 請把印有你名字的磁石貼在目前的停機坪上
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "專注力引擎 (Engine Level)",
+                        desc: "將專注力比喻為汽車引擎（太快、太慢、剛剛好），教導 ADHD 自我監控。",
+                        color: "blue",
+                        html: `
+                            <div class="h-full w-full bg-slate-100 p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-slate-800 mb-8 drop-shadow-sm w-full text-center">🧠 我的大腦引擎轉速</h1>
+                                <div class="flex flex-col w-full max-w-4xl gap-6 flex-grow justify-between pb-4">
+                                    <!-- Hyper -->
+                                    <div class="bg-white border-l-[12px] border-red-500 rounded-[2rem] shadow-lg p-6 flex items-center gap-6 w-full flex-grow">
+                                        <div class="text-6xl shrink-0 decoration-only">🏎️</div>
+                                        <div class="flex-grow">
+                                            <h2 class="text-3xl font-black text-red-600 mb-2 w-full">太快了 (Hyper)</h2>
+                                            <p class="text-xl font-bold text-slate-600 w-full">我坐不住、想亂跑、想插嘴。</p>
+                                        </div>
+                                        <div class="bg-red-50 text-red-700 px-4 py-3 rounded-xl font-black text-xl border-2 border-red-200 shadow-sm shrink-0 w-48 text-center">需要深呼吸或推牆</div>
+                                    </div>
+                                    <!-- Just Right -->
+                                    <div class="bg-white border-l-[12px] border-green-500 rounded-[2rem] shadow-xl p-6 flex items-center gap-6 transform scale-105 border-4 border-green-200 z-10 w-full flex-grow">
+                                        <div class="text-6xl shrink-0 decoration-only">🚗</div>
+                                        <div class="flex-grow">
+                                            <h2 class="text-3xl font-black text-green-600 mb-2 w-full">剛剛好 (Just Right)</h2>
+                                            <p class="text-xl font-bold text-slate-600 w-full">我準備好專心學習了！</p>
+                                        </div>
+                                        <div class="bg-green-100 text-green-800 px-4 py-3 rounded-xl font-black text-xl border-2 border-green-300 shadow-sm shrink-0 w-48 text-center">太棒了，繼續保持！</div>
+                                    </div>
+                                    <!-- Sluggish -->
+                                    <div class="bg-white border-l-[12px] border-blue-500 rounded-[2rem] shadow-lg p-6 flex items-center gap-6 w-full flex-grow">
+                                        <div class="text-6xl shrink-0 decoration-only">🚜</div>
+                                        <div class="flex-grow">
+                                            <h2 class="text-3xl font-black text-blue-600 mb-2 w-full">太慢了 (Sluggish)</h2>
+                                            <p class="text-xl font-bold text-slate-600 w-full">我想睡覺、沒精神、發呆。</p>
+                                        </div>
+                                        <div class="bg-blue-50 text-blue-700 px-4 py-3 rounded-xl font-black text-xl border-2 border-blue-200 shadow-sm shrink-0 w-48 text-center">需要喝水或伸展</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            "executive": {
+                title: "🧠 Tier 2 執行功能與認知",
+                desc: "透過視覺提示，減輕大腦工作記憶負擔，建立任務執行步驟。",
+                items: [
+                    {
+                        title: "「先...然後...」提示板",
+                        desc: "左邊放「必須做的任務」，右邊放「獎勵」，對抗拒學行為極佳。",
+                        color: "emerald",
+                        html: `
+                            <div class="h-full w-full bg-slate-100 p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-slate-800 mb-8 border-b-8 border-slate-300 pb-2 inline-block w-fit">任務與獎勵提示板</h1>
+                                <div class="flex w-full max-w-5xl gap-8 items-stretch flex-grow pb-4">
+                                    <!-- 先 -->
+                                    <div class="flex-1 w-full bg-white rounded-[3rem] border-[6px] border-blue-400 p-8 flex flex-col shadow-xl">
+                                        <div class="bg-blue-100 text-blue-800 text-4xl font-black py-6 rounded-[2rem] text-center mb-6 shadow-inner w-full">1️⃣ 先 (First)</div>
+                                        <div class="flex-grow border-[6px] border-dashed border-slate-200 rounded-[2rem] flex items-center justify-center bg-slate-50 relative w-full min-h-[200px]">
+                                            <p class="text-slate-400 font-bold text-2xl absolute text-center w-full px-4">(在此貼上任務卡)</p>
+                                        </div>
+                                    </div>
+                                    <!--箭頭-->
+                                    <div class="flex items-center justify-center shrink-0 decoration-only">
+                                        <i class="fa-solid fa-arrow-right text-7xl text-slate-300 drop-shadow-md"></i>
+                                    </div>
+                                    <!-- 然後 -->
+                                    <div class="flex-1 w-full bg-white rounded-[3rem] border-[6px] border-emerald-400 p-8 flex flex-col shadow-xl">
+                                        <div class="bg-emerald-100 text-emerald-800 text-4xl font-black py-6 rounded-[2rem] text-center mb-6 shadow-inner w-full">2️⃣ 然後 (Then)</div>
+                                        <div class="flex-grow border-[6px] border-dashed border-slate-200 rounded-[2rem] flex items-center justify-center bg-slate-50 relative w-full min-h-[200px]">
+                                            <p class="text-slate-400 font-bold text-2xl absolute text-center w-full px-4">(在此貼上獎勵卡)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "尋求協助 4 部曲",
+                        desc: "拆解求助步驟，教導學生如何適當發聲，取代崩潰大哭。",
+                        color: "indigo",
+                        html: `
+                            <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-indigo-900 mb-8 drop-shadow-sm w-full text-center">🙋‍♂️ 我遇到困難，該怎麼辦？</h1>
+                                <div class="flex flex-col w-full max-w-4xl relative flex-grow justify-between pb-4">
+                                    <!-- 連接線 -->
+                                    <div class="absolute left-[2.5rem] top-8 bottom-8 w-3 bg-indigo-100 z-0 rounded-full decoration-only"></div>
+                                    
+                                    <!-- 步驟 1 -->
+                                    <div class="flex items-center gap-6 relative z-10 w-full flex-grow">
+                                        <div class="w-20 h-20 shrink-0 bg-rose-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-md border-[4px] border-white decoration-only">1</div>
+                                        <div class="bg-rose-50 border-2 border-rose-200 p-5 rounded-2xl flex-grow shadow-sm flex flex-col justify-center h-full">
+                                            <h2 class="text-3xl font-black text-rose-800 mb-1 w-full">🛑 停下來想一想</h2>
+                                            <p class="text-rose-600 font-bold text-xl w-full">告訴自己：「我遇到困難了，不要急。」</p>
+                                        </div>
+                                    </div>
+                                    <!-- 步驟 2 -->
+                                    <div class="flex items-center gap-6 relative z-10 w-full flex-grow mt-4">
+                                        <div class="w-20 h-20 shrink-0 bg-blue-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-md border-[4px] border-white decoration-only">2</div>
+                                        <div class="bg-blue-50 border-2 border-blue-200 p-5 rounded-2xl flex-grow shadow-sm flex flex-col justify-center h-full">
+                                            <h2 class="text-3xl font-black text-blue-800 mb-1 w-full">🙋‍♂️ 舉起手</h2>
+                                            <p class="text-blue-600 font-bold text-xl w-full">坐在位子上，不要發出聲音。</p>
+                                        </div>
+                                    </div>
+                                    <!-- 步驟 3 -->
+                                    <div class="flex items-center gap-6 relative z-10 w-full flex-grow mt-4">
+                                        <div class="w-20 h-20 shrink-0 bg-amber-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-md border-[4px] border-white decoration-only">3</div>
+                                        <div class="bg-amber-50 border-2 border-amber-200 p-5 rounded-2xl flex-grow shadow-sm flex flex-col justify-center h-full">
+                                            <h2 class="text-3xl font-black text-amber-800 mb-1 w-full">⏳ 安靜等待</h2>
+                                            <p class="text-amber-600 font-bold text-xl w-full">耐心等待老師走到你旁邊。</p>
+                                        </div>
+                                    </div>
+                                    <!-- 步驟 4 -->
+                                    <div class="flex items-center gap-6 relative z-10 w-full flex-grow mt-4">
+                                        <div class="w-20 h-20 shrink-0 bg-emerald-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-md border-[4px] border-white decoration-only">4</div>
+                                        <div class="bg-emerald-50 border-2 border-emerald-200 p-5 rounded-2xl flex-grow shadow-sm flex flex-col justify-center h-full">
+                                            <h2 class="text-3xl font-black text-emerald-800 mb-1 w-full">🗣️ 清楚說出來</h2>
+                                            <p class="text-emerald-600 font-bold text-xl w-full">「老師，我不明白這裡，請幫我。」</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "精美代幣獎勵表 (Token Board)",
+                        desc: "10 格代幣板範本，可自訂終極獎勵，視覺化目標進度。",
+                        color: "amber",
+                        html: `
+                            <div class="h-full w-full bg-amber-50 p-8 flex flex-col items-center justify-center">
+                                <div class="bg-white w-full max-w-5xl rounded-[3rem] p-10 shadow-xl border-[6px] border-amber-300 flex flex-col h-full">
+                                    <div class="flex justify-between items-center border-b-[6px] border-slate-100 pb-8 mb-8 shrink-0 w-full">
+                                        <div class="flex-grow w-full">
+                                            <h1 class="text-3xl font-black text-slate-800 mb-4 w-full">🎯 任務目標：<br><span class="border-b-[4px] border-slate-300 inline-block w-[80%] mt-4 decoration-only"></span></h1>
+                                        </div>
+                                        <div class="bg-amber-100 p-6 rounded-2xl border-4 border-amber-300 shadow-sm w-auto shrink-0">
+                                            <h2 class="text-2xl font-black text-amber-800 w-full">🎁 集滿換：<br><span class="border-b-[4px] border-amber-400 inline-block w-40 mt-4 decoration-only"></span></h2>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 星星格 -->
+                                    <div class="grid grid-cols-5 gap-6 flex-grow content-center w-full">
+                                        <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">1</div>
+                                        <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">2</div>
+                                        <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">3</div>
+                                        <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">4</div>
+                                        <div class="aspect-square rounded-full border-[8px] border-amber-200 bg-amber-50 flex items-center justify-center text-6xl text-amber-300 font-black shadow-inner relative overflow-hidden decoration-only">
+                                            5 <div class="absolute -right-2 -bottom-2 text-5xl opacity-50 decoration-only">🌟</div>
+                                        </div>
+                                        
+                                        <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">6</div>
+                                        <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">7</div>
+                                        <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">8</div>
+                                        <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">9</div>
+                                        <div class="aspect-square rounded-full border-[8px] border-amber-400 bg-amber-100 flex items-center justify-center text-6xl text-amber-400 font-black shadow-inner relative overflow-hidden transform scale-110 z-10 decoration-only">
+                                            10 <div class="absolute inset-0 flex items-center justify-center text-7xl drop-shadow-md decoration-only">🏆</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            "spld": {
+                title: "📖 Tier 2 讀寫與多感官學習",
+                desc: "針對有特殊學習困難（SpLD）的小組，提供視覺化拆解與組織工具。",
+                items: [
+                    {
+                        title: "閱讀理解「放大鏡」策略卡",
+                        desc: "包含尋找六何、圈出關鍵字的視覺書籤，夾在書本提示自己。",
+                        color: "blue",
+                        html: `
+                            <div class="h-full w-full bg-slate-100 p-8 flex items-center justify-center">
+                                <div class="bg-white rounded-[3rem] w-[500px] max-w-full h-[95%] shadow-xl overflow-hidden border-[8px] border-slate-200 relative flex flex-col">
+                                    <!-- 裝飾用書籤頭 -->
+                                    <div class="bg-blue-600 h-8 w-full absolute top-0 decoration-only"></div>
+                                    <div class="w-20 h-20 rounded-full bg-slate-100 absolute -top-10 left-1/2 transform -translate-x-1/2 border-[4px] border-slate-200 decoration-only"></div>
+                                    
+                                    <div class="p-8 pt-20 flex flex-col gap-6 flex-grow justify-center w-full">
+                                        <h2 class="text-4xl font-black text-center text-blue-900 border-b-[4px] border-slate-100 pb-6 mb-2 w-full">閱讀理解<br>放大鏡策略 🔍</h2>
+                                        
+                                        <div class="bg-blue-50 p-6 rounded-2xl border-4 border-blue-200 shadow-sm w-full">
+                                            <h3 class="font-black text-blue-800 text-2xl mb-2 w-full">第一步：</h3>
+                                            <p class="font-bold text-slate-700 text-xl w-full">找找六何 (5W1H)<br><span class="text-base text-slate-500 font-medium">人、時、地、事...</span></p>
+                                        </div>
+                                        
+                                        <div class="bg-rose-50 p-6 rounded-2xl border-4 border-rose-200 shadow-sm w-full">
+                                            <h3 class="font-black text-rose-800 text-2xl mb-2 w-full">第二步：</h3>
+                                            <p class="font-bold text-slate-700 text-xl w-full">🖍️ 圈出關鍵字<br><span class="text-base text-slate-500 font-medium">看看前後文猜意思</span></p>
+                                        </div>
+                                        
+                                        <div class="bg-amber-50 p-6 rounded-2xl border-4 border-amber-200 shadow-sm w-full">
+                                            <h3 class="font-black text-amber-800 text-2xl mb-2 w-full">第三步：</h3>
+                                            <p class="font-bold text-slate-700 text-xl w-full">🔮 預測故事結果<br><span class="text-base text-slate-500 font-medium">主角接下來會怎樣？</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "漢字部件「砌圖」底板",
+                        desc: "常見部首與字根的視覺化拼圖底板，配合顏色編碼。",
+                        color: "rose",
+                        html: `
+                            <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-slate-800 mb-6 drop-shadow-sm w-full text-center">🧩 漢字部件「砌圖」視覺底板</h1>
+                                <p class="text-xl font-bold text-slate-500 mb-10 w-full text-center">將透明字卡或泥膠放在對應顏色的格子上，拆解漢字結構。</p>
+                                
+                                <div class="flex gap-10 w-full max-w-5xl flex-grow pb-4">
+                                    <!-- 左右結構 -->
+                                    <div class="flex-1 w-full flex flex-col">
+                                        <h2 class="text-3xl font-black text-center text-slate-700 mb-6 w-full">左右結構 (如：明)</h2>
+                                        <div class="flex flex-grow rounded-[3rem] overflow-hidden shadow-xl border-[8px] border-slate-200 w-full">
+                                            <div class="w-[40%] bg-rose-100 flex items-center justify-center border-r-[8px] border-dashed border-slate-300 decoration-only">
+                                                <span class="text-4xl font-black text-rose-300 transform -rotate-90 text-center w-full">部首</span>
+                                            </div>
+                                            <div class="w-[60%] bg-blue-100 flex items-center justify-center decoration-only">
+                                                <span class="text-4xl font-black text-blue-300 text-center w-full">部件</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 上下結構 -->
+                                    <div class="flex-1 w-full flex flex-col">
+                                        <h2 class="text-3xl font-black text-center text-slate-700 mb-6 w-full">上下結構 (如：草)</h2>
+                                        <div class="flex flex-col flex-grow rounded-[3rem] overflow-hidden shadow-xl border-[8px] border-slate-200 w-full">
+                                            <div class="h-[40%] bg-amber-100 flex items-center justify-center border-b-[8px] border-dashed border-slate-300 decoration-only">
+                                                <span class="text-4xl font-black text-amber-300 text-center w-full">部首</span>
+                                            </div>
+                                            <div class="h-[60%] bg-emerald-100 flex items-center justify-center decoration-only">
+                                                <span class="text-4xl font-black text-emerald-300 text-center w-full">部件</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "寫作「漢堡包」組織圖",
+                        desc: "視覺化段落大綱工作紙（頂層＝開首，中間＝細節，底層＝總結）。",
+                        color: "amber",
+                        html: `
+                            <div class="h-full w-full bg-amber-50 p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-amber-900 mb-8 drop-shadow-sm w-full text-center">🍔 寫作「漢堡包」大綱組織圖</h1>
+                                
+                                <div class="w-full max-w-4xl flex flex-col gap-4 flex-grow pb-4">
+                                    <!-- 頂包 -->
+                                    <div class="flex-grow bg-[#FCD34D] p-6 rounded-t-[4rem] rounded-b-2xl border-[4px] border-[#F59E0B] shadow-md flex flex-col w-full">
+                                        <h2 class="text-2xl font-black text-amber-900 mb-2 w-full">🍞 頂層麵包：開首 / 中心論點 (Topic Sentence)</h2>
+                                        <div class="w-full border-b-[4px] border-dashed border-amber-700/30 mt-auto decoration-only"></div>
+                                    </div>
+                                    
+                                    <!-- 菜 -->
+                                    <div class="flex-grow bg-[#86EFAC] p-6 rounded-2xl border-[4px] border-[#22C55E] shadow-md flex flex-col w-full">
+                                        <h2 class="text-2xl font-black text-green-900 mb-2 w-full">🥬 配料一：細節或例子 1 (Detail 1)</h2>
+                                        <div class="w-full border-b-[4px] border-dashed border-green-700/30 mt-auto decoration-only"></div>
+                                    </div>
+                                    
+                                    <!-- 肉 -->
+                                    <div class="flex-grow bg-[#FCA5A5] p-6 rounded-2xl border-[4px] border-[#EF4444] shadow-md flex flex-col w-full">
+                                        <h2 class="text-2xl font-black text-red-900 mb-2 w-full">🥩 配料二：細節或例子 2 (Detail 2)</h2>
+                                        <div class="w-full border-b-[4px] border-dashed border-red-700/30 mt-auto decoration-only"></div>
+                                    </div>
+                                    
+                                    <!-- 底包 -->
+                                    <div class="flex-grow bg-[#FCD34D] p-6 rounded-b-[4rem] rounded-t-2xl border-[4px] border-[#F59E0B] shadow-md flex flex-col w-full">
+                                        <h2 class="text-2xl font-black text-amber-900 mb-2 w-full">🍞 底層麵包：總結 / 感受 (Concluding Sentence)</h2>
+                                        <div class="w-full border-b-[4px] border-dashed border-amber-700/30 mt-auto decoration-only"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            "mindfulness": {
+                title: "🧘 Tier 2 專注力與靜觀降溫",
+                desc: "專為易焦慮學生設計，將抽象的「放鬆」與「專注」具體化。",
+                items: [
+                    {
+                        title: "呼吸圖形卡 (Infinity Breathing)",
+                        desc: "視覺化無限符號，學生用手指跟著線條滑動配合呼吸。",
+                        color: "teal",
+                        html: `
+                            <div class="h-full w-full bg-slate-800 p-8 flex flex-col items-center justify-center text-center">
+                                <h1 class="text-4xl font-black text-white mb-6 tracking-widest drop-shadow-md w-full">🌬️ 無限符號呼吸法</h1>
+                                <p class="text-slate-400 font-bold text-2xl mb-12 w-full">用手指沿著光環慢慢滑動，讓大腦放鬆下來</p>
+                                
+                                <div class="relative w-full max-w-4xl flex items-center justify-center flex-grow">
+                                    <!-- 使用 CSS Text Stroke 製作空心字體 -->
+                                    <h2 class="text-[300px] leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-teal-400 font-black decoration-only" style="-webkit-text-stroke: 10px rgba(255,255,255,0.3);">∞</h2>
+                                    
+                                    <div class="absolute left-[15%] top-1/2 transform -translate-y-1/2 text-center w-[200px] decoration-only">
+                                        <p class="text-teal-300 font-black text-2xl uppercase tracking-widest bg-slate-800/90 px-6 py-3 rounded-full backdrop-blur border-2 border-teal-500/30 shadow-md">慢慢吸氣</p>
+                                    </div>
+                                    
+                                    <div class="absolute right-[15%] top-1/2 transform -translate-y-1/2 text-center w-[200px] decoration-only">
+                                        <p class="text-emerald-300 font-black text-2xl uppercase tracking-widest bg-slate-800/90 px-6 py-3 rounded-full backdrop-blur border-2 border-emerald-500/30 shadow-md">慢慢呼出</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "5-4-3-2-1 感官尋寶圖",
+                        desc: "在焦慮發作或解離時使用，利用五感將思緒拉回當下。",
+                        color: "indigo",
+                        html: `
+                            <div class="h-full w-full bg-indigo-50 p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-indigo-900 mb-8 drop-shadow-sm w-full text-center">🖐️ 5-4-3-2-1 感官著陸法</h1>
+                                <div class="w-full max-w-3xl bg-white rounded-[2rem] shadow-xl overflow-hidden border-4 border-indigo-100 flex flex-col flex-grow mb-4">
+                                    <div class="flex-grow flex items-center p-6 border-b-2 border-slate-100 bg-slate-50 w-full">
+                                        <div class="w-16 h-16 shrink-0 rounded-full bg-blue-100 flex items-center justify-center text-3xl mr-6 shadow-sm border-2 border-blue-200 decoration-only">👀</div>
+                                        <p class="text-2xl font-black text-slate-700 w-full">尋找 <span class="text-blue-600 text-4xl mx-2">5</span> 件你看到的事物</p>
+                                    </div>
+                                    <div class="flex-grow flex items-center p-6 border-b-2 border-slate-100 w-full">
+                                        <div class="w-16 h-16 shrink-0 rounded-full bg-emerald-100 flex items-center justify-center text-3xl mr-6 shadow-sm border-2 border-emerald-200 decoration-only">🖐️</div>
+                                        <p class="text-2xl font-black text-slate-700 w-full">感受 <span class="text-emerald-600 text-4xl mx-2">4</span> 件你可以摸到的事物</p>
+                                    </div>
+                                    <div class="flex-grow flex items-center p-6 border-b-2 border-slate-100 bg-slate-50 w-full">
+                                        <div class="w-16 h-16 shrink-0 rounded-full bg-amber-100 flex items-center justify-center text-3xl mr-6 shadow-sm border-2 border-amber-200 decoration-only">👂</div>
+                                        <p class="text-2xl font-black text-slate-700 w-full">聆聽 <span class="text-amber-600 text-4xl mx-2">3</span> 種你聽到的聲音</p>
+                                    </div>
+                                    <div class="flex-grow flex items-center p-6 border-b-2 border-slate-100 w-full">
+                                        <div class="w-16 h-16 shrink-0 rounded-full bg-rose-100 flex items-center justify-center text-3xl mr-6 shadow-sm border-2 border-rose-200 decoration-only">👃</div>
+                                        <p class="text-2xl font-black text-slate-700 w-full">尋找 <span class="text-rose-600 text-4xl mx-2">2</span> 種你聞到的味道</p>
+                                    </div>
+                                    <div class="flex-grow flex items-center p-6 bg-slate-800 text-white w-full">
+                                        <div class="w-16 h-16 shrink-0 rounded-full bg-slate-700 border-4 border-slate-500 flex items-center justify-center text-3xl mr-6 shadow-md decoration-only">👄</div>
+                                        <p class="text-2xl font-black text-white w-full">感受 <span class="text-teal-400 text-4xl mx-2">1</span> 次深呼吸的平靜</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "「大腦遙控器」專注轉換卡",
+                        desc: "模擬遙控器介面，教導衝動控制與專注切換。",
+                        color: "rose",
+                        html: `
+                            <div class="h-full w-full bg-slate-200 p-8 flex flex-col items-center justify-center">
+                                <div class="bg-slate-800 w-[400px] max-w-full h-[95%] rounded-[4rem] p-10 shadow-2xl border-[10px] border-slate-600 flex flex-col items-center relative">
+                                    <!-- 遙控器紅外線頭 -->
+                                    <div class="w-24 h-6 bg-slate-900 rounded-full absolute -top-3 decoration-only"></div>
+                                    
+                                    <h1 class="text-3xl font-black text-white mb-10 tracking-widest text-center mt-6 w-full">大腦遙控器</h1>
+                                    
+                                    <div class="flex flex-col gap-10 w-full flex-grow justify-center">
+                                        <!-- 暫停 -->
+                                        <div class="flex flex-col items-center group w-full">
+                                            <div class="w-20 h-20 rounded-full bg-red-500 flex items-center justify-center text-white text-3xl shadow-[0_6px_0_rgb(153,27,27)] mb-3 border-[4px] border-red-400 decoration-only">⏸️</div>
+                                            <p class="text-white font-bold text-2xl mb-1 w-full text-center">暫停鍵</p>
+                                            <p class="text-slate-400 text-lg font-medium w-full text-center">(停一停，不衝動)</p>
+                                        </div>
+                                        
+                                        <!-- 播放 -->
+                                        <div class="flex flex-col items-center group w-full">
+                                            <div class="w-28 h-28 rounded-full bg-green-500 flex items-center justify-center text-white text-5xl shadow-[0_8px_0_rgb(22,101,52)] mb-3 border-[4px] border-green-400 decoration-only">▶️</div>
+                                            <p class="text-white font-bold text-3xl mb-1 w-full text-center">播放鍵</p>
+                                            <p class="text-slate-400 text-lg font-medium w-full text-center">(開始專心做任務)</p>
+                                        </div>
+                                        
+                                        <!-- 倒退 -->
+                                        <div class="flex flex-col items-center group w-full">
+                                            <div class="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl shadow-[0_6px_0_rgb(30,58,138)] mb-3 border-[4px] border-blue-400 decoration-only">⏪</div>
+                                            <p class="text-white font-bold text-xl mb-1 w-full text-center">倒退鍵</p>
+                                            <p class="text-slate-400 text-sm font-medium w-full text-center">(檢查做錯的地方)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            "transition": {
+                title: "🔀 Tier 2 轉銜與校園適應",
+                desc: "針對 ASD 面對轉變時的不安，提供預告與過渡工具。",
+                items: [
+                    {
+                        title: "活動轉換提示牌 (剪裁版)",
+                        desc: "「還有5分鐘」、「時間到」的手舉牌，幫助無痛轉換活動。",
+                        color: "amber",
+                        html: `
+                            <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center gap-8">
+                                <h1 class="text-4xl font-black text-slate-800 text-center drop-shadow-sm w-full">⏳ 活動轉換提示牌 (請沿虛線剪開 ✂️)</h1>
+                                <div class="flex flex-col gap-6 w-full max-w-4xl flex-grow pb-4">
+                                    <div class="flex-grow w-full bg-green-50 border-[4px] border-dashed border-green-400 rounded-3xl p-6 flex items-center gap-8 shadow-sm relative overflow-hidden">
+                                        <div class="w-20 h-20 shrink-0 bg-green-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-md border-[4px] border-white decoration-only">5</div>
+                                        <h2 class="text-4xl font-black text-green-800 tracking-widest flex-grow w-full">還有 5 分鐘</h2>
+                                        <div class="absolute -top-3 -left-3 text-2xl text-slate-400 bg-white rounded-full decoration-only">✂️</div>
+                                    </div>
+                                    <div class="flex-grow w-full bg-yellow-50 border-[4px] border-dashed border-yellow-400 rounded-3xl p-6 flex items-center gap-8 shadow-sm relative overflow-hidden">
+                                        <div class="w-20 h-20 shrink-0 bg-yellow-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-md border-[4px] border-white decoration-only">1</div>
+                                        <h2 class="text-4xl font-black text-yellow-800 tracking-widest flex-grow w-full">還有 1 分鐘</h2>
+                                        <div class="absolute -top-3 -left-3 text-2xl text-slate-400 bg-white rounded-full decoration-only">✂️</div>
+                                    </div>
+                                    <div class="flex-grow w-full bg-red-50 border-[4px] border-dashed border-red-500 rounded-3xl p-6 flex items-center gap-8 shadow-md transform scale-[1.02] relative z-10 overflow-hidden">
+                                        <div class="w-20 h-20 shrink-0 bg-red-600 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-md border-[4px] border-white decoration-only">🛑</div>
+                                        <h2 class="text-4xl font-black text-red-800 tracking-widest flex-grow w-full">時間到，請收拾！</h2>
+                                        <div class="absolute -top-3 -left-3 text-2xl text-slate-400 bg-white rounded-full decoration-only">✂️</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "突發狀況「Plan B」應變卡",
+                        desc: "幫助 ASD 學生建立彈性思維，視覺化展示應變方案。",
+                        color: "purple",
+                        html: `
+                            <div class="h-full w-full bg-purple-50 p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-purple-900 mb-8 drop-shadow-sm w-full text-center">🔀 突發狀況「Plan B」應變卡</h1>
+                                
+                                <div class="w-full max-w-5xl bg-white rounded-[2rem] shadow-xl border-[6px] border-purple-200 overflow-hidden flex flex-col h-[70%]">
+                                    <!-- 示範 -->
+                                    <div class="flex flex-1 poster-main-layout items-stretch border-b-[4px] border-slate-100">
+                                        <div class="w-full bg-slate-100 p-8 flex flex-col justify-center border-r-[4px] border-slate-100 flex-1">
+                                            <p class="text-slate-500 font-bold text-xl mb-2 w-full">原本計劃：</p>
+                                            <h2 class="text-3xl font-black text-slate-400 line-through decoration-slate-400 decoration-[6px] w-full">去操場打球</h2>
+                                        </div>
+                                        <div class="w-full bg-red-50 p-8 flex flex-col justify-center border-r-[4px] border-slate-100 flex-1">
+                                            <p class="text-red-500 font-bold text-xl mb-2 w-full">❌ 突發情況：</p>
+                                            <h2 class="text-3xl font-black text-red-700 w-full">突然下大雨</h2>
+                                        </div>
+                                        <div class="w-full bg-green-50 p-8 flex flex-col justify-center flex-1">
+                                            <p class="text-green-600 font-bold text-xl mb-2 w-full">✔️ 我們有 Plan B：</p>
+                                            <h2 class="text-3xl font-black text-green-700 w-full">留堂玩桌遊</h2>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 空白範本 -->
+                                    <div class="flex flex-1 poster-main-layout items-stretch">
+                                        <div class="w-full bg-slate-50 p-8 flex flex-col justify-center border-r-[4px] border-slate-100 flex-1">
+                                            <p class="text-slate-400 font-bold text-xl mb-4 w-full">原本計劃：</p>
+                                            <div class="border-b-[4px] border-dashed border-slate-300 w-full mt-auto mb-4 decoration-only"></div>
+                                        </div>
+                                        <div class="w-full bg-red-50/50 p-8 flex flex-col justify-center border-r-[4px] border-slate-100 flex-1">
+                                            <p class="text-red-400 font-bold text-xl mb-4 w-full">❌ 突發情況：</p>
+                                            <div class="border-b-[4px] border-dashed border-red-200 w-full mt-auto mb-4 decoration-only"></div>
+                                        </div>
+                                        <div class="w-full bg-green-50/50 p-8 flex flex-col justify-center flex-1">
+                                            <p class="text-green-500 font-bold text-xl mb-4 w-full">✔️ 我們有 Plan B：</p>
+                                            <div class="border-b-[4px] border-dashed border-green-200 w-full mt-auto mb-4 decoration-only"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "校園社交地圖與音量規則",
+                        desc: "視覺化展示學校不同區域應有的行為和「音量」級別。",
+                        color: "emerald",
+                        html: `
+                            <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-slate-800 mb-10 drop-shadow-sm w-full text-center">🗺️ 校園社交地圖與音量規則</h1>
+                                
+                                <div class="grid grid-cols-2 gap-6 w-full max-w-5xl flex-grow pb-4">
+                                    <!-- 圖書館 -->
+                                    <div class="bg-blue-50 border-[4px] border-blue-200 rounded-[2rem] p-6 flex gap-6 items-center shadow-sm w-full">
+                                        <div class="text-6xl shrink-0 decoration-only">📚</div>
+                                        <div class="flex-grow w-full">
+                                            <h2 class="text-2xl font-black text-blue-900 mb-2 w-full">圖書館</h2>
+                                            <p class="text-blue-700 font-bold bg-blue-100 px-3 py-1 rounded-lg inline-block mb-2 text-lg border-2 border-blue-200">音量：0 - 1 (悄悄話)</p>
+                                            <p class="text-slate-600 font-bold text-base w-full">行為：看書、借書、保持安靜</p>
+                                        </div>
+                                    </div>
+                                    <!-- 走廊 -->
+                                    <div class="bg-yellow-50 border-[4px] border-yellow-200 rounded-[2rem] p-6 flex gap-6 items-center shadow-sm w-full">
+                                        <div class="text-6xl shrink-0 decoration-only">🚶</div>
+                                        <div class="flex-grow w-full">
+                                            <h2 class="text-2xl font-black text-yellow-900 mb-2 w-full">走廊 / 樓梯</h2>
+                                            <p class="text-yellow-800 font-bold bg-yellow-200 px-3 py-1 rounded-lg inline-block mb-2 text-lg border-2 border-yellow-300">音量：2 (小聲說話)</p>
+                                            <p class="text-slate-600 font-bold text-base w-full">行為：排隊、慢慢走、不奔跑</p>
+                                        </div>
+                                    </div>
+                                    <!-- 課室 -->
+                                    <div class="bg-orange-50 border-[4px] border-orange-200 rounded-[2rem] p-6 flex gap-6 items-center shadow-sm w-full">
+                                        <div class="text-6xl shrink-0 decoration-only">🗣️</div>
+                                        <div class="flex-grow w-full">
+                                            <h2 class="text-2xl font-black text-orange-900 mb-2 w-full">課室 (小組討論)</h2>
+                                            <p class="text-orange-800 font-bold bg-orange-200 px-3 py-1 rounded-lg inline-block mb-2 text-lg border-2 border-orange-300">音量：3 (演講聲)</p>
+                                            <p class="text-slate-600 font-bold text-base w-full">行為：發表意見、輪流說話</p>
+                                        </div>
+                                    </div>
+                                    <!-- 操場 -->
+                                    <div class="bg-red-50 border-[4px] border-red-200 rounded-[2rem] p-6 flex gap-6 items-center shadow-sm w-full">
+                                        <div class="text-6xl shrink-0 decoration-only">⚽</div>
+                                        <div class="flex-grow w-full">
+                                            <h2 class="text-2xl font-black text-red-900 mb-2 w-full">操場 / 禮堂</h2>
+                                            <p class="text-red-800 font-bold bg-red-200 px-3 py-1 rounded-lg inline-block mb-2 text-lg border-2 border-red-300">音量：4 (操場聲)</p>
+                                            <p class="text-slate-600 font-bold text-base w-full">行為：跑步、大聲玩耍、放鬆</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            "conflict": {
+                title: "🤝 Tier 2 朋輩衝突解決",
+                desc: "將道歉與表達不滿具體化，教導和平解決爭執的進階技巧。",
+                items: [
+                    {
+                        title: "「我訊息」(I-Message) 句式板",
+                        desc: "填空式提示卡，讓學生練習用「當你...我覺得...希望你...」表達不滿。",
+                        color: "rose",
+                        html: `
+                            <div class="h-full w-full bg-rose-50 p-8 flex flex-col items-center justify-center">
+                                <div class="text-center mb-8 w-full">
+                                    <h1 class="text-4xl font-black text-rose-900 mb-2 drop-shadow-sm w-full">🗣️ 「我訊息」表達魔法</h1>
+                                    <p class="text-rose-600 font-bold text-xl w-full">生氣時不要動手，試著把心裡的話「填空」說出來：</p>
+                                </div>
+                                
+                                <div class="w-full max-w-4xl bg-white rounded-[3rem] shadow-xl p-8 border-[4px] border-rose-200 space-y-4 flex-grow flex flex-col justify-between pb-6">
+                                    <div class="flex items-center gap-6 bg-red-50 p-4 rounded-2xl border border-red-100 shadow-sm w-full">
+                                        <div class="w-12 h-12 bg-red-200 rounded-full flex items-center justify-center text-2xl font-black text-red-700 shrink-0 border-2 border-white decoration-only">1</div>
+                                        <p class="text-2xl font-black text-slate-700 w-full flex items-center">當你 <span class="border-b-[4px] border-red-400 inline-block flex-grow mx-4"></span> (行為) 時，</p>
+                                    </div>
+                                    <div class="flex items-center gap-6 bg-orange-50 p-4 rounded-2xl border border-orange-100 shadow-sm w-full">
+                                        <div class="w-12 h-12 bg-orange-200 rounded-full flex items-center justify-center text-2xl font-black text-orange-700 shrink-0 border-2 border-white decoration-only">2</div>
+                                        <p class="text-2xl font-black text-slate-700 w-full flex items-center">我覺得 <span class="border-b-[4px] border-orange-400 inline-block flex-grow mx-4"></span> (情緒)，</p>
+                                    </div>
+                                    <div class="flex items-center gap-6 bg-amber-50 p-4 rounded-2xl border border-amber-100 shadow-sm w-full">
+                                        <div class="w-12 h-12 bg-amber-200 rounded-full flex items-center justify-center text-2xl font-black text-amber-700 shrink-0 border-2 border-white decoration-only">3</div>
+                                        <p class="text-2xl font-black text-slate-700 w-full flex items-center">因為 <span class="border-b-[4px] border-amber-400 inline-block flex-grow mx-4"></span> (原因)。</p>
+                                    </div>
+                                    <div class="flex items-center gap-6 bg-emerald-50 p-4 rounded-2xl border border-emerald-100 shadow-sm w-full">
+                                        <div class="w-12 h-12 bg-emerald-200 rounded-full flex items-center justify-center text-2xl font-black text-emerald-700 shrink-0 border-2 border-white decoration-only">4</div>
+                                        <p class="text-2xl font-black text-slate-700 w-full flex items-center">我希望你 <span class="border-b-[4px] border-emerald-400 inline-block flex-grow mx-4"></span> (期望)。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "和解三部曲桌面卡",
+                        desc: "將道歉具體化為三個步驟：「承認 ➔ 說對不起 ➔ 提出補救」。",
+                        color: "blue",
+                        html: `
+                            <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center font-sans">
+                                <h1 class="text-4xl font-black text-slate-800 mb-12 drop-shadow-sm w-full text-center">🤝 和解三部曲</h1>
+                                <div class="flex poster-main-layout gap-8 w-full max-w-5xl h-[60%] flex-grow pb-4">
+                                    <!-- 承認 -->
+                                    <div class="flex-1 w-full bg-yellow-50 border-[4px] border-yellow-300 rounded-[3rem] p-6 text-center shadow-lg relative mt-10 flex flex-col justify-center">
+                                        <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 bg-yellow-400 text-white rounded-full flex items-center justify-center text-4xl font-black shadow-md border-[4px] border-white decoration-only">1</div>
+                                        <div class="text-6xl mb-4 decoration-only">😔</div>
+                                        <h2 class="text-3xl font-black text-yellow-800 mb-4 w-full">承認</h2>
+                                        <p class="text-xl font-bold text-slate-600 bg-white p-4 rounded-xl border border-yellow-200 shadow-sm w-full">「我剛才做錯了...」</p>
+                                    </div>
+                                    <!-- 抱歉 -->
+                                    <div class="flex-1 w-full bg-blue-50 border-[4px] border-blue-300 rounded-[3rem] p-6 text-center shadow-lg relative mb-10 flex flex-col justify-center">
+                                        <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 bg-blue-400 text-white rounded-full flex items-center justify-center text-4xl font-black shadow-md border-[4px] border-white decoration-only">2</div>
+                                        <div class="text-6xl mb-4 decoration-only">🙏</div>
+                                        <h2 class="text-3xl font-black text-blue-800 mb-4 w-full">抱歉</h2>
+                                        <p class="text-xl font-bold text-slate-600 bg-white p-4 rounded-xl border border-blue-200 shadow-sm w-full">「對不起，令你不開心。」</p>
+                                    </div>
+                                    <!-- 補救 -->
+                                    <div class="flex-1 w-full bg-green-50 rounded-[3rem] border-[4px] border-green-400 p-6 text-center shadow-lg relative mt-10 flex flex-col justify-center">
+                                        <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 bg-green-500 text-white rounded-full flex items-center justify-center text-4xl font-black shadow-md border-[4px] border-white decoration-only">3</div>
+                                        <div class="text-6xl mb-4 decoration-only">🩹</div>
+                                        <h2 class="text-3xl font-black text-green-800 mb-4 w-full">補救</h2>
+                                        <p class="text-xl font-bold text-slate-600 bg-white p-4 rounded-xl border border-green-200 shadow-sm w-full">「我可以點樣幫你？」</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "「大小問題」溫度計",
+                        desc: "分辨問題是「微小」、「中等」還是「嚴重」，配對求助級別。",
+                        color: "amber",
+                        html: `
+                            <div class="h-full w-full bg-slate-50 p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-slate-800 mb-10 drop-shadow-sm w-full text-center">🌡️ 這是「大問題」還是「小問題」？</h1>
+                                <div class="w-full max-w-4xl flex flex-col gap-4 flex-grow pb-4">
+                                    <!-- 嚴重 -->
+                                    <div class="flex-grow w-full bg-red-500 text-white p-6 rounded-t-[3rem] flex items-center gap-6 shadow-md border-b-[6px] border-red-700">
+                                        <div class="text-5xl bg-white/20 w-20 h-20 flex items-center justify-center rounded-full shrink-0 decoration-only">🚨</div>
+                                        <div class="w-1/2">
+                                            <h2 class="text-3xl font-black tracking-widest mb-1 w-full">嚴重問題</h2>
+                                            <p class="text-red-100 font-bold text-lg w-full">(如：受傷、非常危險)</p>
+                                        </div>
+                                        <div class="flex-grow text-center bg-white text-red-600 font-black px-6 py-3 rounded-2xl text-xl shadow-sm w-full">必須立刻找老師！</div>
+                                    </div>
+                                    <!-- 中等 -->
+                                    <div class="flex-grow w-full bg-orange-400 text-orange-900 p-6 flex items-center gap-6 shadow-md border-b-[6px] border-orange-600">
+                                        <div class="text-5xl bg-orange-900/10 w-20 h-20 flex items-center justify-center rounded-full shrink-0 decoration-only">⚠️</div>
+                                        <div class="w-1/2">
+                                            <h2 class="text-3xl font-black tracking-widest mb-1 w-full">中等問題</h2>
+                                            <p class="text-orange-900/70 font-bold text-lg w-full">(如：被人嘲笑、吵架)</p>
+                                        </div>
+                                        <div class="flex-grow text-center bg-white text-orange-600 font-black px-6 py-3 rounded-2xl text-xl shadow-sm w-full">用「我訊息」或找老師調解</div>
+                                    </div>
+                                    <!-- 微小 -->
+                                    <div class="flex-grow w-full bg-green-500 text-white p-6 rounded-b-[3rem] flex items-center gap-6 shadow-md">
+                                        <div class="text-5xl bg-white/20 w-20 h-20 flex items-center justify-center rounded-full shrink-0 decoration-only">✅</div>
+                                        <div class="w-1/2">
+                                            <h2 class="text-3xl font-black tracking-widest mb-1 w-full">微小問題</h2>
+                                            <p class="text-green-100 font-bold text-lg w-full">(如：跌筆、同學碰到)</p>
+                                        </div>
+                                        <div class="flex-grow text-center bg-white text-green-600 font-black px-6 py-3 rounded-2xl text-xl shadow-sm w-full">自己解決或原諒對方</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            "lifeskills": {
+                title: "🎒 Tier 2 自理與獨立生活",
+                desc: "針對執行功能或智力障礙，將日常任務圖像化、清單化。",
+                items: [
+                    {
+                        title: "書包「透視」分層收納圖",
+                        desc: "標示課本、文具盒應該放在書包的哪一層，解決執拾混亂。",
+                        color: "indigo",
+                        html: `
+                            <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-indigo-900 mb-10 drop-shadow-sm w-full text-center">🎒 書包「透視」收納圖</h1>
+                                <div class="relative w-full max-w-2xl bg-slate-100 border-[8px] border-indigo-200 rounded-[3rem] p-8 pb-12 shadow-xl flex flex-col gap-4 flex-grow">
+                                    <!-- 手挽 -->
+                                    <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-40 h-16 border-[8px] border-indigo-200 rounded-t-full decoration-only"></div>
+                                    
+                                    <!-- 大格 -->
+                                    <div class="bg-indigo-100 border-2 border-dashed border-indigo-300 rounded-2xl p-6 relative flex-grow w-full flex flex-col justify-center">
+                                        <span class="absolute -left-4 -top-4 bg-indigo-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow decoration-only">後</span>
+                                        <h2 class="text-2xl font-black text-indigo-800 mb-3 w-full">大格 (放最重的)</h2>
+                                        <div class="flex poster-main-layout gap-3 w-full">
+                                            <span class="flex-1 w-full bg-white px-4 py-2 rounded-lg font-bold text-slate-700 shadow-sm border border-slate-200 text-lg text-center">📘 課本</span>
+                                            <span class="flex-1 w-full bg-white px-4 py-2 rounded-lg font-bold text-slate-700 shadow-sm border border-slate-200 text-lg text-center">📁 A4 快勞</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 中格 -->
+                                    <div class="bg-blue-100 border-2 border-dashed border-blue-300 rounded-2xl p-6 relative ml-4 mr-4 flex-grow w-auto flex flex-col justify-center">
+                                        <span class="absolute -left-4 -top-4 bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow decoration-only">中</span>
+                                        <h2 class="text-2xl font-black text-blue-800 mb-3 w-full">中格</h2>
+                                        <div class="flex poster-main-layout gap-3 w-full">
+                                            <span class="flex-1 w-full bg-white px-4 py-2 rounded-lg font-bold text-slate-700 shadow-sm border border-slate-200 text-lg text-center">📓 手冊</span>
+                                            <span class="flex-1 w-full bg-white px-4 py-2 rounded-lg font-bold text-slate-700 shadow-sm border border-slate-200 text-lg text-center">✏️ 筆袋</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 前袋 -->
+                                    <div class="bg-emerald-100 border-2 border-dashed border-emerald-300 rounded-2xl p-6 relative ml-8 mr-8 flex-grow w-auto flex flex-col justify-center">
+                                        <span class="absolute -left-4 -top-4 bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow decoration-only">前</span>
+                                        <h2 class="text-2xl font-black text-emerald-800 mb-3 w-full">前袋 / 側袋</h2>
+                                        <div class="flex poster-main-layout gap-3 w-full">
+                                            <span class="flex-1 w-full bg-white px-4 py-2 rounded-lg font-bold text-slate-700 shadow-sm border border-slate-200 text-lg text-center">💧 水樽</span>
+                                            <span class="flex-1 w-full bg-white px-4 py-2 rounded-lg font-bold text-slate-700 shadow-sm border border-slate-200 text-lg text-center">🧻 紙巾</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "購物流程視覺圖卡",
+                        desc: "拆解購買食物步驟，適合生活技能小組。",
+                        color: "emerald",
+                        html: `
+                            <div class="h-full w-full bg-emerald-50 p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-emerald-900 mb-12 drop-shadow-sm w-full text-center">💰 小賣部購物流程</h1>
+                                
+                                <div class="grid grid-cols-4 gap-4 w-full max-w-5xl relative h-[45%] flex-grow pb-4">
+                                    <!-- 進度線 -->
+                                    <div class="absolute top-1/2 left-10 right-10 h-3 bg-emerald-200 transform -translate-y-1/2 z-0 rounded-full decoration-only"></div>
+                                    
+                                    <div class="w-full bg-white rounded-3xl shadow-lg border-2 border-emerald-300 p-6 flex flex-col items-center justify-center text-center z-10">
+                                        <div class="text-6xl mb-4 decoration-only">🚶</div>
+                                        <div class="bg-emerald-500 text-white w-10 h-10 rounded-full font-black text-xl flex items-center justify-center mb-3 shadow decoration-only">1</div>
+                                        <h2 class="font-black text-slate-700 text-lg w-full">排隊等待</h2>
+                                    </div>
+                                    
+                                    <div class="w-full bg-white rounded-3xl shadow-lg border-2 border-emerald-300 p-6 flex flex-col items-center justify-center text-center z-10">
+                                        <div class="text-6xl mb-4 decoration-only">🗣️</div>
+                                        <div class="bg-emerald-500 text-white w-10 h-10 rounded-full font-black text-xl flex items-center justify-center mb-3 shadow decoration-only">2</div>
+                                        <h2 class="font-black text-slate-700 text-lg w-full">說出食物名稱</h2>
+                                    </div>
+                                    
+                                    <div class="w-full bg-white rounded-3xl shadow-xl border-4 border-emerald-500 p-6 flex flex-col items-center justify-center text-center z-10 transform scale-110 ring-4 ring-emerald-100">
+                                        <div class="text-6xl mb-4 decoration-only">💳</div>
+                                        <div class="bg-emerald-600 text-white w-10 h-10 rounded-full font-black text-xl flex items-center justify-center mb-3 shadow decoration-only">3</div>
+                                        <h2 class="font-black text-emerald-800 text-xl w-full">拍八達通</h2>
+                                    </div>
+                                    
+                                    <div class="w-full bg-white rounded-3xl shadow-lg border-2 border-emerald-300 p-6 flex flex-col items-center justify-center text-center z-10">
+                                        <div class="text-6xl mb-4 decoration-only">🍔</div>
+                                        <div class="bg-emerald-500 text-white w-10 h-10 rounded-full font-black text-xl flex items-center justify-center mb-3 shadow decoration-only">4</div>
+                                        <h2 class="font-black text-slate-700 text-lg w-full">拿食物說謝謝</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "任務完成「打卡」清單",
+                        desc: "白板清單，將執拾座位的步驟圖像化。",
+                        color: "blue",
+                        html: `
+                            <div class="h-full w-full bg-slate-100 p-8 flex flex-col items-center justify-center font-sans">
+                                <div class="bg-white w-full max-w-3xl rounded-[3rem] shadow-xl border-4 border-slate-200 overflow-hidden flex flex-col h-full">
+                                    <div class="bg-blue-600 text-white p-8 text-center shrink-0 w-full">
+                                        <h1 class="text-4xl font-black tracking-widest drop-shadow-md w-full">✅ 放學前我已經完成：</h1>
+                                    </div>
+                                    <div class="p-8 space-y-6 flex-grow flex flex-col justify-between w-full pb-10">
+                                        <div class="flex items-center justify-between border-b-[4px] border-dashed border-slate-200 pb-4 w-full">
+                                            <div class="flex items-center gap-6">
+                                                <span class="text-5xl drop-shadow-sm decoration-only">📓</span>
+                                                <span class="text-3xl font-bold text-slate-700">把手冊放進書包</span>
+                                            </div>
+                                            <div class="w-16 h-16 rounded-xl border-[4px] border-slate-300 bg-slate-50 shadow-inner decoration-only"></div>
+                                        </div>
+                                        <div class="flex items-center justify-between border-b-[4px] border-dashed border-slate-200 pb-4 w-full">
+                                            <div class="flex items-center gap-6">
+                                                <span class="text-5xl drop-shadow-sm decoration-only">✏️</span>
+                                                <span class="text-3xl font-bold text-slate-700">收好筆袋和文具</span>
+                                            </div>
+                                            <div class="w-16 h-16 rounded-xl border-[4px] border-slate-300 bg-slate-50 flex items-center justify-center text-green-500 text-4xl font-black shadow-inner decoration-only">✓</div>
+                                        </div>
+                                        <div class="flex items-center justify-between pb-2 w-full">
+                                            <div class="flex items-center gap-6">
+                                                <span class="text-5xl drop-shadow-sm decoration-only">🪑</span>
+                                                <span class="text-3xl font-bold text-slate-700">把椅子推入桌下</span>
+                                            </div>
+                                            <div class="w-16 h-16 rounded-xl border-[4px] border-slate-300 bg-slate-50 shadow-inner decoration-only"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            "growth": {
+                title: "🌟 Tier 2 成長心態與自我肯定",
+                desc: "針對常有挫敗感、缺乏動機的學生，建立視覺化的自信。",
+                items: [
+                    {
+                        title: "大腦翻轉卡 (Fixed vs. Growth)",
+                        desc: "雙面圖卡設計，正面是負面標籤，背面是成長語句。",
+                        color: "rose",
+                        html: `
+                            <div class="h-full w-full bg-slate-50 p-8 flex flex-col items-center justify-center gap-8 relative">
+                                <div class="text-center z-10 w-full shrink-0">
+                                    <h1 class="text-4xl font-black text-slate-800 mb-2 drop-shadow-sm w-full">🔄 大腦翻轉卡 (對摺使用 ✂️)</h1>
+                                    <p class="text-slate-500 font-bold text-xl w-full">當腦中出現負面聲音時，把它「翻過來」！</p>
+                                </div>
+
+                                <!-- 對摺虛線 -->
+                                <div class="absolute inset-y-0 left-1/2 border-l-4 border-dashed border-slate-300 h-full z-0 decoration-only"></div>
+
+                                <div class="flex poster-main-layout gap-10 w-full max-w-5xl flex-grow pb-4 z-10">
+                                    <!-- 正面 -->
+                                    <div class="flex-1 w-full bg-white rounded-[3rem] border-[6px] border-slate-200 p-8 flex flex-col items-center justify-center text-center shadow-lg relative">
+                                        <div class="absolute top-6 bg-slate-100 px-4 py-1 rounded-lg text-slate-500 font-bold text-lg w-4/5">(正面：固定心態)</div>
+                                        <div class="text-7xl mb-6 grayscale opacity-50 decoration-only">🧠</div>
+                                        <h2 class="text-3xl font-black text-slate-400 line-through decoration-slate-500 decoration-[4px] mb-2 leading-relaxed w-full">我好蠢，<br>我做不到！</h2>
+                                    </div>
+                                    
+                                    <!-- 背面 -->
+                                    <div class="flex-1 w-full bg-green-50 rounded-[3rem] border-[6px] border-green-400 p-8 flex flex-col items-center justify-center text-center shadow-xl transform scale-105 relative">
+                                        <div class="absolute top-6 bg-green-100 px-4 py-1 rounded-lg text-green-700 font-bold text-lg w-4/5">(背面：成長心態)</div>
+                                        <div class="text-7xl mb-6 drop-shadow-lg decoration-only">💡</div>
+                                        <h2 class="text-3xl font-black text-green-700 mb-4 leading-relaxed w-full">我只是「暫時」<br>未學識！</h2>
+                                        <p class="text-green-600 font-bold text-xl bg-white px-4 py-2 rounded-xl shadow-sm w-full">我可以找人幫忙。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "「我的強項盾牌」",
+                        desc: "盾牌範本，分成四格，讓學生畫上自己的優點 and 喜歡的事物。",
+                        color: "amber",
+                        html: `
+                            <div class="h-full w-full bg-amber-50 p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-amber-900 mb-8 drop-shadow-sm w-full text-center">🛡️ 我的強項盾牌</h1>
+                                <!-- CSS 繪製的盾牌形狀 -->
+                                <div class="w-full max-w-2xl flex-grow pb-4 bg-white border-[8px] border-amber-400 shadow-xl relative overflow-hidden flex flex-wrap" style="clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%);">
+                                    <!-- 十字分隔線 -->
+                                    <div class="absolute top-0 bottom-0 left-1/2 w-2 bg-amber-200 -translate-x-1/2 decoration-only"></div>
+                                    <div class="absolute left-0 right-0 top-1/2 h-2 bg-amber-200 -translate-y-1/2 decoration-only"></div>
+                                    
+                                    <!-- 四個象限 -->
+                                    <div class="w-1/2 h-1/2 p-6 flex flex-col items-center justify-center text-center bg-amber-50/50">
+                                        <p class="text-amber-800 font-black text-xl mb-4 w-full">我最叻的科目...</p>
+                                        <div class="w-24 h-24 border-4 border-dashed border-amber-300 rounded-xl bg-white flex items-center justify-center decoration-only"><span class="text-slate-400 text-xs font-bold">(畫畫 / 寫字)</span></div>
+                                    </div>
+                                    <div class="w-1/2 h-1/2 p-6 flex flex-col items-center justify-center text-center">
+                                        <p class="text-amber-800 font-black text-xl mb-4 w-full">我喜歡的活動...</p>
+                                        <div class="w-24 h-24 border-4 border-dashed border-amber-300 rounded-xl bg-amber-50/30 flex items-center justify-center decoration-only"><span class="text-slate-400 text-xs font-bold">(畫畫 / 寫字)</span></div>
+                                    </div>
+                                    <div class="w-1/2 h-1/2 p-6 flex flex-col items-center justify-center text-center">
+                                        <p class="text-amber-800 font-black text-xl mb-4 w-full">我幫過別人的事...</p>
+                                        <div class="w-24 h-24 border-4 border-dashed border-amber-300 rounded-xl bg-amber-50/30 flex items-center justify-center decoration-only"><span class="text-slate-400 text-xs font-bold">(畫畫 / 寫字)</span></div>
+                                    </div>
+                                    <div class="w-1/2 h-1/2 p-6 flex flex-col items-center justify-center text-center bg-amber-50/50">
+                                        <p class="text-amber-800 font-black text-xl mb-4 w-full">我的一個好性格...</p>
+                                        <div class="w-24 h-24 border-4 border-dashed border-amber-300 rounded-xl bg-white flex items-center justify-center decoration-only"><span class="text-slate-400 text-xs font-bold">(畫畫 / 寫字)</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "每日成功小碎片 (Success Jar)",
+                        desc: "視覺化的玻璃樽圖案，每完成一個小目標就畫一顆星，看著成功累積。",
+                        color: "purple",
+                        html: `
+                            <div class="h-full w-full bg-purple-50 p-8 flex flex-col items-center justify-center">
+                                <div class="text-center mb-8 w-full shrink-0">
+                                    <h1 class="text-4xl font-black text-purple-900 mb-2 drop-shadow-sm w-full">🏆 每日成功小碎片 (Success Jar)</h1>
+                                    <p class="text-purple-600 font-bold text-lg w-full">每做對一件小事，就在瓶子裡畫一顆星星！</p>
+                                </div>
+                                
+                                <!-- 玻璃瓶 CSS Art -->
+                                <div class="relative w-72 flex-grow max-h-[400px] bg-white/60 backdrop-blur border-[8px] border-slate-300 rounded-b-[4rem] shadow-inner flex flex-wrap content-end p-6 gap-4 decoration-only">
+                                    <!-- 瓶口 -->
+                                    <div class="absolute -top-8 -left-4 -right-4 h-10 border-[8px] border-slate-300 rounded-xl bg-slate-100 decoration-only"></div>
+                                    <!-- 高光反光 -->
+                                    <div class="absolute top-10 right-4 w-4 h-48 bg-white/90 rounded-full blur-[2px] decoration-only"></div>
+                                    
+                                    <!-- 星星內容 -->
+                                    <div class="text-4xl animate-bounce drop-shadow-sm decoration-only">⭐</div>
+                                    <div class="text-4xl drop-shadow-sm decoration-only">⭐</div>
+                                    <div class="text-4xl drop-shadow-sm transform scale-125 decoration-only">🌟</div>
+                                    <div class="text-4xl drop-shadow-sm decoration-only">⭐</div>
+                                    <div class="text-4xl drop-shadow-sm decoration-only">✨</div>
+                                    <div class="text-4xl opacity-30 border-[3px] border-dashed border-slate-400 rounded-full w-10 h-10 flex items-center justify-center decoration-only"></div>
+                                    <div class="text-4xl opacity-30 border-[3px] border-dashed border-slate-400 rounded-full w-10 h-10 flex items-center justify-center decoration-only"></div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            },
+            "sensory": {
+                title: "🤸‍♀️ Tier 2 感覺統合與動作協調",
+                desc: "提供合宜的本體覺或觸覺輸入通道，釋放課堂張力。",
+                items: [
+                    {
+                        title: "課堂小息「動一動」動作卡",
+                        desc: "Brain Breaks 圖卡，如「推牆 10 下」，釋放多餘精力。",
+                        color: "emerald",
+                        html: `
+                            <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center">
+                                <h1 class="text-4xl font-black text-emerald-800 mb-10 drop-shadow-sm w-full text-center">🤸‍♀️ 小息「動一動」任務卡</h1>
+                                <div class="grid grid-cols-3 gap-6 w-full max-w-5xl flex-grow pb-4">
+                                    <div class="w-full bg-emerald-50 border-[4px] border-emerald-300 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center shadow-md">
+                                        <span class="text-7xl mb-4 drop-shadow-sm decoration-only">🧱</span>
+                                        <h2 class="text-3xl font-black text-emerald-900 mb-4 w-full">推牆 10 下</h2>
+                                        <span class="bg-white px-4 py-2 rounded-xl text-xl text-emerald-600 font-bold border border-emerald-200 shadow-sm w-full">本體覺輸入</span>
+                                    </div>
+                                    <div class="w-full bg-teal-50 border-[4px] border-teal-300 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center shadow-md">
+                                        <span class="text-7xl mb-4 drop-shadow-sm decoration-only">🐘</span>
+                                        <h2 class="text-3xl font-black text-teal-900 mb-4 w-full">大象伸展鼻</h2>
+                                        <span class="bg-white px-4 py-2 rounded-xl text-xl text-teal-600 font-bold border border-teal-200 shadow-sm w-full">前庭覺舒緩</span>
+                                    </div>
+                                    <div class="w-full bg-cyan-50 border-[4px] border-cyan-300 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center shadow-lg transform scale-105 z-10">
+                                        <span class="text-7xl mb-4 drop-shadow-sm decoration-only">🏃</span>
+                                        <h2 class="text-3xl font-black text-cyan-900 mb-4 w-full">原地踏步 10 秒</h2>
+                                        <span class="bg-white px-4 py-2 rounded-xl text-xl text-cyan-600 font-bold border border-cyan-200 shadow-sm w-full">動能釋放</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "正確執筆與坐姿透視圖",
+                        desc: "以簡單圖示提示精細動作較弱的學生保持「直角坐姿」。",
+                        color: "blue",
+                        html: `
+                            <div class="h-full w-full bg-blue-50 p-8 flex flex-col items-center justify-center font-sans">
+                                <h1 class="text-4xl font-black text-blue-900 mb-10 drop-shadow-sm w-full text-center">✍️ 上課好坐姿 3 步曲</h1>
+                                <div class="w-full max-w-4xl bg-white rounded-[3rem] p-10 shadow-xl border-[6px] border-blue-200 space-y-6 flex-grow flex flex-col justify-center pb-4 w-full">
+                                    <div class="flex items-center gap-6 bg-blue-50 p-6 rounded-[2rem] border border-blue-100 shadow-sm w-full flex-grow">
+                                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-md shrink-0 border-[4px] border-white decoration-only">1</div>
+                                        <h2 class="text-3xl font-black text-slate-700 flex-grow w-full">👣 雙腳平放在地面</h2>
+                                        <span class="text-5xl drop-shadow-sm decoration-only">👟</span>
+                                    </div>
+                                    <div class="flex items-center gap-6 bg-blue-50 p-6 rounded-[2rem] border border-blue-100 shadow-sm w-full flex-grow">
+                                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-md shrink-0 border-[4px] border-white decoration-only">2</div>
+                                        <h2 class="text-3xl font-black text-slate-700 flex-grow w-full">🪑 屁股坐滿整張椅子</h2>
+                                        <span class="text-5xl drop-shadow-sm decoration-only">⬇️</span>
+                                    </div>
+                                    <div class="flex items-center gap-6 bg-blue-50 p-6 rounded-[2rem] border border-blue-100 shadow-sm w-full flex-grow">
+                                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-md shrink-0 border-[4px] border-white decoration-only">3</div>
+                                        <h2 class="text-3xl font-black text-slate-700 flex-grow w-full">✊ 胸口離桌子一個拳頭</h2>
+                                        <span class="text-5xl drop-shadow-sm decoration-only">📏</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    {
+                        title: "感官餐單選擇板",
+                        desc: "讓學生表達當下需要的調節（如選擇「捏壓力球」、「聽白噪音」）。",
+                        color: "amber",
+                        html: `
+                            <div class="h-full w-full bg-amber-50 p-8 flex flex-col items-center justify-center">
+                                <div class="text-center mb-10 w-full shrink-0">
+                                    <h1 class="text-4xl font-black text-amber-900 mb-4 drop-shadow-sm w-full">🍽️ 我的感官急救餐單</h1>
+                                    <p class="text-2xl font-bold text-amber-700 w-full">我覺得不舒服，我現在需要...</p>
+                                </div>
+                                
+                                <div class="grid grid-cols-3 gap-8 w-full max-w-5xl h-[50%] flex-grow pb-4">
+                                    <div class="w-full bg-white border-[6px] border-amber-300 rounded-[3rem] p-8 flex flex-col items-center justify-center text-center shadow-md">
+                                        <span class="text-7xl mb-6 drop-shadow-md decoration-only">🥎</span>
+                                        <h2 class="text-3xl font-black text-slate-700 mb-2 w-full">捏壓力球</h2>
+                                        <span class="text-xl text-slate-500 font-bold w-full">(釋放觸覺)</span>
+                                    </div>
+                                    <div class="w-full bg-white border-[6px] border-amber-300 rounded-[3rem] p-8 flex flex-col items-center justify-center text-center shadow-md">
+                                        <span class="text-7xl mb-6 drop-shadow-md decoration-only">🎧</span>
+                                        <h2 class="text-3xl font-black text-slate-700 mb-2 w-full">聽白噪音</h2>
+                                        <span class="text-xl text-slate-500 font-bold w-full">(阻隔聲音)</span>
+                                    </div>
+                                    <div class="w-full bg-white border-[6px] border-amber-300 rounded-[3rem] p-8 flex flex-col items-center justify-center text-center shadow-md">
+                                        <span class="text-7xl mb-6 drop-shadow-md decoration-only">🥤</span>
+                                        <h2 class="text-3xl font-black text-slate-700 mb-2 w-full">咬咀嚼管</h2>
+                                        <span class="text-xl text-slate-500 font-bold w-full">(口腔舒壓)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    }
+                ]
+            }
+        };
+
+        // ==========================================
+        // 渲染畫廊 UI 邏輯
+        // ==========================================
+        function renderGallery(categoryId) {
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            const btns = document.querySelectorAll('.category-btn');
+            btns.forEach(btn => {
+                if (btn.getAttribute('onclick').includes(categoryId)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const data = postersDb[categoryId];
+            if (!data) return;
+
+            document.getElementById('galleryTitle').innerHTML = data.title;
+            document.getElementById('galleryDesc').innerText = data.desc;
+            document.getElementById('itemCount').innerText = data.items.length;
+
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = ''; 
+
+            data.items.forEach((item, index) => {
+                // 將 HTML 縮小顯示作為縮圖
+                const thumbnailHtml = `<div class="w-[1122px] h-[793px] transform scale-[0.22] sm:scale-[0.3] lg:scale-[0.22] xl:scale-[0.25] origin-top-left pointer-events-none">${item.html}</div>`;
+                
+                const cardHtml = `
+                    <div class="poster-card bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col h-full cursor-pointer shadow-sm group" onclick="openPosterModal('${categoryId}', ${index})">
+                        <div class="h-48 sm:h-56 bg-slate-100 border-b border-slate-200 relative overflow-hidden flex items-start justify-start p-0">
+                            ${thumbnailHtml}
+                            <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center backdrop-blur-[1px]">
+                                <span class="bg-white text-slate-800 text-sm font-black px-5 py-2.5 rounded-full shadow-2xl transform scale-90 group-hover:scale-100 transition-transform"><i class="fa-solid fa-expand text-teal-600"></i> 點擊預覽與自訂</span>
+                            </div>
+                        </div>
+                        <div class="p-5 flex flex-col flex-grow">
+                            <h3 class="font-black text-slate-800 text-base mb-1 line-clamp-1 group-hover:text-teal-700 transition-colors">${item.title}</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed flex-grow line-clamp-2">${item.desc}</p>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHtml;
+            });
+
+            grid.classList.remove('fade-in');
+            void grid.offsetWidth;
+            grid.classList.add('fade-in');
+        }
+
+        // ==========================================
+        // Modal 視窗邏輯 與 絕對縮放引擎 (保證100%完美不裁切)
+        // ==========================================
+        let isEditMode = false;
+
+        function openPosterModal(categoryId, itemIndex) {
+            const item = postersDb[categoryId].items[itemIndex];
+            
+            const modalTitleTextEl = document.getElementById('modalTitleText');
+            if (modalTitleTextEl) modalTitleTextEl.innerText = item.title;
+            
+            // 注入真實 HTML 到列印區
+            document.getElementById('posterPrintArea').innerHTML = item.html;
+            
+            // 重置所有設定狀態
+            if(isEditMode) toggleEditMode(); 
+
+            const modal = document.getElementById('posterModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                resizePoster(); // 立即計算縮放
+            }, 10);
+        }
+
+        function closePosterModal() {
+            const modal = document.getElementById('posterModal');
+            modal.classList.add('opacity-0');
+            
+            if(isEditMode) toggleEditMode(); 
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.getElementById('posterPrintArea').innerHTML = ''; 
+            }, 300);
+        }
+
+        // 絕對縮放邏輯 (確保 A4 畫布在任何螢幕完美顯示，且不產生裁切)
+        function resizePoster() {
+            const container = document.getElementById('modalCanvasContainer');
+            const wrapper = document.getElementById('posterScaleWrapper');
+            const posterArea = document.getElementById('posterPrintArea');
+            
+            if(!container || !wrapper || !posterArea || document.getElementById('posterModal').classList.contains('hidden')) return;
+            
+            // 強制畫布原始尺寸為 A4 橫向比例
+            const baseWidth = 1122;
+            const baseHeight = 793;
+
+            // 取得可用寬高
+            const paddingX = 32; 
+            const paddingY = 32; 
+            const availableWidth = container.clientWidth - paddingX; 
+            const availableHeight = container.clientHeight - paddingY;
+            
+            if(availableWidth <= 0 || availableHeight <= 0) return;
+
+            // 計算最佳縮放比例 (取最小倍率以確保全畫面可見，絕不裁切邊緣)
+            const scale = Math.min(availableWidth / baseWidth, availableHeight / baseHeight);
+            
+            // 應用絕對縮放，並使用 flex 置中
+            wrapper.style.transform = `scale(${scale})`;
+            wrapper.style.width = `${baseWidth * scale}px`;
+            wrapper.style.height = `${baseHeight * scale}px`;
+        }
+
+        // 監聽視窗改變，即時更新縮放
+        window.addEventListener('resize', resizePoster);
+
+        // ==========================================
+        // 🎨 顏色切換引擎
+        // ==========================================
+        function changeTheme(newColor) {
+            const printArea = document.getElementById('posterPrintArea');
+            if (!printArea) return;
+            
+            if(isEditMode) toggleEditMode();
+            
+            const colorRegex = /\b(emerald|teal|green|blue|indigo|cyan|rose|red|pink|amber|yellow|orange|purple|fuchsia|slate)\b/g;
+            
+            let currentHtml = printArea.innerHTML;
+            const newHtml = currentHtml.replace(colorRegex, newColor);
+            
+            printArea.innerHTML = newHtml;
+            showToast(`🎨 已為您切換至專屬主題色！`);
+        }
+
+        // ==========================================
+        // ✏️ 即時編輯器 (Live Edit Mode)
+        // ==========================================
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const printArea = document.getElementById('posterPrintArea');
+            const btn = document.getElementById('editModeBtn');
+
+            const textElements = printArea.querySelectorAll('h1, h2, h3, h4, p, span');
+            
+            textElements.forEach(el => {
+                if (el.classList.contains('decoration-only')) return;
+                
+                el.contentEditable = isEditMode;
+                if (isEditMode) {
+                    el.classList.add('editable-active');
+                    el.title = "點擊可修改文字"; 
+                } else {
+                    el.classList.remove('editable-active');
+                    el.title = "";
+                }
+            });
+
+            if (isEditMode) {
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> 完成編輯`;
+                btn.classList.replace('bg-amber-100', 'bg-emerald-100');
+                btn.classList.replace('text-amber-700', 'text-emerald-700');
+                btn.classList.replace('border-amber-200', 'border-emerald-200');
+                showToast("✏️ 已開啟編輯模式！請直接點擊海報上的文字進行修改。");
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-pen"></i> 自訂文字`;
+                btn.classList.replace('bg-emerald-100', 'bg-amber-100');
+                btn.classList.replace('text-emerald-700', 'text-amber-700');
+                btn.classList.replace('border-emerald-200', 'border-amber-200');
+                showToast("✅ 已完成修改！請隱藏此選單，直接使用裝置截圖 (Cap 圖)。");
+            }
+        }
+
+        // ==========================================
+        // 初始化側邊欄按鈕
+        // ==========================================
+        function initSidebar() {
+            const container = document.getElementById('tier2Categories');
+            let html = '';
+            
+            // 跳過 tier1，只渲染 10 大類
+            categoriesData.forEach(cat => {
+                html += `
+                    <button onclick="renderGallery('${cat.id}')" class="category-btn text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 border border-transparent transition flex items-center justify-between group">
+                        <span>${cat.icon} ${cat.name}</span>
+                        <i class="fa-solid fa-chevron-right text-[10px] opacity-0 group-hover:opacity-100 transition"></i>
+                    </button>
+                `;
+            });
+            container.innerHTML = html;
+            
+            renderGallery('tier1');
+        }
+
+        // 啟動
+        window.onload = initSidebar;
+        
+        // Toast 工具
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            msgEl.innerText = msg;
+            
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
