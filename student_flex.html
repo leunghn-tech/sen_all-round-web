@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 思考變形金剛 | SEN 社交特工訓練營</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f6f8fd;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .exp-font {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* 卡片翻轉效果 */
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        /* 遊戲與回饋動畫 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px) rotate(-2deg); }
+            40%, 80% { transform: translateX(5px) rotate(2deg); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes pop-up {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop-up 0.5s ease-out forwards;
+        }
+
+        /* 呼吸氣泡動畫 */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.6); opacity: 0.2; }
+        }
+        .animate-breathe {
+            animation: breathe 8s ease-in-out infinite;
+        }
+
+        /* 無人機雷達特效 */
+        @keyframes scan-radar {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .radar-line {
+            transform-origin: bottom right;
+            animation: scan-radar 3s linear infinite;
+        }
+
+        /* 拖拽或點擊目標插槽效果 */
+        .slot-active {
+            border-color: #10b981 !important;
+            background-color: #ecfdf5 !important;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- 頂部導航 -->
+    <nav class="w-full max-w-5xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
+        <a href="student_dashboard.html" class="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm text-slate-600 font-bold hover:text-emerald-600 hover:shadow-md transition-all border border-slate-100">
+            <div class="bg-slate-100 group-hover:bg-emerald-100 text-slate-500 group-hover:text-emerald-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            返回大廳
+        </a>
+        <div class="flex items-center gap-3">
+            <div class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full font-bold text-sm shadow-sm flex items-center gap-2 border border-emerald-200">
+                <i class="fa-solid fa-star text-amber-500"></i> 任務獎勵: 350 EXP
+            </div>
+        </div>
+    </nav>
+
+    <!-- 任務標題區 -->
+    <header class="w-full max-w-5xl mx-auto px-6 mb-10 relative z-20 text-center">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white text-4xl shadow-lg mb-6">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black mb-4 text-slate-800 tracking-tight">
+            🤖 思考變形金剛 (思考彈性升級版)
+        </h1>
+        <p class="text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            特工，環境和人際關係常常瞬息萬變，大腦一卡關就會當機！<br>
+            解鎖你身上的六大核心裝備，從容應對所有突發危機，成為思考的變形金剛！
+        </p>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-6 pb-20 flex-grow relative z-10">
+        
+        <!-- 知識點 1：橡皮筋與鉛筆理論 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2 text-emerald-800">
+                <i class="fa-solid fa-brain"></i> 特工情報：橡皮筋 VS 鉛筆
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-slate-50 rounded-2xl p-6 border-2 border-slate-200 flex flex-col items-center text-center">
+                    <div class="text-5xl mb-3 text-slate-400"><i class="fa-solid fa-pencil"></i></div>
+                    <div class="font-black text-xl text-slate-700 mb-2">❌ 鉛筆大腦 (死板)</div>
+                    <p class="text-sm text-slate-600 font-medium">
+                        鉛筆很硬，遇到意外或障礙時，硬碰硬就會<span class="text-rose-500 font-bold">「啪」一聲斷掉（情緒爆炸）</span>。這代表只有唯一計畫的人。
+                    </p>
+                </div>
+                <div class="bg-emerald-50 rounded-2xl p-6 border-2 border-emerald-200 shadow-md transform md:scale-105 flex flex-col items-center text-center">
+                    <div class="text-5xl mb-3 text-emerald-500"><i class="fa-solid fa-infinity"></i></div>
+                    <div class="font-black text-xl text-emerald-700 mb-2">✅ 橡皮筋大腦 (彈性)</div>
+                    <p class="text-sm text-emerald-600 font-medium">
+                        橡皮筋可以拉長、變形、轉彎。遇到意外時，能迅速<span class="text-emerald-700 font-bold">轉變方向，想出更多備案</span>，保護自己不受傷！
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝備 1：大腦冷卻裝置 (呼吸同步器) -->
+        <div class="bg-slate-800 rounded-[2rem] p-8 shadow-xl border-4 border-slate-700 mb-10 relative overflow-hidden text-center text-white">
+            <h2 class="text-2xl font-bold mb-2 flex items-center justify-center gap-2 text-sky-300">
+                <i class="fa-solid fa-snowflake"></i> 核心裝備：大腦降溫冷卻器
+            </h2>
+            <p class="text-slate-400 font-medium mb-8">當計畫被打亂，大腦過熱快要「當機發脾氣」時，第一步永遠是先降溫！</p>
+            
+            <div class="relative w-48 h-48 mx-auto flex items-center justify-center mb-8">
+                <div id="breathe-circle" class="absolute inset-0 bg-sky-400 rounded-full opacity-60"></div>
+                <button onclick="toggleBreathing()" id="breathe-btn" class="relative z-10 w-32 h-32 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full shadow-[0_0_20px_rgba(56,189,248,0.5)] border-4 border-white/20 font-black text-xl flex flex-col items-center justify-center hover:scale-105 transition-transform active:scale-95 text-white">
+                    <span id="breathe-text">點擊<br>降溫</span>
+                </button>
+            </div>
+            
+            <div class="bg-slate-900 rounded-xl p-4 inline-block border border-slate-600">
+                <p id="breathe-instruction" class="text-sky-300 font-bold text-lg tracking-widest">系統待命中...</p>
+            </div>
+        </div>
+
+        <!-- 裝備 2：特工轉念濾鏡 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-teal-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-teal-800">
+                <i class="fa-solid fa-camera-rotate"></i> 輔助裝備：特工轉念濾鏡
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">點擊卡片翻轉，看見藏在麻煩中的「新玩法」。</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flip-card cursor-pointer h-56" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-50 rounded-2xl border-2 border-slate-200 p-5 flex flex-col justify-center items-center text-center hover:border-slate-300">
+                            <div class="text-4xl mb-2">🌧️</div>
+                            <p class="text-xs font-bold text-rose-600 mb-1">鉛筆思維 (卡關)</p>
+                            <p class="font-black text-slate-700 text-sm">「落大雨去唔到主題樂園，我今日完蛋了！」</p>
+                            <div class="mt-auto text-teal-500 text-xs font-bold animate-pulse">👆 點擊轉念</div>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-teal-500 rounded-2xl p-5 flex flex-col justify-center items-center text-center text-white shadow-lg">
+                            <div class="text-4xl mb-2">🎮</div>
+                            <p class="text-xs font-bold text-teal-100 mb-1">橡皮筋思維 (Plan B)</p>
+                            <p class="font-black text-sm">「既然出唔到街，不如約朋友一齊上線打機！」</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer h-56" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-50 rounded-2xl border-2 border-slate-200 p-5 flex flex-col justify-center items-center text-center hover:border-slate-300">
+                            <div class="text-4xl mb-2">🍔</div>
+                            <p class="text-xs font-bold text-rose-600 mb-1">鉛筆思維 (卡關)</p>
+                            <p class="font-black text-slate-700 text-sm">「我想食嘅漢堡包賣晒！我唔食午餐啦！」</p>
+                            <div class="mt-auto text-teal-500 text-xs font-bold animate-pulse">👆 點擊轉念</div>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-teal-500 rounded-2xl p-5 flex flex-col justify-center items-center text-center text-white shadow-lg">
+                            <div class="text-4xl mb-2">🍕</div>
+                            <p class="text-xs font-bold text-teal-100 mb-1">橡皮筋思維 (Plan B)</p>
+                            <p class="font-black text-sm">「剛好可以挑戰一下旁邊那家新開的薄餅店！」</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer h-56" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-50 rounded-2xl border-2 border-slate-200 p-5 flex flex-col justify-center items-center text-center hover:border-slate-300">
+                            <div class="text-4xl mb-2">🪑</div>
+                            <p class="text-xs font-bold text-rose-600 mb-1">鉛筆思維 (卡關)</p>
+                            <p class="font-black text-slate-700 text-sm">「突然要調位，我要同唔熟嘅人坐，真倒霉！」</p>
+                            <div class="mt-auto text-teal-500 text-xs font-bold animate-pulse">👆 點擊轉念</div>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-teal-500 rounded-2xl p-5 flex flex-col justify-center items-center text-center text-white shadow-lg">
+                            <div class="text-4xl mb-2">🕵️‍♂️</div>
+                            <p class="text-xs font-bold text-teal-100 mb-1">橡皮筋思維 (Plan B)</p>
+                            <p class="font-black text-sm">「當成新線人情報收集任務，觀察他有什麼優點！」</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝備 3：多重戰術推演 (Plan B, C, D) 擴充版 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-indigo-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-indigo-800">
+                <i class="fa-solid fa-gears"></i> 戰術擴充 1：多重戰術推演 (Plan B, C, D 腦力激盪)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">優秀特工絕不只有一個備案！點擊將合適的行動，分配給 Plan B、C 和 D 吧！</p>
+            
+            <div class="bg-indigo-50 p-6 rounded-2xl border-2 border-indigo-200 relative">
+                <div class="absolute top-4 right-4 text-xs font-bold text-indigo-400" id="bs-counter">情境 1 / 4</div>
+                
+                <div class="text-center mb-6 mt-2">
+                    <span class="bg-indigo-600 text-white font-bold text-xs px-3 py-1.5 rounded-full uppercase tracking-wider">Plan A 失敗情境</span>
+                    <h3 id="bs-scenario" class="text-xl md:text-2xl font-black text-slate-800 mt-3">「放假原本約好要去打籃球，但突然下大雨！」</h3>
+                </div>
+
+                <!-- 戰術擺放插槽 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div id="slot-B" onclick="selectSlot('B')" class="border-2 border-dashed border-indigo-300 rounded-xl p-4 bg-white min-h-[100px] flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:bg-indigo-50">
+                        <span id="label-B" class="text-xs font-bold text-indigo-500 bg-indigo-100 px-2 py-1 rounded">Plan B (室內運動)</span>
+                        <div id="slot-B-content" class="text-sm font-black text-slate-700 mt-3 text-indigo-300">👆 點擊槽位，再選卡片</div>
+                    </div>
+                    <div id="slot-C" onclick="selectSlot('C')" class="border-2 border-dashed border-indigo-300 rounded-xl p-4 bg-white min-h-[100px] flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:bg-indigo-50">
+                        <span id="label-C" class="text-xs font-bold text-indigo-500 bg-indigo-100 px-2 py-1 rounded">Plan C (備用娛樂)</span>
+                        <div id="slot-C-content" class="text-sm font-black text-slate-700 mt-3 text-indigo-300">👆 點擊槽位，再選卡片</div>
+                    </div>
+                    <div id="slot-D" onclick="selectSlot('D')" class="border-2 border-dashed border-indigo-300 rounded-xl p-4 bg-white min-h-[100px] flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:bg-indigo-50">
+                        <span id="label-D" class="text-xs font-bold text-indigo-500 bg-indigo-100 px-2 py-1 rounded">Plan D (自我放鬆)</span>
+                        <div id="slot-D-content" class="text-sm font-black text-slate-700 mt-3 text-indigo-300">👆 點擊槽位，再選卡片</div>
+                    </div>
+                </div>
+
+                <!-- 可選備案卡片 (動態生成) -->
+                <div id="bs-cards" class="flex flex-wrap justify-center gap-3 min-h-[50px]">
+                    <!-- JS 生成 -->
+                </div>
+
+                <div class="text-center mt-6 flex flex-col items-center">
+                    <button id="bs-verify-btn" onclick="verifyBrainstorm()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-black px-8 py-3 rounded-full text-sm shadow-md transition-all">驗證戰術</button>
+                    <p id="bs-msg" class="text-sm font-bold mt-3 hidden"></p>
+                    <button id="bs-next-btn" onclick="nextBrainstorm()" class="hidden mt-4 border-2 border-indigo-600 text-indigo-700 font-bold px-6 py-2 rounded-full hover:bg-indigo-100 transition-colors">下一個情境 <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝備 4：視角切換無人機 (擴充版) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-cyan-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-cyan-800">
+                <i class="fa-solid fa-helicopter"></i> 戰術擴充 2：視角切換無人機 (人際讀心模擬)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">發生摩擦時，直覺大腦容易生氣，啟動無人機升空，掃描對方隱藏的苦衷！</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+                <!-- 無人機面板 -->
+                <div class="bg-slate-900 rounded-2xl p-6 text-white flex flex-col justify-between h-[340px] relative border-4 border-slate-800 shadow-xl">
+                    <div class="absolute right-4 top-4 text-cyan-500 font-bold text-xs" id="drone-counter">情境 1 / 4</div>
+                    <div class="absolute right-4 top-10 w-12 h-12 rounded-full border border-cyan-500/30 overflow-hidden">
+                        <div class="absolute inset-0 bg-cyan-900/10"></div>
+                        <div class="absolute right-0 bottom-0 w-6 h-6 bg-gradient-to-br from-cyan-400/50 to-transparent radar-line"></div>
+                    </div>
+                    
+                    <div class="pr-12">
+                        <span class="bg-cyan-600 text-white text-xs font-bold px-2 py-1 rounded">直覺視角</span>
+                        <h4 class="text-base md:text-lg font-bold mt-3 text-cyan-50" id="drone-scenario-title">情境載入中...</h4>
+                    </div>
+
+                    <div id="drone-scan-display" class="bg-slate-800/80 p-4 rounded-xl border border-cyan-500/20 text-center my-4 h-[100px] flex flex-col justify-center">
+                        <i class="fa-solid fa-satellite text-cyan-400 text-2xl animate-bounce mb-2"></i>
+                        <p class="text-xs text-cyan-200 font-bold">等待無人機鎖定掃描目標...</p>
+                    </div>
+
+                    <button onclick="launchDrone()" id="drone-action-btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-black py-3 rounded-full text-sm shadow-md transition-all active:scale-95">
+                        <i class="fa-solid fa-tower-broadcast"></i> 升空掃描對方的隱藏訊息
+                    </button>
+                </div>
+
+                <!-- 同理心行動選項 -->
+                <div class="flex flex-col justify-center gap-4 bg-cyan-50/50 p-6 rounded-2xl border-2 border-cyan-100">
+                    <h4 class="font-bold text-cyan-900 mb-2"><i class="fa-solid fa-gamepad"></i> 當解鎖隱藏訊息後，你會點做？</h4>
+                    <div id="drone-options" class="flex flex-col gap-3">
+                        <!-- JS 注入 -->
+                    </div>
+                    <p id="drone-feedback-msg" class="text-sm font-bold text-center mt-2 hidden"></p>
+                    <button id="drone-next-btn" onclick="nextDrone()" class="hidden mt-2 border-2 border-cyan-500 text-cyan-700 font-bold px-6 py-2 rounded-full hover:bg-cyan-100 transition-colors self-center">下一個目標 <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝備 5：邊界防禦盾 (擴充版) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-rose-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-rose-800">
+                <i class="fa-solid fa-shield-halved"></i> 戰術擴充 3：邊界防禦盾 (衝突冷處理)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">遇到惡意挑釁時不一定要硬碰硬，選擇合適的護盾化解攻擊！</p>
+            
+            <div class="bg-rose-50 p-6 rounded-2xl border-2 border-rose-200 relative">
+                <div class="absolute top-4 right-4 text-rose-500 font-bold text-xs" id="shield-counter">攻擊 1 / 4</div>
+                
+                <div class="text-center mb-6 mt-2">
+                    <span class="bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase">遭遇惡意言語攻擊</span>
+                    <h3 id="shield-scenario" class="text-xl md:text-xl font-black text-rose-900 mt-4 h-16">載入中...</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onclick="activateShield('greyrock')" class="bg-white hover:bg-rose-100 border border-rose-200 p-4 rounded-xl text-left transition-all active:scale-95">
+                        <div class="text-2xl mb-1 text-slate-400"><i class="fa-solid fa-circle"></i> 灰石冷處理盾</div>
+                        <p class="text-xs text-slate-500">不給予任何情緒反饋</p>
+                    </button>
+                    <button onclick="activateShield('humor')" class="bg-white hover:bg-rose-100 border border-rose-200 p-4 rounded-xl text-left transition-all active:scale-95">
+                        <div class="text-2xl mb-1 text-yellow-500"><i class="fa-solid fa-face-laugh-beam"></i> 幽默自嘲盾</div>
+                        <p class="text-xs text-slate-500">將惡意折射成幽默玩笑</p>
+                    </button>
+                    <button onclick="activateShield('fire')" class="bg-white hover:bg-rose-100 border border-rose-200 p-4 rounded-xl text-left transition-all active:scale-95">
+                        <div class="text-2xl mb-1 text-rose-500"><i class="fa-solid fa-fire"></i> 憤怒火焰 (硬接)</div>
+                        <p class="text-xs text-slate-500">以牙還牙，直接對罵</p>
+                    </button>
+                </div>
+
+                <!-- 護盾演示 -->
+                <div id="shield-display" class="hidden mt-6 p-4 rounded-xl text-center border-2 animate-pop">
+                    <p id="shield-action-text" class="text-sm font-black mb-2 block"></p>
+                    <p id="shield-result-text" class="text-sm font-medium"></p>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button id="shield-next-btn" onclick="nextShield()" class="hidden border-2 border-rose-500 text-rose-700 font-bold px-6 py-2 rounded-full hover:bg-rose-100 transition-colors">應對下一波攻擊 <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝備 6：隱形潛入戰術 (實景演練版) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-emerald-800">
+                <i class="fa-solid fa-mask"></i> 戰術擴充 4：隱形潛入戰術 (融入群體 SOP)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">別人已經在玩了，怎樣加入才不會被討厭？選擇場景，觀看標準潛入三步驟！</p>
+            
+            <!-- 場景選擇 -->
+            <div class="flex flex-wrap gap-2 mb-6 justify-center">
+                <button onclick="changeSopScenario(0)" id="sop-tab-0" class="sop-tab bg-emerald-600 text-white font-bold px-4 py-2 rounded-lg text-sm transition-all shadow-sm">🎮 同學打緊機</button>
+                <button onclick="changeSopScenario(1)" id="sop-tab-1" class="sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm">📺 圍埋傾動畫</button>
+                <button onclick="changeSopScenario(2)" id="sop-tab-2" class="sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm">🏀 操場踢緊波</button>
+                <button onclick="changeSopScenario(3)" id="sop-tab-3" class="sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm">🃏 玩緊桌遊</button>
+            </div>
+
+            <div class="bg-emerald-50/50 p-6 rounded-2xl border-2 border-emerald-200 max-w-2xl mx-auto">
+                <div class="flex justify-between items-center mb-8 relative">
+                    <div class="absolute left-0 top-1/2 w-full h-1 bg-emerald-200 -translate-y-1/2 z-0"></div>
+                    <div class="z-10 w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shadow-md">1</div>
+                    <div class="z-10 w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shadow-md">2</div>
+                    <div class="z-10 w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shadow-md">3</div>
+                </div>
+
+                <div class="space-y-4 text-left">
+                    <div class="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm flex gap-4">
+                        <div class="text-2xl text-emerald-400"><i class="fa-solid fa-eye"></i></div>
+                        <div>
+                            <h4 class="font-bold text-emerald-800 text-sm">步驟 1：冷靜觀察 (Observe)</h4>
+                            <p id="sop-text-1" class="text-sm text-slate-600 mt-1">先企喺後面，睇下佢地玩緊邊隻 Game，了解戰況。</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm flex gap-4">
+                        <div class="text-2xl text-emerald-400"><i class="fa-solid fa-thumbs-up"></i></div>
+                        <div>
+                            <h4 class="font-bold text-emerald-800 text-sm">步驟 2：刷存在感與讚美 (Mirror & Praise)</h4>
+                            <p id="sop-text-2" class="text-sm text-slate-600 mt-1">「哇，你連呢隻王都打得贏，好勁喎！」</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm flex gap-4">
+                        <div class="text-2xl text-emerald-400"><i class="fa-solid fa-hand-sparkles"></i></div>
+                        <div>
+                            <h4 class="font-bold text-emerald-800 text-sm">步驟 3：禮貌詢問 (Request)</h4>
+                            <p id="sop-text-3" class="text-sm text-slate-600 mt-1">「好似好好玩咁，下一鋪可唔可以加埋我一齊打呀？」</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝備 7：戰略性撤退 (極限接納翻轉卡) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-200 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-slate-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-slate-800">
+                <i class="fa-solid fa-flag"></i> 戰術擴充 5：戰略性撤退 (接納與放下)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">有些失去無法變成「新玩法」。這時不需要假裝開心，點擊翻開以下卡片，學習「極限接納」。</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- 卡片 1 -->
+                <div class="flip-card cursor-pointer h-64" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl shadow-sm">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-50 rounded-2xl border-2 border-slate-200 p-4 flex flex-col items-center justify-center text-center">
+                            <div class="text-4xl mb-2">🏆</div>
+                            <p class="font-bold text-slate-700 text-sm mb-3">努力準備了很久的比賽，最後還是輸了。</p>
+                            <div class="mt-auto bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-1 rounded">點擊啟動接納</div>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center text-white">
+                            <div class="text-2xl mb-1">🩹</div>
+                            <p class="text-xs font-bold text-slate-300 mb-1">極限接納：</p>
+                            <p class="text-[13px] leading-relaxed">「我不需要假裝高興，可以哭和失望。但我接受比賽已結束，這不是終點，我會再次出發。」</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 卡片 2 -->
+                <div class="flip-card cursor-pointer h-64" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl shadow-sm">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-50 rounded-2xl border-2 border-slate-200 p-4 flex flex-col items-center justify-center text-center">
+                            <div class="text-4xl mb-2">🤖</div>
+                            <p class="font-bold text-slate-700 text-sm mb-3">最心愛、已經絕版的模型不小心跌爛了。</p>
+                            <div class="mt-auto bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-1 rounded">點擊啟動接納</div>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center text-white">
+                            <div class="text-2xl mb-1">🩹</div>
+                            <p class="text-xs font-bold text-slate-300 mb-1">極限接納：</p>
+                            <p class="text-[13px] leading-relaxed">「我好心痛，因為它對我很重要。但爛了就是爛了，發脾氣也不能復原，我會把它好好收起或當作戰損版。」</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 卡片 3 -->
+                <div class="flip-card cursor-pointer h-64" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl shadow-sm">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-50 rounded-2xl border-2 border-slate-200 p-4 flex flex-col items-center justify-center text-center">
+                            <div class="text-4xl mb-2">✈️</div>
+                            <p class="font-bold text-slate-700 text-sm mb-3">最要好的朋友下個月就要移民去外國了。</p>
+                            <div class="mt-auto bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-1 rounded">點擊啟動接納</div>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center text-white">
+                            <div class="text-2xl mb-1">🩹</div>
+                            <p class="text-xs font-bold text-slate-300 mb-1">極限接納：</p>
+                            <p class="text-[13px] leading-relaxed">「我會好唔捨得佢。我改變不了他要走的事實，但我可以珍惜剩下的時間，並約定以後常打 Video Call。」</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 卡片 4 -->
+                <div class="flip-card cursor-pointer h-64" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl shadow-sm">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-50 rounded-2xl border-2 border-slate-200 p-4 flex flex-col items-center justify-center text-center">
+                            <div class="text-4xl mb-2">🐕</div>
+                            <p class="font-bold text-slate-700 text-sm mb-3">養了很久的寵物因為生病過身了。</p>
+                            <div class="mt-auto bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-1 rounded">點擊啟動接納</div>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center text-white">
+                            <div class="text-2xl mb-1">🩹</div>
+                            <p class="text-xs font-bold text-slate-300 mb-1">極限接納：</p>
+                            <p class="text-[13px] leading-relaxed">「生命有終點是無法改變的規律。我允許自己傷心很久，但我知道牠在我心裡的記憶會永遠陪伴我。」</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 實戰模擬器 (小遊戲) -->
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-center">
+            🎮 實戰應變模擬器 (終極挑戰)
+        </h2>
+        
+        <div id="game-container" class="bg-slate-800 rounded-[2rem] p-6 md:p-10 shadow-xl mb-12 relative overflow-hidden border-4 border-slate-700">
+            <div class="w-full bg-slate-700 rounded-full h-2 mb-6">
+                <div id="game-progress" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <div id="game-screen" class="bg-white rounded-xl p-6 md:p-8 shadow-inner relative">
+                <div class="absolute top-4 right-4 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full" id="game-counter">第 1 / 8 局</div>
+                
+                <div class="text-center mb-8 mt-4">
+                    <div id="game-icon" class="text-5xl mb-4 text-emerald-500">⚠️</div>
+                    <p id="game-question" class="text-lg md:text-xl font-bold text-slate-700">
+                        載入中...
+                    </p>
+                    <p class="text-teal-600 font-bold mt-3"><i class="fa-solid fa-code-branch"></i> 突發狀況！請選擇你的應對策略：</p>
+                </div>
+
+                <div id="game-options" class="flex flex-col gap-3"></div>
+
+                <div id="game-feedback" class="hidden mt-6 p-4 rounded-xl border">
+                    <div class="flex items-start gap-3">
+                        <div id="feedback-icon" class="text-2xl mt-1"></div>
+                        <div>
+                            <h4 id="feedback-title" class="font-bold text-lg mb-1"></h4>
+                            <p id="feedback-text" class="text-sm text-slate-600 mb-3"></p>
+                            <button id="next-btn" onclick="nextQuestion()" class="hidden bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-700 transition-colors">
+                                下一局 <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 任務完成區塊 -->
+        <div id="mission-complete-zone" class="hidden text-center bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-100 rounded-full mix-blend-multiply filter blur-2xl opacity-60"></div>
+            <div class="text-5xl mb-4 text-emerald-500"><i class="fa-solid fa-infinity"></i></div>
+            <h3 class="text-2xl font-black mb-2 text-slate-800">變形金剛訓練完成！</h3>
+            <p class="text-slate-500 mb-6">你已經獲得了「橡皮筋大腦」，以後遇到突發狀況與人際風暴都不怕卡關了！</p>
+            <button onclick="completeMission()" id="claimBtn" class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 mx-auto">
+                <i class="fa-solid fa-check-circle"></i> 領取 350 EXP 並返回大廳
+            </button>
+            <p id="successMsg" class="text-emerald-600 font-bold mt-4 hidden">
+                🎉 恭喜！獲得 350 EXP！即將返回大廳...
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        // --- 1. 呼吸同步器邏輯 ---
+        let breatheInterval;
+        let isBreathing = false;
+        function toggleBreathing() {
+            const btnText = document.getElementById('breathe-text');
+            const circle = document.getElementById('breathe-circle');
+            const instruction = document.getElementById('breathe-instruction');
+            if (isBreathing) {
+                clearInterval(breatheInterval);
+                circle.classList.remove('animate-breathe');
+                btnText.innerHTML = "點擊<br>降溫";
+                instruction.innerText = "系統待命中...";
+                instruction.classList.replace('text-emerald-300', 'text-sky-300');
+                isBreathing = false;
+            } else {
+                isBreathing = true;
+                circle.classList.add('animate-breathe');
+                btnText.innerHTML = "<i class='fa-solid fa-stop'></i><br>停止";
+                let breatheIn = true;
+                function updateBreath() {
+                    if (breatheIn) {
+                        instruction.innerText = "慢慢吸氣... (1, 2, 3, 4)";
+                        instruction.classList.replace('text-sky-300', 'text-emerald-300');
+                    } else {
+                        instruction.innerText = "緩緩呼氣... (1, 2, 3, 4)";
+                        instruction.classList.replace('text-emerald-300', 'text-sky-300');
+                    }
+                    breatheIn = !breatheIn;
+                }
+                updateBreath();
+                breatheInterval = setInterval(updateBreath, 4000);
+            }
+        }
+
+        // --- 擴充 1: 多重戰術推演 (Plan B, C, D) 邏輯 ---
+        const bsData = [
+            {
+                scenario: "「放假原本約好要去打籃球，但突然下大雨！」",
+                labels: { B: "Plan B (室內運動)", C: "Plan C (備用娛樂)", D: "Plan D (個人放鬆)" },
+                cards: [
+                    { id: 'c1', text: "改去室內保齡球 🎳", target: 'B' },
+                    { id: 'c2', text: "去朋友家玩桌遊 🎲", target: 'C' },
+                    { id: 'c3', text: "自己在家看電影 🎬", target: 'D' }
+                ],
+                hints: "提示：Plan B 需要運動感、Plan C 需要多人室內玩、Plan D 是一個人。"
+            },
+            {
+                scenario: "「去餐廳想食嘅漢堡包賣晒！」",
+                labels: { B: "Plan B (同類食物)", C: "Plan C (新嘗試)", D: "Plan D (保守選擇)" },
+                cards: [
+                    { id: 'c1', text: "食熱狗或三文治 🌭", target: 'B' },
+                    { id: 'c2', text: "試新開嘅薄餅店 🍕", target: 'C' },
+                    { id: 'c3', text: "去便利店買麵包 🍞", target: 'D' }
+                ],
+                hints: "提示：Plan B 找相似的，Plan C 找新的，Plan D 是最基本的充飢。"
+            },
+            {
+                scenario: "「去圖書館想借嘅書俾人借咗！」",
+                labels: { B: "Plan B (同系列)", C: "Plan C (轉模式)", D: "Plan D (延遲滿足)" },
+                cards: [
+                    { id: 'c1', text: "借該作者另一本書 📚", target: 'B' },
+                    { id: 'c2', text: "睇下有無電子書版 📱", target: 'C' },
+                    { id: 'c3', text: "去櫃檯登記預約等 ⏳", target: 'D' }
+                ],
+                hints: "提示：Plan B 是替代品，Plan C 是不同科技，Plan D 是排隊。"
+            },
+            {
+                scenario: "「準備好嘅小組匯報，USB手指突然壞咗讀唔到！」",
+                labels: { B: "Plan B (雲端備份)", C: "Plan C (無PPT照講)", D: "Plan D (誠實求助)" },
+                cards: [
+                    { id: 'c1', text: "上 Google Drive 重新下載 ☁️", target: 'B' },
+                    { id: 'c2', text: "靠記憶直接口述匯報 🗣️", target: 'C' },
+                    { id: 'c3', text: "同老師解釋求多一日限期 🙇", target: 'D' }
+                ],
+                hints: "提示：特工出任務前通常有雲端備份，這是最好的B計畫。"
+            }
+        ];
+        
+        let bsIndex = 0;
+        let selectedSlotId = null;
+        let brainstormPlacements = { B: null, C: null, D: null };
+
+        function loadBrainstorm() {
+            const data = bsData[bsIndex];
+            document.getElementById('bs-counter').innerText = `情境 ${bsIndex + 1} / ${bsData.length}`;
+            document.getElementById('bs-scenario').innerText = data.scenario;
+            document.getElementById('label-B').innerText = data.labels.B;
+            document.getElementById('label-C').innerText = data.labels.C;
+            document.getElementById('label-D').innerText = data.labels.D;
+            
+            brainstormPlacements = { B: null, C: null, D: null };
+            ['B', 'C', 'D'].forEach(s => {
+                document.getElementById(`slot-${s}-content`).innerText = "👆 點擊槽位，再選卡片";
+                document.getElementById(`slot-${s}`).classList.remove('slot-active');
+            });
+            selectedSlotId = null;
+
+            const cardsContainer = document.getElementById('bs-cards');
+            cardsContainer.innerHTML = '';
+            // Shuffle cards slightly
+            const shuffledCards = [...data.cards].sort(() => Math.random() - 0.5);
+            shuffledCards.forEach(card => {
+                const btn = document.createElement('button');
+                btn.id = `card-${card.id}`;
+                btn.className = 'bg-white border border-indigo-200 rounded-lg px-4 py-2 text-sm font-bold text-indigo-800 hover:border-indigo-500 shadow-sm transition-all';
+                btn.innerText = card.text;
+                btn.onclick = () => selectCard(card.id, card.text, card.target);
+                // Store correct target in dataset for checking
+                btn.dataset.target = card.target;
+                cardsContainer.appendChild(btn);
+            });
+
+            document.getElementById('bs-msg').classList.add('hidden');
+            document.getElementById('bs-next-btn').classList.add('hidden');
+            document.getElementById('bs-verify-btn').classList.remove('hidden');
+        }
+
+        function selectSlot(slot) {
+            document.querySelectorAll("[id^='slot-']").forEach(el => el.classList.remove('slot-active'));
+            selectedSlotId = slot;
+            document.getElementById(`slot-${slot}`).classList.add('slot-active');
+        }
+
+        function selectCard(cardId, cardText, targetVal) {
+            if (!selectedSlotId) {
+                alert("特工請注意：請先點選上方的「Plan 槽位」！");
+                return;
+            }
+            // Put in slot
+            document.getElementById(`slot-${selectedSlotId}-content`).innerText = cardText;
+            brainstormPlacements[selectedSlotId] = targetVal; // we store the card's target to check if it matches the slot
+            
+            // Mark card as used
+            document.getElementById(`card-${cardId}`).className = 'bg-slate-100 border border-slate-200 rounded-lg px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed shadow-none';
+            
+            document.getElementById(`slot-${selectedSlotId}`).classList.remove('slot-active');
+            selectedSlotId = null;
+        }
+
+        function verifyBrainstorm() {
+            const msg = document.getElementById('bs-msg');
+            const data = bsData[bsIndex];
+            msg.classList.remove('hidden', 'text-emerald-600', 'text-rose-500');
+
+            if (brainstormPlacements.B === 'B' && brainstormPlacements.C === 'C' && brainstormPlacements.D === 'D') {
+                msg.classList.add('text-emerald-600');
+                msg.innerText = "🎉 完美戰術組合！你已經為這個危機準備了三套不同的備案！";
+                document.getElementById('bs-verify-btn').classList.add('hidden');
+                
+                if (bsIndex < bsData.length - 1) {
+                    document.getElementById('bs-next-btn').classList.remove('hidden');
+                } else {
+                    msg.innerText += " (所有情境演練完成)";
+                }
+            } else {
+                msg.classList.add('text-rose-500');
+                msg.innerText = `⚠️ 戰術推演有誤。${data.hints} 請重新配對。`;
+                // Reset this round
+                loadBrainstorm(); 
+                document.getElementById('bs-msg').classList.remove('hidden'); // Keep error visible
+            }
+        }
+
+        function nextBrainstorm() {
+            bsIndex++;
+            loadBrainstorm();
+        }
+
+        // --- 擴充 2: 視角切換無人機邏輯 ---
+        const droneData = [
+            {
+                scenario: "小明做分組報告遲到，而且完全沒做分配的工作。",
+                secret: "「小明昨晚家裡發生了急事，他在醫院照顧婆婆一整晚。他現在非常累且抱歉，但不知道怎麼開口...」",
+                optA: { text: "直接跟老師投訴他懶惰，並在同學群組裡公開排擠他。", correct: false },
+                optB: { text: "私下溫和詢問：「見你今日無精打采，係咪遇到咩事呀？有需要隨時講。」", correct: true },
+                success: "✅ 優秀！你看穿了『遲到』背後的原因。同理心不但解決了分組問題，還能收穫友情！",
+                fail: "❌ 警告：如果一味指責，小明會因為委屈而防禦爆炸，小組合作就會徹底破裂。"
+            },
+            {
+                scenario: "同學 B 突然在走廊撞過來，連對不起都沒說就跑了。",
+                secret: "「他剛剛被老師嚴厲地責罵完，眼淚快要掉下來了，所以低著頭猛衝想找個沒人的地方哭...」",
+                optA: { text: "非常生氣，在背後大罵他沒禮貌，並告訴其他同學他很衰。", correct: false },
+                optB: { text: "雖然有點痛，但看他神色不對，決定先不追究，或者稍後再關心他。", correct: true },
+                success: "✅ 完美！有時候別人的「沒禮貌」不是針對你，而是他們自己正在崩潰邊緣。不火上加油是最高級的彈性。",
+                fail: "❌ 衝突升級：他現在情緒已經滿載，你大罵只會引發激烈的對罵，對事情毫無幫助。"
+            },
+            {
+                scenario: "朋友 C 今天整天都黑口黑面（擺臭臉），對你的問題愛理不理。",
+                secret: "「他家裡養了十年的狗狗今早過身了，他現在心裡非常難過，完全沒有心情說話...」",
+                optA: { text: "覺得他在針對你，發脾氣說：「你咁串做咩呀？以後唔同你玩！」", correct: false },
+                optB: { text: "給他一點空間，輕聲說：「見你今日心情麻麻，我唔煩你住，有需要搵我啦。」", correct: true },
+                success: "✅ 讀心成功！你沒有把別人的情緒「個人化」（以為是自己做錯事），給予適當的空間是最好的安慰。",
+                fail: "❌ 情報誤判：你把他的悲傷誤解成了對你的攻擊。這樣只會在朋友最需要支持時離開他。"
+            },
+            {
+                scenario: "借橡皮擦給同學 D，他用完直接用丟的還給你，差點砸到你的臉。",
+                secret: "「同學 D 是有特殊教育需要(SEN)的學生，他的小肌肉控制不好，其實他只是想『拋』給你，不是惡意攻擊...」",
+                optA: { text: "理解他可能有困難，直接說：「下次遞俾我就得啦，拋過黎好危險㗎。」", correct: true },
+                optB: { text: "覺得他挑釁，拿起橡皮擦用力丟回他的頭上報復。", correct: false },
+                success: "✅ 理性處理！你看見了「行為」背後的「限制」。直接而溫和地告訴他正確的做法，比發脾氣更有效。",
+                fail: "❌ 防線崩潰：以暴易暴只會讓你變成加害者。特工應該保持冷靜，看清全局。"
+            }
+        ];
+        
+        let droneIndex = 0;
+        let droneScanned = false;
+
+        function loadDroneScenario() {
+            const data = droneData[droneIndex];
+            document.getElementById('drone-counter').innerText = `情境 ${droneIndex + 1} / ${droneData.length}`;
+            document.getElementById('drone-scenario-title').innerText = `情境：${data.scenario}`;
+            
+            // 重置面板
+            const btn = document.getElementById('drone-action-btn');
+            btn.innerHTML = "<i class='fa-solid fa-tower-broadcast'></i> 升空掃描對方的隱藏訊息";
+            btn.disabled = false;
+            
+            const display = document.getElementById('drone-scan-display');
+            display.className = "bg-slate-800/80 p-4 rounded-xl border border-cyan-500/20 text-center my-4 h-[100px] flex flex-col justify-center";
+            display.innerHTML = `
+                <i class="fa-solid fa-satellite text-cyan-400 text-2xl animate-bounce mb-2"></i>
+                <p class="text-xs text-cyan-200 font-bold">等待無人機鎖定掃描目標...</p>
+            `;
+            
+            // 載入選項
+            const optsContainer = document.getElementById('drone-options');
+            optsContainer.innerHTML = '';
+            
+            [data.optA, data.optB].forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'drone-opt-btn bg-white border border-cyan-200 rounded-xl p-4 text-left font-bold text-slate-700 hover:border-cyan-500 shadow-sm transition-all opacity-50 cursor-not-allowed';
+                btn.innerText = opt.text;
+                btn.disabled = true;
+                btn.onclick = () => checkDroneResponse(opt.correct, btn);
+                optsContainer.appendChild(btn);
+            });
+            
+            document.getElementById('drone-feedback-msg').classList.add('hidden');
+            document.getElementById('drone-next-btn').classList.add('hidden');
+            droneScanned = false;
+        }
+
+        function launchDrone() {
+            if(droneScanned) return;
+            const btn = document.getElementById('drone-action-btn');
+            const display = document.getElementById('drone-scan-display');
+            const data = droneData[droneIndex];
+            
+            btn.disabled = true;
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> 掃描中...";
+            
+            setTimeout(() => {
+                display.className = "bg-slate-800/80 p-4 rounded-xl border-2 border-cyan-400 text-left animate-pop h-[100px] overflow-y-auto";
+                display.innerHTML = `
+                    <div class="text-cyan-400 font-bold text-xs mb-1"><i class="fa-solid fa-wave-square"></i> 掃描結果解密：</div>
+                    <p class="text-xs text-white leading-relaxed">${data.secret}</p>
+                `;
+                btn.innerHTML = "<i class='fa-solid fa-check'></i> 鎖定目標心理狀態";
+                
+                document.querySelectorAll('.drone-opt-btn').forEach(b => {
+                    b.disabled = false;
+                    b.classList.remove('opacity-50', 'cursor-not-allowed');
+                });
+                droneScanned = true;
+            }, 1200);
+        }
+
+        function checkDroneResponse(isCorrect, selectedBtn) {
+            if (!droneScanned) return;
+            const msg = document.getElementById('drone-feedback-msg');
+            const data = droneData[droneIndex];
+            const nextBtn = document.getElementById('drone-next-btn');
+            
+            document.querySelectorAll('.drone-opt-btn').forEach(b => b.disabled = true);
+            msg.classList.remove('hidden', 'text-emerald-600', 'text-rose-500');
+
+            if (isCorrect) {
+                selectedBtn.classList.replace('border-cyan-200', 'border-emerald-500');
+                selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800');
+                msg.classList.add('text-emerald-600');
+                msg.innerHTML = data.success;
+                
+                nextBtn.classList.remove('hidden');
+                if (droneIndex === droneData.length - 1) {
+                    nextBtn.innerText = "完成讀心訓練";
+                }
+            } else {
+                selectedBtn.classList.replace('border-cyan-200', 'border-rose-500');
+                selectedBtn.classList.add('bg-rose-50', 'text-rose-800', 'animate-shake');
+                msg.classList.add('text-rose-500');
+                msg.innerHTML = data.fail;
+                
+                setTimeout(() => {
+                    selectedBtn.classList.remove('animate-shake');
+                    document.querySelectorAll('.drone-opt-btn').forEach(b => b.disabled = false);
+                }, 800);
+            }
+        }
+
+        function nextDrone() {
+            droneIndex++;
+            if (droneIndex < droneData.length) {
+                loadDroneScenario();
+            } else {
+                document.getElementById('drone-action-btn').innerHTML = "🎉 所有目標掃描完成！";
+                document.getElementById('drone-next-btn').classList.add('hidden');
+            }
+        }
+
+
+        // --- 擴充 3: 邊界防禦盾邏輯 ---
+        const shieldData = [
+            {
+                attack: "有人故意嘲笑你：「哇，你個髮型剪到好似個掃把咁嘅？好核突呀！」",
+                greyrock: { action: "你沒說話，冷靜地看著他兩秒，然後像看石頭一樣走開。", result: "🛡️ 灰石防禦生效！因為你完全沒有給他情緒反應，對方覺得自討沒趣，嘲笑中止。" },
+                humor: { action: "笑笑口回應：「哈哈！你咁講又幾似喎，等我可以隨時掃地嘛！」", result: "🛡️ 幽默折射生效！你用自嘲化解了攻擊，將敵意變成了玩笑，對方無話可說。" },
+                fire: { action: "立刻大吼：「你個頭先似垃圾桶呀！你全家都似掃把！」", result: "💥 防禦失敗！硬碰硬爆炸！憤怒的反擊正中了對方的陷阱，引發更大衝突。" }
+            },
+            {
+                attack: "同學特意模仿你有些奇怪的走路姿勢，並大聲笑你。",
+                greyrock: { action: "當作沒看到也沒聽到，繼續做自己的事情。", result: "🛡️ 灰石防禦生效！霸凌者最想要的就是你的反應，你沒有反應，他就覺得無聊了。" },
+                humor: { action: "挺起胸膛說：「我練緊最新的 Catwalk 步法呀，你識咩呀？」", result: "🛡️ 幽默折射生效！展現了你的強大自信，對方反而顯得很幼稚。" },
+                fire: { action: "衝過去推他一把：「你再學我行路我打你呀！」", result: "💥 防禦失敗！一旦動手，理虧的就會變成你，可能會被學校記過。" }
+            },
+            {
+                attack: "同學故意拿走你的課本不還，並挑釁說：「你過黎搶返啦！」",
+                greyrock: { action: "冷靜地說：「請你放返低。」如果他不放，就直接轉身去找老師處理。", result: "🛡️ 灰石防禦生效！你不上當去『搶』，而是尋求權威幫助，這是最安全的做法。" },
+                humor: { action: "「送俾你啦，反正嗰本我溫完啦，當幫你補習。」", result: "🛡️ 幽默折射生效！出乎意料的回答打破了他的劇本，通常對方會自己把書還回來。" },
+                fire: { action: "立刻撲過去跟他搶奪，結果兩個人打成一團。", result: "💥 防禦失敗！對方就是想激怒你，你完全掉進了他的遊戲規則裡。" }
+            },
+            {
+                attack: "有人在背後很大聲地說你壞話：「佢真係好蠢囉，咁簡單都唔識。」",
+                greyrock: { action: "戴上耳機，或者和旁邊的朋友聊其他開心的事，當背景噪音。", result: "🛡️ 灰石防禦生效！不在乎就是最大的反擊，你的世界不需要為這種人停留。" },
+                humor: { action: "轉過頭對他說：「係呀，所以我先要跟聰明嘅你學習嘛，大師！」", result: "🛡️ 幽默折射生效！『捧殺』技巧讓他瞬間語塞，無法再繼續攻擊。" },
+                fire: { action: "拍桌子大罵：「你講咩呀？有膽你再講多次！」", result: "💥 防禦失敗！正中下懷，你越生氣，他們越高興。特工不應該隨便浪費能量。" }
+            }
+        ];
+
+        let shieldIndex = 0;
+
+        function loadShieldScenario() {
+            const data = shieldData[shieldIndex];
+            document.getElementById('shield-counter').innerText = `攻擊 ${shieldIndex + 1} / ${shieldData.length}`;
+            document.getElementById('shield-scenario').innerText = data.attack;
+            document.getElementById('shield-display').classList.add('hidden');
+            document.getElementById('shield-next-btn').classList.add('hidden');
+        }
+
+        function activateShield(type) {
+            const data = shieldData[shieldIndex];
+            const display = document.getElementById('shield-display');
+            const actionTextEl = document.getElementById('shield-action-text');
+            const resultTextEl = document.getElementById('shield-result-text');
+            const nextBtn = document.getElementById('shield-next-btn');
+            
+            display.classList.remove('hidden', 'bg-slate-100', 'border-slate-300', 'text-slate-700', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-800', 'bg-rose-50', 'border-rose-200', 'text-rose-800');
+            
+            let actionText, resultText;
+
+            if (type === 'greyrock') {
+                display.classList.add('bg-slate-100', 'border-slate-300', 'text-slate-700');
+                actionText = data.greyrock.action;
+                resultText = data.greyrock.result;
+            } else if (type === 'humor') {
+                display.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-800');
+                actionText = data.humor.action;
+                resultText = data.humor.result;
+            } else {
+                display.classList.add('bg-rose-50', 'border-rose-200', 'text-rose-800');
+                actionText = data.fire.action;
+                resultText = data.fire.result;
+                display.classList.add('animate-shake');
+                setTimeout(() => display.classList.remove('animate-shake'), 400);
+            }
+            
+            actionTextEl.innerText = `📢 你的行動：${actionText}`;
+            resultTextEl.innerText = resultText;
+
+            nextBtn.classList.remove('hidden');
+            if (shieldIndex === shieldData.length - 1) {
+                nextBtn.innerText = "完成防禦訓練";
+            }
+        }
+
+        function nextShield() {
+            shieldIndex++;
+            if (shieldIndex < shieldData.length) {
+                loadShieldScenario();
+            } else {
+                document.getElementById('shield-scenario').innerText = "🎉 恭喜！你已掌握處理衝突的冷靜護盾！";
+                document.getElementById('shield-next-btn').classList.add('hidden');
+                document.getElementById('shield-display').classList.add('hidden');
+            }
+        }
+
+        // --- 擴充 4: 隱形潛入戰術 (實景演練) ---
+        const sopData = [
+            {
+                s1: "先企喺後面，睇下佢地玩緊邊隻 Game，了解戰況。",
+                s2: "「哇，你連呢隻王都打得贏，好勁喎！」 (刷存在感)",
+                s3: "「好似好好玩咁，下一鋪可唔可以加埋我一齊打呀？」"
+            },
+            {
+                s1: "行埋少少，企喺外圍聽下佢地傾緊動畫嘅邊一個篇章。",
+                s2: "點頭笑，附和：「係囉，我都覺得尋晚嗰集主角爆發嗰下超型！」",
+                s3: "「你地都睇緊呢套呀？我最鐘意XXX，你地呢？」 (自然加入話題)"
+            },
+            {
+                s1: "喺場邊睇下佢地係咪滿人，定係隨便踢緊。",
+                s2: "波出界嗰陣，主動幫佢地執界外球，俾個友善嘅笑容。",
+                s3: "「你地仲加唔加人呀？我都想跟隊踢埋一份！」"
+            },
+            {
+                s1: "企喺側邊睇一個回合，了解下佢地玩緊邊款桌遊同規則。",
+                s2: "「你抽到呢張卡好幸運喎，絕地反擊！」",
+                s3: "「好似幾過癮咁，下一局預埋我得唔得呀？」"
+            }
+        ];
+
+        function changeSopScenario(index) {
+            // 更新 Tab 樣式
+            document.querySelectorAll('.sop-tab').forEach((tab, i) => {
+                if (i === index) {
+                    tab.className = "sop-tab bg-emerald-600 text-white font-bold px-4 py-2 rounded-lg text-sm transition-all shadow-sm";
+                } else {
+                    tab.className = "sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm";
+                }
+            });
+            
+            // 加上動畫效果更新文字
+            for(let i=1; i<=3; i++) {
+                const textEl = document.getElementById(`sop-text-${i}`);
+                textEl.classList.remove('animate-pop');
+                void textEl.offsetWidth; // trigger reflow
+                textEl.innerText = sopData[index][`s${i}`];
+                textEl.classList.add('animate-pop');
+            }
+        }
+
+
+        // --- 6. 實戰應變模擬器邏輯 (終極版 8 題) ---
+        const finalQuizData = [
+            {
+                icon: "🤝",
+                question: "約好的同學突然發短訊說他不能來了（放飛機），你感到非常失望與憤怒。",
+                options: [
+                    { text: "立刻瘋狂發訊息質問他：「你根本就唔重視我！以後唔好同我傾計！」", isCorrect: false },
+                    { text: "深呼吸降溫，回覆：「好啦，咁你忙先，下次再約。」然後自己找別的事做。", isCorrect: true }
+                ],
+                successTitle: "✅ 橡皮筋大腦！",
+                successText: "這是極佳的人際適應。理解別人可能真的有苦衷，不將情緒發洩在對方身上，並且懂得主動調整自己的休閒計劃！",
+                failTitle: "❌ 鉛筆大腦折斷了",
+                failText: "每個人都可能有突發狀況。如果大腦卡在『他一定是討厭我』的死胡同裡，不但會毀掉友情，也會毀掉自己的心情。"
+            },
+            {
+                icon: "👥",
+                question: "小組討論時，其他組員都反對你的提議，並且選用了另一個人的方案。",
+                options: [
+                    { text: "大發脾氣，說：「既然你地唔用我個方案，咁成份報告你地自己做晒佢！」", isCorrect: false },
+                    { text: "接受少數服從多數，告訴自己：「雖然可惜，但可以看看他們的方案有什麼優點，我盡力做好分配的工作。」", isCorrect: true }
+                ],
+                successTitle: "✅ 特工聯盟精神！",
+                successText: "這才是合作的態度。在團隊中，接納不同意見，並把心思放於『如何把現有方案做好』，也是大腦彈性的體現！",
+                failTitle: "❌ 卡關當機",
+                failText: "賭氣退出只會讓報告不及格，還會被貼上『合作困難』的標籤。試著接受改變！"
+            },
+            {
+                icon: "💔",
+                question: "你不小心把好朋友最喜歡的絕版筆袋弄壞了，你非常害怕他會生氣。",
+                options: [
+                    { text: "立刻主動坦白認錯，真誠道歉並提出賠償（如買另一個筆袋或請吃茶點）。", isCorrect: true },
+                    { text: "假裝不知道，默默把筆袋放回他的書包，假裝不是自己弄壞的。", isCorrect: false }
+                ],
+                successTitle: "✅ 勇敢面對，建立擔當！",
+                successText: "逃避只會引發信任危機。主動承認並想出彌補的 Plan B，才是負責且有智慧的特工！",
+                failTitle: "❌ 逃避策略失敗",
+                failText: "如果對方事後發現是你弄壞的，信任將徹底破裂，那就真的無法挽回了。"
+            },
+            {
+                icon: "📡",
+                question: "【危機預警】明天要去戶外教學，路程長達兩個小時。在出發前，你可以做什麼風險評估？",
+                options: [
+                    { text: "什麼都不想，反正明天到時候再算。", isCorrect: false },
+                    { text: "先在背包準備好一部掌上遊戲機或一本漫畫，預防塞車或坐車太悶。", isCorrect: true }
+                ],
+                successTitle: "✅ 風險預警成功！",
+                successText: "優秀的特工在 Plan A（順利到達）執行前，就會將 Plan B（防止坐車無聊）準備在背包中。這叫未雨綢繆！",
+                failTitle: "❌ 毫無防備",
+                failText: "萬一明天遇到大塞車，你只能在車上發呆生悶氣兩個小時，那就很痛苦了。"
+            },
+            {
+                icon: "🛡️",
+                question: "放學時，一個你不太熟的同學一直纏著你，要你幫他做他的功課。",
+                options: [
+                    { text: "「我唔會幫你做功課。不過如果你邊條唔識，我可以教你，或者你問老師。」", isCorrect: true },
+                    { text: "因為不敢拒絕，雖然很不願意，還是默默拿了他的功課回家做。", isCorrect: false }
+                ],
+                successTitle: "✅ 啟動和平拒絕盾！",
+                successText: "溫和但堅定地拒絕不合理要求，並提供一個折衷的輔助 Plan B（我可以教你），既保護了自己也不傷和氣！",
+                failTitle: "❌ 邊界防線失守",
+                failText: "一味遷就只會讓對方得寸進尺。學會「拒絕的藝術」是特工的必修課！"
+            },
+            {
+                icon: "🥷",
+                question: "你看到同學正在操場玩你很想玩的卡牌遊戲，你想加入他們。",
+                options: [
+                    { text: "一字不說直接搶走他們的牌，喊道：「我都要玩！預埋我！」", isCorrect: false },
+                    { text: "站在旁邊看一會，稱讚：「哇，你呢張牌好勁喎！」然後禮貌詢問能否加入下一局。", isCorrect: true }
+                ],
+                successTitle: "✅ 隱形潛入成功！",
+                successText: "完美的潛入 SOP！先觀察、刷存在感（稱讚）、再禮貌詢問，這樣加入群體最自然，也最受歡迎！",
+                failTitle: "❌ 強制闖入失敗",
+                failText: "直接搶走卡牌會被視為粗魯和侵略，會被大家討厭並立刻拒絕你加入。"
+            },
+            {
+                icon: "🏳️",
+                question: "【戰略性撤退】你存了很久零用錢買的限定模型，不小心摔得粉碎，完全無法修復了。",
+                options: [
+                    { text: "硬要自己不難過，勉強微笑，或者氣得把房間其他東西也砸爛。", isCorrect: false },
+                    { text: "告訴自己：「難過是正常的。我允許自己哭一下，但我接受它已經壞了的事實。」", isCorrect: true }
+                ],
+                successTitle: "✅ 極限接納 (戰略性撤退)！",
+                successText: "有時候事情真的無法挽回。允許自己傷心，但接受現實，不鑽牛角尖，這也是超級橡皮筋大腦的表現！",
+                failTitle: "❌ 拒絕接納現實",
+                failText: "砸爛其他東西只會造成更多損失。有些失去需要的是『接納』與『放下』，而不是憤怒。"
+            },
+            {
+                icon: "🚁",
+                question: "同學 F 撞到了你，水倒在你書包上，他看起來一臉驚慌，快要哭出來了。此時你的無人機視角會觀察到什麼？",
+                options: [
+                    { text: "大喊：「你眼盲㗎？整濕晒我個書包！」", isCorrect: false },
+                    { text: "看到他是無心的，雖然心痛書包，但說：「唔緊要，我知道你唔係登心嘅，抹乾淨就得啦。」", isCorrect: true }
+                ],
+                successTitle: "✅ 啟動無人機同理視角！",
+                successText: "你看穿了他驚慌的表情，明白他不是故意挑釁。你的體諒化解了他的恐懼，避免了一場衝突！",
+                failTitle: "❌ 憤怒的直覺反應",
+                failText: "雖然書包濕了令人沮喪，但對方已經快急哭了。大吼只會激化矛盾，對弄乾書包毫無幫助。"
+            }
+        ];
+
+        let currentFinalQuestionIndex = 0;
+
+        function initFinalGame() {
+            loadFinalQuestion(currentFinalQuestionIndex);
+        }
+
+        function loadFinalQuestion(index) {
+            const data = finalQuizData[index];
+            document.getElementById('game-counter').innerText = `第 ${index + 1} / ${finalQuizData.length} 局`;
+            document.getElementById('game-icon').innerText = data.icon;
+            document.getElementById('game-question').innerText = data.question;
+            
+            const progress = (index / finalQuizData.length) * 100;
+            document.getElementById('game-progress').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('game-options');
+            optionsContainer.innerHTML = '';
+            
+            data.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'game-option w-full text-left p-4 rounded-xl border-2 border-slate-100 hover:border-emerald-400 hover:bg-emerald-50 transition-all font-medium text-slate-700 bg-white text-sm md:text-base';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkFinalAnswer(opt.isCorrect, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('game-feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function checkFinalAnswer(isCorrect, selectedBtn) {
+            const data = finalQuizData[currentFinalQuestionIndex];
+            const feedbackBox = document.getElementById('game-feedback');
+            const title = document.getElementById('feedback-title');
+            const text = document.getElementById('feedback-text');
+            const icon = document.getElementById('feedback-icon');
+            const nextBtn = document.getElementById('next-btn');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+            
+            const allBtns = document.querySelectorAll('.game-option');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                selectedBtn.classList.replace('border-slate-100', 'border-emerald-500');
+                selectedBtn.classList.replace('hover:border-emerald-400', 'border-emerald-500');
+                selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'font-bold');
+                
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-200');
+                title.className = "font-bold text-lg mb-1 text-emerald-800";
+                icon.innerHTML = '<i class="fa-solid fa-infinity text-emerald-500"></i>';
+                title.innerText = data.successTitle;
+                text.innerText = data.successText;
+                
+                nextBtn.classList.remove('hidden');
+                if(currentFinalQuestionIndex === finalQuizData.length - 1) {
+                    nextBtn.innerText = "完成應變訓練！";
+                } else {
+                    nextBtn.innerHTML = '下一局 <i class="fa-solid fa-arrow-right ml-1"></i>';
+                }
+            } else {
+                selectedBtn.classList.add('animate-shake', 'bg-rose-50', 'border-rose-300', 'text-rose-700');
+                
+                feedbackBox.classList.add('bg-rose-50', 'border-rose-200');
+                title.className = "font-bold text-lg mb-1 text-rose-800";
+                icon.innerHTML = '<i class="fa-solid fa-pencil text-rose-500"></i>';
+                title.innerText = data.failTitle;
+                text.innerText = data.failText;
+
+                setTimeout(() => {
+                    selectedBtn.classList.remove('animate-shake');
+                    allBtns.forEach(b => b.disabled = false);
+                }, 500);
+            }
+        }
+
+        function nextQuestion() {
+            currentFinalQuestionIndex++;
+            if (currentFinalQuestionIndex < finalQuizData.length) {
+                loadFinalQuestion(currentFinalQuestionIndex);
+            } else {
+                document.getElementById('game-progress').style.width = `100%`;
+                document.getElementById('game-container').classList.add('hidden');
+                document.getElementById('mission-complete-zone').classList.remove('hidden');
+            }
+        }
+
+        function completeMission() {
+            const btn = document.getElementById('claimBtn');
+            const msg = document.getElementById('successMsg');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在上傳彈性數據...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            
+            setTimeout(() => {
+                btn.classList.add('hidden');
+                msg.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    window.location.href = 'student_dashboard.html';
+                }, 2000);
+            }, 1000);
+        }
+
+        // 初始化
+        window.onload = () => {
+            loadBrainstorm();
+            loadDroneScenario();
+            loadShieldScenario();
+            changeSopScenario(0);
+            initFinalGame();
+        };
+    </script>
+</body>
+</html>
