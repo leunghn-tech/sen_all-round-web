@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗣️ 話題接球手 | SEN 社交特工訓練營</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f6f8fd;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .exp-font {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* 遊戲專用動畫 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px) rotate(-2deg); }
+            40%, 80% { transform: translateX(5px) rotate(2deg); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes pop-up {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop-up 0.5s ease-out forwards;
+        }
+        
+        /* 雷達掃描動畫 */
+        @keyframes radar-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .radar-sweep {
+            transform-origin: bottom right;
+            animation: radar-spin 2s linear infinite;
+        }
+        
+        /* 擊碎冰塊特效 */
+        .ice-block {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .ice-block:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+        
+        /* 3D 逃生門特效 */
+        .door-wrapper {
+            perspective: 1200px;
+        }
+        .door-panel {
+            transform-origin: left;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+        .door-wrapper.open .door-panel {
+            transform: rotateY(-105deg);
+        }
+        .door-wrapper.open .door-content {
+            opacity: 1;
+            transform: scale(1);
+            transition-delay: 0.3s;
+        }
+        .door-content {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.4s ease;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- 頂部導航 -->
+    <nav class="w-full max-w-5xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
+        <a href="student_dashboard.html" class="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm text-slate-600 font-bold hover:text-blue-600 hover:shadow-md transition-all border border-slate-100">
+            <div class="bg-slate-100 group-hover:bg-blue-100 text-slate-500 group-hover:text-blue-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            返回大廳
+        </a>
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-bold text-sm shadow-sm flex items-center gap-2 border border-blue-200">
+                <i class="fa-solid fa-star text-amber-500"></i> 任務獎勵: 150 EXP
+            </div>
+        </div>
+    </nav>
+
+    <!-- 任務標題區 -->
+    <header class="w-full max-w-5xl mx-auto px-6 mb-10 relative z-20 text-center">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-3xl shadow-lg mb-6">
+            <i class="fa-solid fa-comments"></i>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black mb-4 text-slate-800 tracking-tight">
+            🗣️ 話題接球手
+        </h1>
+        <p class="text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            特工，溝通就像打乒乓球！不能只顧著自己發球，也不能讓球掉在地上。<br>
+            這次的任務是學習如何漂亮地「開球」、「接球」和「化解冷場」！
+        </p>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-6 pb-20 flex-grow relative z-10">
+        
+        <!-- 知識點 1：乒乓球理論 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-blue-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2 text-blue-800">
+                <i class="fa-solid fa-table-tennis-paddle-ball"></i> 特工情報：溝通是乒乓球，不是保齡球！
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 text-center">
+                <div class="bg-rose-50 rounded-2xl p-6 border-2 border-rose-100">
+                    <div class="text-4xl mb-3 text-rose-400"><i class="fa-solid fa-bowling-ball"></i></div>
+                    <div class="font-black text-xl text-rose-700 mb-2">❌ 保齡球式聊天</div>
+                    <p class="text-sm text-rose-600 font-medium text-left">
+                        自己一個人滔滔不絕講 10 分鐘自己喜歡的恐龍，完全不理對方想不想聽，直接把話題「砸」向別人。
+                    </p>
+                </div>
+                <div class="bg-blue-50 rounded-2xl p-6 border-2 border-blue-200 shadow-md transform md:scale-105">
+                    <div class="text-4xl mb-3 text-blue-500"><i class="fa-solid fa-table-tennis-paddle-ball"></i></div>
+                    <div class="font-black text-xl text-blue-700 mb-2">✅ 乒乓球式聊天</div>
+                    <p class="text-sm text-blue-600 font-medium text-left">
+                        講完一段話後，會拋出一個問題（例如：「你覺得呢？」）把球打給對方，兩人有來有往。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 遊戲化：話題紅綠燈 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-200 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-slate-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-slate-800">
+                <i class="fa-solid fa-traffic-light"></i> 戰術分析：話題排雷裝置 (紅綠燈)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">特工發球前要看準目標！閱讀螢幕上的話題，點擊對應的紅綠燈判斷它安不安全。</p>
+            
+            <div class="bg-slate-800 rounded-2xl p-6 md:p-8 border-4 border-slate-700 shadow-xl relative max-w-3xl mx-auto text-center">
+                <div class="absolute top-4 left-4 text-slate-500 font-bold text-xs" id="tl-counter">話題 1 / 10</div>
+                
+                <!-- 題目顯示區 -->
+                <div class="bg-slate-100 rounded-xl p-6 mb-6 shadow-inner mt-4 border-2 border-slate-300">
+                    <p id="tl-topic-text" class="text-xl md:text-2xl font-black text-slate-800">「今日學校飯堂啲嘢食好似幾好味喎！」</p>
+                </div>
+
+                <!-- 提示/回饋區 -->
+                <div id="tl-feedback" class="h-16 mb-4 flex items-center justify-center">
+                    <p class="text-slate-400 font-bold animate-pulse">👆 請點擊下方紅綠燈進行判定 👆</p>
+                </div>
+
+                <!-- 紅綠燈按鈕 -->
+                <div id="tl-buttons" class="flex justify-center gap-4 md:gap-8 bg-slate-900 py-4 px-8 rounded-full inline-flex mx-auto border-4 border-slate-600 shadow-inner">
+                    <!-- 紅燈 -->
+                    <button onclick="checkTrafficLight('red', this)" class="group relative outline-none">
+                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-rose-500 border-4 border-rose-900 shadow-[0_0_15px_#f43f5e] group-hover:bg-rose-400 group-hover:shadow-[0_0_25px_#f43f5e] transition-all"></div>
+                        <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-white font-bold text-xs whitespace-nowrap opacity-50 group-hover:opacity-100">危險球</span>
+                    </button>
+                    <!-- 黃燈 -->
+                    <button onclick="checkTrafficLight('yellow', this)" class="group relative outline-none">
+                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-amber-500 border-4 border-amber-900 shadow-[0_0_15px_#f59e0b] group-hover:bg-amber-400 group-hover:shadow-[0_0_25px_#f59e0b] transition-all"></div>
+                        <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-white font-bold text-xs whitespace-nowrap opacity-50 group-hover:opacity-100">試探球</span>
+                    </button>
+                    <!-- 綠燈 -->
+                    <button onclick="checkTrafficLight('green', this)" class="group relative outline-none">
+                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-emerald-500 border-4 border-emerald-900 shadow-[0_0_15px_#10b981] group-hover:bg-emerald-400 group-hover:shadow-[0_0_25px_#10b981] transition-all"></div>
+                        <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-white font-bold text-xs whitespace-nowrap opacity-50 group-hover:opacity-100">安全球</span>
+                    </button>
+                </div>
+
+                <button id="tl-next-btn" onclick="nextTLTopic()" class="hidden mt-8 bg-white text-slate-800 font-bold px-6 py-2 rounded-full hover:bg-slate-200 transition-colors mx-auto">
+                    下一個話題 <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 遊戲化：發出「開放式」好球 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-fuchsia-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-fuchsia-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-fuchsia-800">
+                <i class="fa-solid fa-baseball-bat-ball"></i> 裝備升級：發球模擬器 (開放式 VS 封閉式)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">如果問題只能回答「有/沒有」、「是/不是」，對話就會立刻死掉（死球）！請選出能讓對話延續的「開放式好球」。</p>
+            
+            <div class="bg-fuchsia-50 rounded-2xl border-2 border-fuchsia-200 p-6 max-w-4xl mx-auto">
+                <div class="flex items-center justify-between mb-4 border-b border-fuchsia-200 pb-2">
+                    <span class="font-bold text-fuchsia-800" id="pitch-counter">訓練 1 / 10</span>
+                    <span class="bg-fuchsia-600 text-white text-xs font-bold px-3 py-1 rounded-full"><i class="fa-solid fa-crosshairs"></i> 發球目標</span>
+                </div>
+                
+                <!-- 任務目標 -->
+                <div class="text-center mb-8">
+                    <h3 id="pitch-goal" class="text-xl md:text-2xl font-black text-slate-800">你想問同學琴晚打機嘅事。</h3>
+                </div>
+
+                <!-- 投球選項 -->
+                <div id="pitch-options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- 選項將由 JS 注入 -->
+                </div>
+
+                <!-- 回饋區 -->
+                <div id="pitch-feedback" class="hidden mt-6 p-4 rounded-xl border">
+                    <div class="flex items-start gap-3">
+                        <div id="pitch-fb-icon" class="text-3xl mt-1"></div>
+                        <div>
+                            <h4 id="pitch-fb-title" class="font-bold text-lg mb-1"></h4>
+                            <p id="pitch-fb-desc" class="text-sm text-slate-700 font-medium"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-6">
+                    <button id="pitch-next-btn" onclick="nextPitch()" class="hidden bg-fuchsia-600 text-white font-bold px-8 py-3 rounded-full shadow-md hover:bg-fuchsia-500 hover:shadow-lg hover:scale-105 transition-all">
+                        下一球 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 1：開球扭蛋機 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-indigo-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-indigo-800">
+                <i class="fa-solid fa-lightbulb"></i> 裝置 1：開球扭蛋機
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">不知道怎麼開口？點擊扭蛋機，抽取一個適合「破冰」的安全話題！</p>
+            <div class="flex flex-col items-center bg-slate-800 p-8 rounded-2xl border-4 border-slate-700 text-center relative">
+                <button onclick="drawTopic()" class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-black text-xl px-8 py-4 rounded-full shadow-[0_8px_0_#4338ca] hover:shadow-[0_4px_0_#4338ca] hover:translate-y-1 transition-all flex items-center gap-3 mb-6 active:shadow-none active:translate-y-2">
+                    <i class="fa-solid fa-rotate"></i> 點擊抽取話題
+                </button>
+                <div id="topic-result-box" class="w-full max-w-md bg-white rounded-xl p-6 shadow-inner hidden border-2 border-indigo-200">
+                    <div id="topic-icon" class="text-4xl mb-2"></div>
+                    <div id="topic-category" class="text-xs font-bold text-indigo-500 mb-2 tracking-wider"></div>
+                    <div id="topic-text" class="text-lg font-black text-slate-800 mb-3"></div>
+                    <p id="topic-desc" class="text-sm text-slate-500"></p>
+                </div>
+                <div id="topic-placeholder" class="text-slate-500 font-bold animate-pulse">
+                    <i class="fa-solid fa-arrow-up"></i> 試試看，按鈕在上面！
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 2：特工專注雷達 (微接球訓練) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-emerald-800">
+                <i class="fa-solid fa-radar"></i> 裝置 2：特工專注雷達 (微接球訓練)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">接球不一定要講一大段話，非語言的微小回應才是最高級的聆聽技巧！點擊啟動雷達技能：</p>
+            
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                <!-- 雷達螢幕 -->
+                <div class="relative w-48 h-48 rounded-full bg-slate-900 border-[6px] border-slate-700 overflow-hidden shadow-inner shrink-0 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-[radial-gradient(transparent_40%,rgba(16,185,129,0.2)_100%)] border border-emerald-500/30 rounded-full"></div>
+                    <div class="absolute inset-0" style="background-image: linear-gradient(rgba(16,185,129,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.3) 1px, transparent 1px); background-size: 20px 20px; border-radius: 50%;"></div>
+                    <div id="radar-sweep" class="absolute top-1/2 left-1/2 w-[50%] h-[50%] bg-gradient-to-br from-emerald-400/80 to-transparent radar-sweep hidden"></div>
+                    <div id="radar-display" class="z-10 text-emerald-500 text-center">
+                        <i class="fa-solid fa-satellite-dish text-4xl mb-1 opacity-50"></i>
+                        <p class="text-[10px] font-bold tracking-widest opacity-50">STANDBY</p>
+                    </div>
+                </div>
+
+                <!-- 控制按鈕 -->
+                <div class="flex-grow grid grid-cols-1 gap-3 w-full">
+                    <button onclick="activateFocusRadar('eye', '👀', '眼神接觸鎖定', '讓對方知道「我有在聽」。')" class="group flex items-center gap-4 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 p-3 rounded-xl transition-all text-left">
+                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-2xl text-emerald-600 shadow-sm group-hover:scale-110 transition-transform">👀</div>
+                        <div>
+                            <div class="font-bold text-emerald-800">眼神接觸</div>
+                            <div class="text-xs text-emerald-600 mt-1">👆 點擊啟動技能</div>
+                        </div>
+                    </button>
+                    <button onclick="activateFocusRadar('nod', '↕️', '點頭頻率同步', '給予肯定，鼓勵對方繼續。')" class="group flex items-center gap-4 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 p-3 rounded-xl transition-all text-left">
+                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-2xl text-emerald-600 shadow-sm group-hover:scale-110 transition-transform">↕️</div>
+                        <div>
+                            <div class="font-bold text-emerald-800">輕輕點頭</div>
+                            <div class="text-xs text-emerald-600 mt-1">👆 點擊啟動技能</div>
+                        </div>
+                    </button>
+                    <button onclick="activateFocusRadar('word', '💬', '魔法墊話輸出', '發出「真係㗎？、咁大鑊？」')" class="group flex items-center gap-4 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 p-3 rounded-xl transition-all text-left">
+                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-2xl text-emerald-600 shadow-sm group-hover:scale-110 transition-transform">💬</div>
+                        <div>
+                            <div class="font-bold text-emerald-800">魔法墊話</div>
+                            <div class="text-xs text-emerald-600 mt-1">👆 點擊啟動技能</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 3：神級救球術 (擊碎冷場冰塊) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-amber-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-amber-800">
+                <i class="fa-solid fa-hammer"></i> 裝置 3：神級救球術 (擊碎冷場冰塊)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">對話突然死寂，覺得超尷尬怎麼辦？不用怕，點擊揮動特工大錘擊碎「尷尬冰塊」，獲取救球密碼！</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div onclick="smashIce(this, '回溯法 (找回剛才的球)', '「講開又講，你頭先話想買新電話，睇中咗邊部未呀？」')" class="ice-block bg-cyan-100 border-4 border-cyan-300 rounded-2xl h-40 flex flex-col items-center justify-center text-center shadow-lg relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxwYXRoIGQ9Ik0wIDEwbDEwLTEwIDEwIDEwaC0yMG0wIDEwbDEwLTEwIDEwIDEwSDB6IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMikiLz4KPC9zdmc+')] opacity-50 pointer-events-none"></div>
+                    <div class="text-5xl mb-2 drop-shadow-md">🧊</div>
+                    <div class="font-black text-cyan-800">冷場狀況 1</div>
+                    <div class="text-xs text-cyan-600 font-bold mt-1 bg-white/50 px-2 py-1 rounded-full">👆 點擊擊碎</div>
+                </div>
+                <div onclick="smashIce(this, '環境轉移法 (看周圍)', '「咦，你有冇發現今日課室個冷氣特別凍？」')" class="ice-block bg-cyan-100 border-4 border-cyan-300 rounded-2xl h-40 flex flex-col items-center justify-center text-center shadow-lg relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxwYXRoIGQ9Ik0wIDEwbDEwLTEwIDEwIDEwaC0yMG0wIDEwbDEwLTEwIDEwIDEwSDB6IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMikiLz4KPC9zdmc+')] opacity-50 pointer-events-none"></div>
+                    <div class="text-5xl mb-2 drop-shadow-md">🧊</div>
+                    <div class="font-black text-cyan-800">冷場狀況 2</div>
+                    <div class="text-xs text-cyan-600 font-bold mt-1 bg-white/50 px-2 py-1 rounded-full">👆 點擊擊碎</div>
+                </div>
+                <div onclick="smashIce(this, '坦白法 (幽默化解)', '「哈哈，突然間唔知講咩好添。平時你放假會做咩㗎多數？」')" class="ice-block bg-cyan-100 border-4 border-cyan-300 rounded-2xl h-40 flex flex-col items-center justify-center text-center shadow-lg relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxwYXRoIGQ9Ik0wIDEwbDEwLTEwIDEwIDEwaC0yMG0wIDEwbDEwLTEwIDEwIDEwSDB6IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMikiLz4KPC9zdmc+')] opacity-50 pointer-events-none"></div>
+                    <div class="text-5xl mb-2 drop-shadow-md">🧊</div>
+                    <div class="font-black text-cyan-800">冷場狀況 3</div>
+                    <div class="text-xs text-cyan-600 font-bold mt-1 bg-white/50 px-2 py-1 rounded-full">👆 點擊擊碎</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 4：緊急逃生門 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-teal-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-teal-800">
+                <i class="fa-solid fa-door-open"></i> 裝置 4：緊急逃生門 (如何結束對話)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">想去洗手間、想睡覺？特工絕對不會「一言不發轉身走人」！點擊推開大門獲取逃生密碼。</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 門 1 -->
+                <div class="door-wrapper h-48 cursor-pointer" onclick="this.classList.toggle('open')">
+                    <div class="relative w-full h-full bg-slate-800 rounded-xl overflow-hidden border-4 border-slate-700 shadow-inner flex items-center justify-center p-4">
+                        <div class="door-content text-center text-white">
+                            <i class="fa-solid fa-restroom text-3xl mb-2 text-teal-400"></i>
+                            <div class="text-sm font-bold text-teal-100">「唔好意思，我好急要去個洗手間先，轉頭傾！」</div>
+                        </div>
+                        <div class="door-panel absolute inset-0 bg-teal-600 rounded-lg flex flex-col items-center justify-center text-white border-2 border-teal-500 shadow-[inset_-5px_0_15px_rgba(0,0,0,0.3)]">
+                            <div class="w-3 h-3 bg-teal-300 rounded-full absolute right-3 top-1/2 -translate-y-1/2 shadow-sm"></div>
+                            <i class="fa-solid fa-toilet text-4xl mb-2 text-teal-200"></i>
+                            <span class="font-black tracking-widest">生理需求</span>
+                            <div class="text-[10px] text-teal-200 mt-2 font-bold bg-teal-800/50 px-2 py-1 rounded-full">👆 點擊開門</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 門 2 -->
+                <div class="door-wrapper h-48 cursor-pointer" onclick="this.classList.toggle('open')">
+                    <div class="relative w-full h-full bg-slate-800 rounded-xl overflow-hidden border-4 border-slate-700 shadow-inner flex items-center justify-center p-4">
+                        <div class="door-content text-center text-white">
+                            <i class="fa-solid fa-clock text-3xl mb-2 text-teal-400"></i>
+                            <div class="text-sm font-bold text-teal-100">「哇咁夜啦，我要去訓/我要走先啦，聽日見！」</div>
+                        </div>
+                        <div class="door-panel absolute inset-0 bg-teal-600 rounded-lg flex flex-col items-center justify-center text-white border-2 border-teal-500 shadow-[inset_-5px_0_15px_rgba(0,0,0,0.3)]">
+                            <div class="w-3 h-3 bg-teal-300 rounded-full absolute right-3 top-1/2 -translate-y-1/2 shadow-sm"></div>
+                            <i class="fa-solid fa-bed text-4xl mb-2 text-teal-200"></i>
+                            <span class="font-black tracking-widest">趕時間/想睡</span>
+                            <div class="text-[10px] text-teal-200 mt-2 font-bold bg-teal-800/50 px-2 py-1 rounded-full">👆 點擊開門</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 門 3 -->
+                <div class="door-wrapper h-48 cursor-pointer" onclick="this.classList.toggle('open')">
+                    <div class="relative w-full h-full bg-slate-800 rounded-xl overflow-hidden border-4 border-slate-700 shadow-inner flex items-center justify-center p-4">
+                        <div class="door-content text-center text-white">
+                            <i class="fa-solid fa-hand-wave text-3xl mb-2 text-teal-400"></i>
+                            <div class="text-sm font-bold text-teal-100">「好開心同你傾計，我而家要去做功課先，下次再講啦！」</div>
+                        </div>
+                        <div class="door-panel absolute inset-0 bg-teal-600 rounded-lg flex flex-col items-center justify-center text-white border-2 border-teal-500 shadow-[inset_-5px_0_15px_rgba(0,0,0,0.3)]">
+                            <div class="w-3 h-3 bg-teal-300 rounded-full absolute right-3 top-1/2 -translate-y-1/2 shadow-sm"></div>
+                            <i class="fa-solid fa-forward-step text-4xl mb-2 text-teal-200"></i>
+                            <span class="font-black tracking-widest">對話完結</span>
+                            <div class="text-[10px] text-teal-200 mt-2 font-bold bg-teal-800/50 px-2 py-1 rounded-full">👆 點擊開門</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 實戰模擬器 (小遊戲) -->
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-center">
+            🎮 實戰接球模擬器 (終極版)
+        </h2>
+        
+        <div id="game-container" class="bg-slate-800 rounded-[2rem] p-6 md:p-10 shadow-xl mb-12 relative overflow-hidden border-4 border-slate-700">
+            <div class="w-full bg-slate-700 rounded-full h-2 mb-6">
+                <div id="game-progress" class="bg-gradient-to-r from-blue-400 to-indigo-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <div id="game-screen" class="bg-white rounded-xl p-6 md:p-8 shadow-inner relative">
+                <div class="absolute top-4 right-4 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full" id="game-counter">第 1 / 8 局</div>
+                
+                <div class="text-center mb-8 mt-4">
+                    <div id="game-icon" class="text-5xl mb-4 text-blue-500">🏓</div>
+                    <p id="game-question" class="text-lg md:text-xl font-bold text-slate-700">
+                        載入中...
+                    </p>
+                    <p class="text-blue-600 font-bold mt-3"><i class="fa-solid fa-microphone-lines"></i> 輪到你發言了，你會怎麼做？</p>
+                </div>
+
+                <div id="game-options" class="flex flex-col gap-3"></div>
+
+                <div id="game-feedback" class="hidden mt-6 p-4 rounded-xl border">
+                    <div class="flex items-start gap-3">
+                        <div id="feedback-icon" class="text-2xl mt-1"></div>
+                        <div>
+                            <h4 id="feedback-title" class="font-bold text-lg mb-1"></h4>
+                            <p id="feedback-text" class="text-sm text-slate-600 mb-3"></p>
+                            <button id="next-btn" onclick="nextQuestion()" class="hidden bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-700 transition-colors">
+                                下一局 <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 任務完成區塊 -->
+        <div id="mission-complete-zone" class="hidden text-center bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-amber-100 rounded-full mix-blend-multiply filter blur-2xl opacity-60"></div>
+            <div class="text-5xl mb-4 text-amber-400"><i class="fa-solid fa-trophy"></i></div>
+            <h3 class="text-2xl font-black mb-2 text-slate-800">交談訓練完成！</h3>
+            <p class="text-slate-500 mb-6">你已經掌握了所有開球、接球、救球與收步的神級技巧！</p>
+            <button onclick="completeMission()" id="claimBtn" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 mx-auto">
+                <i class="fa-solid fa-check-circle"></i> 領取 150 EXP 並返回大廳
+            </button>
+            <p id="successMsg" class="text-emerald-600 font-bold mt-4 hidden">
+                🎉 恭喜！獲得 150 EXP！即將返回大廳...
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        // --- 0. 話題紅綠燈邏輯 (擴充至 10 題) ---
+        const tlData = [
+            { text: "「今日學校飯堂啲嘢食好似幾好味喎！」", correct: 'green', title: "✅ 綠燈：安全話題", desc: "食物是最好的破冰話題！大家都需要吃飯，很容易就能接上話。" },
+            { text: "「你塊面點解咁多暗瘡㗎？平時夜訓呀？」", correct: 'red', title: "🚫 紅燈：危險地雷", desc: "隨便評論別人的外貌特徵是社交大忌！會讓對方覺得非常不舒服。" },
+            { text: "「唉，今日啲功課真係好多，好煩呀。」", correct: 'yellow', title: "⚠️ 黃燈：試探話題", desc: "偶爾抱怨可以產生共鳴，但如果一直狂抱怨就會變成放負，要看氣氛使用。" },
+            { text: "「聽講隔離班個阿明尋日俾老師鬧到喊喎。」", correct: 'red', title: "🚫 紅燈：危險地雷", desc: "散播惡意八卦絕對禁止！這會破壞別人的名譽，也會顯得你很不友善。" },
+            { text: "「你放學平時搭咩車返屋企㗎？」", correct: 'green', title: "✅ 綠燈：安全話題", desc: "日常生活習慣是很好延續的話題，可能還會發現大家順路呢！" },
+            { text: "「我超鐘意聽XXX(某冷門樂隊)啲歌，你覺唔覺佢地好正？」", correct: 'yellow', title: "⚠️ 黃燈：試探話題", desc: "太小眾的宅話題對方可能搭不上話。可以先問『你有無聽過』試探一下。" },
+            { text: "「你老豆老母係咪離咗婚呀？」", correct: 'red', title: "🚫 紅燈：危險地雷", desc: "過度刺探家庭隱私是非常冒犯的行為！除非對方主動提起，否則不要問。" },
+            { text: "「琴晚嗰套動畫大結局你有無睇呀？」", correct: 'green', title: "✅ 綠燈：安全話題", desc: "大眾娛樂（電視、電影、熱門動畫）是尋找共同興趣的好方法。" },
+            { text: "「今日個Miss著到好似隻雀咁，好好笑。」", correct: 'yellow', title: "⚠️ 黃燈：試探話題", desc: "雖然有時同學會一起取笑老師，但這有一定風險，最好避免負面批評。" },
+            { text: "「你次次測驗都咁低分，係咪無腦㗎？」", correct: 'red', title: "🚫 紅燈：危險地雷", desc: "這是人身攻擊和嘲笑！會立刻引發衝突，絕對不能說出口。" }
+        ];
+        
+        let tlIndex = 0;
+
+        function loadTLTopic() {
+            document.getElementById('tl-counter').innerText = `話題 ${tlIndex + 1} / ${tlData.length}`;
+            document.getElementById('tl-topic-text').innerText = tlData[tlIndex].text;
+            
+            const fbBox = document.getElementById('tl-feedback');
+            fbBox.innerHTML = '<p class="text-slate-400 font-bold animate-pulse">👆 請點擊下方紅綠燈進行判定 👆</p>';
+            fbBox.className = "h-16 mb-4 flex items-center justify-center";
+            
+            const btns = document.querySelectorAll('#tl-buttons button');
+            btns.forEach(b => b.disabled = false);
+            
+            document.getElementById('tl-next-btn').classList.add('hidden');
+        }
+
+        function checkTrafficLight(selectedColor, btn) {
+            const data = tlData[tlIndex];
+            const fbBox = document.getElementById('tl-feedback');
+            const btns = document.querySelectorAll('#tl-buttons button');
+            const nextBtn = document.getElementById('tl-next-btn');
+            
+            btns.forEach(b => b.disabled = true);
+
+            if (selectedColor === data.correct) {
+                let colorClass = data.correct === 'green' ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : 
+                                 data.correct === 'yellow' ? 'text-amber-600 bg-amber-50 border-amber-200' : 
+                                 'text-rose-600 bg-rose-50 border-rose-200';
+                
+                fbBox.className = `w-full p-4 rounded-xl border-2 animate-pop ${colorClass}`;
+                fbBox.innerHTML = `
+                    <div class='font-black text-lg mb-1'>${data.title}</div>
+                    <div class='text-sm font-medium text-slate-700'>${data.desc}</div>
+                `;
+                
+                nextBtn.classList.remove('hidden');
+                if (tlIndex === tlData.length - 1) {
+                    nextBtn.innerText = "完成排雷訓練！";
+                    nextBtn.onclick = () => { nextBtn.classList.add('hidden'); fbBox.innerHTML = "<p class='font-bold text-emerald-600'>🎉 訓練完成！你已成為避雷專家。</p>"; };
+                }
+            } else {
+                btn.firstElementChild.classList.add('animate-shake');
+                fbBox.className = "w-full p-4 rounded-xl border-2 border-slate-300 bg-slate-100 text-slate-600 animate-shake";
+                fbBox.innerHTML = "<div class='font-bold text-lg'><i class='fa-solid fa-triangle-exclamation'></i> 判定錯誤！</div><div class='text-sm'>這顆球的危險程度不是你想的那樣，再試一次！</div>";
+                
+                setTimeout(() => {
+                    btn.firstElementChild.classList.remove('animate-shake');
+                    btns.forEach(b => b.disabled = false);
+                }, 800);
+            }
+        }
+
+        function nextTLTopic() {
+            tlIndex++;
+            if (tlIndex < tlData.length) {
+                loadTLTopic();
+            }
+        }
+
+
+        // --- 0.5 發球模擬器 (擴充至 10 題) ---
+        const pitchData = [
+            { 
+                goal: "你想關心同學放假去邊玩。", 
+                options: [
+                    { text: "「你星期日有冇出街呀？」", type: 'closed', isCorrect: false },
+                    { text: "「你星期日去咗邊度玩呀？有咩好玩？」", type: 'open', isCorrect: true }
+                ],
+                successDesc: "「邊度」會令對方分享地點同經歷，唔會得個「有/冇」字。",
+                failDesc: "如果對方答「有」，然後就無下文，對話就會跌落地啦。"
+            },
+            { 
+                goal: "你想問同學覺得琴日套戲好唔好睇。", 
+                options: [
+                    { text: "「你覺得琴日套戲邊個位最精彩呀？」", type: 'open', isCorrect: true },
+                    { text: "「琴日套戲好唔好睇呀？」", type: 'closed', isCorrect: false }
+                ],
+                successDesc: "「邊個位」會逼使對方講出細節，咁你就可以順住個細節繼續傾落去！",
+                failDesc: "這是一顆封閉式直球！對方只會回答「好睇」或「唔好睇」，對話瞬間完結。"
+            },
+            { 
+                goal: "你想了解新同學鐘意食咩。", 
+                options: [
+                    { text: "「你鐘唔鐘意食壽司呀？」", type: 'closed', isCorrect: false },
+                    { text: "「你平時最鐘意食咩菜式㗎？點解嘅？」", type: 'open', isCorrect: true }
+                ],
+                successDesc: "「最鐘意食咩」是開放式旋轉球，可以打開對方的話匣子，獲得更多情報！",
+                failDesc: "如果他剛好討厭壽司回答「唔鐘意」，場面就會變得很乾喔！"
+            },
+            { 
+                goal: "你想問同學關於寵物的事。", 
+                options: [
+                    { text: "「你有無養狗呀？」", type: 'closed', isCorrect: false },
+                    { text: "「如果你可以養一隻動物，你會想養咩呀？點解嘅？」", type: 'open', isCorrect: true }
+                ],
+                successDesc: "假設性問題可以激發想像力，就算對方沒養寵物也能熱烈討論！",
+                failDesc: "如果他沒養狗，話題就結束了。這顆球太容易死了。"
+            },
+            { 
+                goal: "你想跟同學聊運動。", 
+                options: [
+                    { text: "「你識唔識打籃球？」", type: 'closed', isCorrect: false },
+                    { text: "「你平時最鐘意做咩運動或者活動呀？」", type: 'open', isCorrect: true }
+                ],
+                successDesc: "這樣問可以涵蓋所有他喜歡的活動，總能找到話題接下去。",
+                failDesc: "如果他不識打籃球，他只會說「唔識」，然後一陣沉默。"
+            },
+            { 
+                goal: "你想問同學關於功課的進度。", 
+                options: [
+                    { text: "「中文功課你覺得邊一part最難做呀？我都kick住咗。」", type: 'open', isCorrect: true },
+                    { text: "「你做完中文功課未？」", type: 'closed', isCorrect: false }
+                ],
+                successDesc: "分享自己的困難並引導對方分享，能建立「同盟」的感覺！",
+                failDesc: "「做完/未做完」是標準的句號殺手，對方答完就沒話講了。"
+            },
+            { 
+                goal: "你想跟同學聊音樂。", 
+                options: [
+                    { text: "「你平時溫書或者搭車最鐘意聽咩歌㗎？」", type: 'open', isCorrect: true },
+                    { text: "「你有無聽過周杰倫啲歌？」", type: 'closed', isCorrect: false }
+                ],
+                successDesc: "這顆好球能讓你了解他的音樂品味，方便之後推介歌曲給他。",
+                failDesc: "萬一他真的沒聽過，他只能搖頭，這顆球就接不到了。"
+            },
+            { 
+                goal: "你想了解同學的週末計劃。", 
+                options: [
+                    { text: "「你聽日出唔出街？」", type: 'closed', isCorrect: false },
+                    { text: "「你今個週末有咩大計呀？會唔會去邊度玩？」", type: 'open', isCorrect: true }
+                ],
+                successDesc: "「有咩大計」是一個很好的開放式問題，讓對方有很多空間可以發揮。",
+                failDesc: "「出/唔出」太像審問了，對方可能只會簡短回答。"
+            },
+            { 
+                goal: "你想聊未來的志願/夢想。", 
+                options: [
+                    { text: "「你想唔想做醫生？」", type: 'closed', isCorrect: false },
+                    { text: "「你第時大個想做咩職業呀？點解會有呢個想法？」", type: 'open', isCorrect: true }
+                ],
+                successDesc: "加上「點解(為什麼)」是把球打得更深遠的好方法，能引出對方的心裡話！",
+                failDesc: "太具體的封閉式問題，如果猜錯了就沒戲唱了。"
+            },
+            { 
+                goal: "你想聊旅行的經歷。", 
+                options: [
+                    { text: "「如果俾你免費去一個國家旅行，你會想去邊度？」", type: 'open', isCorrect: true },
+                    { text: "「你去過日本未？」", type: 'closed', isCorrect: false }
+                ],
+                successDesc: "「如果俾你...」這種情境題是非常棒的開放式旋轉球，大家都很喜歡幻想！",
+                failDesc: "如果他沒去過，對話就會終止；就算去過，也容易變成一問一答的審問。"
+            }
+        ];
+        
+        let pitchIndex = 0;
+
+        function loadPitchTopic() {
+            const data = pitchData[pitchIndex];
+            document.getElementById('pitch-counter').innerText = `訓練 ${pitchIndex + 1} / ${pitchData.length}`;
+            document.getElementById('pitch-goal').innerText = data.goal;
+            
+            const optionsContainer = document.getElementById('pitch-options');
+            optionsContainer.innerHTML = '';
+            
+            data.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full bg-white border-2 border-fuchsia-100 hover:border-fuchsia-400 hover:bg-fuchsia-50 p-4 rounded-xl text-left font-bold text-slate-700 transition-all shadow-sm';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkPitchBall(opt.isCorrect, btn);
+                optionsContainer.appendChild(btn);
+            });
+            
+            document.getElementById('pitch-feedback').classList.add('hidden');
+            document.getElementById('pitch-next-btn').classList.add('hidden');
+        }
+
+        function checkPitchBall(isCorrect, btn) {
+            const data = pitchData[pitchIndex];
+            const fbBox = document.getElementById('pitch-feedback');
+            const fbIcon = document.getElementById('pitch-fb-icon');
+            const fbTitle = document.getElementById('pitch-fb-title');
+            const fbDesc = document.getElementById('pitch-fb-desc');
+            const nextBtn = document.getElementById('pitch-next-btn');
+            
+            const allBtns = document.querySelectorAll('#pitch-options button');
+            allBtns.forEach(b => b.disabled = true);
+
+            fbBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+
+            if (isCorrect) {
+                btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800');
+                fbBox.classList.add('bg-emerald-50', 'border-emerald-200', 'animate-pop');
+                fbIcon.innerHTML = '⚾';
+                fbTitle.className = 'font-bold text-lg mb-1 text-emerald-800';
+                fbTitle.innerText = '✅ 開放式好球！';
+                fbDesc.innerText = data.successDesc;
+                
+                nextBtn.classList.remove('hidden');
+                if (pitchIndex === pitchData.length - 1) {
+                    nextBtn.innerText = "完成發球訓練！";
+                }
+            } else {
+                btn.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-700', 'animate-shake');
+                fbBox.classList.add('bg-rose-50', 'border-rose-200');
+                fbIcon.innerHTML = '💀';
+                fbTitle.className = 'font-bold text-lg mb-1 text-rose-800';
+                fbTitle.innerText = '❌ 封閉式死球！';
+                fbDesc.innerText = data.failDesc;
+                
+                setTimeout(() => {
+                    btn.classList.remove('animate-shake');
+                    allBtns.forEach(b => b.disabled = false);
+                }, 800);
+            }
+        }
+
+        function nextPitch() {
+            pitchIndex++;
+            if (pitchIndex < pitchData.length) {
+                loadPitchTopic();
+            } else {
+                document.getElementById('pitch-next-btn').classList.add('hidden');
+                document.getElementById('pitch-goal').innerText = "🎉 訓練完成！你已經掌握發球技巧！";
+                document.getElementById('pitch-options').innerHTML = "";
+                document.getElementById('pitch-feedback').classList.add('hidden');
+            }
+        }
+
+
+        // --- 1. 話題扭蛋機邏輯 (擴充至 10 題) ---
+        const topics = [
+            { icon: '⛅', cat: '環境/天氣', text: '「今日啲天氣好熱呀可？」', desc: '最安全的話題，適合跟不太熟的同學破冰。' },
+            { icon: '🎒', cat: '學校/功課', text: '「頭先嗰堂數學，你有無抄到最後嗰題筆記呀？」', desc: '共同經歷的話題，容易讓對方有話可說。' },
+            { icon: '✨', cat: '讚美/物品', text: '「你個筆袋好靚喎，邊度買㗎？」', desc: '人都喜歡被讚美，從對方身上的物品開啟話題非常有效！' },
+            { icon: '🎮', cat: '興趣/娛樂', text: '「你有無玩最近好紅嗰隻新 Game 呀？」', desc: '尋找共同興趣，如果對方有玩就能聊很久。' },
+            { icon: '🍔', cat: '飲食/美食', text: '「學校附近新開咗間小食店，你有無去試過呀？」', desc: '食物是萬年安全話題，誰不喜歡吃好吃的呢？' },
+            { icon: '📺', cat: '媒體/網絡', text: '「你有無睇開邊個 YouTuber 㗎？有無好推介？」', desc: '現代學生常見的娛樂，很容易找到共鳴。' },
+            { icon: '🐱', cat: '寵物/動物', text: '「我最近想養貓呀，你鐘唔鐘意小動物㗎？」', desc: '小動物話題通常很受歡迎，還能看看對方的寵物照片。' },
+            { icon: '🎄', cat: '節日/假期', text: '「就嚟長假啦，你有無話打算去邊度玩呀？」', desc: '對假期的期待感能帶來好心情，對話氣氛會很輕鬆。' },
+            { icon: '🏀', cat: '運動/活動', text: '「下星期有陸運會喎，你有無報名參加咩項目呀？」', desc: '圍繞學校即將發生的大型活動，大家都會有參與感。' },
+            { icon: '🙏', cat: '求助/請教', text: '「我見你數學好叻，可唔可以教下我溫書嘅秘訣呀？」', desc: '適當地向人請教，能滿足對方的成就感，拉近距離。' }
+        ];
+
+        function drawTopic() {
+            const btn = document.querySelector('button[onclick="drawTopic()"]');
+            const resultBox = document.getElementById('topic-result-box');
+            const placeholder = document.getElementById('topic-placeholder');
+            
+            btn.classList.add('opacity-50', 'pointer-events-none');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 扭蛋轉動中...';
+            
+            resultBox.classList.remove('animate-pop');
+            resultBox.classList.add('hidden');
+            
+            setTimeout(() => {
+                const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+                
+                document.getElementById('topic-icon').innerText = randomTopic.icon;
+                document.getElementById('topic-category').innerText = `【 ${randomTopic.cat} 】`;
+                document.getElementById('topic-text').innerText = randomTopic.text;
+                document.getElementById('topic-desc').innerText = `💡 ${randomTopic.desc}`;
+                
+                placeholder.classList.add('hidden');
+                resultBox.classList.remove('hidden');
+                resultBox.classList.add('animate-pop'); 
+                
+                btn.classList.remove('opacity-50', 'pointer-events-none');
+                btn.innerHTML = '<i class="fa-solid fa-rotate"></i> 再抽一次';
+            }, 800);
+        }
+
+        // --- 2. 專注雷達控制台邏輯 ---
+        function activateFocusRadar(type, emoji, title, desc) {
+            const sweep = document.getElementById('radar-sweep');
+            const display = document.getElementById('radar-display');
+            
+            sweep.classList.remove('hidden');
+            
+            display.innerHTML = `
+                <div class="text-4xl mb-1 animate-ping">${emoji}</div>
+                <p class="text-[10px] font-bold tracking-widest text-emerald-400">ANALYZING...</p>
+            `;
+            
+            setTimeout(() => {
+                sweep.classList.add('hidden');
+                display.innerHTML = `
+                    <div class="text-5xl mb-2 drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]">${emoji}</div>
+                    <div class="font-black text-emerald-400 tracking-wider">${title}</div>
+                    <p class="text-[11px] text-emerald-200 mt-1 max-w-[120px] mx-auto">${desc}</p>
+                `;
+            }, 1000);
+        }
+
+        // --- 3. 擊碎尷尬冰塊邏輯 ---
+        function smashIce(element, title, text) {
+            if (element.classList.contains('shattered')) return;
+            
+            element.classList.add('animate-shake');
+            
+            setTimeout(() => {
+                element.classList.remove('animate-shake', 'bg-cyan-100', 'border-cyan-300', 'cursor-pointer');
+                element.classList.add('shattered', 'bg-white', 'border-amber-300');
+                
+                element.innerHTML = `
+                    <div class="w-full h-full flex flex-col items-center justify-center p-4 animate-pop">
+                        <div class="text-4xl mb-2">💥</div>
+                        <div class="font-black text-amber-700 text-sm mb-2">${title}</div>
+                        <div class="text-xs text-slate-700 font-bold bg-amber-50 p-2 rounded w-full">${text}</div>
+                    </div>
+                `;
+            }, 400);
+        }
+
+        // --- 4. 實戰接球模擬器邏輯 ---
+        const finalQuizData = [
+            {
+                icon: "⚾",
+                question: "【發球】想跟同學聊天延續話題，你應該發出哪種球？",
+                options: [
+                    { text: "封閉式直球：「你尋晚有冇睇電視呀？」", isCorrect: false },
+                    { text: "開放式旋轉球：「你平時放假最鐘意做咩㗎？」", isCorrect: true }
+                ],
+                successTitle: "✅ 好球！開放式提問！",
+                successText: "「最鐘意做咩」可以引導對方說出很多細節，讓對話不會瞬間變成「有/冇」就結束。",
+                failTitle: "❌ 犯規：句號殺手",
+                failText: "如果他回答「冇」，你接下來就會很難接話了。試著用開放式問題！"
+            },
+            {
+                icon: "👂",
+                question: "【接球】同學正在跟你分享他昨天遇到的趣事，這時你應該：",
+                options: [
+                    { text: "看著他的眼睛，適時點頭並說：「真係㗎？」", isCorrect: true },
+                    { text: "看著旁邊的地板，安靜地等他講完。", isCorrect: false }
+                ],
+                successTitle: "✅ 專注雷達啟動！",
+                successText: "非語言的回應（微接球）非常重要，這會讓對方覺得自己受到尊重，更願意分享。",
+                failTitle: "❌ 犯規：無反應",
+                failText: "完全沒反應會讓對方以為你不想聽，或者以為自己在跟牆壁講話喔。"
+            },
+            {
+                icon: "🥶",
+                question: "【冷場】聊天時突然出現了 5 秒鐘的尷尬空白（死寂），你該怎麼辦？",
+                options: [
+                    { text: "尷尬地笑一下說：「哈哈，突然間唔知講咩好添。對了，你頭先話...」", isCorrect: true },
+                    { text: "覺得太尷尬了，什麼都不說直接假裝去廁所走掉。", isCorrect: false }
+                ],
+                successTitle: "✅ 神級救球術！",
+                successText: "用「坦白法」化解尷尬，再用「回溯法」把話題接回去，特工危機處理滿分！",
+                failTitle: "❌ 跌球：逃避現實",
+                failText: "直接走掉會讓氣氛更糟糕。冷場是很正常的，勇敢試著用救球錦囊打破僵局吧！"
+            },
+            {
+                icon: "🚦",
+                question: "【紅綠燈】你想跟不熟的同學開啟話題，以下哪句話是危險的「紅燈地雷」？",
+                options: [
+                    { text: "「你覺得今日學校飯堂啲嘢食點呀？」", isCorrect: false },
+                    { text: "「你塊面點解咁多暗瘡㗎？平時夜訓呀？」", isCorrect: true }
+                ],
+                successTitle: "✅ 成功避開地雷！",
+                successText: "評論別人的外貌是非常沒有禮貌的危險球！聊「食物」才是安全的綠燈話題。",
+                failTitle: "❌ 爆炸！踩中地雷",
+                failText: "其實「食物」是最好的綠燈話題。記住，千萬不要隨便評論別人的外表！"
+            },
+            {
+                icon: "🗣️",
+                question: "【接球】同學興奮地對你說：「我尋日去咗主題樂園玩呀！」",
+                options: [
+                    { text: "「哦，係咩。」", isCorrect: false },
+                    { text: "「真係呀？有咩新機動遊戲好玩呀？」", isCorrect: true }
+                ],
+                successTitle: "✅ 好球！接球達人！",
+                successText: "對方分享開心事，我們給予情緒反應（真係呀？）並用 WH 問句反問細節，球就漂亮地打回去了！",
+                failTitle: "❌ 跌球：話題終結者",
+                failText: "「哦」是史上最強的話題終結武器。這會讓對方覺得你完全不想理他。"
+            },
+            {
+                icon: "🦖",
+                question: "【拉鋸】你很喜歡恐龍，已經連續講了 10 分鐘，發現對方開始發呆看手錶。",
+                options: [
+                    { text: "講得更大聲，確保他有在聽你的恐龍知識。", isCorrect: false },
+                    { text: "停下來說：「講咗咁耐我，咁你平時最鐘意咩動物呀？」", isCorrect: true }
+                ],
+                successTitle: "✅ 好球！懂得把球傳出去！",
+                successText: "對話是雙向的。當你發現自己講太久時，主動把發言權交給對方，是非常高級的特工技巧！",
+                failTitle: "❌ 犯規：保齡球攻擊",
+                failText: "對方已經發出「不耐煩」的身體語言了（看手錶）。繼續講只會讓他更想逃跑。"
+            },
+            {
+                icon: "🚽",
+                question: "【收步】朋友一直說個不停，但你真的很急尿想去洗手間。",
+                options: [
+                    { text: "什麼都不說，直接轉身跑去洗手間。", isCorrect: false },
+                    { text: "打斷他一下說：「唔好意思，我好急要去洗手間，轉頭再聽你講！」", isCorrect: true }
+                ],
+                successTitle: "✅ 完美收步！",
+                successText: "直接說明生理需求是最合理、最不會得罪人的「緊急逃生」方法。加上「轉頭再聽」會讓對方覺得被尊重。",
+                failTitle: "❌ 犯規：離奇失蹤",
+                failText: "一聲不響走掉非常沒有禮貌，對方會以為你討厭他。一定要交代一聲！"
+            },
+            {
+                icon: "📱",
+                question: "【收步 - 網上對話】晚上 11:30 了，你在 WhatsApp 和同學聊天，但你很睏想睡覺了。",
+                options: [
+                    { text: "直接把手機調成靜音，不讀不回去睡覺。", isCorrect: false },
+                    { text: "回覆：「好夜啦我要去訓啦，聽日學校見！💤」", isCorrect: true }
+                ],
+                successTitle: "✅ 完美收步！晚安！",
+                successText: "在網絡社交中，要睡覺或洗澡前說一聲，是非常好的禮貌。這讓對方知道對話已經結束，不用再等你回覆。",
+                failTitle: "❌ 跌球：幽靈模式",
+                failText: "雖然你可以去睡覺，但對方可能會一直拿著手機等你回覆。簡單打一句「我要睡了」只需 5 秒鐘喔！"
+            }
+        ];
+
+        let currentFinalQuestionIndex = 0;
+
+        function initFinalGame() {
+            loadFinalQuestion(currentFinalQuestionIndex);
+        }
+
+        function loadFinalQuestion(index) {
+            const data = finalQuizData[index];
+            document.getElementById('game-counter').innerText = `第 ${index + 1} / ${finalQuizData.length} 局`;
+            document.getElementById('game-icon').innerText = data.icon;
+            document.getElementById('game-question').innerText = data.question;
+            
+            const progress = (index / finalQuizData.length) * 100;
+            document.getElementById('game-progress').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('game-options');
+            optionsContainer.innerHTML = '';
+            
+            data.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'game-option w-full text-left p-4 rounded-xl border-2 border-slate-100 hover:border-blue-400 hover:bg-blue-50 transition-all font-medium text-slate-700 bg-white';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkFinalAnswer(opt.isCorrect, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('game-feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function checkFinalAnswer(isCorrect, selectedBtn) {
+            const data = finalQuizData[currentFinalQuestionIndex];
+            const feedbackBox = document.getElementById('game-feedback');
+            const title = document.getElementById('feedback-title');
+            const text = document.getElementById('feedback-text');
+            const icon = document.getElementById('feedback-icon');
+            const nextBtn = document.getElementById('next-btn');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+            
+            const allBtns = document.querySelectorAll('.game-option');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                selectedBtn.classList.replace('border-slate-100', 'border-emerald-500');
+                selectedBtn.classList.replace('hover:border-blue-400', 'border-emerald-500');
+                selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'font-bold');
+                
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-200');
+                title.className = "font-bold text-lg mb-1 text-emerald-800";
+                icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+                title.innerText = data.successTitle;
+                text.innerText = data.successText;
+                
+                nextBtn.classList.remove('hidden');
+                if(currentFinalQuestionIndex === finalQuizData.length - 1) {
+                    nextBtn.innerText = "完成交談訓練！";
+                } else {
+                    nextBtn.innerHTML = '下一局 <i class="fa-solid fa-arrow-right ml-1"></i>';
+                }
+            } else {
+                selectedBtn.classList.add('animate-shake', 'bg-rose-50', 'border-rose-300', 'text-rose-700');
+                
+                feedbackBox.classList.add('bg-rose-50', 'border-rose-200');
+                title.className = "font-bold text-lg mb-1 text-rose-800";
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-500"></i>';
+                title.innerText = data.failTitle;
+                text.innerText = data.failText;
+
+                setTimeout(() => {
+                    selectedBtn.classList.remove('animate-shake');
+                    allBtns.forEach(b => b.disabled = false);
+                }, 500);
+            }
+        }
+
+        function nextQuestion() {
+            currentFinalQuestionIndex++;
+            if (currentFinalQuestionIndex < finalQuizData.length) {
+                loadFinalQuestion(currentFinalQuestionIndex);
+            } else {
+                document.getElementById('game-progress').style.width = `100%`;
+                document.getElementById('game-container').classList.add('hidden');
+                document.getElementById('mission-complete-zone').classList.remove('hidden');
+            }
+        }
+
+        function completeMission() {
+            const btn = document.getElementById('claimBtn');
+            const msg = document.getElementById('successMsg');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在上傳對話數據...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            
+            setTimeout(() => {
+                btn.classList.add('hidden');
+                msg.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    window.location.href = 'student_dashboard.html';
+                }, 2000);
+            }, 1000);
+        }
+
+        // 初始化所有頁面內的小遊戲
+        window.onload = () => {
+            loadTLTopic();
+            loadPitchTopic();
+            initFinalGame();
+        };
+    </script>
+</body>
+</html>
