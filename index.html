@@ -267,13 +267,15 @@
 
     <!-- JavaScript 核心控制邏輯 -->
     <script>
-        let sessionState = {
-            isAuthorized: false,
-            userId: null,
-            unlockedAll: false,
-            exp: 850, 
-            level: 4
-        };
+       let sessionState = {
+    isAuthorized: localStorage.getItem('sen_authorized') === 'true',
+    userId: localStorage.getItem('sen_user') || null,
+    unlockedAll: false,
+    exp: parseInt(localStorage.getItem('agent_exp') || '0'), 
+    level: 1
+};
+// 根據 EXP 自動計算等級 (每 250 EXP 一級)
+sessionState.level = Math.floor(sessionState.exp / 250);
 
         // ================= 終極模組化 Database (所有 action 對應外部 HTML) =================
         const database = {
