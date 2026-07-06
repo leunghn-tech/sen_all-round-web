@@ -181,7 +181,7 @@
             </div>
         </div>
 
-        <!-- 裝置 3：🧼 腦袋標籤清除器 (擴充為 4 個) -->
+        <!-- 裝置 3：🧼 腦袋標籤清除器 (擴充為 6 個) -->
         <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-amber-100 mb-10 relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
             <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-amber-800">
@@ -189,7 +189,7 @@
             </h2>
             <p class="text-slate-600 font-medium mb-6">負面標籤會像污垢一樣黏在腦袋。點擊「清除污垢」，啟動轉念清潔噴霧！</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- 標籤 1 -->
                 <div class="bg-amber-50/50 rounded-2xl p-5 border-2 border-amber-100 flex flex-col justify-between h-40">
                     <div id="tag-content-1">
@@ -222,10 +222,26 @@
                     </div>
                     <button onclick="eraseLabel(4, '每個人都會做錯決定，呢啲係我學習嘅機會。')" class="self-end bg-amber-500 hover:bg-amber-600 text-white text-xs font-black py-2 px-4 rounded-xl shadow-md transition-all active:scale-95"><i class="fa-solid fa-soap mr-1"></i> 清除污垢</button>
                 </div>
+                <!-- 標籤 5 (新增) -->
+                <div class="bg-amber-50/50 rounded-2xl p-5 border-2 border-amber-100 flex flex-col justify-between h-40">
+                    <div id="tag-content-5">
+                        <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"><i class="fa-solid fa-triangle-exclamation"></i> 永久性毒素標籤</span>
+                        <p class="text-lg font-black text-slate-700 mt-2">「我成日唔記得帶功課，我係個無記性嘅人。」</p>
+                    </div>
+                    <button onclick="eraseLabel(5, '我只係未建立好每晚執行執書包SOP嘅習慣！')" class="self-end bg-amber-500 hover:bg-amber-600 text-white text-xs font-black py-2 px-4 rounded-xl shadow-md transition-all active:scale-95"><i class="fa-solid fa-soap mr-1"></i> 清除污垢</button>
+                </div>
+                <!-- 標籤 6 (新增) -->
+                <div class="bg-amber-50/50 rounded-2xl p-5 border-2 border-amber-100 flex flex-col justify-between h-40">
+                    <div id="tag-content-6">
+                        <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"><i class="fa-solid fa-triangle-exclamation"></i> 永久性毒素標籤</span>
+                        <p class="text-lg font-black text-slate-700 mt-2">「我跑步跑包尾，我係運動白痴。」</p>
+                    </div>
+                    <button onclick="eraseLabel(6, '我今日跑得慢，但我可以透過練跑提升體能！')" class="self-end bg-amber-500 hover:bg-amber-600 text-white text-xs font-black py-2 px-4 rounded-xl shadow-md transition-all active:scale-95"><i class="fa-solid fa-soap mr-1"></i> 清除污垢</button>
+                </div>
             </div>
         </div>
 
-        <!-- 裝置 4：🌪️ 意見淨化漏斗 (升級互動版，4 題) -->
+        <!-- 裝置 4：🌪️ 意見淨化漏斗 (升級互動版，7 題) -->
         <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-purple-100 mb-10 relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
             <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-purple-800">
@@ -234,7 +250,7 @@
             <p class="text-slate-600 font-medium mb-6">面對糾正或建議時，我們很容易誤會對方是「針對我」。把別人的話丟進漏斗，過濾掉毒素吧！</p>
             
             <div class="bg-slate-50 p-6 rounded-2xl border-2 border-slate-200 text-center max-w-3xl mx-auto relative">
-                <div class="absolute top-4 right-4 text-purple-600 font-bold text-xs" id="funnel-counter">過濾 1 / 4</div>
+                <div class="absolute top-4 right-4 text-purple-600 font-bold text-xs" id="funnel-counter">過濾 1 / 7</div>
                 
                 <h4 class="font-bold text-slate-500 text-xs mb-2 uppercase tracking-widest mt-4">輸入：別人說的話</h4>
                 <div id="funnel-input-text" class="bg-white p-4 rounded-xl border-2 border-purple-200 shadow-sm inline-block font-black text-slate-800 text-base md:text-lg mb-4">
@@ -317,7 +333,7 @@
             </div>
         </div>
 
-        <!-- 裝置 6：📜 煉金術士的實驗筆記 (升級互動版，4題) -->
+        <!-- 裝置 6：📜 煉金術士的實驗筆記 (升級互動版，7題) -->
         <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-100 mb-10 relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
             <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-emerald-800">
@@ -327,7 +343,7 @@
             
             <div class="bg-[url('https://www.transparenttextures.com/patterns/lined-paper.png')] bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 md:p-8 max-w-3xl mx-auto shadow-sm relative">
                 <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-rose-300 opacity-50"></div>
-                <div class="absolute top-4 right-4 text-amber-700 font-bold text-xs bg-amber-200 px-2 py-1 rounded" id="note-counter">紀錄 1 / 4</div>
+                <div class="absolute top-4 right-4 text-amber-700 font-bold text-xs bg-amber-200 px-2 py-1 rounded" id="note-counter">紀錄 1 / 7</div>
                 
                 <h3 id="note-scenario" class="text-xl font-black text-slate-800 mb-4 ml-4 mt-2">實驗紀錄 #001：英文測驗不合格</h3>
                 <p class="text-slate-700 font-bold mb-4 ml-4"><i class="fa-solid fa-clipboard-question text-emerald-600"></i> 分析：這次煉金失敗，可能是因為什麼？</p>
@@ -354,14 +370,17 @@
             <div class="absolute -bottom-20 -right-20 w-48 h-48 bg-amber-500 rounded-full mix-blend-screen filter blur-3xl opacity-30"></div>
             
             <h2 class="text-2xl font-black mb-2 flex items-center justify-center gap-2 text-amber-400 drop-shadow-md">
-                <i class="fa-solid fa-dragon"></i> 裝置 7：實戰煉金模擬器 (Boss 關卡)
+                <i class="fa-solid fa-dragon"></i> 裝置 7：實戰煉金模擬器 (連續 Boss 關卡)
             </h2>
             <p class="text-slate-300 font-medium mb-8">綜合運用所有裝備，化解這場終極情緒風暴！</p>
             
-            <div class="bg-slate-900 border-2 border-slate-600 rounded-2xl p-6 md:p-8 max-w-3xl mx-auto">
-                <div class="bg-rose-950/50 border border-rose-500/50 p-4 rounded-xl mb-8">
+            <div class="bg-slate-900 border-2 border-slate-600 rounded-2xl p-6 md:p-8 max-w-3xl mx-auto relative">
+                <!-- Boss Counter -->
+                <div class="absolute top-4 right-4 text-amber-400 font-bold text-xs bg-slate-800 px-3 py-1 rounded border border-slate-600" id="boss-counter">Boss 1 / 3</div>
+
+                <div class="bg-rose-950/50 border border-rose-500/50 p-4 rounded-xl mb-8 mt-6">
                     <p class="text-rose-200 text-sm font-bold mb-1">【 Boss 級危機來襲 】</p>
-                    <p class="text-xl font-black text-white">「你花很大心機畫的圖，被同學說『畫得好奇怪』。你現在覺得很生氣，很想把畫撕掉！」</p>
+                    <p class="text-xl font-black text-white" id="boss-scenario-text">「你花很大心機畫的圖，被同學說『畫得好奇怪』。你現在覺得很生氣，很想把畫撕掉！」</p>
                 </div>
 
                 <div class="flex flex-col gap-4 relative">
@@ -391,7 +410,8 @@
                 </div>
 
                 <div id="boss-victory" class="hidden mt-8 bg-amber-500 text-amber-950 font-black p-4 rounded-xl text-xl animate-pop shadow-[0_0_20px_#f59e0b]">
-                    🎉 Boss 擊破！你完美守護了自己的心血作品，避免了情緒崩潰！
+                    <div id="boss-victory-text">🎉 Boss 擊破！你完美守護了自己的心血作品，避免了情緒崩潰！</div>
+                    <button id="boss-next-btn" onclick="nextBoss()" class="mt-4 w-full bg-amber-700 text-white font-bold py-2 rounded-lg hover:bg-amber-800 transition-colors text-base">迎戰下一位 Boss <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
         </div>
@@ -536,13 +556,16 @@
             }
         }
 
-        // --- 2. 擴充：神奇滴劑「仲未 (Yet)」(5題) ---
+        // --- 2. 擴充：神奇滴劑「仲未 (Yet)」(擴充至 8 題) ---
         const yetSentences = [
             { old: "「我根本學唔識英文。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>學識呢個英文生字。」" },
             { old: "「我游水好慢，我永遠都唔得。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>搵到游得快嘅技巧。」" },
             { old: "「我交唔到朋友，無人鍾意我。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>遇到同我磁場夾嘅朋友。」" },
             { old: "「我啲畫好核突，我唔識畫畫。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>掌握到畫畫嘅基本功。」" },
-            { old: "「呢個魔術我變極都穿崩。」", new: "「呢個魔術我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>練習得夠熟練。」" }
+            { old: "「呢個魔術我變極都穿崩。」", new: "「呢個魔術我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>練習得夠熟練。」" },
+            { old: "「我打機成日輸，我係廢柴。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>搵到贏呢隻遊戲嘅策略。」" },
+            { old: "「我講故事講得好難聽，無人想聽。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>學識點樣講故事吸引人。」" },
+            { old: "「我啲字寫得好樣衰。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>練好寫字嘅手勢同筆劃。」" }
         ];
         let yetIndex = 0;
         let isYetApplied = false;
@@ -614,7 +637,7 @@
             }, 400);
         }
 
-        // --- 4. 擴充：意見淨化漏斗邏輯 (4題互動版) ---
+        // --- 4. 擴充：意見淨化漏斗邏輯 (擴充至 7 題) ---
         const funnelData = [
             {
                 input: "老師：「小明，你呢一題計錯咗，要小心啲睇題目。」",
@@ -635,6 +658,21 @@
                 input: "朋友：「我今日唔想傾計住。」",
                 toxic: "「佢一定係嬲咗我，我實係做錯事得罪佢。」",
                 essence: "「佢可能今日好攰或者有心事，佢需要自己靜下，唔關我事。」"
+            },
+            {
+                input: "同學：「你今日件衫好似著得有啲怪喎。」",
+                toxic: "「佢笑我醜樣，佢想我出醜。」",
+                essence: "「佢只係指出我件衫可能著反咗或者唔夾，想提醒我。」"
+            },
+            {
+                input: "體育老師：「你傳波嘅路線太明顯啦，要多啲變化。」",
+                toxic: "「老師覺得我係全隊最差嗰個，想換走我。」",
+                essence: "「老師想教我點樣傳波更難俾對手估到，提升我嘅技術。」"
+            },
+            {
+                input: "爸爸：「你點解又打翻杯水呀？」",
+                toxic: "「爸爸覺得我係個累贅，成日做錯事。」",
+                essence: "「爸爸只係對要清理積水感到煩躁，提醒我要小心啲。」"
             }
         ];
         
@@ -670,7 +708,6 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             btn.classList.add('pointer-events-none');
 
-            // 創建過濾動畫元素
             const drop = document.createElement('i');
             drop.className = 'fa-solid fa-droplet text-purple-400 absolute animate-drop text-2xl z-0';
             btn.parentElement.appendChild(drop);
@@ -691,7 +728,7 @@
                 }
             }, 1000);
         }
-        
+
         function nextFunnel() {
             if(funnelIndex < funnelData.length - 1) {
                 funnelIndex++;
@@ -728,7 +765,7 @@
             }
         }
 
-        // --- 6. 擴充：煉金術士的實驗筆記 (4題互動版) ---
+        // --- 6. 擴充：煉金術士的實驗筆記 (擴充至 7 題) ---
         const noteData = [
             {
                 scenario: "實驗紀錄 #001：英文測驗不合格",
@@ -757,9 +794,30 @@
                 optB: "B. 火候不對（用錯咗膠水或者工具，太大力）",
                 optC: "C. 忘記看說明書（漏睇咗重要嘅警告字眼）",
                 optD: "D. 以上皆有可能！這不是「我」的問題，是「方法」的問題！"
+            },
+            {
+                scenario: "實驗紀錄 #005：分組報告被同學話「你做啲嘢用唔著」",
+                optA: "A. 材料放太快（無同組員溝通好方向就開始做）",
+                optB: "B. 火候不對（做嘅格式同組員要求唔夾）",
+                optC: "C. 忘記看說明書（無睇清楚老師對報告嘅要求）",
+                optD: "D. 以上皆有可能！這不是「我」的問題，是「方法」的問題！"
+            },
+            {
+                scenario: "實驗紀錄 #006：數學測驗唔夠時間做",
+                optA: "A. 材料放太快（一開始遇到難題就卡死，無跳過先）",
+                optB: "B. 火候不對（時間分配方法錯咗）",
+                optC: "C. 忘記看說明書（無望清楚總共有幾多頁）",
+                optD: "D. 以上皆有可能！這不是「我」的問題，是「方法」的問題！"
+            },
+            {
+                scenario: "實驗紀錄 #007：去朋友屋企玩，最後不歡而散",
+                optA: "A. 材料放太快（太興奮，無顧及朋友嘅感受）",
+                optB: "B. 火候不對（玩輸咗發脾氣，用錯咗表達方式）",
+                optC: "C. 忘記看說明書（無尊重朋友屋企嘅規矩）",
+                optD: "D. 以上皆有可能！這不是「我」的問題，是「方法」的問題！"
             }
         ];
-        
+
         let noteIndex = 0;
 
         function loadNoteData() {
@@ -770,12 +828,11 @@
             const optsContainer = document.getElementById('note-options');
             optsContainer.innerHTML = '';
             
-            // Generate options
             const options = [
-                { text: data.optA, isCorrect: false, reason: '材料放太快' },
-                { text: data.optB, isCorrect: false, reason: '火候不對' },
-                { text: data.optC, isCorrect: false, reason: '忘記看說明書' },
-                { text: data.optD, isCorrect: true, reason: '以上皆是' }
+                { text: data.optA, isCorrect: false },
+                { text: data.optB, isCorrect: false },
+                { text: data.optC, isCorrect: false },
+                { text: data.optD, isCorrect: true }
             ];
             
             options.forEach(opt => {
@@ -834,7 +891,61 @@
             }
         }
 
-        // --- 7. 實戰煉金模擬器 (Boss 關卡) ---
+        // --- 7. 實戰煉金模擬器 (連續 Boss 關卡) ---
+        const bossData = [
+            {
+                scenario: "「你花很大心機畫的圖，被同學說『畫得好奇怪』。你現在覺得很生氣，很想把畫撕掉！」",
+                s1_desc: "<i class='fa-solid fa-soap'></i> 清除標籤 (我不是畫畫白痴，只係各有風格)",
+                s2_desc: "<i class='fa-solid fa-battery-half'></i> 燃料充電 (深呼吸/告訴自己唔洗太介意)",
+                s3_desc: "<i class='fa-solid fa-flask'></i> 提煉新心態 (他可能只是看不懂，或者我可以問他哪裡奇怪)",
+                victoryText: "🎉 Boss 1 擊破！你完美守護了自己的心血作品，避免了情緒崩潰！"
+            },
+            {
+                scenario: "「分組報告時，組員話你進度太慢，想踢你出組。你覺得好委屈，想大鬧一場。」",
+                s1_desc: "<i class='fa-solid fa-soap'></i> 清除標籤 (我不是沒用的廢人，只係進度未跟上)",
+                s2_desc: "<i class='fa-solid fa-battery-half'></i> 燃料充電 (先離開現場飲啖水，冷靜一下，唔好急住開火)",
+                s3_desc: "<i class='fa-solid fa-flask'></i> 提煉新心態 (我可以直接問邊度需要補救，或者尋求老師協調)",
+                victoryText: "🎉 Boss 2 擊破！你成功控制住怒火，用理智解決了小組危機！"
+            },
+            {
+                scenario: "「校運會接力賽，你不小心跌倒連累全班輸了。同學都在嘆氣，你覺得自己是千古罪人。」",
+                s1_desc: "<i class='fa-solid fa-soap'></i> 清除標籤 (我不是千古罪人，只係一次失誤，無人想跌倒)",
+                s2_desc: "<i class='fa-solid fa-battery-half'></i> 燃料充電 (原諒自己，告訴自己：我已經盡了全力)",
+                s3_desc: "<i class='fa-solid fa-flask'></i> 提煉新心態 (主動同同學講唔好意思，下次我地再贏返黎！)",
+                victoryText: "🎉 終極 Boss 擊破！你跨越了巨大的內疚感，展現了真正的體育精神與韌性！"
+            }
+        ];
+
+        let bossIndex = 0;
+
+        function loadBossData() {
+            const data = bossData[bossIndex];
+            document.getElementById('boss-counter').innerText = `Boss ${bossIndex + 1} / ${bossData.length}`;
+            document.getElementById('boss-scenario-text').innerText = data.scenario;
+            
+            for(let i=1; i<=3; i++){
+                const btn = document.getElementById(`boss-btn-${i}`);
+                const desc = document.getElementById(`boss-desc-${i}`);
+                
+                btn.innerHTML = i;
+                btn.classList.remove('bg-amber-500', 'border-amber-400');
+                btn.classList.add('bg-slate-700', 'border-slate-500');
+                if (i > 1) {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+
+                desc.innerHTML = data[`s${i}_desc`];
+                desc.classList.remove('bg-amber-100', 'text-amber-800', 'animate-pop');
+                desc.classList.add('bg-slate-800', 'text-slate-400', 'text-slate-500');
+            }
+
+            document.getElementById('boss-victory').classList.add('hidden');
+        }
+
         function executeBossStep(step) {
             const btn = document.getElementById(`boss-btn-${step}`);
             const desc = document.getElementById(`boss-desc-${step}`);
@@ -844,10 +955,8 @@
             btn.classList.replace('bg-slate-700', 'bg-amber-500');
             btn.classList.replace('border-slate-500', 'border-amber-400');
             
-            desc.classList.replace('bg-slate-800', 'bg-amber-100');
-            desc.classList.replace('text-slate-400', 'text-amber-800');
-            desc.classList.replace('text-slate-500', 'text-amber-800');
-            desc.classList.add('animate-pop');
+            desc.classList.remove('bg-slate-800', 'text-slate-400', 'text-slate-500');
+            desc.classList.add('bg-amber-100', 'text-amber-800', 'animate-pop');
 
             if (step < 3) {
                 nextBtn.disabled = false;
@@ -855,7 +964,26 @@
                 nextBtn.classList.add('animate-bounce');
                 setTimeout(() => nextBtn.classList.remove('animate-bounce'), 1000);
             } else {
-                document.getElementById('boss-victory').classList.remove('hidden');
+                const vicPanel = document.getElementById('boss-victory');
+                document.getElementById('boss-victory-text').innerText = bossData[bossIndex].victoryText;
+                
+                const nextBossBtn = document.getElementById('boss-next-btn');
+                if(bossIndex === bossData.length - 1){
+                    nextBossBtn.innerHTML = "🎉 完成所有 Boss 挑戰！";
+                    nextBossBtn.onclick = null;
+                    nextBossBtn.classList.replace('hover:bg-amber-800', 'cursor-default');
+                } else {
+                    nextBossBtn.innerHTML = '挑戰下一位 Boss <i class="fa-solid fa-arrow-right"></i>';
+                }
+                
+                vicPanel.classList.remove('hidden');
+            }
+        }
+
+        function nextBoss() {
+            if(bossIndex < bossData.length - 1){
+                bossIndex++;
+                loadBossData();
             }
         }
 
@@ -1067,6 +1195,7 @@
         window.onload = () => {
             loadFunnelData();
             loadNoteData();
+            loadBossData();
             initQuiz();
         };
     </script>
