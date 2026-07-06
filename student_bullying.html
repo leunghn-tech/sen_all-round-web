@@ -92,7 +92,8 @@
 
     <!-- 頂部導航 -->
     <nav class="w-full max-w-5xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
-        <a href="student_dashboard.html" class="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm text-slate-600 font-bold hover:text-fuchsia-600 hover:shadow-md transition-all border border-slate-100">
+        <!-- 修正返回大廳路徑至 index.html -->
+        <a href="index.html" class="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm text-slate-600 font-bold hover:text-fuchsia-600 hover:shadow-md transition-all border border-slate-100">
             <div class="bg-slate-100 group-hover:bg-fuchsia-100 text-slate-500 group-hover:text-fuchsia-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
                 <i class="fa-solid fa-arrow-left"></i>
             </div>
@@ -225,7 +226,7 @@
             <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-fuchsia-800">
                 <i class="fa-solid fa-mobile-screen-button"></i> 裝置 3：網絡防衛套件 (Cyber Defender SOP)
             </h2>
-            <p class="text-slate-600 font-medium mb-6">當在 WhatsApp、群組或社交媒體上遭受人身攻擊或惡意改圖，點擊執行網絡自衛 4 步戰術！</p>
+            <p class="text-slate-600 font-medium mb-6">當在 WhatsApp、群組或社交媒體上遭受人身攻擊 or 惡意改圖，點擊執行網絡自衛 4 步戰術！</p>
             
             <div class="bg-fuchsia-50/50 p-6 rounded-2xl border-2 border-fuchsia-200 max-w-2xl mx-auto">
                 <!-- 步進指示器 -->
@@ -241,7 +242,7 @@
                 <div id="cyber-sop-content" class="text-center min-h-[140px] flex flex-col justify-center items-center">
                     <div class="text-4xl mb-2 text-fuchsia-500"><i class="fa-solid fa-ban"></i></div>
                     <h3 class="text-lg font-black text-fuchsia-800 mb-2">第 1 步：不要回覆 (Stop)</h3>
-                    <p class="text-sm text-slate-600 max-w-md">網絡欺凌者最希望看見你生氣、委屈地回罵。完全不理會，不要發任何表情符號或字句，能瞬間冷卻戰火。</p>
+                    <p class="text-sm text-slate-600 max-w-md">網絡欺凌者最希望看見你生氣、委屈地回罵。完全不理會，不要發 any 表情符號或字句，能瞬間冷卻戰火。</p>
                 </div>
 
                 <div class="text-center mt-6">
@@ -287,7 +288,7 @@
             </div>
         </div>
 
-        <!-- 裝置 5：🤝 旁觀者同盟救援器 (Upstander 模式) (新增) -->
+        <!-- 裝置 5：🤝 旁觀者同盟救援器 (Upstander 模式) -->
         <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-fuchsia-100 mb-10 relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-fuchsia-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
             <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-fuchsia-800">
@@ -324,7 +325,7 @@
                             <p class="text-xs text-slate-500 mt-1">立刻通知附近當值老師或社工</p>
                         </div>
                     </button>
-                    <button onclick="triggerRescue('direct', '「大家一齊過黎睇下！老師黎緊啦！」', '🛡️ 堅定聲聲法 (Direct) 成功！你不直接挑釁打架，而是大聲呼喚其他同學，利用人群力量和輿論讓欺凌者知難而退。')" class="bg-white hover:bg-fuchsia-100 border border-fuchsia-200 p-4 rounded-xl text-left transition-all flex gap-3 items-start group">
+                    <button onclick="triggerRescue('direct', '「大家一齊過黎睇下！老師黎緊啦！」', '🛡️ 堅定聲援法 (Direct) 成功！你不直接挑釁打架，而是大聲呼喚其他同學，利用人群力量和輿論讓欺凌者知難而退。')" class="bg-white hover:bg-fuchsia-100 border border-fuchsia-200 p-4 rounded-xl text-left transition-all flex gap-3 items-start group">
                         <div class="w-10 h-10 bg-fuchsia-100 text-fuchsia-600 rounded-lg flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform"><i class="fa-solid fa-bullhorn"></i></div>
                         <div>
                             <div class="font-bold text-fuchsia-900">4. 堅定聲援 (Direct)</div>
@@ -486,7 +487,7 @@
             },
             {
                 scenario: "有高年級學生在課室走廊威脅你：「放學同我交出 50 蚊，唔係你就死定啦！」",
-                speech: "「我依家覺得安全受到威脅，我要即刻搵社工同老師處理！儲存」",
+                speech: "「我依家覺得安全受到威脅，我要即刻搵社工同老師處理！」",
                 desc: "「緊急防禦網」：遇到身體威脅、勒索。這時人身安全最重要！可以先口頭敷衍甚至給予零錢，事後立刻向學校成人求助！"
             }
         ];
@@ -752,7 +753,7 @@
                 successTitle: "✅ 終極防衛：聰明求助！",
                 successText: "欺凌者越是威脅你，代表他們越害怕你告訴老師。私下讓家長從上而下介入，是最安全且威力巨大的防衛核盾！",
                 failTitle: "❌ 放任威脅：縱容霸凌",
-                failText: "默默忍受只會讓他們得寸進尺。欺凌者就是欺負你不敢說。大膽告訴父母，尋求成人網絡的保護！"
+                failText: "默默忍受只會讓他們得寸進尺。欺凌者就是欺負你不敢說。大膽告訴父母，尋求成人網絡 the 保護！"
             },
             {
                 icon: "👀",
@@ -773,7 +774,7 @@
                     { text: "使用『事後支援法』，走過去遞上紙巾並安撫說：「佢地真係好過份，你無事嘛？我陪你去搵社工舉報佢地。」", isCorrect: true },
                     { text: "走過去取笑他：「哈哈，你頭先好弱呀，咁都被人搶走份美勞。」", isCorrect: false }
                 ],
-                successTitle: "✅ 特工同盟結成！溫暖修復！",
+                successTitle: "✅ 特工同盟結成！溫慢修復！",
                 successText: "事後的溫暖陪伴和支持（Comfort），能給予被欺凌者極大的情感支撐，讓他擁有向老師或家長舉報的勇氣！",
                 failTitle: "❌ 傷口灑鹽：二次傷害",
                 failText: "取笑受害者是非常不友善且缺乏同理心的行為。特工之間應該互相扶持，建立穩固的保護防禦線！"
@@ -783,7 +784,7 @@
         let currentQuestionIndex = 0;
 
         function initQuiz() {
-            // 本地儲存加載 EXP 邏輯
+            // 本地儲存加載 EXP 邏輯 (統一口徑為 agent_exp，默認 1250)
             const savedExp = localStorage.getItem('agent_exp') || '1250';
             document.getElementById('current-total-exp').innerText = savedExp;
             
@@ -878,10 +879,10 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在加密存檔...';
             btn.classList.add('opacity-75', 'cursor-not-allowed');
             
-            // 本地儲存：累加 250 EXP 
+            // 統一讀取 agent_exp 本地儲存累加 250 EXP
             let currentExp = parseInt(localStorage.getItem('agent_exp') || '1250');
             currentExp += 250;
-            localStorage.setItem('agent_exp', currentExp);
+            localStorage.setItem('agent_exp', currentExp.toString());
             localStorage.setItem('mission_bullying_completed', 'true');
             
             setTimeout(() => {
@@ -889,7 +890,8 @@
                 msg.classList.remove('hidden');
                 
                 setTimeout(() => {
-                    window.location.href = 'student_dashboard.html';
+                    // 修正跳轉路徑至主頁大廳 index.html
+                    window.location.href = 'index.html';
                 }, 2000);
             }, 1000);
         }
