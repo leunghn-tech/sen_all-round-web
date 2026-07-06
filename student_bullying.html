@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔮 校園防禦結界 | SEN 社交特工訓練營</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f6f8fd;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .exp-font {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* 卡片翻轉效果 */
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        /* 遊戲與回饋動畫 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px) rotate(-1deg); }
+            40%, 80% { transform: translateX(5px) rotate(1deg); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes pop-up {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop-up 0.5s ease-out forwards;
+        }
+
+        /* 脈衝發光防禦效果 */
+        @keyframes shield-pulse {
+            0% { box-shadow: 0 0 10px rgba(219, 39, 119, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(219, 39, 119, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(219, 39, 119, 0.4); }
+        }
+        .shield-pulse {
+            animation: shield-pulse 2s infinite;
+        }
+
+        /* 雷達掃描線動畫 */
+        @keyframes scan-radar {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .radar-line {
+            transform-origin: bottom right;
+            animation: scan-radar 3s linear infinite;
+        }
+        /* 神奇滴劑滴下動畫 */
+        @keyframes drop-fall {
+            0% { transform: translateY(-20px) scale(1); opacity: 0; }
+            20% { transform: translateY(0px) scale(1.2); opacity: 1; }
+            80% { transform: translateY(0px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(20px) scale(0); opacity: 0; }
+        }
+        .animate-drop {
+            animation: drop-fall 1s forwards;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- 頂部導航 -->
+    <nav class="w-full max-w-5xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
+        <a href="student_dashboard.html" class="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm text-slate-600 font-bold hover:text-fuchsia-600 hover:shadow-md transition-all border border-slate-100">
+            <div class="bg-slate-100 group-hover:bg-fuchsia-100 text-slate-500 group-hover:text-fuchsia-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            返回大廳
+        </a>
+        <div class="flex items-center gap-3">
+            <!-- 動態顯示特工目前的總 EXP -->
+            <div class="bg-amber-100 text-amber-700 px-4 py-2 rounded-full font-bold text-sm shadow-sm flex items-center gap-2 border border-amber-200">
+                <i class="fa-solid fa-star text-amber-500"></i> 我的總 EXP: <span id="current-total-exp" class="exp-font">0</span>
+            </div>
+            <div class="bg-fuchsia-100 text-fuchsia-700 px-4 py-2 rounded-full font-bold text-sm shadow-sm flex items-center gap-2 border border-fuchsia-200">
+                <i class="fa-solid fa-bolt text-fuchsia-500"></i> 任務獎勵: 250 EXP
+            </div>
+        </div>
+    </nav>
+
+    <!-- 任務標題區 -->
+    <header class="w-full max-w-5xl mx-auto px-6 mb-10 relative z-20 text-center">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-pink-500 text-white text-4xl shadow-lg mb-6 shield-pulse">
+            <i class="fa-solid fa-shield-cat"></i>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black mb-4 text-slate-800 tracking-tight">
+            🔮 校園防禦結界
+        </h1>
+        <p class="text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            特工，分不清同學是在「玩耍」還是「惡意欺凌」？<br>
+            來這裡解鎖你的防守天賦，學會溫和而堅定地說「不」，建立保護自己的超級結界！
+        </p>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-6 pb-20 flex-grow relative z-10">
+        
+        <!-- 裝置 1：📡 玩笑 vs 欺凌 分辨雷達 (5 題) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-fuchsia-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-fuchsia-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-fuchsia-800">
+                <i class="fa-solid fa-satellite-dish"></i> 裝置 1：玩笑 vs 欺凌 分辨雷達
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">欺凌者經常會用「開玩笑姐嘛，唔使咁認真」來掩飾惡意。點擊下方的情境，用雷達辨別真相！</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-fuchsia-50/50 p-6 rounded-3xl border-2 border-fuchsia-100">
+                
+                <!-- 左側：雷達顯示器與案例選擇 -->
+                <div class="flex flex-col items-center">
+                    <div class="relative w-48 h-48 rounded-full bg-slate-900 border-[6px] border-slate-700 overflow-hidden shadow-inner shrink-0 flex items-center justify-center mb-6">
+                        <!-- 雷達網格 -->
+                        <div class="absolute inset-0 bg-[radial-gradient(transparent_40%,rgba(219,39,119,0.2)_100%)] border border-fuchsia-500/30 rounded-full"></div>
+                        <div class="absolute inset-0" style="background-image: linear-gradient(rgba(219,39,119,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(219,39,119,0.3) 1px, transparent 1px); background-size: 20px 20px; border-radius: 50%;"></div>
+                        <!-- 掃描指針 -->
+                        <div id="radar-sweep" class="absolute top-1/2 left-1/2 w-[50%] h-[50%] bg-gradient-to-br from-fuchsia-400/80 to-transparent radar-line hidden"></div>
+                        <!-- 中心圖示/結果 -->
+                        <div id="radar-display" class="z-10 text-fuchsia-500 text-center p-4">
+                            <i class="fa-solid fa-shield text-4xl mb-1 opacity-50"></i>
+                            <p class="text-[10px] font-bold tracking-widest opacity-50">STANDBY</p>
+                        </div>
+                    </div>
+
+                    <!-- 情境按鈕群 -->
+                    <div class="flex flex-wrap gap-2 justify-center w-full">
+                        <button onclick="scanRadar('sc1')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">改無傷大雅花名 🗣️</button>
+                        <button onclick="scanRadar('sc2')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">扔筆袋玩下 🎒</button>
+                        <button onclick="scanRadar('sc3')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">指指點點排擠 👥</button>
+                        <button onclick="scanRadar('sc4')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">摔角玩痛即停 🤼</button>
+                        <button onclick="scanRadar('sc5')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">貼出醜相轉發 📱</button>
+                    </div>
+                </div>
+
+                <!-- 右側：雷達結果解讀 -->
+                <div class="flex flex-col justify-center h-full min-h-[220px]">
+                    <div id="radar-result-panel" class="bg-white p-6 rounded-2xl border-2 border-fuchsia-100 shadow-inner flex flex-col justify-center items-center text-center">
+                        <i class="fa-solid fa-radar text-4xl text-fuchsia-400 mb-3 animate-pulse"></i>
+                        <h4 class="text-lg font-black text-slate-700 mb-1">等待輸入訊號...</h4>
+                        <p class="text-sm text-slate-400">點擊左下方的社交情境，啟動防禦雷達掃描！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 2：🛡️ 邊界防禦盾 (Boundary Shield 4題，結合TTS) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-pink-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-pink-800">
+                <i class="fa-solid fa-shield-halved"></i> 裝置 2：邊界防禦盾 (衝突防禦訓練)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">當有人越界欺負你，你不需要忍氣吞聲。點擊護盾，學習如何溫和而堅定地表明底線，並點擊播放對白練習發音！</p>
+            
+            <div class="bg-pink-50 p-6 rounded-2xl border-2 border-pink-100">
+                <div class="absolute top-4 right-4 text-pink-600 font-bold text-xs" id="shield-counter">情境 1 / 4</div>
+                
+                <div class="text-center mb-6 mt-2">
+                    <span class="bg-pink-600 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase">面臨社交越界</span>
+                    <h3 id="shield-scenario" class="text-xl font-black text-pink-900 mt-4 min-h-[48px]">同學 A 強行搶你份功課去抄：「借黎抄下啦，唔係就唔當你係朋友！」</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button onclick="activateShield('not', '唔好意思，功課要自己做。你邊題唔識，我可以教你。', '🛡️ 「堅定說不盾」已啟動！拒絕不合理要求，並提供合適的輔助 Plan B (我可以教你)。既表明了底線，又不傷和氣。', 1)" class="bg-white hover:bg-pink-100 border border-pink-200 p-4 rounded-xl text-left transition-all">
+                        <div class="text-2xl mb-1 text-emerald-500"><i class="fa-solid fa-circle-check"></i> 溫和堅定不字盾</div>
+                        <p class="text-xs text-slate-500">不卑不亢表明底線</p>
+                    </button>
+                    <button onclick="activateShield('stone', '...', '🛡️ 「灰石冷處理盾」已啟動！像顆沒反應的灰石，冷靜看他兩秒後直接走開。欺凌者最想要的是你哭鬧生氣的有趣反應，完全冷漠會使對方自討沒趣。', 1)" class="bg-white hover:bg-pink-100 border border-pink-200 p-4 rounded-xl text-left transition-all">
+                        <div class="text-2xl mb-1 text-slate-400"><i class="fa-solid fa-circle"></i> 灰石冷處理盾</div>
+                        <p class="text-xs text-slate-500">不給予任何情緒反應</p>
+                    </button>
+                    <button onclick="activateShield('emergency', '我而家覺得唔安全，我要即刻去搵老師處理！', '🚨 「緊急求助網」已啟動！當面臨恐嚇、身體威脅或勒索零用錢時，保護安全是唯一計畫！不要糾纏，給錢保護身體，事後立刻啟動求助信號！', 1.3)" class="bg-white hover:bg-pink-100 border border-pink-200 p-4 rounded-xl text-left transition-all">
+                        <div class="text-2xl mb-1 text-rose-500"><i class="fa-solid fa-triangle-exclamation"></i> 緊急安全防線</div>
+                        <p class="text-xs text-slate-500">立即求助，安全第一</p>
+                    </button>
+                </div>
+
+                <!-- 護盾演示與TTS對話 -->
+                <div id="shield-display" class="hidden bg-white p-6 rounded-xl border-2 border-pink-200 text-center animate-pop shadow-sm">
+                    <div class="flex flex-col items-center justify-center">
+                        <p id="shield-speech" class="text-lg font-black text-pink-700 bg-pink-50 py-2.5 px-6 rounded-lg mb-4 max-w-lg shadow-inner"></p>
+                        <button onclick="playShieldTTS()" class="bg-pink-500 hover:bg-pink-600 text-white font-black py-2 px-5 rounded-full flex items-center gap-2 text-xs shadow-md active:scale-95 mb-4">
+                            <i class="fa-solid fa-volume-high"></i> 大聲練習說出這句話
+                        </button>
+                        <p id="shield-result-desc" class="text-sm text-slate-600 font-medium max-w-xl"></p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button id="shield-next-btn" onclick="nextShield()" class="hidden border-2 border-pink-500 text-pink-700 font-bold px-6 py-2 rounded-full hover:bg-pink-100 transition-colors">應對下一種威脅 <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 3：🥷 網絡防衛套件 (Cyber Defender 4步SOP) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-fuchsia-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-fuchsia-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-fuchsia-800">
+                <i class="fa-solid fa-mobile-screen-button"></i> 裝置 3：網絡防衛套件 (Cyber Defender SOP)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">當在 WhatsApp、群組或社交媒體上遭受人身攻擊或惡意改圖，點擊執行網絡自衛 4 步戰術！</p>
+            
+            <div class="bg-fuchsia-50/50 p-6 rounded-2xl border-2 border-fuchsia-200 max-w-2xl mx-auto">
+                <!-- 步進指示器 -->
+                <div class="flex justify-between items-center mb-8 relative">
+                    <div class="absolute left-0 top-1/2 w-full h-1 bg-fuchsia-200 -translate-y-1/2 z-0"></div>
+                    <div id="cyber-step-1" class="z-10 w-10 h-10 rounded-full bg-fuchsia-600 text-white flex items-center justify-center font-bold shadow-md">1</div>
+                    <div id="cyber-step-2" class="z-10 w-10 h-10 rounded-full bg-fuchsia-200 text-fuchsia-800 flex items-center justify-center font-bold shadow-md">2</div>
+                    <div id="cyber-step-3" class="z-10 w-10 h-10 rounded-full bg-fuchsia-200 text-fuchsia-800 flex items-center justify-center font-bold shadow-md">3</div>
+                    <div id="cyber-step-4" class="z-10 w-10 h-10 rounded-full bg-fuchsia-200 text-fuchsia-800 flex items-center justify-center font-bold shadow-md">4</div>
+                </div>
+
+                <!-- SOP內容描述 -->
+                <div id="cyber-sop-content" class="text-center min-h-[140px] flex flex-col justify-center items-center">
+                    <div class="text-4xl mb-2 text-fuchsia-500"><i class="fa-solid fa-ban"></i></div>
+                    <h3 class="text-lg font-black text-fuchsia-800 mb-2">第 1 步：不要回覆 (Stop)</h3>
+                    <p class="text-sm text-slate-600 max-w-md">網絡欺凌者最希望看見你生氣、委屈地回罵。完全不理會，不要發任何表情符號或字句，能瞬間冷卻戰火。</p>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button onclick="nextCyberStep()" id="cyber-sop-btn" class="bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-black px-6 py-2 rounded-full text-sm shadow-md transition-all">執行下一個步驟</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 4：🚨 求助信號發射器 (Beacon Generator 4種求助術) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-pink-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-pink-800">
+                <i class="fa-solid fa-tower-broadcast"></i> 裝置 4：求助信號發射器 (求助不是告密)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">特工請記住，求助不是軟弱，也不是告密，求助是一項合法的自衛防禦戰術！點擊發射求助信號：</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <button onclick="sendBeacon('adult', '找可以信任的成人（社工、班主任、家長、警察）。', '📢 信號發射成功：向社工/家長求助時，要清楚說出：『有人在欺負我，我現在感到不安全，我需要幫助。』成人的介入是保護你的最有效護盾。', 'fa-user-tie')" class="bg-pink-50 hover:bg-pink-100 border border-pink-200 p-4 rounded-xl text-center transition-all group flex flex-col items-center">
+                    <div class="text-3xl mb-2 text-pink-600 group-hover:scale-110 transition-transform"><i class="fa-solid fa-user-shield"></i></div>
+                    <span class="font-bold text-sm text-pink-900">向可信成人求助</span>
+                </button>
+                <button onclick="sendBeacon('record', '保存證據（時間、地點、人物、過程）。', '📢 信號發射成功：像偵探一樣記錄每次欺凌事件發生的時間、地點、在場人物。網絡言論記得截圖！這些都是證明你受到委屈的關鍵鐵證。', 'fa-receipt')" class="bg-pink-50 hover:bg-pink-100 border border-pink-200 p-4 rounded-xl text-center transition-all group flex flex-col items-center">
+                    <div class="text-3xl mb-2 text-pink-600 group-hover:scale-110 transition-transform"><i class="fa-solid fa-folder-open"></i></div>
+                    <span class="font-bold text-sm text-pink-900">記錄具體事實</span>
+                </button>
+                <button onclick="sendBeacon('allies', '聯絡友善同盟（找好朋友同行，不落單）。', '📢 信號發射成功：欺凌者通常專挑落單的人下手。在學校找好朋友結伴上洗手間或小食部，大方融入友善的群組。有朋友在身邊能增加防衛力！', 'fa-users')" class="bg-pink-50 hover:bg-pink-100 border border-pink-200 p-4 rounded-xl text-center transition-all group flex flex-col items-center">
+                    <div class="text-3xl mb-2 text-pink-600 group-hover:scale-110 transition-transform"><i class="fa-solid fa-user-group"></i></div>
+                    <span class="font-bold text-sm text-pink-900">建立盟友同行</span>
+                </button>
+                <button onclick="sendBeacon('mind', '心理重建，這不是我的錯。', '📢 信號發射成功：欺凌是『欺凌者行為偏差』，絕對不是因為你做錯了什麼。你不需要感到內疚或羞恥，你是值得被愛、被保護的特工！', 'fa-heart-circle-check')" class="bg-pink-50 hover:bg-pink-100 border border-pink-200 p-4 rounded-xl text-center transition-all group flex flex-col items-center">
+                    <div class="text-3xl mb-2 text-pink-600 group-hover:scale-110 transition-transform"><i class="fa-solid fa-face-smile"></i></div>
+                    <span class="font-bold text-sm text-pink-900">保持自尊自信</span>
+                </button>
+            </div>
+
+            <!-- 求助信號結果 -->
+            <div id="beacon-display" class="hidden mt-6 bg-white p-5 rounded-2xl border-2 border-pink-200 animate-pop shadow-inner flex items-center gap-4">
+                <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 text-2xl shrink-0"><i id="beacon-result-icon" class="fa-solid fa-satellite-dish"></i></div>
+                <div>
+                    <h4 class="font-black text-pink-700 text-sm mb-1" id="beacon-result-title">信號分析：</h4>
+                    <p class="text-xs text-slate-700 leading-relaxed font-bold" id="beacon-result-desc"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 5：🤝 旁觀者同盟救援器 (Upstander 模式) (新增) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-fuchsia-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-fuchsia-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-fuchsia-800">
+                <i class="fa-solid fa-people-holding"></i> 裝置 5：旁觀者同盟救援器 (Upstander 模式)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">看見別的同學被欺負，特工絕對不當冷漠的旁觀者，更不需要跟惡霸打架！用這 4 大安全戰術進行同盟救援！</p>
+            
+            <div class="bg-fuchsia-50/50 p-6 rounded-2xl border-2 border-fuchsia-200 max-w-3xl mx-auto">
+                <div class="text-center mb-6">
+                    <span class="bg-fuchsia-600 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">目擊欺凌情境</span>
+                    <h3 class="text-xl font-black text-slate-800 mt-2">「你見到高年級生喺操場角落，強行推撞並搶走低年級同學嘅零食。」</h3>
+                </div>
+
+                <!-- 救援按鈕 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="triggerRescue('distract', '「喂！老師搵你呀，快啲同我過黎教員室！」', '🎯 轉移視線法 (Distract) 成功！你成功用藉口拉走了被欺負的同學。打亂欺凌者的注意力，是安全且極有效的救援戰術！')" class="bg-white hover:bg-fuchsia-100 border border-fuchsia-200 p-4 rounded-xl text-left transition-all flex gap-3 items-start group">
+                        <div class="w-10 h-10 bg-fuchsia-100 text-fuchsia-600 rounded-lg flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div>
+                            <div class="font-bold text-fuchsia-900">1. 轉移視線 (Distract)</div>
+                            <p class="text-xs text-slate-500 mt-1">假裝路過或用其他藉口帶走同學</p>
+                        </div>
+                    </button>
+                    <button onclick="triggerRescue('comfort', '「你無事嘛？我陪你一齊去搵社工講返件事。」', '💖 事後支援法 (Comfort) 成功！欺凌者離開後，你立刻給予關心。讓受害者知道自己不是孤單一人，給予他尋求幫助的勇氣！')" class="bg-white hover:bg-fuchsia-100 border border-fuchsia-200 p-4 rounded-xl text-left transition-all flex gap-3 items-start group">
+                        <div class="w-10 h-10 bg-fuchsia-100 text-fuchsia-600 rounded-lg flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <div>
+                            <div class="font-bold text-fuchsia-900">2. 事後支援 (Comfort)</div>
+                            <p class="text-xs text-slate-500 mt-1">事後安撫並陪伴他尋求協助</p>
+                        </div>
+                    </button>
+                    <button onclick="triggerRescue('delegate', '（立刻跑到校務處門口）「老師，那邊有人搶零食！」', '📢 尋找大人法 (Delegate) 成功！你不單打獨鬥，而是將情報傳遞給校園強大盟友（老師/校工）。這是最聰明且安全的做法。')" class="bg-white hover:bg-fuchsia-100 border border-fuchsia-200 p-4 rounded-xl text-left transition-all flex gap-3 items-start group">
+                        <div class="w-10 h-10 bg-fuchsia-100 text-fuchsia-600 rounded-lg flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform"><i class="fa-solid fa-user-shield"></i></div>
+                        <div>
+                            <div class="font-bold text-fuchsia-900">3. 尋求大人 (Delegate)</div>
+                            <p class="text-xs text-slate-500 mt-1">立刻通知附近當值老師或社工</p>
+                        </div>
+                    </button>
+                    <button onclick="triggerRescue('direct', '「大家一齊過黎睇下！老師黎緊啦！」', '🛡️ 堅定聲聲法 (Direct) 成功！你不直接挑釁打架，而是大聲呼喚其他同學，利用人群力量和輿論讓欺凌者知難而退。')" class="bg-white hover:bg-fuchsia-100 border border-fuchsia-200 p-4 rounded-xl text-left transition-all flex gap-3 items-start group">
+                        <div class="w-10 h-10 bg-fuchsia-100 text-fuchsia-600 rounded-lg flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform"><i class="fa-solid fa-bullhorn"></i></div>
+                        <div>
+                            <div class="font-bold text-fuchsia-900">4. 堅定聲援 (Direct)</div>
+                            <p class="text-xs text-slate-500 mt-1">大聲製造聲勢，吸引周圍人群注意</p>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- 救援反饋面板 -->
+                <div id="rescue-display" class="hidden mt-6 bg-white p-6 rounded-xl border-2 border-fuchsia-200 text-center animate-pop shadow-sm">
+                    <div class="flex flex-col items-center justify-center">
+                        <p id="rescue-speech" class="text-lg font-black text-fuchsia-700 bg-fuchsia-50 py-2.5 px-6 rounded-lg mb-4 max-w-lg shadow-inner"></p>
+                        <button onclick="playRescueTTS()" class="bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-black py-2 px-5 rounded-full flex items-center gap-2 text-xs shadow-md active:scale-95 mb-4">
+                            <i class="fa-solid fa-volume-high"></i> 播放同盟發聲
+                        </button>
+                        <p id="rescue-result-desc" class="text-sm text-slate-600 font-medium max-w-xl"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 實戰模擬器 (10 題) -->
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-center">
+            🎮 終極防衛模擬器 (Boss 防禦挑戰)
+        </h2>
+        
+        <div id="game-container" class="bg-slate-800 rounded-[2rem] p-6 md:p-10 shadow-xl mb-12 relative overflow-hidden border-4 border-slate-700">
+            <div class="w-full bg-slate-700 rounded-full h-2 mb-6">
+                <div id="game-progress" class="bg-gradient-to-r from-fuchsia-400 to-pink-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <div id="game-screen" class="bg-white rounded-xl p-6 md:p-8 shadow-inner relative">
+                <div class="absolute top-4 right-4 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full" id="game-counter">第 1 / 10 局</div>
+                
+                <div class="text-center mb-8 mt-4">
+                    <div id="game-icon" class="text-5xl mb-4 text-fuchsia-500">🔮</div>
+                    <p id="game-question" class="text-lg md:text-xl font-bold text-slate-700">
+                        載入中...
+                    </p>
+                    <p class="text-fuchsia-600 font-bold mt-3"><i class="fa-solid fa-shield-halved"></i> 面對這種人際攻擊，特工防衛策略是：</p>
+                </div>
+
+                <div id="game-options" class="flex flex-col gap-3"></div>
+
+                <div id="game-feedback" class="hidden mt-6 p-4 rounded-xl border">
+                    <div class="flex items-start gap-3">
+                        <div id="feedback-icon" class="text-2xl mt-1"></div>
+                        <div>
+                            <h4 id="feedback-title" class="font-bold text-lg mb-1"></h4>
+                            <p id="feedback-text" class="text-sm text-slate-600 mb-3"></p>
+                            <button id="next-btn" onclick="nextQuestion()" class="hidden bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-700 transition-colors">
+                                下一局 <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 任務完成區塊 -->
+        <div id="mission-complete-zone" class="hidden text-center bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-fuchsia-100 rounded-full mix-blend-multiply filter blur-2xl opacity-60"></div>
+            <div class="text-5xl mb-4 text-fuchsia-500"><i class="fa-solid fa-trophy"></i></div>
+            <h3 class="text-2xl font-black mb-2 text-slate-800">防禦結界建立完畢！</h3>
+            <p class="text-slate-500 mb-6">你已經成功掌握看穿惡意、堅定拒絕與理智求救的終極防禦能力！</p>
+            <button onclick="completeMission()" id="claimBtn" class="bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 mx-auto">
+                <i class="fa-solid fa-check-circle"></i> 領取 250 EXP 並返回大廳
+            </button>
+            <p id="successMsg" class="text-emerald-600 font-bold mt-4 hidden">
+                🎉 恭喜！獲得 250 EXP！即將返回大廳...
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        // ----------------------------------------------------
+        // 1. 玩笑 vs 欺凌 分辨雷達 數據與邏輯
+        // ----------------------------------------------------
+        const radarData = {
+            'sc1': {
+                title: "🟢 玩笑 (雙向開心)",
+                desc: "大家互相改一些無傷大雅的小花名（如：高個子叫『高佬』），當事人都開心並一起笑。只要對方不覺得難堪，且隨時可以叫停，這就是友善玩耍。",
+                color: "text-emerald-500",
+                displayIcon: "fa-face-laugh-beam"
+            },
+            'sc2': {
+                title: "🔴 欺凌 (單向痛苦)",
+                desc: "同學故意將你個筆袋扔黎扔去，你大喊說『唔好，還返俾我』，他們卻冷笑說是『玩下姐嘛』。只要有一方感到難受且叫停了對方不理，就是欺凌！",
+                color: "text-rose-500",
+                displayIcon: "fa-circle-exclamation"
+            },
+            'sc3': {
+                title: "🔴 欺凌 (關係排擠)",
+                desc: "每次你行過，某幾位同學就圍在一起刻意細聲講、大聲笑，指指點點，故意不和你玩。這屬於『關係欺凌』，目的是讓你感到落單與自卑。特工應啟動求助！",
+                color: "text-rose-500",
+                displayIcon: "fa-user-slash"
+            },
+            'sc4': {
+                title: "🟢 玩笑 (底線尊重)",
+                desc: "朋友和你玩摔角或打鬧，你不小心被弄痛大喊『好痛啊！』，對方聽到後立刻停手並緊張地問你『有冇事？』。這說明對方有同理心，懂得尊重底線。",
+                color: "text-emerald-500",
+                displayIcon: "fa-handshake"
+            },
+            'sc5': {
+                title: "🔴 欺凌 (網絡羞辱)",
+                desc: "有同學將你出洋相、發呆或跌倒的相片，配上嘲笑字眼發到班級 WhatsApp 群組讓大家一齊轉發。這屬於『網絡欺凌』，會造成二次傷害，特工應截圖存證！",
+                color: "text-rose-500",
+                displayIcon: "fa-mobile-retro"
+            }
+        };
+
+        function scanRadar(type) {
+            const sweep = document.getElementById('radar-sweep');
+            const display = document.getElementById('radar-display');
+            const resultPanel = document.getElementById('radar-result-panel');
+            const data = radarData[type];
+
+            sweep.classList.remove('hidden');
+            display.innerHTML = `
+                <div class="text-3xl text-fuchsia-500 animate-ping"><i class="fa-solid fa-compact-disc"></i></div>
+                <p class="text-[9px] font-bold text-fuchsia-300 mt-1">SCANNING...</p>
+            `;
+
+            setTimeout(() => {
+                sweep.classList.add('hidden');
+                display.innerHTML = `
+                    <div class="text-4xl ${data.color}"><i class="fa-solid ${data.displayIcon}"></i></div>
+                    <p class="text-[9px] font-bold ${data.color} tracking-widest mt-1">ANALYZED</p>
+                `;
+
+                resultPanel.className = "bg-white p-6 rounded-2xl border-2 border-fuchsia-100 shadow-inner flex flex-col justify-center items-center text-center animate-pop";
+                resultPanel.innerHTML = `
+                    <div class="text-4xl mb-2"><i class="fa-solid ${data.displayIcon} ${data.color}"></i></div>
+                    <h4 class="text-lg font-black ${data.color} mb-2">${data.title}</h4>
+                    <p class="text-xs text-slate-600 font-bold leading-relaxed bg-slate-50 p-3 rounded-lg max-w-sm">${data.desc}</p>
+                `;
+            }, 1000);
+        }
+
+        // ----------------------------------------------------
+        // 2. 邊界防禦盾 數據與邏輯
+        // ----------------------------------------------------
+        const shieldData = [
+            {
+                scenario: "同學 A 強行搶你份功課去抄：「借黎抄下啦，唔係就唔當你係朋友！」",
+                speech: "「唔好意思，我唔覺得好笑。請你放低我個書包。」",
+                desc: "「不字盾」：表明立場，拒絕不合理要求，溫和而堅定，可以重複說三次，對方通常會放棄挑釁。"
+            },
+            {
+                scenario: "有人在走廊故意撞你膊頭，大聲挑釁：「你無長眼呀？你擋住我條路！」",
+                speech: "...",
+                desc: "「灰石盾」：不跟對方對罵。冷靜看他兩秒，像看一塊沒感覺的石頭，轉身走開。不給對方他們想要的驚恐或生氣反應。"
+            },
+            {
+                scenario: "同學在大家面前笑你：「你個頭真係好大，成個大頭怪嬰咁，哈哈！」",
+                speech: "「大頭好呀！證明我大腦容量大，裝得落多啲特工知識嘛！」",
+                desc: "「幽默折射盾」：用自信的自嘲將敵意轉化為玩笑。你既然不生氣，對方的言語攻擊就立刻失去了作用。"
+            },
+            {
+                scenario: "有高年級學生在課室走廊威脅你：「放學同我交出 50 蚊，唔係你就死定啦！」",
+                speech: "「我依家覺得安全受到威脅，我要即刻搵社工同老師處理！儲存」",
+                desc: "「緊急防禦網」：遇到身體威脅、勒索。這時人身安全最重要！可以先口頭敷衍甚至給予零錢，事後立刻向學校成人求助！"
+            }
+        ];
+
+        let currentShieldIndex = 0;
+        let shieldSpeechText = "";
+
+        function activateShield(shieldType, customSpeech, descText, ttsSpeed = 1) {
+            const display = document.getElementById('shield-display');
+            const speechEl = document.getElementById('shield-speech');
+            const descEl = document.getElementById('shield-result-desc');
+            const nextBtn = document.getElementById('shield-next-btn');
+
+            display.classList.remove('hidden');
+            display.classList.add('animate-pop');
+
+            if (customSpeech === "...") {
+                speechEl.innerText = "【 保持冷漠與沉默，不發一言行開 】";
+                shieldSpeechText = "";
+            } else {
+                speechEl.innerText = `💬 練習說：「${customSpeech}」`;
+                shieldSpeechText = customSpeech;
+                // 自動播放一次
+                playShieldTTS(ttsSpeed);
+            }
+
+            descEl.innerText = descText;
+            nextBtn.classList.remove('hidden');
+
+            if (currentShieldIndex === shieldData.length - 1) {
+                nextBtn.innerText = "完成防禦盾訓練";
+            }
+        }
+
+        function playShieldTTS(speed = 0.9) {
+            if (shieldSpeechText === "") return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(shieldSpeechText);
+                utterance.lang = 'zh-HK'; // 粵語廣東話
+                utterance.pitch = 1.0;
+                utterance.rate = speed; // 略慢速度
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function nextShield() {
+            if (currentShieldIndex < shieldData.length - 1) {
+                currentShieldIndex++;
+                document.getElementById('shield-counter').innerText = `情境 ${currentShieldIndex + 1} / ${shieldData.length}`;
+                document.getElementById('shield-scenario').innerText = shieldData[currentShieldIndex].scenario;
+                document.getElementById('shield-display').classList.add('hidden');
+                document.getElementById('shield-next-btn').classList.add('hidden');
+            } else {
+                document.getElementById('shield-scenario').innerText = "🎉 恭喜！你已經掌握了 4 大衝突邊界防禦術！";
+                document.getElementById('shield-next-btn').classList.add('hidden');
+                document.getElementById('shield-display').classList.add('hidden');
+            }
+        }
+
+        // ----------------------------------------------------
+        // 3. 網絡防衛套件 (Cyber Defender)
+        // ----------------------------------------------------
+        let currentCyberStep = 1;
+        const cyberSops = {
+            1: {
+                icon: "fa-ban",
+                title: "第 1 步：不要回覆 (Stop)",
+                desc: "網絡欺凌者最希望看見你生氣、委屈地回罵。完全不理會，不要發 any 表情符號或字句，能瞬間冷卻戰火。"
+            },
+            2: {
+                icon: "fa-camera",
+                title: "第 2 步：截圖存證 (Screenshot)",
+                desc: "不要刪除惡意訊息！將對方的言語攻擊、不雅相片、群組聊天內容全部『截圖存檔』，記錄下日期與對方的名字，作為求救時的鐵證。"
+            },
+            3: {
+                icon: "fa-user-slash",
+                title: "第 3 步：立即封鎖 (Block)",
+                desc: "直接開啟對話設定，將該用戶和他的號碼『拉黑/封鎖』，防止對方繼續發送垃圾訊息騷擾你，保護眼睛和心靈！"
+            },
+            4: {
+                icon: "fa-flag",
+                title: "第 4 步：向外求救與舉報 (Report)",
+                desc: "主動告訴老師或家長。你也可以直接向社交平台舉報該有害貼文。特工有盟友支持，網絡小丑不攻自破！"
+            }
+        };
+
+        function nextCyberStep() {
+            currentCyberStep++;
+            if (currentCyberStep > 4) {
+                currentCyberStep = 1;
+            }
+
+            for (let i = 1; i <= 4; i++) {
+                const indicator = document.getElementById(`cyber-step-${i}`);
+                if (i <= currentCyberStep) {
+                    indicator.className = "z-10 w-10 h-10 rounded-full bg-fuchsia-600 text-white flex items-center justify-center font-bold shadow-md";
+                } else {
+                    indicator.className = "z-10 w-10 h-10 rounded-full bg-fuchsia-200 text-fuchsia-800 flex items-center justify-center font-bold shadow-md";
+                }
+            }
+
+            const content = document.getElementById('cyber-sop-content');
+            const stepData = cyberSops[currentCyberStep];
+            content.innerHTML = `
+                <div class="text-4xl mb-2 text-fuchsia-500 animate-pop"><i class="fa-solid ${stepData.icon}"></i></div>
+                <h3 class="text-lg font-black text-fuchsia-800 mb-2 animate-pop">${stepData.title}</h3>
+                <p class="text-sm text-slate-600 max-w-md animate-pop">${stepData.desc}</p>
+            `;
+
+            const btn = document.getElementById('cyber-sop-btn');
+            if (currentCyberStep === 4) {
+                btn.innerText = "重新溫習 SOP";
+            } else {
+                btn.innerText = "執行下一個步驟";
+            }
+        }
+
+        // ----------------------------------------------------
+        // 4. 求助信號發射器 (Beacon Generator)
+        // ----------------------------------------------------
+        function sendBeacon(type, actionText, resultText, iconClass) {
+            const display = document.getElementById('beacon-display');
+            const resultIcon = document.getElementById('beacon-result-icon');
+            const resultTitle = document.getElementById('beacon-result-title');
+            const resultDesc = document.getElementById('beacon-result-desc');
+
+            display.classList.remove('hidden');
+            display.classList.add('animate-pop');
+
+            resultIcon.className = `fa-solid ${iconClass}`;
+            resultTitle.innerText = `信號分析：${actionText}`;
+            resultDesc.innerText = resultText;
+        }
+
+        // ----------------------------------------------------
+        // 5. 旁觀者同盟救援器 (Upstander 模式) 邏輯
+        // ----------------------------------------------------
+        let rescueSpeechText = "";
+        function triggerRescue(type, speechText, descText) {
+            const display = document.getElementById('rescue-display');
+            const speechEl = document.getElementById('rescue-speech');
+            const descEl = document.getElementById('rescue-result-desc');
+
+            display.classList.remove('hidden');
+            display.classList.add('animate-pop');
+
+            speechEl.innerText = `💬 救援行動對白：「${speechText}」`;
+            rescueSpeechText = speechText;
+            descEl.innerText = descText;
+            
+            // 自動播放發聲
+            playRescueTTS();
+        }
+
+        function playRescueTTS() {
+            if (rescueSpeechText === "") return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(rescueSpeechText);
+                utterance.lang = 'zh-HK';
+                utterance.pitch = 1.05;
+                utterance.rate = 0.95;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // ----------------------------------------------------
+        // 6. 終極防衛模擬器 (10 題)
+        // ----------------------------------------------------
+        const quizData = [
+            {
+                icon: "🎒",
+                question: "【肢體】放學時，有高年級生攔截你要你給他 20 元零用錢，否則就打你。你該怎麼辦？",
+                options: [
+                    { text: "為了安全先給他錢，記下對方的特徵（衣服、長相），事後立刻告訴家長 and 老師。", isCorrect: true },
+                    { text: "為了特工尊嚴，硬跟對方動手對打，堅持不給錢。", isCorrect: false }
+                ],
+                successTitle: "✅ 理智防衛！生命第一！",
+                successText: "安全永遠是第一考量。財物可以彌補，身體不能受傷！事後求助是勇敢的行為。",
+                failTitle: "❌ 衝動行事：面臨身體受傷",
+                failText: "硬碰硬容易讓自己處於危險中。記住，這不是軟弱，而是冷靜的緩兵之計！"
+            },
+            {
+                icon: "🗣️",
+                question: "【言語】有人故意在全班面前，很大聲地拿你有些結巴的說話方式開玩笑，大家都看著你。",
+                options: [
+                    { text: "直接大吼粗口罵他，踢翻他的課桌椅發洩憤怒。", isCorrect: false },
+                    { text: "戴上『灰石盾』，冷靜地直視他兩秒，然後用正常聲音說：『請你放尊重，我唔覺得好笑。』然後行開。", isCorrect: true }
+                ],
+                successTitle: "✅ 邊界防禦成功！",
+                successText: "冷靜而堅定地拒絕（不字盾）加上不給情緒反應（灰石盾），能瞬間戳破他的氣焰，讓他在班上自討沒趣。",
+                failTitle: "❌ 掉入陷阱：憤怒反擊",
+                failText: "如果你大吼大叫或動手，事情的焦點就會變成你發脾氣，對方反而更得意。冷靜行開找老師才是上策。"
+            },
+            {
+                icon: "👥",
+                question: "【社交】分組報告時，組長故意對大家說：「不要跟這個怪人一組，我們組人滿了！」讓你感到孤立無援。",
+                options: [
+                    { text: "告訴自己：『這不是我的問題，是他缺乏同理心。』主動走向老師：「老師，我想加入一組，但目前遇到分組困難，請幫我協調。」", isCorrect: true },
+                    { text: "覺得自己很沒用，趴在桌上大哭，決定以後不上課了。", isCorrect: false }
+                ],
+                successTitle: "✅ 主動求助！開啟保護！",
+                successText: "分組被排擠不是你的錯。勇敢告訴老師，由老師出面協調，是保護自己特工學業的合法戰術！",
+                failTitle: "❌ 鉛筆大腦折斷了",
+                failText: "趴著哭解決不了問題。不哭，特工要尋求可信任的成人（老師）協助介入！"
+            },
+            {
+                icon: "📱",
+                question: "【網絡】你在 WhatsApp 群組看到有人製作了一張你的不雅改圖，並配上嘲諷的文字，大家都跟著起鬨。",
+                options: [
+                    { text: "立刻在群組發起瘋狂的對罵，回敬更難聽的話。", isCorrect: false },
+                    { text: "不要回覆。立刻將對話紀錄與改圖『截圖存證』，然後『封鎖』對方，把截圖交給班主任求助。", isCorrect: true }
+                ],
+                successTitle: "✅ 網絡防衛套件執行成功！",
+                successText: "這就是標準的 Cyber Defender 流程。不回應、截圖存證、封鎖、舉報！保護自己的電子數據安全。",
+                failTitle: "❌ 戰火蔓延：跟對方對罵",
+                failText: "對罵只會讓改圖被轉發得更多，完全沒有好處。截圖保留法律證據，才是重創欺凌者的鐵證！"
+            },
+            {
+                icon: "🏫",
+                question: "【關係】下課時間，你發現有兩三個同學在背後對你指指點點，細聲講大聲笑，你一走過去他們就散開。",
+                options: [
+                    { text: "主動拉好朋友結伴同行。如果感到不舒服，找社工傾訴以疏解壓力。", isCorrect: true },
+                    { text: "覺得很害怕，開始逃學，每天呆在家裡不敢上學。", isCorrect: false }
+                ],
+                successTitle: "✅ 聯盟精神！不落單！",
+                successText: "欺凌者專挑落單的人。找朋友結伴、和社工傾訴，能建立堅實的情感防護網，減少被欺凌的機率。",
+                failTitle: "❌ 被動挨打：逃避退縮",
+                failText: "不願上學會耽誤功課，也會讓欺凌者自鳴得意。找社工或班主任能徹底為你解除心裡警報！"
+            },
+            {
+                icon: "🤼",
+                question: "【肢體】在操場上，有人突然走過來用力推了你一下，嘲笑說：「看下你幾沒用，像個不倒翁！」",
+                options: [
+                    { text: "立刻揮拳打向他的臉，一定要打贏他。", isCorrect: false },
+                    { text: "大聲警告：『唔好推我！』。如果對方繼續，立刻大聲呼叫當值的老師幫忙。", isCorrect: true }
+                ],
+                successTitle: "✅ 建立安全結界！",
+                successText: "肢體衝突很危險。大聲警告能引起周圍注意，直接呼叫老師能快速控制現場，保護你的安全。",
+                failTitle: "❌ 暴力反擊：理虧受罰",
+                failText: "先動手打人是犯規，後動手對打也是違反校規。用嘴巴大喊求救，讓老師來制裁他們！"
+            },
+            {
+                icon: "😬",
+                question: "【語言】同學一直拿你身上的衣服、甚至是你的特殊行為（如不自覺眨眼）開玩笑，全班哈哈大笑。",
+                options: [
+                    { text: "冷靜看他一眼說：『多謝你咁關心我喔。』然後轉移話題，完全不因他的話生氣。", isCorrect: true },
+                    { text: "覺得自己是全班的笑柄，上網在匿名的論壇上寫髒話詛咒全班同學。", isCorrect: false }
+                ],
+                successTitle: "✅ 幽默折射盾！",
+                successText: "當你不在乎，或者能用幽默的方式看待時，對方的挑釁就成了無聊的獨角戲。他們會無自討沒趣地停手。",
+                failTitle: "❌ 無效防禦：網絡放負",
+                failText: "寫髒話無法解決白天的尷尬。向社工倾訴，重新建立信心，才是你最強大的心理防線。"
+            },
+            {
+                icon: "🚨",
+                question: "【求救觀念】你被欺凌後很想告訴老師，但同學威脅你：「如果你告狀，你放學就死定啦！」你感到非常糾結。",
+                options: [
+                    { text: "開口說：『告狀是我的權利！我一定要舉報你們！』直接跟他們頂撞。", isCorrect: false },
+                    { text: "明白『求助不等於告密』。立刻偷偷告訴家長，再由家長聯絡校長與老師介入，確保放學時的安全。", isCorrect: true }
+                ],
+                successTitle: "✅ 終極防衛：聰明求助！",
+                successText: "欺凌者越是威脅你，代表他們越害怕你告訴老師。私下讓家長從上而下介入，是最安全且威力巨大的防衛核盾！",
+                failTitle: "❌ 放任威脅：縱容霸凌",
+                failText: "默默忍受只會讓他們得寸進尺。欺凌者就是欺負你不敢說。大膽告訴父母，尋求成人網絡的保護！"
+            },
+            {
+                icon: "👀",
+                question: "【旁觀者】你看到一個較瘦弱的同學在小食部被另外兩個人圍著，一臉害怕。你雖然很想幫他，但你也害怕被打。",
+                options: [
+                    { text: "什麼都不做，低下頭快步走開，當作沒看見。", isCorrect: false },
+                    { text: "使用『轉移視線法』，假裝走過去遞給他一本書：「喂！中文老師叫我將呢本簿交俾你，佢要你依家去教員室搵佢呀！」", isCorrect: true }
+                ],
+                successTitle: "✅ 滿分同盟救援！",
+                successText: "這是一個極其聰明的救援戰術！既不用跟欺凌者正面發生衝突，又能用藉口將受害者安全地帶離現場。",
+                failTitle: "❌ 情緒當機：冷漠旁觀",
+                failText: "冷漠會讓欺凌者氣焰更盛。我們不需要跟他們打架，但可以使用智慧與巧思（如找藉口、找大人）來幫助同學！"
+            },
+            {
+                icon: "💖",
+                question: "【旁觀者】你目擊一個同學被搶走了美術作品並被大聲嘲笑。欺凌者走開後，被欺負的同學一個人在座位上哭泣。",
+                options: [
+                    { text: "使用『事後支援法』，走過去遞上紙巾並安撫說：「佢地真係好過份，你無事嘛？我陪你去搵社工舉報佢地。」", isCorrect: true },
+                    { text: "走過去取笑他：「哈哈，你頭先好弱呀，咁都被人搶走份美勞。」", isCorrect: false }
+                ],
+                successTitle: "✅ 特工同盟結成！溫暖修復！",
+                successText: "事後的溫暖陪伴和支持（Comfort），能給予被欺凌者極大的情感支撐，讓他擁有向老師或家長舉報的勇氣！",
+                failTitle: "❌ 傷口灑鹽：二次傷害",
+                failText: "取笑受害者是非常不友善且缺乏同理心的行為。特工之間應該互相扶持，建立穩固的保護防禦線！"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function initQuiz() {
+            // 本地儲存加載 EXP 邏輯
+            const savedExp = localStorage.getItem('agent_exp') || '1250';
+            document.getElementById('current-total-exp').innerText = savedExp;
+            
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function loadQuestion(index) {
+            const data = quizData[index];
+            document.getElementById('game-counter').innerText = `第 ${index + 1} / ${quizData.length} 局`;
+            document.getElementById('game-icon').innerText = data.icon;
+            document.getElementById('game-question').innerText = data.question;
+            
+            const progress = (index / quizData.length) * 100;
+            document.getElementById('game-progress').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('game-options');
+            optionsContainer.innerHTML = '';
+            
+            data.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'game-option w-full text-left p-4 rounded-xl border-2 border-slate-100 hover:border-fuchsia-400 hover:bg-fuchsia-50 transition-all font-medium text-slate-700 bg-white text-sm md:text-base';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkAnswer(opt.isCorrect, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('game-feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(isCorrect, selectedBtn) {
+            const data = quizData[currentQuestionIndex];
+            const feedbackBox = document.getElementById('game-feedback');
+            const title = document.getElementById('feedback-title');
+            const text = document.getElementById('feedback-text');
+            const icon = document.getElementById('feedback-icon');
+            const nextBtn = document.getElementById('next-btn');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+            
+            const allBtns = document.querySelectorAll('.game-option');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                selectedBtn.classList.replace('border-slate-100', 'border-emerald-500');
+                selectedBtn.classList.replace('hover:border-fuchsia-400', 'border-emerald-500');
+                selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'font-bold');
+                
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-200');
+                title.className = "font-bold text-lg mb-1 text-emerald-800";
+                icon.innerHTML = '<i class="fa-solid fa-shield text-emerald-500"></i>';
+                title.innerText = data.successTitle;
+                text.innerText = data.successText;
+                
+                nextBtn.classList.remove('hidden');
+                if(currentQuestionIndex === quizData.length - 1) {
+                    nextBtn.innerText = "完成防禦訓練！";
+                } else {
+                    nextBtn.innerHTML = '下一局 <i class="fa-solid fa-arrow-right ml-1"></i>';
+                }
+            } else {
+                selectedBtn.classList.add('animate-shake', 'bg-rose-50', 'border-rose-300', 'text-rose-700');
+                
+                feedbackBox.classList.add('bg-rose-50', 'border-rose-200');
+                title.className = "font-bold text-lg mb-1 text-rose-800";
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-500"></i>';
+                title.innerText = data.failTitle;
+                text.innerText = data.failText;
+
+                setTimeout(() => {
+                    selectedBtn.classList.remove('animate-shake');
+                    allBtns.forEach(b => b.disabled = false);
+                }, 500);
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                document.getElementById('game-progress').style.width = `100%`;
+                document.getElementById('game-container').classList.add('hidden');
+                document.getElementById('mission-complete-zone').classList.remove('hidden');
+            }
+        }
+
+        function completeMission() {
+            const btn = document.getElementById('claimBtn');
+            const msg = document.getElementById('successMsg');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在加密存檔...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            
+            // 本地儲存：累加 250 EXP 
+            let currentExp = parseInt(localStorage.getItem('agent_exp') || '1250');
+            currentExp += 250;
+            localStorage.setItem('agent_exp', currentExp);
+            localStorage.setItem('mission_bullying_completed', 'true');
+            
+            setTimeout(() => {
+                btn.classList.add('hidden');
+                msg.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    window.location.href = 'student_dashboard.html';
+                }, 2000);
+            }, 1000);
+        }
+
+        // 初始化
+        window.onload = () => {
+            initQuiz();
+        };
+    </script>
+</body>
+</html>
