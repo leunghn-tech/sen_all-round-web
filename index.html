@@ -814,21 +814,22 @@ sessionState.level = Math.floor(sessionState.exp / 250);
 
         // ================= 頁面初始化 =================
         window.onload = function() {
-            // 初始化登入狀態快取
-            const cachedAuth = localStorage.getItem('sen_authorized');
-            const cachedUser = localStorage.getItem('sen_user');
-            if (cachedAuth === 'true') {
-                sessionState.isAuthorized = true;
-                sessionState.userId = cachedUser || "協作同工";
-                sessionState.unlockedAll = true;
-                
-                document.getElementById('login-btn-text').innerText = "已授權解鎖";
-                document.getElementById('login-btn').className = "bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2";
-            }
-            
-            // 預設渲染首頁
-            renderHome();
-        };
+    const cachedAuth = localStorage.getItem('sen_authorized');
+    const cachedUser = localStorage.getItem('sen_user');
+    if (cachedAuth === 'true') {
+        sessionState.isAuthorized = true;
+        sessionState.userId = cachedUser || "協作同工";
+        sessionState.unlockedAll = true;
+        document.getElementById('login-btn-text').innerText = "已授權解鎖";
+        document.getElementById('login-btn').className = "bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2";
+    }
+
+    if (localStorage.getItem('mission_bullying_completed') === 'true' || document.referrer.includes('student_')) {
+        renderStudentDashboard();
+    } else {
+        renderHome();
+    }
+};
     </script>
 </body>
 </html>
