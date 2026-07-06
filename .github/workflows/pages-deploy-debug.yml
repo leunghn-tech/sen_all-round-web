@@ -33,8 +33,7 @@ jobs:
       - name: Upload artifact for Pages
         uses: actions/upload-pages-artifact@v1
         with:
-          path: |
-            .
+          path: .
 
       - name: Debug: print repo size
         run: du -sh . || true
@@ -45,5 +44,5 @@ jobs:
 
       - name: Show deploy outputs
         run: |
-          echo "deployment_id=${{ steps.deploy.outputs.deployment_id || 'n/a' }}"
-          echo "deployment_status=${{ steps.deploy.outputs.deployment_status || 'n/a' }}"
+          echo "deployment_id=${{ steps.deploy.outputs.deployment_id }}"
+          echo "deployment_status=${{ steps.deploy.outputs.deployment_status }}"
