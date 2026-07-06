@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚗️ 錯誤轉化爐 | SEN 社交特工訓練營</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f6f8fd;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .exp-font {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* 煉金爐氣泡動畫 */
+        @keyframes bubble-rise {
+            0% { transform: translateY(100%) scale(0.8); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-20%) scale(1.2); opacity: 0; }
+        }
+        .bubble {
+            animation: bubble-rise 2s infinite ease-in;
+        }
+        /* 卡片震動 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px) rotate(-1deg); }
+            40%, 80% { transform: translateX(5px) rotate(1deg); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        /* 彈出動畫 */
+        @keyframes pop-up {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop-up 0.5s ease-out forwards;
+        }
+        /* 魔法藥水彈出 */
+        @keyframes potion-pop {
+            0% { transform: scale(0.3) rotate(-20deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .animate-potion {
+            animation: potion-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        /* 漏斗過濾動畫 */
+        @keyframes filter-drop {
+            0% { transform: translateY(-10px); opacity: 0; }
+            50% { transform: translateY(10px); opacity: 1; }
+            100% { transform: translateY(30px); opacity: 0; }
+        }
+        .animate-drop {
+            animation: filter-drop 1s forwards;
+        }
+        /* 神奇滴劑滴下動畫 */
+        @keyframes drop-fall {
+            0% { transform: translateY(-20px) scale(1); opacity: 0; }
+            20% { transform: translateY(0px) scale(1.2); opacity: 1; }
+            80% { transform: translateY(0px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(20px) scale(0); opacity: 0; }
+        }
+        .magic-drop {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            margin-left: -10px;
+            font-size: 1.5rem;
+            color: #06b6d4;
+            animation: drop-fall 1s forwards;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- 頂部導航 -->
+    <nav class="w-full max-w-5xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
+        <a href="student_dashboard.html" class="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm text-slate-600 font-bold hover:text-orange-600 hover:shadow-md transition-all border border-slate-100">
+            <div class="bg-slate-100 group-hover:bg-orange-100 text-slate-500 group-hover:text-orange-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            返回大廳
+        </a>
+        <div class="flex items-center gap-3">
+            <div class="bg-orange-100 text-orange-700 px-4 py-2 rounded-full font-bold text-sm shadow-sm flex items-center gap-2 border border-orange-200">
+                <i class="fa-solid fa-star text-amber-500"></i> 任務獎勵: 300 EXP
+            </div>
+        </div>
+    </nav>
+
+    <!-- 任務標題區 -->
+    <header class="w-full max-w-5xl mx-auto px-6 mb-10 relative z-20 text-center">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 text-white text-4xl shadow-lg mb-6">
+            <i class="fa-solid fa-mortar-pestle"></i>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black mb-4 text-slate-800 tracking-tight">
+            ⚗️ 錯誤轉化爐
+        </h1>
+        <p class="text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            特工，默書卡關、測驗低迷？別讓大腦被一次失敗貼上「我不行」的標籤！<br>
+            歡迎來到心靈煉金室，把你的「失敗碎片」投入轉化爐，煉化成珍貴的成長經驗值！
+        </p>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-6 pb-20 flex-grow relative z-10">
+        
+        <!-- 裝置 1：⚗️ 失敗煉金術 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-orange-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-orange-800">
+                <i class="fa-solid fa-flask"></i> 裝置 1：失敗煉金術 (點擊提煉轉念藥水)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">選擇下方黑色的「固定心態原料」丟進轉化爐，看看煉化出來的成長魔法藥水！</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-orange-50/50 p-6 rounded-3xl border-2 border-orange-100">
+                <div class="flex flex-col items-center">
+                    <div class="relative w-48 h-60 bg-slate-800 rounded-b-full rounded-t-3xl border-8 border-slate-700 shadow-2xl flex items-center justify-center overflow-hidden">
+                        <div id="furnace-liquid" class="absolute bottom-0 w-full h-[30%] bg-gradient-to-t from-orange-600 to-amber-400 transition-all duration-1000"></div>
+                        <div id="furnace-bubbles" class="absolute inset-x-0 bottom-0 top-1/2 hidden">
+                            <span class="bubble absolute w-3 h-3 bg-white/40 rounded-full left-[20%]" style="animation-delay: 0.1s;"></span>
+                            <span class="bubble absolute w-4 h-4 bg-white/40 rounded-full left-[45%]" style="animation-delay: 0.5s;"></span>
+                            <span class="bubble absolute w-2.5 h-2.5 bg-white/40 rounded-full left-[70%]" style="animation-delay: 0.8s;"></span>
+                            <span class="bubble absolute w-3.5 h-3.5 bg-white/40 rounded-full left-[30%]" style="animation-delay: 1.2s;"></span>
+                        </div>
+                        <div id="potion-result-bottle" class="z-10 text-6xl text-amber-300 hidden">🧪</div>
+                        <div id="standby-icon" class="z-10 text-slate-500 text-5xl animate-pulse"><i class="fa-solid fa-fire"></i></div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 justify-center mt-6">
+                        <button onclick="brewPotion('foolish')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">我天生咁笨，學唔識 🪨</button>
+                        <button onclick="brewPotion('loser')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">我次次都錯，好廢 🪵</button>
+                        <button onclick="brewPotion('giveup')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">功課咁難，我放棄 🍂</button>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center h-full min-h-[220px]">
+                    <div id="potion-display-panel" class="bg-white p-6 rounded-2xl border-2 border-orange-100 shadow-inner flex flex-col justify-center items-center text-center">
+                        <i class="fa-solid fa-wand-magic-sparkles text-4xl text-orange-400 mb-3 animate-pulse"></i>
+                        <h4 class="text-lg font-black text-slate-700 mb-1">等待置入原料...</h4>
+                        <p class="text-sm text-slate-400">點擊左下方的黑色固定心態原料，開始你的煉金之旅！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 2：🧪 關鍵魔法滴劑：神奇的「仲未 (Yet)」(擴充 5 題) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-cyan-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-cyan-800">
+                <i class="fa-solid fa-eye-dropper"></i> 裝置 2：關鍵魔法滴劑「仲未 (Yet)」
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">成長心態最核心的魔法詞彙就是「還沒 / 仲未」。點擊發光的滴管，把魔法字眼滴入絕望的句子中！</p>
+            
+            <div class="bg-cyan-50 border-2 border-cyan-200 p-6 rounded-2xl max-w-2xl mx-auto text-center relative">
+                <div class="absolute top-4 right-4 text-cyan-600 font-bold text-xs" id="yet-counter">句子 1 / 5</div>
+                
+                <!-- 魔法滴劑按鈕 -->
+                <button onclick="applyYetMagic()" id="yet-dropper-btn" class="relative z-20 mb-6 bg-gradient-to-b from-cyan-300 to-cyan-500 text-white w-20 h-20 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.6)] flex items-center justify-center text-4xl hover:scale-110 hover:rotate-12 transition-transform mx-auto active:scale-95">
+                    🧪
+                    <span class="absolute -top-2 -right-4 bg-yellow-400 text-yellow-900 text-[10px] font-black px-2 py-0.5 rounded-full rotate-12 shadow-sm">Yet!</span>
+                </button>
+
+                <!-- 目標句子 -->
+                <div id="yet-sentence-container" class="relative bg-white p-6 rounded-xl border border-cyan-100 shadow-sm min-h-[100px] flex items-center justify-center">
+                    <p id="yet-original" class="text-lg font-black text-slate-700 transition-all duration-500">「我根本學唔識英文。」</p>
+                    <p id="yet-transformed" class="hidden text-lg font-black text-emerald-600">「我<span class="text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm">仲未</span>學識呢個英文生字。」</p>
+                </div>
+                
+                <p id="yet-hint" class="text-xs text-slate-400 mt-4 font-bold animate-pulse">👆 點擊上面的滴管，為句子注入魔法！ 👆</p>
+                <button onclick="resetYetMagic()" id="yet-reset-btn" class="hidden mt-4 text-xs font-bold text-cyan-600 hover:text-cyan-800 underline"><i class="fa-solid fa-rotate-right"></i> 嘗試下一句</button>
+            </div>
+        </div>
+
+        <!-- 裝置 3：🧼 腦袋標籤清除器 (擴充為 4 個) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-amber-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-amber-800">
+                <i class="fa-solid fa-soap"></i> 裝置 3：腦袋標籤清除器
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">負面標籤會像污垢一樣黏在腦袋。點擊「清除污垢」，啟動轉念清潔噴霧！</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 標籤 1 -->
+                <div class="bg-amber-50/50 rounded-2xl p-5 border-2 border-amber-100 flex flex-col justify-between h-40">
+                    <div id="tag-content-1">
+                        <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"><i class="fa-solid fa-triangle-exclamation"></i> 永久性毒素標籤</span>
+                        <p class="text-lg font-black text-slate-700 mt-2">「我數學真係好差。」</p>
+                    </div>
+                    <button onclick="eraseLabel(1, '我暫時未熟練呢個計數方法，再練多幾次就得！')" class="self-end bg-amber-500 hover:bg-amber-600 text-white text-xs font-black py-2 px-4 rounded-xl shadow-md transition-all active:scale-95"><i class="fa-solid fa-soap mr-1"></i> 清除污垢</button>
+                </div>
+                <!-- 標籤 2 -->
+                <div class="bg-amber-50/50 rounded-2xl p-5 border-2 border-amber-100 flex flex-col justify-between h-40">
+                    <div id="tag-content-2">
+                        <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"><i class="fa-solid fa-triangle-exclamation"></i> 永久性毒素標籤</span>
+                        <p class="text-lg font-black text-slate-700 mt-2">「我默書又唔合格，我係個廢人。」</p>
+                    </div>
+                    <button onclick="eraseLabel(2, '我今日默書表現唔好，但我可以溫返識佢！')" class="self-end bg-amber-500 hover:bg-amber-600 text-white text-xs font-black py-2 px-4 rounded-xl shadow-md transition-all active:scale-95"><i class="fa-solid fa-soap mr-1"></i> 清除污垢</button>
+                </div>
+                <!-- 標籤 3 -->
+                <div class="bg-amber-50/50 rounded-2xl p-5 border-2 border-amber-100 flex flex-col justify-between h-40">
+                    <div id="tag-content-3">
+                        <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"><i class="fa-solid fa-triangle-exclamation"></i> 永久性毒素標籤</span>
+                        <p class="text-lg font-black text-slate-700 mt-2">「我講嘢好悶，冇人鍾意同我傾計。」</p>
+                    </div>
+                    <button onclick="eraseLabel(3, '我只係仲學習緊點樣開話題，慢慢會進步。')" class="self-end bg-amber-500 hover:bg-amber-600 text-white text-xs font-black py-2 px-4 rounded-xl shadow-md transition-all active:scale-95"><i class="fa-solid fa-soap mr-1"></i> 清除污垢</button>
+                </div>
+                <!-- 標籤 4 -->
+                <div class="bg-amber-50/50 rounded-2xl p-5 border-2 border-amber-100 flex flex-col justify-between h-40">
+                    <div id="tag-content-4">
+                        <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"><i class="fa-solid fa-triangle-exclamation"></i> 永久性毒素標籤</span>
+                        <p class="text-lg font-black text-slate-700 mt-2">「我成日做錯決定，我係個黑仔王。」</p>
+                    </div>
+                    <button onclick="eraseLabel(4, '每個人都會做錯決定，呢啲係我學習嘅機會。')" class="self-end bg-amber-500 hover:bg-amber-600 text-white text-xs font-black py-2 px-4 rounded-xl shadow-md transition-all active:scale-95"><i class="fa-solid fa-soap mr-1"></i> 清除污垢</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 4：🌪️ 意見淨化漏斗 (升級互動版，4 題) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-purple-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-purple-800">
+                <i class="fa-solid fa-filter"></i> 裝置 4：意見淨化漏斗 (區分「對人」與「對事」)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">面對糾正或建議時，我們很容易誤會對方是「針對我」。把別人的話丟進漏斗，過濾掉毒素吧！</p>
+            
+            <div class="bg-slate-50 p-6 rounded-2xl border-2 border-slate-200 text-center max-w-3xl mx-auto relative">
+                <div class="absolute top-4 right-4 text-purple-600 font-bold text-xs" id="funnel-counter">過濾 1 / 4</div>
+                
+                <h4 class="font-bold text-slate-500 text-xs mb-2 uppercase tracking-widest mt-4">輸入：別人說的話</h4>
+                <div id="funnel-input-text" class="bg-white p-4 rounded-xl border-2 border-purple-200 shadow-sm inline-block font-black text-slate-800 text-base md:text-lg mb-4">
+                    老師：「小明，你呢一題計錯咗，要小心啲睇題目。」
+                </div>
+                
+                <div class="flex justify-center my-2 relative min-h-[80px]">
+                    <button onclick="activateFunnel()" id="funnel-btn" class="bg-purple-600 hover:bg-purple-700 text-white w-16 h-16 rounded-full flex justify-center items-center text-2xl shadow-lg transition-transform hover:scale-110 active:scale-95 z-10 relative">
+                        <i class="fa-solid fa-filter"></i>
+                    </button>
+                </div>
+
+                <div id="funnel-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 hidden">
+                    <div class="bg-rose-50 border-2 border-rose-200 rounded-xl p-4 animate-pop">
+                        <div class="text-rose-500 text-2xl mb-2">☠️</div>
+                        <h4 class="font-bold text-rose-800 text-sm mb-1">過濾掉的毒素 (錯誤解讀)</h4>
+                        <p id="funnel-toxic-text" class="text-xs text-rose-600 font-medium line-through">「老師覺得我很蠢、老師討厭我針對我。」</p>
+                    </div>
+                    <div class="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-4 animate-pop" style="animation-delay: 0.2s;">
+                        <div class="text-emerald-500 text-2xl mb-2">💎</div>
+                        <h4 class="font-bold text-emerald-800 text-sm mb-1">留下的純淨精華 (真正意圖)</h4>
+                        <p id="funnel-essence-text" class="text-sm text-emerald-700 font-black">「老師想幫我答對這題，我只需要重新看一次題目。」</p>
+                    </div>
+                </div>
+
+                <button id="funnel-next-btn" onclick="nextFunnel()" class="hidden mt-6 bg-purple-100 text-purple-800 font-bold px-6 py-2 rounded-full hover:bg-purple-200 transition-colors mx-auto">
+                    淨化下一句 <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 裝置 5：🔋 挫折燃料電池 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-orange-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-orange-800">
+                <i class="fa-solid fa-battery-half"></i> 裝置 5：抗逆燃料電池
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">當受到打擊，你的「心靈電池」會扣電。點擊以下行動，為大腦快速充電至 100%！</p>
+            
+            <div class="flex flex-col md:flex-row gap-8 items-center bg-slate-50 p-6 rounded-3xl border border-slate-200">
+                <div class="w-48 bg-white border-4 border-slate-700 rounded-2xl p-2 relative flex flex-col justify-end shrink-0 shadow-inner h-60">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 w-10 h-4 bg-slate-700 rounded-t-lg"></div>
+                    <div id="battery-bar" class="w-full bg-gradient-to-t from-red-500 via-orange-500 to-emerald-500 rounded-lg transition-all duration-500 h-[10%]"></div>
+                    <div class="absolute inset-0 flex items-center justify-center font-black text-2xl text-slate-800 exp-font" id="battery-percentage">10%</div>
+                </div>
+
+                <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                    <button id="charge-btn-1" onclick="chargeBattery(1, 25, '我盡左力，下次再試！')" class="flex items-center gap-4 bg-white hover:bg-orange-50 border-2 border-slate-200 hover:border-orange-300 p-4 rounded-2xl transition-all text-left shadow-sm">
+                        <div class="text-3xl text-orange-500"><i class="fa-solid fa-comment-medical"></i></div>
+                        <div>
+                            <div class="font-bold text-slate-700 text-sm">正面自我對話</div>
+                            <div class="text-xs text-slate-400 mt-0.5">點擊充電 +25%</div>
+                        </div>
+                    </button>
+                    <button id="charge-btn-2" onclick="chargeBattery(2, 25, '搵社工或者老師傾下。')" class="flex items-center gap-4 bg-white hover:bg-orange-50 border-2 border-slate-200 hover:border-orange-300 p-4 rounded-2xl transition-all text-left shadow-sm">
+                        <div class="text-3xl text-orange-500"><i class="fa-solid fa-handshake-angle"></i></div>
+                        <div>
+                            <div class="font-bold text-slate-700 text-sm">尋求外援</div>
+                            <div class="text-xs text-slate-400 mt-0.5">點擊充電 +25%</div>
+                        </div>
+                    </button>
+                    <button id="charge-btn-3" onclick="chargeBattery(3, 25, '放空15分鐘聽下歌。')" class="flex items-center gap-4 bg-white hover:bg-orange-50 border-2 border-slate-200 hover:border-orange-300 p-4 rounded-2xl transition-all text-left shadow-sm">
+                        <div class="text-3xl text-orange-500"><i class="fa-solid fa-music"></i></div>
+                        <div>
+                            <div class="font-bold text-slate-700 text-sm">大腦短暫放空</div>
+                            <div class="text-xs text-slate-400 mt-0.5">點擊充電 +25%</div>
+                        </div>
+                    </button>
+                    <button id="charge-btn-4" onclick="chargeBattery(4, 25, '寫低今日做得好嘅事！')" class="flex items-center gap-4 bg-white hover:bg-orange-50 border-2 border-slate-200 hover:border-orange-300 p-4 rounded-2xl transition-all text-left shadow-sm">
+                        <div class="text-3xl text-orange-500"><i class="fa-solid fa-list-check"></i></div>
+                        <div>
+                            <div class="font-bold text-slate-700 text-sm">列出今日小成就</div>
+                            <div class="text-xs text-slate-400 mt-0.5">點擊充電 +25%</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <div id="battery-complete-msg" class="hidden mt-6 p-4 bg-emerald-50 rounded-2xl border-2 border-emerald-200 text-center animate-pop text-emerald-800 font-bold">
+                🎉 電池充飽 100%！你的抗逆護盾已完全啟動！
+            </div>
+        </div>
+
+        <!-- 裝置 6：📜 煉金術士的實驗筆記 (升級互動版，4題) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-emerald-800">
+                <i class="fa-solid fa-book-open"></i> 裝置 6：煉金術士的實驗筆記 (失敗復盤)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">充飽電之後，下一步是「再來一次」。失敗不是終點，而是實驗數據。找出原因，下次調整配方就好！</p>
+            
+            <div class="bg-[url('https://www.transparenttextures.com/patterns/lined-paper.png')] bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 md:p-8 max-w-3xl mx-auto shadow-sm relative">
+                <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-rose-300 opacity-50"></div>
+                <div class="absolute top-4 right-4 text-amber-700 font-bold text-xs bg-amber-200 px-2 py-1 rounded" id="note-counter">紀錄 1 / 4</div>
+                
+                <h3 id="note-scenario" class="text-xl font-black text-slate-800 mb-4 ml-4 mt-2">實驗紀錄 #001：英文測驗不合格</h3>
+                <p class="text-slate-700 font-bold mb-4 ml-4"><i class="fa-solid fa-clipboard-question text-emerald-600"></i> 分析：這次煉金失敗，可能是因為什麼？</p>
+                
+                <div class="flex flex-col gap-3 ml-4" id="note-options">
+                    <!-- 動態生成選項 -->
+                </div>
+
+                <div id="note-feedback" class="hidden ml-4 mt-6 p-4 bg-white rounded-xl border-2 border-emerald-400 animate-pop shadow-md text-left">
+                    <h4 class="font-black text-emerald-700 text-lg mb-1"><i class="fa-solid fa-lightbulb text-amber-500"></i> 復盤成功！</h4>
+                    <p class="text-sm text-slate-700 font-medium leading-relaxed">
+                        科學家從來不會因為實驗失敗而說自己很蠢。他們只會記錄數據，調整「材料」、「火候」或「說明書」，然後再來一次！
+                    </p>
+                    <button id="note-next-btn" onclick="nextNote()" class="mt-4 bg-emerald-100 text-emerald-800 font-bold px-6 py-2 rounded-lg hover:bg-emerald-200 transition-colors">
+                        分析下一筆紀錄 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 7：🔮 實戰煉金模擬器 (Boss 關卡) -->
+        <div class="bg-slate-800 rounded-[2rem] p-8 shadow-xl border-4 border-slate-700 mb-10 relative overflow-hidden text-center text-white">
+            <div class="absolute -top-20 -left-20 w-48 h-48 bg-rose-500 rounded-full mix-blend-screen filter blur-3xl opacity-30"></div>
+            <div class="absolute -bottom-20 -right-20 w-48 h-48 bg-amber-500 rounded-full mix-blend-screen filter blur-3xl opacity-30"></div>
+            
+            <h2 class="text-2xl font-black mb-2 flex items-center justify-center gap-2 text-amber-400 drop-shadow-md">
+                <i class="fa-solid fa-dragon"></i> 裝置 7：實戰煉金模擬器 (Boss 關卡)
+            </h2>
+            <p class="text-slate-300 font-medium mb-8">綜合運用所有裝備，化解這場終極情緒風暴！</p>
+            
+            <div class="bg-slate-900 border-2 border-slate-600 rounded-2xl p-6 md:p-8 max-w-3xl mx-auto">
+                <div class="bg-rose-950/50 border border-rose-500/50 p-4 rounded-xl mb-8">
+                    <p class="text-rose-200 text-sm font-bold mb-1">【 Boss 級危機來襲 】</p>
+                    <p class="text-xl font-black text-white">「你花很大心機畫的圖，被同學說『畫得好奇怪』。你現在覺得很生氣，很想把畫撕掉！」</p>
+                </div>
+
+                <div class="flex flex-col gap-4 relative">
+                    <div class="absolute left-[23px] top-6 bottom-6 w-1 bg-slate-700 z-0"></div>
+
+                    <!-- Step 1 -->
+                    <div class="flex items-center gap-4 relative z-10">
+                        <button id="boss-btn-1" onclick="executeBossStep(1)" class="w-12 h-12 rounded-full bg-slate-700 border-2 border-slate-500 text-white font-black hover:bg-slate-600 transition-colors shrink-0 shadow-lg">1</button>
+                        <div class="bg-slate-800 border border-slate-600 p-3 rounded-xl flex-grow text-left text-slate-400 font-bold" id="boss-desc-1">
+                            <i class="fa-solid fa-soap"></i> 清除標籤 (我不是畫畫白痴，只係各有風格)
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="flex items-center gap-4 relative z-10">
+                        <button id="boss-btn-2" onclick="executeBossStep(2)" class="w-12 h-12 rounded-full bg-slate-700 border-2 border-slate-500 text-white font-black transition-colors shrink-0 opacity-50 cursor-not-allowed" disabled>2</button>
+                        <div class="bg-slate-800 border border-slate-600 p-3 rounded-xl flex-grow text-left text-slate-500 font-bold" id="boss-desc-2">
+                            <i class="fa-solid fa-battery-half"></i> 燃料充電 (深呼吸/告訴自己唔洗太介意)
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="flex items-center gap-4 relative z-10">
+                        <button id="boss-btn-3" onclick="executeBossStep(3)" class="w-12 h-12 rounded-full bg-slate-700 border-2 border-slate-500 text-white font-black transition-colors shrink-0 opacity-50 cursor-not-allowed" disabled>3</button>
+                        <div class="bg-slate-800 border border-slate-600 p-3 rounded-xl flex-grow text-left text-slate-500 font-bold" id="boss-desc-3">
+                            <i class="fa-solid fa-flask"></i> 提煉新心態 (他可能只是看不懂，或者我可以問他哪裡奇怪)
+                        </div>
+                    </div>
+                </div>
+
+                <div id="boss-victory" class="hidden mt-8 bg-amber-500 text-amber-950 font-black p-4 rounded-xl text-xl animate-pop shadow-[0_0_20px_#f59e0b]">
+                    🎉 Boss 擊破！你完美守護了自己的心血作品，避免了情緒崩潰！
+                </div>
+            </div>
+        </div>
+
+        <!-- 🎮 錯誤轉化爐大考驗 (8 題實戰遊戲保留) -->
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-center">
+            🎮 錯誤轉化爐大考驗 (心靈煉金術士認證)
+        </h2>
+        
+        <div id="game-container" class="bg-slate-800 rounded-[2rem] p-6 md:p-10 shadow-xl mb-12 relative overflow-hidden border-4 border-slate-700">
+            <div class="w-full bg-slate-700 rounded-full h-2 mb-6">
+                <div id="game-progress" class="bg-gradient-to-r from-orange-400 to-amber-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <div id="game-screen" class="bg-white rounded-xl p-6 md:p-8 shadow-inner relative">
+                <div class="absolute top-4 right-4 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full" id="game-counter">第 1 / 8 局</div>
+                
+                <div class="text-center mb-8 mt-4">
+                    <div id="game-icon" class="text-5xl mb-4 text-orange-500">⚗️</div>
+                    <p id="game-question" class="text-lg md:text-xl font-bold text-slate-700">
+                        載入中...
+                    </p>
+                    <p class="text-orange-600 font-bold mt-3"><i class="fa-solid fa-wand-magic-sparkles"></i> 面對挑戰，特工煉金術士會選擇：</p>
+                </div>
+
+                <div id="game-options" class="flex flex-col gap-3"></div>
+
+                <div id="game-feedback" class="hidden mt-6 p-4 rounded-xl border">
+                    <div class="flex items-start gap-3">
+                        <div id="feedback-icon" class="text-2xl mt-1"></div>
+                        <div>
+                            <h4 id="feedback-title" class="font-bold text-lg mb-1"></h4>
+                            <p id="feedback-text" class="text-sm text-slate-600 mb-3"></p>
+                            <button id="next-btn" onclick="nextQuestion()" class="hidden bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-700 transition-colors">
+                                下一局 <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 任務完成區塊 -->
+        <div id="mission-complete-zone" class="hidden text-center bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-amber-100 rounded-full mix-blend-multiply filter blur-2xl opacity-60"></div>
+            <div class="text-5xl mb-4 text-amber-400"><i class="fa-solid fa-trophy"></i></div>
+            <h3 class="text-2xl font-black mb-2 text-slate-800">心靈煉金認證完成！</h3>
+            <p class="text-slate-500 mb-6">你已經成功掌握將「失敗與挫折」轉化為「智慧養分」的能力！</p>
+            <button onclick="completeMission()" id="claimBtn" class="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 mx-auto">
+                <i class="fa-solid fa-check-circle"></i> 領取 300 EXP 並返回大廳
+            </button>
+            <p id="successMsg" class="text-emerald-600 font-bold mt-4 hidden">
+                🎉 恭喜！獲得 300 EXP！即將返回大廳...
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        // --- 1. 失敗煉金術邏輯 ---
+        const brewData = {
+            'foolish': {
+                fixed: "我天生就係咁笨，點學都唔識 🪨",
+                growth: "我可以換個方法學習，大腦係會透過練習變強嘅！",
+                title: "🧠 大腦升級藥水 (提煉成功)",
+                color: "text-amber-500",
+                bg: "bg-amber-50",
+                speech: "我可以換個方法學習，大腦係會透過練習變強嘅！",
+                icon: "🧪"
+            },
+            'loser': {
+                fixed: "我次次都錯，我真係好廢 🪵",
+                growth: "每次出錯都係好重要嘅線索，話我知邊條路行唔通！",
+                title: "🧭 導向指南藥水 (提煉成功)",
+                color: "text-emerald-500",
+                bg: "bg-emerald-50",
+                speech: "每次出錯都係好重要嘅線索，話我知邊條路行唔通！",
+                icon: "🔮"
+            },
+            'giveup': {
+                fixed: "功課咁難，我永遠都做唔到，我要放棄 🍂",
+                growth: "而家係難，但只要拆細一步步做，我實搞得掂！",
+                title: "⚡ 意志爆發藥水 (提煉成功)",
+                color: "text-purple-500",
+                bg: "bg-purple-50",
+                speech: "而家係難，但只要拆細一步步做，我實搞得掂！",
+                icon: "⚗️"
+            }
+        };
+
+        function brewPotion(type) {
+            const standby = document.getElementById('standby-icon');
+            const resultBottle = document.getElementById('potion-result-bottle');
+            const liquid = document.getElementById('furnace-liquid');
+            const bubbles = document.getElementById('furnace-bubbles');
+            const panel = document.getElementById('potion-display-panel');
+            const data = brewData[type];
+
+            standby.classList.add('hidden');
+            resultBottle.classList.add('hidden');
+            bubbles.classList.remove('hidden');
+            liquid.style.height = "75%";
+
+            panel.className = "bg-slate-100 p-6 rounded-2xl border-2 border-slate-300 text-center animate-pulse flex flex-col justify-center items-center h-full";
+            panel.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin text-4xl text-slate-500 mb-3"></i>
+                <h4 class="text-base font-black text-slate-600">正在分解有害原料：『${data.fixed}』</h4>
+                <p class="text-xs text-slate-400">特工煉金術運作中，請稍候...</p>
+            `;
+
+            setTimeout(() => {
+                bubbles.classList.add('hidden');
+                liquid.style.height = "35%";
+                resultBottle.innerText = data.icon;
+                resultBottle.className = "z-10 text-6xl text-amber-300 animate-potion";
+                resultBottle.classList.remove('hidden');
+
+                panel.className = `${data.bg} p-6 rounded-2xl border-2 border-orange-200 text-center animate-pop flex flex-col justify-center items-center h-full`;
+                panel.innerHTML = `
+                    <div class="text-5xl mb-2">${data.icon}</div>
+                    <h4 class="text-lg font-black ${data.color} mb-2">${data.title}</h4>
+                    <div class="bg-white p-4 rounded-xl border border-orange-100 text-slate-700 font-bold mb-4 shadow-sm text-sm">
+                        「${data.growth}」
+                    </div>
+                    <button onclick="readAlchemistSpeech('${encodeURIComponent(data.speech)}')" class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-black py-2 px-4 rounded-full flex items-center gap-2 shadow-md active:scale-95">
+                        <i class="fa-solid fa-volume-high"></i> 播放魔法咒語
+                    </button>
+                `;
+                readAlchemistSpeech(data.speech);
+            }, 1500);
+        }
+
+        function readAlchemistSpeech(text) {
+            const decodedText = decodeURIComponent(text);
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(decodedText);
+                utterance.lang = 'zh-HK';
+                utterance.pitch = 1.1;
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // --- 2. 擴充：神奇滴劑「仲未 (Yet)」(5題) ---
+        const yetSentences = [
+            { old: "「我根本學唔識英文。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>學識呢個英文生字。」" },
+            { old: "「我游水好慢，我永遠都唔得。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>搵到游得快嘅技巧。」" },
+            { old: "「我交唔到朋友，無人鍾意我。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>遇到同我磁場夾嘅朋友。」" },
+            { old: "「我啲畫好核突，我唔識畫畫。」", new: "「我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>掌握到畫畫嘅基本功。」" },
+            { old: "「呢個魔術我變極都穿崩。」", new: "「呢個魔術我<span class='text-2xl text-cyan-500 mx-1 bg-cyan-100 px-2 rounded-lg animate-pulse shadow-sm'>仲未</span>練習得夠熟練。」" }
+        ];
+        let yetIndex = 0;
+        let isYetApplied = false;
+
+        function applyYetMagic() {
+            if (isYetApplied) return;
+            isYetApplied = true;
+            
+            const btn = document.getElementById('yet-dropper-btn');
+            const orig = document.getElementById('yet-original');
+            const trans = document.getElementById('yet-transformed');
+            const hint = document.getElementById('yet-hint');
+            const resetBtn = document.getElementById('yet-reset-btn');
+
+            const drop = document.createElement('i');
+            drop.className = 'fa-solid fa-droplet magic-drop';
+            document.getElementById('yet-sentence-container').appendChild(drop);
+
+            setTimeout(() => {
+                orig.classList.add('hidden');
+                trans.classList.remove('hidden');
+                trans.classList.add('animate-pop');
+                hint.classList.add('hidden');
+                resetBtn.classList.remove('hidden');
+                readAlchemistSpeech("我仲未做到，不代表永遠做不到！");
+                
+                if(yetIndex === yetSentences.length - 1) {
+                    resetBtn.innerHTML = "<i class='fa-solid fa-check'></i> 完成魔法訓練";
+                    resetBtn.onclick = null;
+                    resetBtn.classList.add('text-emerald-600');
+                    resetBtn.classList.remove('hover:text-cyan-800');
+                }
+            }, 800);
+        }
+
+        function resetYetMagic() {
+            if(yetIndex >= yetSentences.length - 1) return;
+            yetIndex++;
+            isYetApplied = false;
+            
+            document.getElementById('yet-counter').innerText = `句子 ${yetIndex + 1} / ${yetSentences.length}`;
+            
+            const orig = document.getElementById('yet-original');
+            const trans = document.getElementById('yet-transformed');
+            const hint = document.getElementById('yet-hint');
+            const resetBtn = document.getElementById('yet-reset-btn');
+
+            orig.innerHTML = yetSentences[yetIndex].old;
+            trans.innerHTML = yetSentences[yetIndex].new;
+
+            orig.classList.remove('hidden');
+            trans.classList.add('hidden');
+            trans.classList.remove('animate-pop');
+            hint.classList.remove('hidden');
+            resetBtn.classList.add('hidden');
+        }
+
+        // --- 3. 腦袋標籤清除器邏輯 ---
+        function eraseLabel(id, newLabelText) {
+            const targetDiv = document.getElementById(`tag-content-${id}`);
+            targetDiv.classList.add('animate-shake');
+            setTimeout(() => {
+                targetDiv.classList.remove('animate-shake');
+                targetDiv.classList.add('animate-pop');
+                targetDiv.innerHTML = `
+                    <span class="bg-emerald-100 text-emerald-700 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> 安全/健康標籤已生效</span>
+                    <p class="text-base font-black text-emerald-800 mt-3 leading-relaxed">「${newLabelText}」</p>
+                `;
+            }, 400);
+        }
+
+        // --- 4. 擴充：意見淨化漏斗邏輯 (4題互動版) ---
+        const funnelData = [
+            {
+                input: "老師：「小明，你呢一題計錯咗，要小心啲睇題目。」",
+                toxic: "「老師覺得我很蠢、老師討厭我針對我。」",
+                essence: "「老師想幫我答對這題，我只需要重新看一次題目。」"
+            },
+            {
+                input: "媽媽：「你間房好亂呀，快啲執好佢！」",
+                toxic: "「媽媽成日都鬧我，佢覺得我好麻煩，唔愛我。」",
+                essence: "「媽媽只係想環境整潔啲，佢係針對間房嘅衛生，唔係針對我。」"
+            },
+            {
+                input: "同學：「你踢波傳得唔好喎，大力啲啦！」",
+                toxic: "「佢嫌棄我，覺得我阻住地球轉，睇我唔起。」",
+                essence: "「佢想球隊贏波，提醒我傳波嘅技巧，下次大力啲就得。」"
+            },
+            {
+                input: "朋友：「我今日唔想傾計住。」",
+                toxic: "「佢一定係嬲咗我，我實係做錯事得罪佢。」",
+                essence: "「佢可能今日好攰或者有心事，佢需要自己靜下，唔關我事。」"
+            }
+        ];
+        
+        let funnelIndex = 0;
+        let funnelProcessed = false;
+
+        function loadFunnelData() {
+            const data = funnelData[funnelIndex];
+            document.getElementById('funnel-counter').innerText = `過濾 ${funnelIndex + 1} / ${funnelData.length}`;
+            document.getElementById('funnel-input-text').innerText = data.input;
+            document.getElementById('funnel-toxic-text').innerText = data.toxic;
+            document.getElementById('funnel-essence-text').innerText = data.essence;
+            
+            document.getElementById('funnel-results').classList.add('hidden');
+            document.getElementById('funnel-next-btn').classList.add('hidden');
+            
+            const btn = document.getElementById('funnel-btn');
+            btn.innerHTML = '<i class="fa-solid fa-filter"></i>';
+            btn.className = 'bg-purple-600 hover:bg-purple-700 text-white w-16 h-16 rounded-full flex justify-center items-center text-2xl shadow-lg transition-transform hover:scale-110 active:scale-95 z-10 relative';
+            btn.classList.remove('pointer-events-none');
+            
+            funnelProcessed = false;
+        }
+
+        function activateFunnel() {
+            if(funnelProcessed) return;
+            funnelProcessed = true;
+            
+            const btn = document.getElementById('funnel-btn');
+            const results = document.getElementById('funnel-results');
+            const nextBtn = document.getElementById('funnel-next-btn');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btn.classList.add('pointer-events-none');
+
+            // 創建過濾動畫元素
+            const drop = document.createElement('i');
+            drop.className = 'fa-solid fa-droplet text-purple-400 absolute animate-drop text-2xl z-0';
+            btn.parentElement.appendChild(drop);
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                btn.classList.replace('bg-purple-600', 'bg-emerald-500');
+                btn.classList.replace('hover:bg-purple-700', 'hover:bg-emerald-600');
+                
+                results.classList.remove('hidden');
+                
+                if (funnelIndex < funnelData.length - 1) {
+                    nextBtn.classList.remove('hidden');
+                } else {
+                    nextBtn.classList.remove('hidden');
+                    nextBtn.innerText = "完成淨化訓練";
+                    nextBtn.onclick = null;
+                }
+            }, 1000);
+        }
+        
+        function nextFunnel() {
+            if(funnelIndex < funnelData.length - 1) {
+                funnelIndex++;
+                loadFunnelData();
+            }
+        }
+
+        // --- 5. 抗逆燃料電池邏輯 ---
+        let chargeLevel = 10;
+        const chargedButtons = { 1: false, 2: false, 3: false, 4: false };
+
+        function chargeBattery(id, amount, msgText) {
+            if (chargedButtons[id]) return;
+
+            chargedButtons[id] = true;
+            chargeLevel += amount;
+            if (chargeLevel > 100) chargeLevel = 100;
+
+            const bar = document.getElementById('battery-bar');
+            const percentText = document.getElementById('battery-percentage');
+            bar.style.height = `${chargeLevel}%`;
+            percentText.innerText = `${chargeLevel}%`;
+
+            const btn = document.getElementById(`charge-btn-${id}`);
+            btn.className = 'flex items-center gap-4 bg-emerald-50 border-2 border-emerald-300 p-4 rounded-2xl opacity-75 cursor-not-allowed shadow-none';
+            btn.querySelector('.text-slate-400').innerText = '已注入能源';
+            btn.querySelector('.text-slate-400').className = 'text-xs text-emerald-500 font-bold mt-0.5';
+
+            if (chargeLevel >= 100) {
+                document.getElementById('battery-complete-msg').classList.remove('hidden');
+                readAlchemistSpeech("燃料電池充滿啦！抗逆護盾完全啟動！");
+            } else {
+                readAlchemistSpeech(msgText);
+            }
+        }
+
+        // --- 6. 擴充：煉金術士的實驗筆記 (4題互動版) ---
+        const noteData = [
+            {
+                scenario: "實驗紀錄 #001：英文測驗不合格",
+                optA: "A. 材料放太快（太心急，沒看清楚題目）",
+                optB: "B. 火候不對（溫習用錯了方法，需要換個 Plan B）",
+                optC: "C. 忘記看說明書（沒有聽清楚老師的考試範圍）",
+                optD: "D. 以上皆有可能！這不是「我」的問題，是「方法」的問題！"
+            },
+            {
+                scenario: "實驗紀錄 #002：同好朋友吵架了",
+                optA: "A. 材料放太快（太衝動，無聽清楚對方講咩就發脾氣）",
+                optB: "B. 火候不對（用錯咗表達方式，講咗難聽嘅說話）",
+                optC: "C. 忘記看說明書（誤會咗對方嘅真正意思）",
+                optD: "D. 以上皆有可能！這不是「我」的問題，是「方法」的問題！"
+            },
+            {
+                scenario: "實驗紀錄 #003：參加朗誦比賽忘詞",
+                optA: "A. 材料放太快（上台太緊張，冇深呼吸就開始）",
+                optB: "B. 火候不對（平時練習唔夠熟練，或者練習方法錯咗）",
+                optC: "C. 忘記看說明書（冇提前去適應場地，被環境影響）",
+                optD: "D. 以上皆有可能！這不是「我」的問題，是「方法」的問題！"
+            },
+            {
+                scenario: "實驗紀錄 #004：砌模型砌到爛咗",
+                optA: "A. 材料放太快（太心急，跳過咗步驟）",
+                optB: "B. 火候不對（用錯咗膠水或者工具，太大力）",
+                optC: "C. 忘記看說明書（漏睇咗重要嘅警告字眼）",
+                optD: "D. 以上皆有可能！這不是「我」的問題，是「方法」的問題！"
+            }
+        ];
+        
+        let noteIndex = 0;
+
+        function loadNoteData() {
+            const data = noteData[noteIndex];
+            document.getElementById('note-counter').innerText = `紀錄 ${noteIndex + 1} / ${noteData.length}`;
+            document.getElementById('note-scenario').innerText = data.scenario;
+            
+            const optsContainer = document.getElementById('note-options');
+            optsContainer.innerHTML = '';
+            
+            // Generate options
+            const options = [
+                { text: data.optA, isCorrect: false, reason: '材料放太快' },
+                { text: data.optB, isCorrect: false, reason: '火候不對' },
+                { text: data.optC, isCorrect: false, reason: '忘記看說明書' },
+                { text: data.optD, isCorrect: true, reason: '以上皆是' }
+            ];
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = opt.isCorrect 
+                    ? 'bg-emerald-600 text-white hover:bg-emerald-700 border-2 border-emerald-600 p-3 rounded-xl text-left font-black transition-all'
+                    : 'bg-white border-2 border-slate-300 hover:border-emerald-400 p-3 rounded-xl text-left font-bold text-slate-600 transition-all';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkNoteAns(btn, opt.isCorrect);
+                optsContainer.appendChild(btn);
+            });
+            
+            document.getElementById('note-feedback').classList.add('hidden');
+        }
+
+        function checkNoteAns(btn, isCorrect) {
+            const opts = document.getElementById('note-options').children;
+            for(let i=0; i<opts.length; i++) {
+                opts[i].classList.add('opacity-50', 'pointer-events-none');
+            }
+            
+            const feedback = document.getElementById('note-feedback');
+            feedback.classList.remove('hidden');
+            
+            const nextBtnHTML = noteIndex < noteData.length - 1 
+                ? `<button onclick="nextNote()" class="mt-4 bg-emerald-100 text-emerald-800 font-bold px-6 py-2 rounded-lg hover:bg-emerald-200 transition-colors">分析下一筆紀錄 <i class="fa-solid fa-arrow-right ml-1"></i></button>`
+                : `<button class="mt-4 bg-emerald-100 text-emerald-800 font-bold px-6 py-2 rounded-lg hover:bg-emerald-200 transition-colors">完成所有復盤分析！</button>`;
+            
+            if (isCorrect) {
+                btn.classList.replace('bg-emerald-600', 'bg-emerald-500');
+                btn.classList.remove('opacity-50');
+                feedback.innerHTML = `
+                    <h4 class="font-black text-emerald-700 text-lg mb-1"><i class="fa-solid fa-lightbulb text-amber-500"></i> 復盤成功！</h4>
+                    <p class="text-sm text-slate-700 font-medium leading-relaxed">
+                        答對了！科學家從來不會因為實驗失敗而說自己很蠢。他們只會記錄數據，調整「材料」、「火候」或「說明書」，然後再來一次！
+                    </p>
+                    ${nextBtnHTML}
+                `;
+            } else {
+                btn.classList.replace('bg-white', 'bg-emerald-100');
+                btn.classList.remove('opacity-50');
+                feedback.innerHTML = `
+                    <h4 class="font-black text-emerald-700 text-lg mb-1"><i class="fa-solid fa-lightbulb text-amber-500"></i> 部分正確！</h4>
+                    <p class="text-sm text-slate-700 font-medium leading-relaxed">
+                        其實「以上皆是」！科學家從來不會因為實驗失敗而說自己很蠢。他們只會記錄數據，調整「材料」、「火候」或「說明書」，然後再來一次！這不是你的錯，是方法的錯！
+                    </p>
+                    ${nextBtnHTML}
+                `;
+            }
+        }
+        
+        function nextNote() {
+            if(noteIndex < noteData.length - 1) {
+                noteIndex++;
+                loadNoteData();
+            }
+        }
+
+        // --- 7. 實戰煉金模擬器 (Boss 關卡) ---
+        function executeBossStep(step) {
+            const btn = document.getElementById(`boss-btn-${step}`);
+            const desc = document.getElementById(`boss-desc-${step}`);
+            const nextBtn = document.getElementById(`boss-btn-${step+1}`);
+            
+            btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            btn.classList.replace('bg-slate-700', 'bg-amber-500');
+            btn.classList.replace('border-slate-500', 'border-amber-400');
+            
+            desc.classList.replace('bg-slate-800', 'bg-amber-100');
+            desc.classList.replace('text-slate-400', 'text-amber-800');
+            desc.classList.replace('text-slate-500', 'text-amber-800');
+            desc.classList.add('animate-pop');
+
+            if (step < 3) {
+                nextBtn.disabled = false;
+                nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                nextBtn.classList.add('animate-bounce');
+                setTimeout(() => nextBtn.classList.remove('animate-bounce'), 1000);
+            } else {
+                document.getElementById('boss-victory').classList.remove('hidden');
+            }
+        }
+
+        // --- 8. 實戰模擬大考驗邏輯 (8 題) ---
+        const quizData = [
+            {
+                icon: "📝",
+                question: "【默書卡關】你英文默書只得了 50 分不合格，心裡很沮喪，你會怎樣轉化這個情況？",
+                options: [
+                    { text: "覺得自己天生就不是讀英文的料子，以後英文堂都睡覺放棄。", isCorrect: false },
+                    { text: "告訴自己：「我只是這次未溫熟，這 50 分指出了我不會的生字，溫返識佢就得！」", isCorrect: true }
+                ],
+                successTitle: "✅ 提煉成功：獲得大腦升級藥水！",
+                successText: "分數只是反映當前的狀態，不代表你的天分！溫返錯處，大腦就會變聰明。",
+                failTitle: "❌ 鉛筆心態：被分數困住",
+                failText: "放棄只會讓分數停留在 50。相信自己只要用對溫習方法，下次一定會進步！"
+            },
+            {
+                icon: "🎨",
+                question: "【畫畫出界】你在美勞堂畫海報，不小心用馬克筆畫出界，無法擦掉。",
+                options: [
+                    { text: "利用那條出界的線，把它改裝成一隻飛過的小鳥或者一朵白雲。", isCorrect: true },
+                    { text: "覺得整幅畫都毀了，發脾氣撕爛海報，大哭不畫了。", isCorrect: false }
+                ],
+                successTitle: "✅ 提煉成功：獲得創意轉化藥水！",
+                successText: "這就是真正的橡皮筋大腦！出錯也可以是美妙創作的開端！",
+                failTitle: "❌ 鉛筆心態：完美主義陷阱",
+                failText: "撕爛畫紙會讓你連作品都交不出。試著放鬆肩膀，在錯處上想想有什麼新玩法。"
+            },
+            {
+                icon: "💔",
+                question: "【被拒絕】你想加入同學的遊戲，但他們說人數夠了，拒絕了你，你覺得很沒面子。",
+                options: [
+                    { text: "覺得自己一定是個討厭鬼，所以大家都討厭我、孤立我。", isCorrect: false },
+                    { text: "「今日佢地人滿姐，唔代表我唔好。等陣去搵第個玩，或者下次先加入。」", isCorrect: true }
+                ],
+                successTitle: "✅ 提煉成功：獲得社交防護藥水！",
+                successText: "拒絕有很多客觀原因（人數、時間），千萬不要把別人的拒絕「個人化」來打擊自己！",
+                failTitle: "❌ 鉛筆心態：過度聯想",
+                failText: "一次被拒絕不代表你整個人被否定。保持友善自信，尋找其他合適的玩伴。"
+            },
+            {
+                icon: "🏃‍♂️",
+                question: "【比賽落敗】體育堂跑步比賽你跑了最後一名，大家都看著你，你感到很尷尬。",
+                options: [
+                    { text: "「雖然我慢，但我堅持跑完了！我還可以向第一名請教呼吸方法！」", isCorrect: true },
+                    { text: "覺得自己很沒用，以後上體育堂都假裝肚痛不跑了。", isCorrect: false }
+                ],
+                successTitle: "✅ 提煉成功：獲得抗逆勳章！",
+                successText: "跑最後一名並不可恥，堅持完賽才是特工該有的意志力！向強者學習能讓你變得更強。",
+                failTitle: "❌ 鉛筆心態：逃避退縮",
+                failText: "因為害怕尷尬而假裝生病，會讓你失去鍛鍊身體和享受運動樂趣的機會喔。"
+            },
+            {
+                icon: "🗣️",
+                question: "【出洋相】你在課堂回答問題時答錯了，全班同學都在笑，你滿臉通紅。",
+                options: [
+                    { text: "覺得自尊心受損，決定以後在課堂上絕對不舉手回答問題。", isCorrect: false },
+                    { text: "對自己說：「錯左先知邊度唔明嘛，起碼我敢嘗試，哈哈！」然後跟著笑笑化解尷尬。", isCorrect: true }
+                ],
+                successTitle: "✅ 提煉成功：獲得自信折射藥水！",
+                successText: "敢於在課堂舉手回答是極具勇氣的表現。出錯是學習最好的踏腳石！",
+                failTitle: "❌ 鉛筆心態：過度敏感",
+                failText: "大家笑通常只是因為氣氛，很快就會忘記。不要因為害怕出錯而封鎖自己的發言權。"
+            },
+            {
+                icon: "🎮",
+                question: "【打機輸左】你和同學連線打機，結果連續輸了 3 局，心裡升起一陣怒火。",
+                options: [
+                    { text: "深呼吸降溫，自言自語說：「佢地打得幾好，等我觀察下佢地用咩戰術！」", isCorrect: true },
+                    { text: "生氣地掟手掣，指責同學出千，大喊遊戲好爛不玩了。", isCorrect: false }
+                ],
+                successTitle: "✅ 提煉成功：獲得冷靜升級藥水！",
+                successText: "輸了不代表你弱，而是代表還有進步空間。特工在失敗中收集數據，在下一局反敗為勝！",
+                failTitle: "❌ 鉛筆心態：怒火攻心",
+                failText: "打機發脾氣不但無法獲勝，還會讓同學覺得你輸不起，下次就不帶你玩了。"
+            },
+            {
+                icon: "🎻",
+                question: "【學樂器】你學鋼琴學了幾個月，進度很慢，連簡單的兒歌都彈得結結巴巴，你覺得很沮喪。",
+                options: [
+                    { text: "「每個人一開始都彈得難聽，我只要每天多練 10 分鐘，累積下來就會變好！」", isCorrect: true },
+                    { text: "覺得自己沒有音樂天分，自己不是那塊料，跟家長吵架要求退學。", isCorrect: false }
+                ],
+                successTitle: "✅ 提煉成功：獲得時間魔法藥水！",
+                successText: "任何技能都是由一千次的『結結巴巴』累積起來的。相信時間和練習的魔力！",
+                failTitle: "❌ 鉛筆心態：急於求成",
+                failText: "沒有人能一朝一夕成為大師。輕易斷言自己沒有天分，只是在為逃避練習找藉口喔。"
+            },
+            {
+                icon: "👥",
+                question: "【比較心態】你發現同桌的同學做什麼都比你快，交功課早、默書高分，你感到很有壓力。",
+                options: [
+                    { text: "覺得自己怎麼追都追不上，感到自卑，不自覺開始討厭和疏遠那位同學。", isCorrect: false },
+                    { text: "「每個人大腦結構都唔同，佢有佢嘅快，我有我嘅好。我只同昨日嘅自己比！」", isCorrect: true }
+                ],
+                successTitle: "✅ 提煉成功：獲得心靈護體盾！",
+                successText: "這才是健康的社交特工！唯一的比較對象是『昨天的自己』，看到自己的小進步就值得慶祝！",
+                failTitle: "❌ 鉛筆心態：自我消耗",
+                failText: "拿別人的長處來折磨自己的短處，會讓你每天都很痛苦。尊重個體差異，走出自己的節奏。"
+            }
+        ];
+
+        let currentQuizIndex = 0;
+
+        function initQuiz() {
+            loadQuizQuestion(currentQuizIndex);
+        }
+
+        function loadQuizQuestion(index) {
+            const data = quizData[index];
+            document.getElementById('game-counter').innerText = `第 ${index + 1} / ${quizData.length} 局`;
+            document.getElementById('game-icon').innerText = data.icon;
+            document.getElementById('game-question').innerText = data.question;
+            
+            const progress = (index / quizData.length) * 100;
+            document.getElementById('game-progress').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('game-options');
+            optionsContainer.innerHTML = '';
+            
+            data.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'game-option w-full text-left p-4 rounded-xl border-2 border-slate-100 hover:border-orange-400 hover:bg-orange-50 transition-all font-medium text-slate-700 bg-white text-sm md:text-base';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkQuizAnswer(opt.isCorrect, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('game-feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function checkQuizAnswer(isCorrect, selectedBtn) {
+            const data = quizData[currentQuizIndex];
+            const feedbackBox = document.getElementById('game-feedback');
+            const title = document.getElementById('feedback-title');
+            const text = document.getElementById('feedback-text');
+            const icon = document.getElementById('feedback-icon');
+            const nextBtn = document.getElementById('next-btn');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+            
+            const allBtns = document.querySelectorAll('.game-option');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                selectedBtn.classList.replace('border-slate-100', 'border-emerald-500');
+                selectedBtn.classList.replace('hover:border-orange-400', 'border-emerald-500');
+                selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'font-bold');
+                
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-200');
+                title.className = "font-bold text-lg mb-1 text-emerald-800";
+                icon.innerHTML = '<i class="fa-solid fa-mortar-pestle text-emerald-500"></i>';
+                title.innerText = data.successTitle;
+                text.innerText = data.successText;
+                
+                nextBtn.classList.remove('hidden');
+                if(currentQuizIndex === quizData.length - 1) {
+                    nextBtn.innerText = "完成心靈煉成！";
+                } else {
+                    nextBtn.innerHTML = '下一局 <i class="fa-solid fa-arrow-right ml-1"></i>';
+                }
+            } else {
+                selectedBtn.classList.add('animate-shake', 'bg-rose-50', 'border-rose-300', 'text-rose-700');
+                
+                feedbackBox.classList.add('bg-rose-50', 'border-rose-200');
+                title.className = "font-bold text-lg mb-1 text-rose-800";
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-500"></i>';
+                title.innerText = data.failTitle;
+                text.innerText = data.failText;
+
+                setTimeout(() => {
+                    selectedBtn.classList.remove('animate-shake');
+                    allBtns.forEach(b => b.disabled = false);
+                }, 500);
+            }
+        }
+
+        function nextQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < quizData.length) {
+                loadQuizQuestion(currentQuizIndex);
+            } else {
+                document.getElementById('game-progress').style.width = `100%`;
+                document.getElementById('game-container').classList.add('hidden');
+                document.getElementById('mission-complete-zone').classList.remove('hidden');
+            }
+        }
+
+        function completeMission() {
+            const btn = document.getElementById('claimBtn');
+            const msg = document.getElementById('successMsg');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在上傳心靈數據...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            
+            setTimeout(() => {
+                btn.classList.add('hidden');
+                msg.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    window.location.href = 'student_dashboard.html';
+                }, 2000);
+            }, 1000);
+        }
+
+        // 初始化所有遊戲模組
+        window.onload = () => {
+            loadFunnelData();
+            loadNoteData();
+            initQuiz();
+        };
+    </script>
+</body>
+</html>
