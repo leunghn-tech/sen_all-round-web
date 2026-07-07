@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👨‍💼 職場生存預演 | SEN 社交特工訓練營</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f6f8fd;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .exp-font {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* 卡片翻轉效果 */
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        /* 遊戲與回饋動畫 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px) rotate(-1deg); }
+            40%, 80% { transform: translateX(5px) rotate(1deg); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes pop-up {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop-up 0.5s ease-out forwards;
+        }
+
+        /* 脈衝發光效果 */
+        @keyframes shield-pulse {
+            0% { box-shadow: 0 0 10px rgba(37, 99, 235, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(37, 99, 235, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(37, 99, 235, 0.4); }
+        }
+        .shield-pulse {
+            animation: shield-pulse 2s infinite;
+        }
+
+        /* 雷達掃描線動畫 */
+        @keyframes scan-radar {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .radar-line {
+            transform-origin: bottom right;
+            animation: scan-radar 3s linear infinite;
+        }
+        /* 滴下動畫 */
+        @keyframes drop-fall {
+            0% { transform: translateY(-20px) scale(1); opacity: 0; }
+            20% { transform: translateY(0px) scale(1.2); opacity: 1; }
+            80% { transform: translateY(0px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(20px) scale(0); opacity: 0; }
+        }
+        .animate-drop {
+            animation: drop-fall 1s forwards;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- 頂部導航 -->
+    <nav class="w-full max-w-5xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
+        <!-- 返回大廳路徑至 index.html -->
+        <a href="index.html" class="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm text-slate-600 font-bold hover:text-blue-600 hover:shadow-md transition-all border border-slate-100">
+            <div class="bg-slate-100 group-hover:bg-blue-100 text-slate-500 group-hover:text-blue-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            返回大廳
+        </a>
+        <div class="flex items-center gap-3">
+            <!-- 動態顯示特工目前的總 EXP -->
+            <div class="bg-amber-100 text-amber-700 px-4 py-2 rounded-full font-bold text-sm shadow-sm flex items-center gap-2 border border-amber-200">
+                <i class="fa-solid fa-star text-amber-500"></i> 我的總 EXP: <span id="current-total-exp" class="exp-font">0</span>
+            </div>
+            <div class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-bold text-sm shadow-sm flex items-center gap-2 border border-blue-200">
+                <i class="fa-solid fa-bolt text-blue-500"></i> 任務獎勵: 400 EXP
+            </div>
+        </div>
+    </nav>
+
+    <!-- 任務標題區 -->
+    <header class="w-full max-w-5xl mx-auto px-6 mb-10 relative z-20 text-center">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-4xl shadow-lg mb-6 shield-pulse">
+            <i class="fa-solid fa-user-tie"></i>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black mb-4 text-slate-800 tracking-tight">
+            👨‍💼 職場生存預演
+        </h1>
+        <p class="text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            特工，準備從校園跨越到真實職場嗎？老細與面試官口中常有許多「弦外之音」。<br>
+            解鎖五大核心職場生存裝備，練習拆解指令，成功化解辦公室風暴，通關模擬面試！
+        </p>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-6 pb-20 flex-grow relative z-10">
+        
+        <!-- 裝置 1：📡 職場弦外之音雷達 (5 題) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-blue-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-blue-800">
+                <i class="fa-solid fa-satellite-dish"></i> 裝置 1：職場「潛規則」讀心雷達
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">職場上有些客套話或暗示，大腦很容易解讀錯誤。點擊下方的情境，用雷達分析老細或面試官背後的「真正意圖」！</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-blue-50/50 p-6 rounded-3xl border-2 border-blue-100">
+                
+                <!-- 左側：雷達顯示器與案例選擇 -->
+                <div class="flex flex-col items-center">
+                    <div class="relative w-48 h-48 rounded-full bg-slate-900 border-[6px] border-slate-700 overflow-hidden shadow-inner shrink-0 flex items-center justify-center mb-6">
+                        <div class="absolute inset-0 bg-[radial-gradient(transparent_40%,rgba(37,99,235,0.2)_100%)] border border-blue-500/30 rounded-full"></div>
+                        <div class="absolute inset-0" style="background-image: linear-gradient(rgba(37,99,235,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.3) 1px, transparent 1px); background-size: 20px 20px; border-radius: 50%;"></div>
+                        <div id="radar-sweep" class="absolute top-1/2 left-1/2 w-[50%] h-[50%] bg-gradient-to-br from-blue-400/80 to-transparent radar-line hidden"></div>
+                        <div id="radar-display" class="z-10 text-blue-500 text-center p-4">
+                            <i class="fa-solid fa-briefcase text-4xl mb-1 opacity-50"></i>
+                            <p class="text-[10px] font-bold tracking-widest opacity-50">STANDBY</p>
+                        </div>
+                    </div>
+
+                    <!-- 情境按鈕群 -->
+                    <div class="flex flex-wrap gap-2 justify-center w-full">
+                        <button onclick="scanRadar('sc1')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">「呢個方案幾有創意」 💡</button>
+                        <button onclick="scanRadar('sc2')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">「你搞得掂啦」 💼</button>
+                        <button onclick="scanRadar('sc3')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">「星期六一齊爬山」 ⛰️</button>
+                        <button onclick="scanRadar('sc4')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">「你仲有咩問題問」 🙋‍♂️</button>
+                        <button onclick="scanRadar('sc5')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-md transition-all active:scale-95">「過兩日俾覆你」 📞</button>
+                    </div>
+                </div>
+
+                <!-- 右側：雷達結果解讀 -->
+                <div class="flex flex-col justify-center h-full min-h-[220px]">
+                    <div id="radar-result-panel" class="bg-white p-6 rounded-2xl border-2 border-blue-100 shadow-inner flex flex-col justify-center items-center text-center">
+                        <i class="fa-solid fa-radar text-4xl text-blue-400 mb-3 animate-pulse"></i>
+                        <h4 class="text-lg font-black text-slate-700 mb-1">等待輸入訊號...</h4>
+                        <p class="text-sm text-slate-400">點擊左下方的職場對話，啟動防禦雷達掃描！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 2：🛡️ 職場邊界防禦盾 (4題，結合TTS) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-blue-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-blue-800">
+                <i class="fa-solid fa-shield-halved"></i> 裝置 2：職場邊界防禦盾
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">當同事推卸責任、面臨不合理加班或被嘲笑時，特工要選用最合適的社交護盾。點擊播放對白練習堅定發音！</p>
+            
+            <div class="bg-blue-50 p-6 rounded-2xl border-2 border-blue-100">
+                <div class="absolute top-4 right-4 text-blue-600 font-bold text-xs" id="shield-counter">情境 1 / 4</div>
+                
+                <div class="text-center mb-6 mt-2">
+                    <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase">面臨職場困局</span>
+                    <h3 id="shield-scenario" class="text-xl font-black text-blue-900 mt-4 min-h-[48px]">同事 B 偷偷將他未做完的工作塞給你：「你幫我做埋呢part啦，我趕住走！」</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button onclick="activateShield('not', '唔好意思，我手頭上都處理緊我嗰part，依家無時間幫你。', '🛡️ 「溫和堅定不字盾」已啟動！溫和但清楚指明你的界線，不承擔他人本該承擔的職責，也不挑起不必要的爭吵。', 1)" class="bg-white hover:bg-blue-100 border border-blue-200 p-4 rounded-xl text-left transition-all">
+                        <div class="text-2xl mb-1 text-emerald-500"><i class="fa-solid fa-circle-check"></i> 溫和堅定不字盾</div>
+                        <p class="text-xs text-slate-500">不卑不亢表明底線</p>
+                    </button>
+                    <button onclick="activateShield('stone', '...', '🛡️ 「灰石冷處理盾」已啟動！冷靜看他兩秒後，繼續專注於你手上的事情，當他的無理取鬧是空氣。當他發現你軟硬不吃，就會去找別的人。', 1)" class="bg-white hover:bg-blue-100 border border-blue-200 p-4 rounded-xl text-left transition-all">
+                        <div class="text-2xl mb-1 text-slate-400"><i class="fa-solid fa-circle"></i> 灰石冷處理盾</div>
+                        <p class="text-xs text-slate-500">不給予任何情緒反應</p>
+                    </button>
+                    <button onclick="activateShield('emergency', '我手頭上有老細俾嘅急件，我會優先處理。如果唔夠時間，我哋可以向老細說明。', '🚨 「安全協調線」已啟動！搬出主管(老細)的權威做擋箭牌。不跟同事正面起衝突，把工作分配的決策權拋給上司，理直氣壯。', 1.1)" class="bg-white hover:bg-blue-100 border border-blue-200 p-4 rounded-xl text-left transition-all">
+                        <div class="text-2xl mb-1 text-rose-500"><i class="fa-solid fa-triangle-exclamation"></i> 職場協調盾</div>
+                        <p class="text-xs text-slate-500">引用第三方/主管保護</p>
+                    </button>
+                </div>
+
+                <!-- 護盾演示與TTS對話 -->
+                <div id="shield-display" class="hidden bg-white p-6 rounded-xl border-2 border-blue-200 text-center animate-pop shadow-sm">
+                    <div class="flex flex-col items-center justify-center">
+                        <p id="shield-speech" class="text-lg font-black text-blue-700 bg-blue-50 py-2.5 px-6 rounded-lg mb-4 max-w-lg shadow-inner"></p>
+                        <button onclick="playShieldTTS()" class="bg-blue-500 hover:bg-blue-600 text-white font-black py-2 px-5 rounded-full flex items-center gap-2 text-xs shadow-md active:scale-95 mb-4">
+                            <i class="fa-solid fa-volume-high"></i> 練習說出這句話
+                        </button>
+                        <p id="shield-result-desc" class="text-sm text-slate-600 font-medium max-w-xl"></p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button id="shield-next-btn" onclick="nextShield()" class="hidden border-2 border-blue-500 text-blue-700 font-bold px-6 py-2 rounded-full hover:bg-blue-100 transition-colors">應對下一種危機 <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 3：🥷 模擬面試潛入戰術 (SOP 練習) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-blue-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-blue-800">
+                <i class="fa-solid fa-address-card"></i> 裝置 3：模擬面試潛入戰術 (SOP)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">許多特工在面試時會因為不知道怎麼介紹自己、怎麼問問題而焦慮。依照 3 步驟完美潛入群體！</p>
+            
+            <div class="bg-blue-50/50 p-6 rounded-2xl border-2 border-blue-200 max-w-2xl mx-auto">
+                <!-- 步進指示器 -->
+                <div class="flex justify-between items-center mb-8 relative">
+                    <div class="absolute left-0 top-1/2 w-full h-1 bg-blue-200 -translate-y-1/2 z-0"></div>
+                    <div id="interview-step-1" class="z-10 w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold shadow-md">1</div>
+                    <div id="interview-step-2" class="z-10 w-10 h-10 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center font-bold shadow-md">2</div>
+                    <div id="interview-step-3" class="z-10 w-10 h-10 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center font-bold shadow-md">3</div>
+                </div>
+
+                <!-- SOP內容描述 -->
+                <div id="interview-sop-content" class="text-center min-h-[140px] flex flex-col justify-center items-center">
+                    <div class="text-4xl mb-2 text-blue-500"><i class="fa-solid fa-handshake"></i></div>
+                    <h3 class="text-lg font-black text-blue-800 mb-2">第一步：敲門與問好 (Enter)</h3>
+                    <p class="text-sm text-slate-600 max-w-md">敲門兩下，進入房間後主動正視面試官。面帶微笑、大方地說：「早晨，各位面試官，我係小明。」展現良好的第一印象。</p>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button onclick="nextInterviewStep()" id="interview-sop-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-black px-6 py-2 rounded-full text-sm shadow-md transition-all">執行下一個步驟</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 4：📜 職場煉金術士實驗紀錄 (失敗復盤，4 題) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-emerald-800">
+                <i class="fa-solid fa-book-open"></i> 裝置 4：職場特工的實驗筆記 (失敗復盤)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">剛工作時難免犯錯。不要沉溺於自責，科學分析原因，下次調整配方，這叫橡皮筋大腦！</p>
+            
+            <div class="bg-[url('https://www.transparenttextures.com/patterns/lined-paper.png')] bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 md:p-8 max-w-3xl mx-auto shadow-sm relative">
+                <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-rose-300 opacity-50"></div>
+                <div class="absolute top-4 right-4 text-amber-700 font-bold text-xs bg-amber-200 px-2 py-1 rounded" id="note-counter">紀錄 1 / 4</div>
+                
+                <h3 id="note-scenario" class="text-xl font-black text-slate-800 mb-4 ml-4 mt-2">實驗紀錄 #001：不小心把老細交託的文件印錯了格式</h3>
+                <p class="text-slate-700 font-bold mb-4 ml-4"><i class="fa-solid fa-clipboard-question text-emerald-600"></i> 分析：這次職場卡關，可能是因為什麼？</p>
+                
+                <div class="flex flex-col gap-3 ml-4" id="note-options">
+                    <!-- 動態生成選項 -->
+                </div>
+
+                <div id="note-feedback" class="hidden ml-4 mt-6 p-4 bg-white rounded-xl border-2 border-emerald-400 animate-pop shadow-md text-left">
+                    <h4 class="font-black text-emerald-700 text-lg mb-1"><i class="fa-solid fa-lightbulb text-amber-500"></i> 復盤成功！</h4>
+                    <p class="text-sm text-slate-700 font-medium leading-relaxed">
+                        非常好！錯一次不代表你是個糟糕的員工。這只是一個「方法/數據」的失誤。記下來，下次重新設定複印參數，老細會為你的主動修正感到高興！
+                    </p>
+                    <button id="note-next-btn" onclick="nextNote()" class="mt-4 bg-emerald-100 text-emerald-800 font-bold px-6 py-2 rounded-lg hover:bg-emerald-200 transition-colors">
+                        分析下一筆紀錄 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 實戰模擬器 (10 題) -->
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-center">
+            🎮 終極職場生存戰 (10題 職場特工考核)
+        </h2>
+        
+        <div id="game-container" class="bg-slate-800 rounded-[2rem] p-6 md:p-10 shadow-xl mb-12 relative overflow-hidden border-4 border-slate-700">
+            <div class="w-full bg-slate-700 rounded-full h-2 mb-6">
+                <div id="game-progress" class="bg-gradient-to-r from-blue-400 to-indigo-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <div id="game-screen" class="bg-white rounded-xl p-6 md:p-8 shadow-inner relative">
+                <div class="absolute top-4 right-4 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full" id="game-counter">第 1 / 10 局</div>
+                
+                <div class="text-center mb-8 mt-4">
+                    <div id="game-icon" class="text-5xl mb-4 text-blue-500">💼</div>
+                    <p id="game-question" class="text-lg md:text-xl font-bold text-slate-700">
+                        載入中...
+                    </p>
+                    <p class="text-blue-600 font-bold mt-3"><i class="fa-solid fa-shield-halved"></i> 老細、面試官或同事出招，你會點應對？</p>
+                </div>
+
+                <div id="game-options" class="flex flex-col gap-3"></div>
+
+                <div id="game-feedback" class="hidden mt-6 p-4 rounded-xl border">
+                    <div class="flex items-start gap-3">
+                        <div id="feedback-icon" class="text-2xl mt-1"></div>
+                        <div>
+                            <h4 id="feedback-title" class="font-bold text-lg mb-1"></h4>
+                            <p id="feedback-text" class="text-sm text-slate-600 mb-3"></p>
+                            <button id="next-btn" onclick="nextQuestion()" class="hidden bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-700 transition-colors">
+                                下一局 <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 任務完成區塊 -->
+        <div id="mission-complete-zone" class="hidden text-center bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-100 rounded-full mix-blend-multiply filter blur-2xl opacity-60"></div>
+            <div class="text-5xl mb-4 text-blue-500"><i class="fa-solid fa-trophy"></i></div>
+            <h3 class="text-2xl font-black mb-2 text-slate-800">職場生存演練完成！</h3>
+            <p class="text-slate-500 mb-6">太棒了！你已經解開老細的暗語，在模擬面試中成功過關，成為合格的社會特工！</p>
+            <button onclick="completeMission()" id="claimBtn" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 mx-auto">
+                <i class="fa-solid fa-check-circle"></i> 領取 400 EXP 並返回大廳
+            </button>
+            <p id="successMsg" class="text-emerald-600 font-bold mt-4 hidden">
+                🎉 恭喜！獲得 400 EXP！即將返回大廳...
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        // ----------------------------------------------------
+        // 1. 職場讀心雷達 數據與邏輯
+        // ----------------------------------------------------
+        const radarData = {
+            'sc1': {
+                title: "老細：「你呢個方案幾有創意。」",
+                desc: "「不切實際/行唔通」：在職場中，老細通常不會直接說『這是不可能的』，而是用『很有創意』來委婉表示『這個方案成本太高、或者不切實際，很難在真實中推行』。這時特工應該想 Plan B，修改為更實際的方案。",
+                color: "text-amber-500",
+                displayIcon: "fa-lightbulb"
+            },
+            'sc2': {
+                title: "主管：「呢個大Project由你負責，你搞得掂啦！」",
+                desc: "「考驗你的主動匯報能力」：主管並不是真的指望你不問任何人就把一切完成，而是考驗你遇到困難時，會不會主動求助，以及能否每隔幾天『主動向他匯報進度』。千萬不要什麼都不說，最後一刻才交出一堆問題。",
+                color: "text-blue-500",
+                displayIcon: "fa-user-check"
+            },
+            'sc3': {
+                title: "同事：「星期六部門一齊去行山，你都過黎玩下啦！」",
+                desc: "「職場潛規則聚會」：這雖然不是老細發下的強制公事命令，但在華人職場中，這代表『建立部門人際關係』的社交機會。如果每次都斷然拒絕，會給人『難以融入團隊』的印象。去一兩次露個臉，是很好的隱形生存戰術。",
+                color: "text-emerald-500",
+                displayIcon: "fa-mountain"
+            },
+            'sc4': {
+                title: "面試官：「今日嘅面試差唔多啦，你仲有咩問題想問我地？」",
+                desc: "「考驗你對公司的積極度與誠意」：這絕對不能回答『我無問題』或『幾時發薪水』。這是考驗你對該職位的誠意。特工標準提問：『如果我有幸加入，有咩技能我可以在入職前先溫習？』或『呢個崗位平日最核心嘅挑戰係咩？』",
+                color: "text-indigo-500",
+                displayIcon: "fa-circle-question"
+            },
+            'sc5': {
+                title: "HR/面試官：「你表現幾好，我地過兩日會俾覆你。」",
+                desc: "「客套話，不等於錄用」：在商業社會中，這多半是禮貌的客套結束語。可能還有其他人要面試，或者你被列為了後備。特工應該保持平常心，接受這個不可控現實，繼續投遞下一份履歷，多管齊下！",
+                color: "text-purple-500",
+                displayIcon: "fa-phone"
+            }
+        };
+
+        function scanRadar(type) {
+            const sweep = document.getElementById('radar-sweep');
+            const display = document.getElementById('radar-display');
+            const resultPanel = document.getElementById('radar-result-panel');
+            const data = radarData[type];
+
+            sweep.classList.remove('hidden');
+            display.innerHTML = `
+                <div class="text-3xl text-blue-500 animate-ping"><i class="fa-solid fa-arrows-spin"></i></div>
+                <p class="text-[9px] font-bold text-blue-300 mt-1">SCANNING...</p>
+            `;
+
+            setTimeout(() => {
+                sweep.classList.add('hidden');
+                display.innerHTML = `
+                    <div class="text-4xl ${data.color}"><i class="fa-solid ${data.displayIcon}"></i></div>
+                    <p class="text-[9px] font-bold ${data.color} tracking-widest mt-1">ANALYZED</p>
+                `;
+
+                resultPanel.className = "bg-white p-6 rounded-2xl border-2 border-blue-100 shadow-inner flex flex-col justify-center items-center text-center animate-pop";
+                resultPanel.innerHTML = `
+                    <div class="text-4xl mb-2"><i class="fa-solid ${data.displayIcon} ${data.color}"></i></div>
+                    <h4 class="text-base md:text-lg font-black ${data.color} mb-2">${data.title}</h4>
+                    <p class="text-xs text-slate-600 font-bold leading-relaxed bg-slate-50 p-3 rounded-lg max-w-sm">${data.desc}</p>
+                `;
+            }, 1000);
+        }
+
+        // ----------------------------------------------------
+        // 2. 邊界防禦盾 數據與邏輯
+        // ----------------------------------------------------
+        const shieldData = [
+            {
+                scenario: "同事 B 偷偷將他未做完的工作塞給你：「你幫我做埋呢part啦，我趕住走！」",
+                speech: "「唔好意思，我手頭上都處理緊我嗰part，依家無時間幫你。」",
+                desc: "「溫和堅定盾」：表明立場，拒絕不合理工作轉嫁，溫和而堅定。不說難聽的話，但絕不當隨便被欺負的『便車』！"
+            },
+            {
+                scenario: "老細在放工前半小時突然拍你肩膀：「你今晚幫我打埋呢份報告先走，老細好睇你㗎！」（這已是這星期的第三次不合理加班）",
+                speech: "「老細，唔好意思，我今晚已經約咗家人，報告我聽朝一返黎會第一時間處理，得唔得呀？」",
+                desc: "「溫和拒絕不字盾」：學會保護個人邊界。用家人或私人急事做緩衝，並提出 Plan B（明天第一時間處理），展現負責任的態度，老細一般會接受。"
+            },
+            {
+                scenario: "在茶水間，同事 C 當著其他人的面笑你：「你今日著呢條褲，個色真係好老土呀，哈哈。」",
+                speech: "「老土好呀！證明我成熟穩重，可以給予老細十足嘅信任嘛，對唔對？」",
+                desc: "「幽默自嘲盾」：將同事的惡意嘲笑，轉化為一場自信的自嘲，並順道讚美了自己職場上的穩重。你既然完全不尷尬，對方的挑釁就失去所有殺傷力。"
+            },
+            {
+                scenario: "主管故意在所有人面前，因為一件微不足道的小事，大聲羞辱、辱罵你並說：「你腦袋係咪有問題？」",
+                speech: "「我手頭上有老細俾嘅急件，我會優先處理。如果唔夠時間，我哋可以向老細說明。」",
+                desc: "「安全協調線」：面對主管人身攻擊。不要當場大吼頂撞，也不要低頭哭泣。理直氣壯地將公事搬出來作為防禦罩，事後向更高級的人事部門（HR）舉報該霸凌行為。"
+            }
+        ];
+
+        let currentShieldIndex = 0;
+        let shieldSpeechText = "";
+
+        function activateShield(shieldType, customSpeech, descText, ttsSpeed = 1) {
+            const display = document.getElementById('shield-display');
+            const speechEl = document.getElementById('shield-speech');
+            const descEl = document.getElementById('shield-result-desc');
+            const nextBtn = document.getElementById('shield-next-btn');
+
+            display.classList.remove('hidden');
+            display.classList.add('animate-pop');
+
+            if (customSpeech === "...") {
+                speechEl.innerText = "【 保持冷漠與沉默，不發一言行開 】";
+                shieldSpeechText = "";
+            } else {
+                speechEl.innerText = `💬 練習說：「${customSpeech}」`;
+                shieldSpeechText = customSpeech;
+                // 自動播放一次廣東話
+                playShieldTTS(ttsSpeed);
+            }
+
+            descEl.innerText = descText;
+            nextBtn.classList.remove('hidden');
+
+            if (currentShieldIndex === shieldData.length - 1) {
+                nextBtn.innerText = "完成防禦盾訓練";
+            }
+        }
+
+        function playShieldTTS(speed = 0.9) {
+            if (shieldSpeechText === "") return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(shieldSpeechText);
+                utterance.lang = 'zh-HK'; // 粵語廣東話
+                utterance.pitch = 1.0;
+                utterance.rate = speed; 
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function nextShield() {
+            if (currentShieldIndex < shieldData.length - 1) {
+                currentShieldIndex++;
+                document.getElementById('shield-counter').innerText = `情境 ${currentShieldIndex + 1} / ${shieldData.length}`;
+                document.getElementById('shield-scenario').innerText = shieldData[currentShieldIndex].scenario;
+                document.getElementById('shield-display').classList.add('hidden');
+                document.getElementById('shield-next-btn').classList.add('hidden');
+            } else {
+                document.getElementById('shield-scenario').innerText = "🎉 恭喜！你已經掌握了 4 大衝突邊界防禦術！";
+                document.getElementById('shield-next-btn').classList.add('hidden');
+                document.getElementById('shield-display').classList.add('hidden');
+            }
+        }
+
+        // ----------------------------------------------------
+        // 3. 模擬面試潛入戰術 (SOP)
+        // ----------------------------------------------------
+        let currentInterviewStep = 1;
+        const interviewSops = {
+            1: {
+                icon: "fa-door-open",
+                title: "第一步：敲門與問好 (Enter)",
+                desc: "敲門兩下，進入房間後主動正視面試官。面帶微笑、大方地說：「早晨，各位面試官，我係小明。」展現良好的第一印象。"
+            },
+            2: {
+                icon: "fa-certificate",
+                title: "第二步：誠實展現特長與弱點 (Express)",
+                desc: "介紹自己時不用裝完美。特工完美範式：『我做事非常有規矩，鍾意核對細節（長處）。但我有時面對突發狀況會緊張，所以我平時出發前會主動準備 Plan B 同做風險評估（長處與弱點轉化）。』面試官最欣賞懂得自我調整的員工！"
+            },
+            3: {
+                icon: "fa-comments-question",
+                title: "第三步：禮貌詢問，發出邀請 (Request & Ask)",
+                desc: "當面試官問你『有咩想問』，主動說：『如果我有幸加入，有咩技能我可以在入職前先溫習？』或『呢個崗位平日最核心嘅挑戰係咩？』表現出你十足的積極與熱情！"
+            }
+        };
+
+        function nextInterviewStep() {
+            currentInterviewStep++;
+            if (currentInterviewStep > 3) {
+                currentInterviewStep = 1;
+            }
+
+            for (let i = 1; i <= 3; i++) {
+                const indicator = document.getElementById(`interview-step-${i}`);
+                if (i <= currentInterviewStep) {
+                    indicator.className = "z-10 w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold shadow-md";
+                } else {
+                    indicator.className = "z-10 w-10 h-10 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center font-bold shadow-md";
+                }
+            }
+
+            const content = document.getElementById('interview-sop-content');
+            const stepData = interviewSops[currentInterviewStep];
+            content.innerHTML = `
+                <div class="text-4xl mb-2 text-blue-500 animate-pop"><i class="fa-solid ${stepData.icon}"></i></div>
+                <h3 class="text-lg font-black text-blue-800 mb-2 animate-pop">${stepData.title}</h3>
+                <p class="text-sm text-slate-600 max-w-md animate-pop">${stepData.desc}</p>
+            `;
+
+            const btn = document.getElementById('interview-sop-btn');
+            if (currentInterviewStep === 3) {
+                btn.innerText = "重新溫習 SOP";
+            } else {
+                btn.innerText = "執行下一個步驟";
+            }
+        }
+
+        // ----------------------------------------------------
+        // 4. 職場特工的實驗筆記 (失敗復盤，4 題)
+        // ----------------------------------------------------
+        const noteData = [
+            {
+                scenario: "實驗紀錄 #001：不小心把老細交託的文件印錯了格式",
+                optA: "A. 材料放太快（太心急，沒有向同事問清楚複印紙張和尺寸就直接按列印）",
+                optB: "B. 火候不對（使用打印機的格式設定錯了，需要換一個打印設定 Plan B）",
+                optC: "C. 忘記看說明書（沒有看清主管手寫的排版指示備忘錄）",
+                optD: "D. 以上皆有可能！這不是『我』很蠢，是『方法』需要調整！下次重設參數就好！"
+            },
+            {
+                scenario: "實驗紀錄 #002：給客戶發郵件時，忘記添加附件檔案就按了傳送",
+                optA: "A. 材料放太快（打完字太興奮，沒有核對清單就按了『傳送』按鈕）",
+                optB: "B. 火候不對（發信方法不妥，以後寫郵件要先上載附件，最後才寫收件人，預防誤按）",
+                optC: "C. 忘記看說明書（忘了把客戶指示的附帶文件加入草稿箱）",
+                optD: "D. 以上皆有可能！這不是『我』沒用，是『發信SOP』需要優化！立刻補發一封並致歉就好！"
+            },
+            {
+                scenario: "實驗紀錄 #003：上班遲到了十分鐘，心裡非常慌張焦慮",
+                optA: "A. 材料放太快（出門時間算得太緊湊，低估了塞車的風險）",
+                optB: "B. 火候不對（預備方案出錯，預估時間不足）",
+                optC: "C. 忘記看說明書（沒有提前上網查看今天的公共交通大塞車通告）",
+                optD: "D. 以上皆有可能！這不是『我』沒用，是『時間備用包』不夠。主動道歉、下次提早 15 分鐘出門就解決了！"
+            },
+            {
+                scenario: "實驗紀錄 #004：在會議中發言，被同事反對並當面駁回你的想法",
+                optA: "A. 材料放太快（太急於拋出想法，事前沒有跟同事溝通交流過，大家感到突兀）",
+                optB: "B. 火候不對（簡報的說服方式錯了，純粹是商業邏輯不同）",
+                optC: "C. 忘記看說明書（忽略了該項目的實際成本，沒有看預算書）",
+                optD: "D. 以上皆有可能！這是『方案』不完美，不是『我』這個人差！吸取建議、修改方案配方就得！"
+            }
+        ];
+
+        let noteIndex = 0;
+
+        function loadNoteData() {
+            const data = noteData[noteIndex];
+            document.getElementById('note-counter').innerText = `紀錄 ${noteIndex + 1} / ${noteData.length}`;
+            document.getElementById('note-scenario').innerText = data.scenario;
+            
+            const optsContainer = document.getElementById('note-options');
+            optsContainer.innerHTML = '';
+            
+            const options = [
+                { text: data.optA, isCorrect: false },
+                { text: data.optB, isCorrect: false },
+                { text: data.optC, isCorrect: false },
+                { text: data.optD, isCorrect: true }
+            ];
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = opt.isCorrect 
+                    ? 'bg-emerald-600 text-white hover:bg-emerald-700 border-2 border-emerald-600 p-3 rounded-xl text-left font-black transition-all text-xs md:text-sm'
+                    : 'bg-white border-2 border-slate-300 hover:border-emerald-400 p-3 rounded-xl text-left font-bold text-slate-600 transition-all text-xs md:text-sm';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkNoteAns(btn, opt.isCorrect);
+                optsContainer.appendChild(btn);
+            });
+            
+            document.getElementById('note-feedback').classList.add('hidden');
+        }
+
+        function checkNoteAns(btn, isCorrect) {
+            const opts = document.getElementById('note-options').children;
+            for(let i=0; i<opts.length; i++) {
+                opts[i].classList.add('opacity-50', 'pointer-events-none');
+            }
+            
+            const feedback = document.getElementById('note-feedback');
+            feedback.classList.remove('hidden');
+            
+            const nextBtnHTML = noteIndex < noteData.length - 1 
+                ? `<button onclick="nextNote()" class="mt-4 bg-emerald-100 text-emerald-800 font-bold px-6 py-2 rounded-lg hover:bg-emerald-200 transition-colors text-xs">分析下一筆紀錄 <i class="fa-solid fa-arrow-right ml-1"></i></button>`
+                : `<button class="mt-4 bg-emerald-100 text-emerald-800 font-bold px-6 py-2 rounded-lg hover:bg-emerald-200 transition-colors text-xs">完成所有職場復盤！</button>`;
+            
+            if (isCorrect) {
+                btn.classList.replace('bg-emerald-600', 'bg-emerald-500');
+                btn.classList.remove('opacity-50');
+                feedback.innerHTML = `
+                    <h4 class="font-black text-emerald-700 text-base md:text-lg mb-1"><i class="fa-solid fa-lightbulb text-amber-500"></i> 復盤成功！</h4>
+                    <p class="text-xs md:text-sm text-slate-700 font-medium leading-relaxed">
+                        答對了！職場特工永遠像科學家一樣對待失誤。不要說自己很蠢，我們只會記錄數據，調整「材料」、「火候」或「說明書」，然後再來一次！
+                    </p>
+                    ${nextBtnHTML}
+                `;
+            } else {
+                btn.classList.replace('bg-white', 'bg-emerald-100');
+                btn.classList.remove('opacity-50');
+                feedback.innerHTML = `
+                    <h4 class="font-black text-emerald-700 text-base md:text-lg mb-1"><i class="fa-solid fa-lightbulb text-amber-500"></i> 部分正確！</h4>
+                    <p class="text-xs md:text-sm text-slate-700 font-medium leading-relaxed">
+                        其實「以上皆是」！科學家從來不會因為實驗失敗而說自己很蠢。我們只會記錄數據，調整「材料」、「火候」或「說明書」，然後再來一次！這不是你的錯，是方法的錯！
+                    </p>
+                    ${nextBtnHTML}
+                `;
+            }
+        }
+        
+        function nextNote() {
+            if(noteIndex < noteData.length - 1) {
+                noteIndex++;
+                loadNoteData();
+            }
+        }
+
+        // ----------------------------------------------------
+        // 5. 終極職場生存戰模擬器 (10 題)
+        // ----------------------------------------------------
+        const quizData = [
+            {
+                icon: "👨‍💼",
+                question: "【模擬面試】面試官問你：「你最大嘅缺點係咩？」你會點回答？",
+                options: [
+                    { text: "「我做事非常執著核對，有時會令進度變慢。但我平時會配合 Plan B 管理時間，確保工作準時交。」", isCorrect: true },
+                    { text: "「我個人比較固執，聽唔進人地意見，而且成日忘記帶功課。」", isCorrect: false }
+                ],
+                successTitle: "✅ 面試滿分好球！",
+                successText: "將你的弱點（執著核對細節）與長處轉化結合，並說明你如何用科學方法（Plan B 時間管理）調整，這是最驚豔面試官的完美回答！",
+                failTitle: "❌ 鉛筆心態：過度坦白危害",
+                failText: "過度指責自己的劣勢（固執、忘記帶東西）且不提改進方法，面試官會覺得你缺乏進步空間喔。"
+            },
+            {
+                icon: "👔",
+                question: "【第一天上班】你第一天到公司，同事都很忙，沒人理你，也沒人分配工作給你，你很尷尬。",
+                options: [
+                    { text: "一直坐在座位上，戴著耳機發呆或滑手機打發時間。", isCorrect: false },
+                    { text: "主動走向同組的前輩，說：「前輩你好，我係今日第一日入職嘅新特工，請問有咩簡單嘅公事我可以幫手做？」", isCorrect: true }
+                ],
+                successTitle: "✅ 主動出擊！職場生存率上升！",
+                successText: "新人在第一天展示出積極學習的態度，就算只是幫手影印、整理文件，也是建立社交同盟的絕佳第一步！",
+                failTitle: "❌ 幽靈模式：被貼上不積極標籤",
+                failText: "在辦公室一直低頭滑手機會給前輩『不認真、不想工作』的負面印象，對人際關係很不利。"
+            },
+            {
+                icon: "📞",
+                question: "【職場暗語】老細對你說：「呢個項目好緊要，你搞得掂啦！」然後就把大疊文件堆在你桌上。",
+                options: [
+                    { text: "覺得老細信任自己，不問任何人，自己一個人在座位上閉門造車到深夜。", isCorrect: false },
+                    { text: "定時主動向老細報告進度，遇到不懂的流程主動向前輩求助，而不是最後一刻才爆發問題。", isCorrect: true }
+                ],
+                successTitle: "✅ 特工指令解讀成功！",
+                successText: "「你搞得掂啦」代表主管在考驗你主動匯報和調配資源的能力。遇到不明白的主動問，才是對工作負責任的表現！",
+                failTitle: "❌ 任務爆炸危機",
+                failText: "一個人在座位上猜測老細的心思，萬一方向做錯了，最後一刻報告交不出，老細會大發脾氣。"
+            },
+            {
+                icon: "🚨",
+                question: "【遭受同事暗箭】同事在所有人面前說你：「佢做事好死板，成個機器人咁，真係唔明老細點解會請佢。」",
+                options: [
+                    { text: "戴上『灰石盾』，冷淡看他兩秒：『我只係習慣遵守公司章程同執著細節，保障方案唔會出事。』然後行開繼續做事。", isCorrect: true },
+                    { text: "大喊：「你先係機器人呀！你做野先不認真，成日交錯格式！」", isCorrect: false }
+                ],
+                successTitle: "✅ 職場邊界防衛盾啟動！",
+                successText: "不給他想要的情緒反饋，冷靜地將他口中的『機器人（死板）』轉化為職場上的優點『習慣遵守章程、核對細節』，反擊漂亮！",
+                failTitle: "❌ 掉入對罵陷阱",
+                failText: "公然和同事在辦公室大吵大罵，主管不論誰是誰非都會懲罰雙方，對你非常不利。"
+            },
+            {
+                icon: "🚌",
+                question: "【遲到危机】因為路面大塞車，你要搭的巴士卡在路上，你肯定會遲到 15 分鐘，這時你會：",
+                options: [
+                    { text: "立刻拍下塞車的照片，在上班時間前半小時，發短訊給主管主動致歉、說明原因、以及預計到達時間。", isCorrect: true },
+                    { text: "覺得完蛋了，焦慮得發脾氣。乾脆慢慢行，等到了公司再向主管找理由解釋。", isCorrect: false }
+                ],
+                successTitle: "✅ 風險預警處理得當！",
+                successText: "上班遲到，最重要的是『提前通知』和『提供可預期的 Plan B（預計抵達時間）』。這展現了你的職業操守與責任感！",
+                failTitle: "❌ 誠信警戒：事後狡辯",
+                failText: "不提前通知，等時間過了或到了公司才解釋，主管會懷疑你說謊或者不上心，誠信大打折扣。"
+            },
+            {
+                icon: "📝",
+                question: "【工作犯錯】你交上去的工作報告，被老細發現有好幾個錯處。老細很生氣，當眾指責了你。",
+                options: [
+                    { text: "「唔好意思，我剛才列印格式未搞清楚。我依家立刻根據你嘅指示，修改配方，10 分鐘內印一份全新嘅俾你！」", isCorrect: true },
+                    { text: "覺得老細針對自己、不給自己面子，把報告揉成一團丟進垃圾桶，大哭或辭職不幹。", isCorrect: false }
+                ],
+                successTitle: "✅ 提煉新心態！心靈煉金成功！",
+                successText: "你看清了老細生氣是針對『報告的錯處』而不是針對『你這個人』。承認失誤，給予快速彌補的 Plan B，老細會高看你一眼！",
+                failTitle: "❌ 鉛筆折斷了",
+                failText: "揉爛畫紙、憤怒辭職不能解決事情。將失敗碎片回收，調整材料再來一次，這才是不怕失敗的特工！"
+            },
+            {
+                icon: "📅",
+                question: "【不合理加班】放工前半小時，主管突然塞給你一份急件：「你今晚幫我打埋佢，主管好睇你㗎！」（本周已是第四次不合理加班）",
+                options: [
+                    { text: "默默在座位上忍受，一邊加班一邊哭，心裡極度難受。", isCorrect: false },
+                    { text: "「主管，唔好意思。我今晚已經約咗家人，報告我聽朝返黎第一時間處理，定係我幫你聯絡下今晚當值嘅其他同事？」", isCorrect: true }
+                ],
+                successTitle: "✅ 職場邊界保衛成功！",
+                successText: "溫和而堅定地拒絕（不字盾）加上提供替代的 Plan B（明天第一時間處理），既保護了你的私人時間，又沒有失禮！",
+                failTitle: "❌ 縱容欺凌：防線崩潰",
+                failText: "一味妥協只會讓別人得寸進尺。學會溫和、大方地表明底線，才能在職場長久生存。"
+            },
+            {
+                icon: "☕",
+                question: "【茶水間潛入】中午時分，你看見幾位同事在茶水間一邊喝咖啡，一邊熱烈討論最近很紅的一套動畫。你想加入。",
+                options: [
+                    { text: "使用特工融入 SOP：站在旁邊聽，點頭讚美「哇，你地都睇緊呢套呀？超正！」然後大方拋出問題：「你最鍾意邊個主角呀？」", isCorrect: true },
+                    { text: "一字不發地衝過去搶走他們的咖啡，強行大喊：「我也要聊！」", isCorrect: false }
+                ],
+                successTitle: "✅ 完美潛入！社交同盟建立！",
+                successText: "先觀察、刷存在感（Mirror & Praise）、再禮貌發問融入（SOP 完美應用）。這樣在職場裡加入大家最自然！",
+                failTitle: "❌ 強行潛入：被貼上怪人標籤",
+                failText: "粗暴地打斷別人、甚至做出無禮舉動會被同事孤立。請循序漸進，用嘴巴和友善的態度破冰。"
+            },
+            {
+                icon: "🤝",
+                question: "【旁觀者同盟】在辦公室，你看見新來的小組員，因為做錯事正被隔壁組的惡霸前輩大聲嘲笑。小組員快哭出來了。此時你會：",
+                options: [
+                    { text: "當作看不見，快速走開，多一事不如少一事。", isCorrect: false },
+                    { text: "使用『轉移視線法』走過去對小組員說：「喂，老細依家急着搵你入去教員室/經理室呀，快啲同我一齊走！」幫他拉離現場。", isCorrect: true }
+                ],
+                successTitle: "✅ 同盟救援成功！見義勇為！",
+                successText: "這是不跟惡霸正面發生武力衝突，卻能無痛、高智商地將受害者解救出尷尬、高壓現場的頂級旁觀者支援戰術（Distract）！",
+                failTitle: "❌ 冷漠旁觀：孤立無援",
+                failText: "如果所有人都在旁邊冷笑或沉默，新人的心靈會崩潰。特工同盟應該互幫互助，安全伸出援手！"
+            },
+            {
+                icon: "🏁",
+                question: "【戰戰性撤退】你非常努力準備了一星期的模擬面試，最後還是收到了不予錄用的通知信。你感到很失望。",
+                options: [
+                    { text: "「難過是正常的。我接受這次失敗。我會給 HR 發封郵件詢問我的面試回饋，優化我的特工簡歷，下週再投下一家！」", isCorrect: true },
+                    { text: "覺得自己是個沒用的人，把履歷撕個粉碎，決定一輩子賴在家裡做啃老族。", isCorrect: false }
+                ],
+                successTitle: "✅ 極限接納！戰略性撤退成功！",
+                successText: "允許自己傷心，但接受失敗是科學研究的一環。詢問反饋（獲得新配方），調整履歷再出發，這才是變形金剛大腦！",
+                failTitle: "❌ 鉛筆大腦折斷了",
+                failText: "撕碎簡歷和一蹶不振只會耽誤你的大好青春。特工從不害怕失敗，我們在失敗中收集數據，終有一天會獲得夢寐以求的 Offer！"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function initQuiz() {
+            // 本地儲存加載 EXP 邏輯 (與大廳 index.html 統一口徑為 agent_exp，預設 0)
+            const savedExp = localStorage.getItem('agent_exp') || '0';
+            document.getElementById('current-total-exp').innerText = savedExp;
+            
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function loadQuestion(index) {
+            const data = quizData[index];
+            document.getElementById('game-counter').innerText = `第 ${index + 1} / ${quizData.length} 局`;
+            document.getElementById('game-icon').innerText = data.icon;
+            document.getElementById('game-question').innerText = data.question;
+            
+            const progress = (index / quizData.length) * 100;
+            document.getElementById('game-progress').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('game-options');
+            optionsContainer.innerHTML = '';
+            
+            data.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'game-option w-full text-left p-4 rounded-xl border-2 border-slate-100 hover:border-blue-400 hover:bg-blue-50 transition-all font-medium text-slate-700 bg-white text-xs md:text-sm';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkAnswer(opt.isCorrect, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('game-feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(isCorrect, selectedBtn) {
+            const data = quizData[currentQuestionIndex];
+            const feedbackBox = document.getElementById('game-feedback');
+            const title = document.getElementById('feedback-title');
+            const text = document.getElementById('feedback-text');
+            const icon = document.getElementById('feedback-icon');
+            const nextBtn = document.getElementById('next-btn');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+            
+            const allBtns = document.querySelectorAll('.game-option');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                selectedBtn.classList.replace('border-slate-100', 'border-emerald-500');
+                selectedBtn.classList.replace('hover:border-blue-400', 'border-emerald-500');
+                selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'font-bold');
+                
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-200');
+                title.className = "font-bold text-base md:text-lg mb-1 text-emerald-800";
+                icon.innerHTML = '<i class="fa-solid fa-briefcase text-emerald-500"></i>';
+                title.innerText = data.successTitle;
+                text.innerText = data.successText;
+                
+                nextBtn.classList.remove('hidden');
+                if(currentQuestionIndex === quizData.length - 1) {
+                    nextBtn.innerText = "完成特工認證！";
+                } else {
+                    nextBtn.innerHTML = '下一局 <i class="fa-solid fa-arrow-right ml-1"></i>';
+                }
+            } else {
+                selectedBtn.classList.add('animate-shake', 'bg-rose-50', 'border-rose-300', 'text-rose-700');
+                
+                feedbackBox.classList.add('bg-rose-50', 'border-rose-200');
+                title.className = "font-bold text-base md:text-lg mb-1 text-rose-800";
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-500"></i>';
+                title.innerText = data.failTitle;
+                text.innerText = data.failText;
+
+                setTimeout(() => {
+                    selectedBtn.classList.remove('animate-shake');
+                    allBtns.forEach(b => b.disabled = false);
+                }, 500);
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                document.getElementById('game-progress').style.width = `100%`;
+                document.getElementById('game-container').classList.add('hidden');
+                document.getElementById('mission-complete-zone').classList.remove('hidden');
+            }
+        }
+
+        function completeMission() {
+            const btn = document.getElementById('claimBtn');
+            const msg = document.getElementById('successMsg');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在加密職場存檔...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            
+            // 統一讀取 agent_exp 本地儲存累加 400 EXP
+            let currentExp = parseInt(localStorage.getItem('agent_exp') || '0');
+            currentExp += 400;
+            localStorage.setItem('agent_exp', currentExp.toString());
+            localStorage.setItem('mission_interview_completed', 'true');
+            
+            setTimeout(() => {
+                btn.classList.add('hidden');
+                msg.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    // 精準跳轉路徑至 index.html
+                    window.location.href = 'index.html';
+                }, 2000);
+            }, 1000);
+        }
+
+        // 初始化
+        window.onload = () => {
+            loadNoteData();
+            initQuiz();
+        };
+    </script>
+</body>
+</html>
