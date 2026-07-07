@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 大專社交潛規則 | SEN 社交特工訓練營</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background-color: #f6f8fd;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .exp-font {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* 卡片翻轉效果 */
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        /* 遊戲與回饋動畫 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px) rotate(-1deg); }
+            40%, 80% { transform: translateX(5px) rotate(1deg); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+        @keyframes pop-up {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop-up 0.5s ease-out forwards;
+        }
+
+        /* 脈衝發光效果 (Teal theme) */
+        @keyframes shield-pulse {
+            0% { box-shadow: 0 0 10px rgba(13, 148, 136, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(13, 148, 136, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(13, 148, 136, 0.4); }
+        }
+        .shield-pulse {
+            animation: shield-pulse 2s infinite;
+        }
+
+        /* 自定義捲軸 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1); 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5); 
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- 頂部導航 -->
+    <nav class="w-full max-w-5xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
+        <a href="index.html" class="group flex items-center gap-2 bg-white px-4 py-2.5 rounded-full shadow-sm text-slate-600 font-bold hover:text-teal-600 hover:shadow-md transition-all border border-slate-100">
+            <div class="bg-slate-100 group-hover:bg-teal-100 text-slate-500 group-hover:text-teal-600 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            返回大廳
+        </a>
+        <div class="flex items-center gap-3">
+            <div class="bg-amber-100 text-amber-700 px-4 py-2 rounded-full font-bold text-sm shadow-sm flex items-center gap-2 border border-amber-200">
+                <i class="fa-solid fa-star text-amber-500"></i> 我的總 EXP: <span id="current-total-exp" class="exp-font">0</span>
+            </div>
+            <div class="bg-teal-100 text-teal-700 px-4 py-2 rounded-full font-bold text-sm shadow-sm flex items-center gap-2 border border-teal-200">
+                <i class="fa-solid fa-bolt text-teal-500"></i> 任務獎勵: 300 EXP
+            </div>
+        </div>
+    </nav>
+
+    <!-- 任務標題區 -->
+    <header class="w-full max-w-5xl mx-auto px-6 mb-10 relative z-20 text-center">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-500 text-white text-4xl shadow-lg mb-6 shield-pulse">
+            <i class="fa-solid fa-building-columns"></i>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black mb-4 text-slate-800 tracking-tight">
+            🎓 大專社交潛規則
+        </h1>
+        <p class="text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            特工，大專生活沒有班主任在背後幫你，一切都要靠自己！<br>
+            學會應對 Free-rider、Ocamp 破冰、寫 Email 給教授，建立你的大專生存法則！
+        </p>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto px-6 pb-20 flex-grow relative z-10">
+        
+        <!-- 裝置 1：👥 Group Project 危機處理陣 (修正排版與箭頭) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-teal-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-teal-800">
+                <i class="fa-solid fa-users-gear"></i> 裝置 1：Group Project 危機處理陣
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">大專最可怕的不是考試，而是分組報告 (Group Project)！點擊翻開卡片，查看遇到「麻煩組員」時的標準處理程序 (SOP)。</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 卡片 1 -->
+                <div class="flip-card cursor-pointer h-80" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl shadow-sm">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-50 rounded-2xl border-2 border-slate-200 p-5 flex flex-col justify-center items-center text-center hover:border-teal-300">
+                            <div class="text-5xl mb-3">👻</div>
+                            <p class="text-sm font-bold text-rose-600 mb-2">遇到 Free-rider (免費搭車族)</p>
+                            <p class="font-black text-slate-700 text-sm">組員已讀不回，完全唔做嘢，眼看 Deadline 就要到了！</p>
+                            <div class="mt-auto text-teal-500 text-xs font-bold animate-pulse">👆 點擊查看拆解法</div>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-teal-600 rounded-2xl p-5 flex flex-col text-left text-white shadow-lg overflow-y-auto custom-scrollbar">
+                            <h4 class="font-black mb-3 text-[13px] leading-tight text-teal-50"><i class="fa-solid fa-shield-halved text-white"></i> 溫和催促 <i class="fa-solid fa-arrow-right mx-1 text-teal-300"></i> 留底 <i class="fa-solid fa-arrow-right mx-1 text-teal-300"></i> 稟報</h4>
+                            <p class="text-[11px] text-white mb-2 leading-relaxed"><strong>Step 1 (溫和催促)：</strong>「Hi 同學，見你仲未 update 你個 part，因為聽日要交，今晚 10 點前可唔可以放上 Google Drive？有困難記得出聲呀。」</p>
+                            <p class="text-[11px] text-white mb-2 leading-relaxed"><strong>Step 2 (設定界線)：</strong>若不回覆，在群組聲明：「若期限過後仍未交，我們會標明你無參與」，並截圖存證。</p>
+                            <p class="text-[11px] text-white leading-relaxed"><strong>Step 3 (尋求外援)：</strong>直接發 Email 附上截圖給 Tutor。不要自己發脾氣啃下所有工作！</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 卡片 2 -->
+                <div class="flip-card cursor-pointer h-80" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl shadow-sm">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-50 rounded-2xl border-2 border-slate-200 p-5 flex flex-col justify-center items-center text-center hover:border-teal-300">
+                            <div class="text-5xl mb-3">👑</div>
+                            <p class="text-sm font-bold text-rose-600 mb-2">遇到獨裁組長</p>
+                            <p class="font-black text-slate-700 text-sm">組長完全唔聽人意見，分派給你的工作極度不合理或者你完全不擅長。</p>
+                            <div class="mt-auto text-teal-500 text-xs font-bold animate-pulse">👆 點擊查看拆解法</div>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-teal-600 rounded-2xl p-5 flex flex-col text-left text-white shadow-lg overflow-y-auto custom-scrollbar">
+                            <h4 class="font-black mb-3 text-sm text-teal-50"><i class="fa-solid fa-hand text-white"></i> 溫和拒絕並提供 Plan B</h4>
+                            <p class="text-[11px] text-white mb-3 leading-relaxed">不要默默忍受然後搞砸。直接在群組說：「我對呢一 Part 唔係好熟，怕會拖慢大家進度。我擅長做 PPT 排版同資料搜集，不如我負責呢部分？」</p>
+                            <p class="text-[11px] text-white leading-relaxed">明確表達自己的長處，這是負責任的表現。如果組長仍然無理取鬧，可保留對話紀錄向 Tutor 尋求協調。</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 卡片 3 -->
+                <div class="flip-card cursor-pointer h-80" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl shadow-sm">
+                        <div class="flip-card-front absolute w-full h-full bg-slate-50 rounded-2xl border-2 border-slate-200 p-5 flex flex-col justify-center items-center text-center hover:border-teal-300">
+                            <div class="text-5xl mb-3">🫵</div>
+                            <p class="text-sm font-bold text-rose-600 mb-2">遇到意見分歧</p>
+                            <p class="font-black text-slate-700 text-sm">你和另一個組員對報告的主題有完全不同的想法，氣氛開始變僵。</p>
+                            <div class="mt-auto text-teal-500 text-xs font-bold animate-pulse">👆 點擊查看拆解法</div>
+                        </div>
+                        <div class="flip-card-back absolute w-full h-full bg-teal-600 rounded-2xl p-5 flex flex-col text-left text-white shadow-lg overflow-y-auto custom-scrollbar">
+                            <h4 class="font-black mb-3 text-sm text-teal-50"><i class="fa-solid fa-scale-balanced text-white"></i> 數據說話法</h4>
+                            <p class="text-[11px] text-white mb-3 leading-relaxed">不要變成意氣之爭！暫停爭論，建議：「我哋各有各好，不如我哋一齊問下 Tutor 嘅意見，或者睇下邊個題目比較容易搵到文獻資料？」</p>
+                            <p class="text-[11px] text-white leading-relaxed">引入第三方標準（Tutor 的意見、找資料的容易度）來做決定，不傷和氣，且最符合學術要求。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 2：🧊 導修課 (Tutorial) 破冰組隊儀器 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-cyan-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-cyan-800">
+                <i class="fa-solid fa-snowflake"></i> 裝置 2：Tutorial (導修課) 破冰組隊儀器
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">教授突然說：「現在請大家 4 個人一組。」這對不擅長主動交際的學生宛如世界末日。啟動破冰 SOP，無痛潛入小組！</p>
+            
+            <div class="bg-cyan-50/50 p-6 rounded-2xl border-2 border-cyan-200 max-w-2xl mx-auto relative">
+                <div class="absolute top-4 right-4 text-cyan-600 font-bold text-xs" id="group-sop-counter">階段 1 / 3</div>
+                
+                <div class="flex justify-between items-center mb-8 relative px-4">
+                    <div class="absolute left-4 right-4 top-1/2 h-1 bg-cyan-200 -translate-y-1/2 z-0"></div>
+                    <div id="group-step-1" class="z-10 w-10 h-10 rounded-full bg-cyan-600 text-white flex items-center justify-center font-bold shadow-md">1</div>
+                    <div id="group-step-2" class="z-10 w-10 h-10 rounded-full bg-cyan-200 text-cyan-800 flex items-center justify-center font-bold shadow-md">2</div>
+                    <div id="group-step-3" class="z-10 w-10 h-10 rounded-full bg-cyan-200 text-cyan-800 flex items-center justify-center font-bold shadow-md">3</div>
+                </div>
+
+                <div id="group-sop-content" class="text-center mb-6">
+                    <div class="text-4xl mb-2 text-cyan-500"><i class="fa-solid fa-radar"></i></div>
+                    <h3 class="text-lg md:text-xl font-black text-cyan-900 mb-2">步驟 1：啟動雷達掃描 (Scan)</h3>
+                    <p class="text-sm text-slate-600">不要慌張，先環顧四周，尋找那些同樣落單、眼神迷茫，或者人數只有 2-3 人的小組。</p>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button onclick="nextGroupStep()" id="group-sop-btn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-black px-6 py-2 rounded-full text-sm shadow-md transition-all">執行下一個步驟</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 3：📡 Hi-Bye Friend 期望值調節器 (互動測驗升級版) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-indigo-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-indigo-800">
+                <i class="fa-solid fa-sliders"></i> 裝置 3：Hi-Bye Friend 期望值調節器
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">大學同學下課後各自散去，不代表排擠你。大專友誼多數是「散餐制」，請選擇適當的「認知濾鏡」化解失落感！</p>
+            
+            <div class="bg-indigo-50 p-6 rounded-2xl border-2 border-indigo-200 max-w-3xl mx-auto relative">
+                <div class="absolute top-4 right-4 text-indigo-600 font-bold text-xs" id="hibye-counter">情境 1 / 4</div>
+                
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-indigo-100 mb-6 mt-4 flex items-center gap-4">
+                    <div class="text-3xl"><i class="fa-solid fa-person-walking-arrow-right text-indigo-400"></i></div>
+                    <div>
+                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest">大專社交現況</span>
+                        <p id="hibye-scenario" class="font-black text-slate-800 text-base md:text-lg mt-1">落堂之後，同組嘅同學各自急步走晒，無人問你一唔一齊食 Lunch。</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3" id="hibye-options">
+                    <!-- JS 動態注入 -->
+                </div>
+
+                <div id="hibye-feedback" class="hidden mt-6 p-5 rounded-xl border-2 text-center animate-pop bg-white flex flex-col items-center">
+                    <div id="hibye-result"></div>
+                    <button id="hibye-next-btn" onclick="nextHibye()" class="hidden mt-4 bg-indigo-100 text-indigo-800 font-bold px-6 py-2 rounded-full hover:bg-indigo-200 transition-colors">
+                        分析下一個情境 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 4：🏕️ Ocamp 生存背包 -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-emerald-800">
+                <i class="fa-solid fa-campground"></i> 裝置 4：Ocamp / 迎新營生存背包
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">迎新營有很多吵鬧的破冰遊戲。特工要學會如何保護自己免於「感官過載」，同時又不失禮！</p>
+            
+            <div class="bg-emerald-50 p-6 rounded-2xl border-2 border-emerald-200 relative max-w-3xl mx-auto">
+                <div class="absolute top-4 right-4 text-emerald-600 font-bold text-xs" id="ocamp-counter">情境 1 / 3</div>
+                
+                <h3 id="ocamp-scenario" class="text-lg md:text-xl font-black text-emerald-900 mt-4 mb-6">「大家圍圈玩破冰遊戲，需要一直大聲嗌同埋有好多身體接觸，你覺得好抗拒、好唔舒服。」</h3>
+                
+                <div class="flex flex-col gap-3" id="ocamp-options">
+                    <!-- JS 動態注入 -->
+                </div>
+
+                <div id="ocamp-feedback" class="hidden mt-6 p-6 rounded-2xl border-2 text-center animate-pop max-w-3xl mx-auto bg-white flex flex-col items-center">
+                    <div id="ocamp-result"></div>
+                    <button id="ocamp-next-btn" onclick="nextOcamp()" class="hidden mt-4 bg-emerald-100 text-emerald-800 font-bold px-6 py-2 rounded-full hover:bg-emerald-200 transition-colors">
+                        下一個生存情境 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 5：🛡️ 大專人際界線防禦盾 (擴充至 6 題，附 TTS) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-pink-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-pink-800">
+                <i class="fa-solid fa-shield-halved"></i> 裝置 5：大專人際界線防禦盾 (拒絕情緒勒索)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">在大學，學會「莊員」或前輩有時會用「唔夠熱血」來情緒勒索。點擊播放發聲，練習溫和但堅定的防禦話術！</p>
+            
+            <div class="bg-pink-50 p-6 rounded-2xl border-2 border-pink-100 max-w-3xl mx-auto relative">
+                <div class="absolute top-4 right-4 text-pink-600 font-bold text-xs" id="shield-counter">情境 1 / 6</div>
+                
+                <div class="text-center mb-6 mt-2">
+                    <h3 id="shield-scenario" class="text-lg md:text-xl font-black text-pink-900 mt-4 min-h-[48px]">學會前輩 (老鬼) 逼你通宵搞活動：「你咁早走？唔為個莊著想嘅？有冇熱血㗎你！」</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" id="shield-options">
+                    <!-- JS 動態注入 -->
+                </div>
+
+                <div id="shield-display" class="hidden bg-white p-6 rounded-xl border-2 border-pink-200 text-center animate-pop shadow-sm">
+                    <div class="flex flex-col items-center justify-center">
+                        <p id="shield-speech" class="text-base md:text-lg font-black text-pink-700 bg-pink-50 py-3 px-6 rounded-lg mb-4 w-full shadow-inner"></p>
+                        <button onclick="playShieldTTS()" class="bg-pink-500 hover:bg-pink-600 text-white font-black py-2 px-6 rounded-full flex items-center gap-2 text-sm shadow-md active:scale-95 mb-4 transition-all">
+                            <i class="fa-solid fa-volume-high"></i> 練習大聲拒絕
+                        </button>
+                        <p id="shield-result-desc" class="text-xs md:text-sm text-slate-600 font-medium"></p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button id="shield-next-btn" onclick="nextShield()" class="hidden border-2 border-pink-500 text-pink-700 font-bold px-6 py-2 rounded-full hover:bg-pink-100 transition-colors">應對下一種威脅 <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 6：✉️ 教授通訊修復器 (Email 禮儀 重新排版) -->
+        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-purple-100 mb-10 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+            <h2 class="text-2xl font-bold mb-2 flex items-center gap-2 text-purple-800">
+                <i class="fa-solid fa-envelope-open-text"></i> 裝置 6：教授通訊修復器 (Email 禮儀)
+            </h2>
+            <p class="text-slate-600 font-medium mb-6">不禮貌或不清晰的 Email 會被教授無視！請對比並選出最專業的「學術 Email 裝備」。</p>
+            
+            <div class="bg-slate-50 p-6 rounded-2xl border-2 border-slate-200 shadow-sm max-w-4xl mx-auto relative">
+                <div class="absolute top-4 right-4 text-purple-600 font-bold text-xs bg-purple-100 px-2 py-1 rounded" id="email-counter">信件 1 / 3</div>
+                
+                <div class="text-center mb-6 mt-4">
+                    <h3 id="email-scenario" class="text-lg font-black text-purple-900 bg-white inline-block px-4 py-2 rounded-lg border border-purple-200 shadow-sm">
+                        【情境】：你想問教授關於 Assignment 1 的截止日期。
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="email-options">
+                    <!-- JS 動態注入郵件視窗 -->
+                </div>
+
+                <div id="email-feedback" class="hidden mt-6 p-5 rounded-xl border-2 text-center animate-pop flex flex-col items-center">
+                    <div id="email-result"></div>
+                    <button id="email-next-btn" onclick="nextEmail()" class="hidden mt-4 bg-purple-600 text-white font-bold px-6 py-2 rounded-full hover:bg-purple-500 transition-colors text-sm shadow-md">
+                        修復下一封 Email <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 裝置 7：🎮 大專生存終極模擬器 (10題 Boss 戰) -->
+        <h2 class="text-2xl font-bold mb-6 text-slate-800 text-center">
+            🎮 終極大專生存戰 (10題 畢業考核)
+        </h2>
+        
+        <div id="game-container" class="bg-slate-800 rounded-[2rem] p-6 md:p-10 shadow-xl mb-12 relative overflow-hidden border-4 border-slate-700">
+            <div class="w-full bg-slate-700 rounded-full h-2 mb-6">
+                <div id="game-progress" class="bg-gradient-to-r from-teal-400 to-emerald-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <div id="game-screen" class="bg-white rounded-xl p-6 md:p-8 shadow-inner relative">
+                <div class="absolute top-4 right-4 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full" id="game-counter">第 1 / 10 局</div>
+                
+                <div class="text-center mb-8 mt-4">
+                    <div id="game-icon" class="text-5xl mb-4 text-teal-500">🎓</div>
+                    <p id="game-question" class="text-lg md:text-xl font-bold text-slate-700">
+                        載入中...
+                    </p>
+                    <p class="text-teal-600 font-bold mt-3"><i class="fa-solid fa-shield-halved"></i> 身為大專特工，你會點樣選擇？</p>
+                </div>
+
+                <div id="game-options" class="flex flex-col gap-3"></div>
+
+                <div id="game-feedback" class="hidden mt-6 p-4 rounded-xl border">
+                    <div class="flex items-start gap-3">
+                        <div id="feedback-icon" class="text-2xl mt-1"></div>
+                        <div>
+                            <h4 id="feedback-title" class="font-bold text-lg mb-1"></h4>
+                            <p id="feedback-text" class="text-sm text-slate-600 mb-3"></p>
+                            <button id="next-btn" onclick="nextQuestion()" class="hidden bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-700 transition-colors">
+                                下一局 <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 任務完成區塊 -->
+        <div id="mission-complete-zone" class="hidden text-center bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-teal-100 rounded-full mix-blend-multiply filter blur-2xl opacity-60"></div>
+            <div class="text-5xl mb-4 text-teal-500"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h3 class="text-2xl font-black mb-2 text-slate-800">大專生存演練完成！</h3>
+            <p class="text-slate-500 mb-6">太棒了！你已經解開了 Group Project 的詛咒、掌握了 Email 禮儀，成為無懼大專挑戰的高級特工！</p>
+            <button onclick="completeMission()" id="claimBtn" class="bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 mx-auto">
+                <i class="fa-solid fa-check-circle"></i> 領取 300 EXP 並返回大廳
+            </button>
+            <p id="successMsg" class="text-emerald-600 font-bold mt-4 hidden">
+                🎉 恭喜！獲得 300 EXP！即將返回大廳...
+            </p>
+        </div>
+
+    </main>
+
+    <script>
+        // ----------------------------------------------------
+        // 2. 導修課 (Tutorial) 破冰組隊儀器 SOP
+        // ----------------------------------------------------
+        let currentGroupStep = 1;
+        const groupSops = {
+            1: {
+                icon: "fa-radar",
+                title: "步驟 1：啟動雷達掃描 (Scan)",
+                desc: "不要慌張，先環顧四周，尋找那些同樣落單、眼神迷茫，或者人數只有 2-3 人的小組。"
+            },
+            2: {
+                icon: "fa-person-walking",
+                title: "步驟 2：深呼吸靠近 (Approach)",
+                desc: "確定目標後，深呼吸，帶住友善的微笑走近他們。記住，他們可能比你更想有人加入！"
+            },
+            3: {
+                icon: "fa-hand-sparkles",
+                title: "步驟 3：開口起手式 (Ask)",
+                desc: "禮貌詢問：「Hello，請問你哋這組齊人未？我可唔可以加埋入去一齊做？」簡單直接，多數人都不會拒絕。"
+            }
+        };
+
+        function nextGroupStep() {
+            currentGroupStep++;
+            if (currentGroupStep > 3) {
+                currentGroupStep = 1;
+            }
+
+            for (let i = 1; i <= 3; i++) {
+                const indicator = document.getElementById(`group-step-${i}`);
+                if (i <= currentGroupStep) {
+                    indicator.className = "z-10 w-10 h-10 rounded-full bg-cyan-600 text-white flex items-center justify-center font-bold shadow-md";
+                } else {
+                    indicator.className = "z-10 w-10 h-10 rounded-full bg-cyan-200 text-cyan-800 flex items-center justify-center font-bold shadow-md";
+                }
+            }
+
+            const content = document.getElementById('group-sop-content');
+            const stepData = groupSops[currentGroupStep];
+            content.innerHTML = `
+                <div class="text-4xl mb-2 text-cyan-500 animate-pop"><i class="fa-solid ${stepData.icon}"></i></div>
+                <h3 class="text-lg md:text-xl font-black text-cyan-900 mb-2 animate-pop">${stepData.title}</h3>
+                <p class="text-sm text-slate-600 animate-pop">${stepData.desc}</p>
+            `;
+
+            const btn = document.getElementById('group-sop-btn');
+            if (currentGroupStep === 3) {
+                btn.innerText = "重新溫習組隊 SOP";
+            } else {
+                btn.innerText = "執行下一個步驟";
+            }
+        }
+
+        // ----------------------------------------------------
+        // 3. Hi-Bye Friend 期望值調節器 (互動測驗升級版)
+        // ----------------------------------------------------
+        const hibyeData = [
+            {
+                scenario: "落堂之後，同組嘅同學各自急步走晒，無人問你一唔一齊食 Lunch。",
+                optA: "「佢哋一定係唔鐘意我，覺得我好悶，所以我俾人杯葛咗。」",
+                optB: "「大專大家都有自己嘅 Time-table，可能趕住返 Part-time 或者轉堂，我自己食都得。」",
+                isCorrectB: true,
+                successTitle: "✅ 理智濾鏡啟動！",
+                successText: "無錯！大專係「散餐制」，同一個科目的同學可能只會一星期見一次，下課各自忙碌是正常的，絕對不是排擠你！",
+                failTitle: "❌ 陷入中學固定思維",
+                failText: "中學時大家作息一致，但大專每個人都很忙。不要急著把別人的離開「個人化」來打擊自己喔。"
+            },
+            {
+                scenario: "你喺 IG 見到同科嘅幾個同學尋日去咗唱 K，但無叫你一齊。",
+                optA: "「原來佢地私下有小圈子，我俾人排斥咗，聽日返學我唔會理佢地。」",
+                optB: "「佢哋可能本身中學就識，或者住同一個 Hall。如果我想融入，下次可以主動約佢哋。」",
+                isCorrectB: true,
+                successTitle: "✅ 社交期望調節成功！",
+                successText: "大專裡有很多不同的交友圈（Hall友、莊員、中學同學）。沒有被邀請不代表被討厭，大方一點，下次你也可以做主動發起人！",
+                failTitle: "❌ 陷入受害者視角",
+                failText: "如果因此黑口黑面，反而會真的破壞你們之間的關係。平常心對待別人的私人聚會才是特工思維！"
+            },
+            {
+                scenario: "Ocamp (迎新營) 時一齊玩得好癲嘅「好兄弟」，開學後喺走廊撞到只係點點頭就走咗。",
+                optA: "「果然 Ocamp 啲友誼都係假嘅，佢根本無當過我係朋友，好hurt。」",
+                optB: "「Ocamp 係用黎破冰，開學後變返 Hi-bye friend (點頭之交) 好正常。起碼大家見面會打招呼。」",
+                isCorrectB: true,
+                successTitle: "✅ 完美拆解 Ocamp 迷思！",
+                successText: "Ocamp 的高熱情狀態很難在日常維持。接受「點頭之交」是成熟大人的必修課，維持友善的距離感就足夠了！",
+                failTitle: "❌ 期望值過高警報",
+                failText: "如果對每一段 Ocamp 關係都抱有「生死之交」的期待，你會非常痛苦。接受平淡才是大專的真理。"
+            },
+            {
+                scenario: "你只會喺某一科 (Tutorial) 同某個同學坐埋一齊傾計，離開課室後就完全無 WhatsApp 聯絡。",
+                optA: "「呢啲叫做『上堂限定朋友』，大家互相關照學業，舒服無負擔！」",
+                optB: "「咁樣好虛偽，如果唔係真正交心嘅朋友，不如上堂都係唔好傾計啦。」",
+                isCorrectB: false, // 這裡正確的是 A (optA)
+                successTitle: "✅ 接納多元友誼模式！",
+                successText: "「上堂限定朋友」、「食飯限定朋友」在大專非常普遍！這種功能性友誼不但不虛偽，反而能減輕社交壓力，非常健康！",
+                failTitle: "❌ 黑白分明濾鏡",
+                failText: "朋友不是只有「生死之交」和「陌生人」兩種。學習享受這種沒有包袱的輕度社交吧！"
+            }
+        ];
+
+        let hibyeIndex = 0;
+
+        function loadHibyeData() {
+            const data = hibyeData[hibyeIndex];
+            document.getElementById('hibye-counter').innerText = `情境 ${hibyeIndex + 1} / ${hibyeData.length}`;
+            document.getElementById('hibye-scenario').innerText = data.scenario;
+            
+            const container = document.getElementById('hibye-options');
+            container.innerHTML = `
+                <button onclick="checkHibye(false, this)" class="hibye-btn bg-white border-2 border-indigo-100 hover:border-indigo-400 p-4 rounded-xl text-left font-bold text-slate-700 transition-all text-sm shadow-sm">${data.optA}</button>
+                <button onclick="checkHibye(true, this)" class="hibye-btn bg-white border-2 border-indigo-100 hover:border-indigo-400 p-4 rounded-xl text-left font-bold text-slate-700 transition-all text-sm shadow-sm">${data.optB}</button>
+            `;
+            
+            // For the last question, optA is correct, optB is false
+            if (hibyeIndex === 3) {
+                container.innerHTML = `
+                    <button onclick="checkHibye(true, this)" class="hibye-btn bg-white border-2 border-indigo-100 hover:border-indigo-400 p-4 rounded-xl text-left font-bold text-slate-700 transition-all text-sm shadow-sm">${data.optA}</button>
+                    <button onclick="checkHibye(false, this)" class="hibye-btn bg-white border-2 border-indigo-100 hover:border-indigo-400 p-4 rounded-xl text-left font-bold text-slate-700 transition-all text-sm shadow-sm">${data.optB}</button>
+                `;
+            }
+
+            document.getElementById('hibye-feedback').classList.add('hidden');
+            document.getElementById('hibye-next-btn').classList.add('hidden');
+        }
+
+        function checkHibye(isCorrect, btn) {
+            const data = hibyeData[hibyeIndex];
+            const btns = document.querySelectorAll('.hibye-btn');
+            const fb = document.getElementById('hibye-feedback');
+            const fbResult = document.getElementById('hibye-result');
+            const nextBtn = document.getElementById('hibye-next-btn');
+
+            btns.forEach(b => b.classList.add('opacity-50', 'pointer-events-none'));
+            fb.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'text-emerald-800', 'bg-rose-50', 'border-rose-300', 'text-rose-800');
+
+            if (isCorrect) {
+                btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800');
+                btn.classList.remove('opacity-50');
+                
+                fb.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-800');
+                fbResult.innerHTML = `<h4 class="font-black text-lg mb-2">${data.successTitle}</h4><p class="text-sm font-medium">${data.successText}</p>`;
+                
+                nextBtn.classList.remove('hidden');
+                if (hibyeIndex === hibyeData.length - 1) {
+                    nextBtn.innerText = "完成期望值調節！";
+                }
+            } else {
+                btn.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-800', 'animate-shake');
+                btn.classList.remove('opacity-50');
+                
+                fb.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-800');
+                fbResult.innerHTML = `<h4 class="font-black text-lg mb-2">${data.failTitle}</h4><p class="text-sm font-medium">${data.failText}</p>`;
+                
+                setTimeout(() => {
+                    btn.classList.remove('animate-shake', 'bg-rose-50', 'border-rose-400', 'text-rose-800');
+                    btns.forEach(b => b.classList.remove('opacity-50', 'pointer-events-none'));
+                    fb.classList.add('hidden');
+                }, 2500);
+            }
+        }
+
+        function nextHibye() {
+            hibyeIndex++;
+            if (hibyeIndex < hibyeData.length) {
+                loadHibyeData();
+            } else {
+                document.getElementById('hibye-scenario').innerText = "🎉 恭喜！你已經成功接納大專的「散餐制」社交模式！";
+                document.getElementById('hibye-options').innerHTML = "";
+                document.getElementById('hibye-feedback').classList.add('hidden');
+            }
+        }
+
+        // ----------------------------------------------------
+        // 4. Ocamp 生存背包邏輯
+        // ----------------------------------------------------
+        const ocampData = [
+            {
+                scenario: "大家圍圈玩破冰遊戲，需要一直大聲嗌同埋有好多身體接觸，你覺得感官過載（好嘈）、好抗拒。",
+                optA: "硬生生忍受，然後因為太辛苦而在現場崩潰發脾氣大叫。",
+                optB: "跟負責人（組爸媽）講：「唔好意思，我喉嚨痛/唔太舒服，我可唔可以喺側邊幫你地做計分員/幫手影相呀？」",
+                isCorrectB: true,
+                success: "完美的特工偽裝術！主動提出做「計分員」或「攝影師」，既參與了活動不顯得孤僻，又完美避開了不舒服的身體接觸！",
+                fail: "硬撐只會導致情緒崩潰，反而會嚇親新同學。學會合理撤退並轉換角色才是上策。"
+            },
+            {
+                scenario: "組爸媽提議完咗 Ocamp 之後，成班人一齊去食宵夜直落到凌晨 3 點。你覺得好攰，想返屋企瞓覺。",
+                optA: "「唔好意思，我聽日屋企有事/要返工，我今晚要早啲走先。你地玩得開心啲！」然後果斷離開。",
+                optB: "因為驚俾人話唔合群，夾硬跟住去，結果成程黑口黑面，完全無精神講嘢。",
+                isCorrectB: false,
+                success: "大專是一個自由的社會，不會勉強。有禮貌地說明理由並祝大家玩得開心，沒有人會怪責你！",
+                fail: "夾硬去但表現得不開心，反而會破壞氣氛。特工要學會管理自己的能量值 (Energy Level)，該休息就休息！"
+            },
+            {
+                scenario: "玩分房遊戲時，有同學問起一些非常私人的問題（例如中學成績、家庭背景），你不想回答。",
+                optA: "立刻發脾氣說：「關你咩事呀？你問黎做咩！」",
+                optB: "微笑帶過：「哈哈，呢啲秘密我遲啲先講。不如你講下你最鐘意打咩機先？」",
+                isCorrectB: true,
+                success: "使用「幽默轉移法」！不用正面回答不想答的問題，把話題的主導權（球）打回給對方！",
+                fail: "直接起衝突會讓氣氛變得很尷尬。學會用「太極推手」把問題輕輕推走。"
+            }
+        ];
+
+        let ocampIndex = 0;
+
+        function loadOcampData() {
+            const data = ocampData[ocampIndex];
+            document.getElementById('ocamp-counter').innerText = `情境 ${ocampIndex + 1} / ${ocampData.length}`;
+            document.getElementById('ocamp-scenario').innerText = data.scenario;
+            
+            const container = document.getElementById('ocamp-options');
+            container.innerHTML = `
+                <button onclick="checkOcamp(false, this)" class="ocamp-btn bg-white border-2 border-emerald-200 hover:border-emerald-400 p-4 rounded-xl text-left font-bold text-slate-700 transition-all shadow-sm">${data.optA}</button>
+                <button onclick="checkOcamp(true, this)" class="ocamp-btn bg-white border-2 border-emerald-200 hover:border-emerald-400 p-4 rounded-xl text-left font-bold text-slate-700 transition-all shadow-sm">${data.optB}</button>
+            `;
+            
+            if(Math.random() > 0.5) {
+                container.appendChild(container.firstElementChild);
+            }
+
+            document.getElementById('ocamp-feedback').classList.add('hidden');
+            document.getElementById('ocamp-next-btn').classList.add('hidden');
+        }
+
+        function checkOcamp(isOptB, btn) {
+            const data = ocampData[ocampIndex];
+            const isCorrect = (isOptB && data.isCorrectB) || (!isOptB && !data.isCorrectB);
+            const fb = document.getElementById('ocamp-feedback');
+            const btns = document.querySelectorAll('.ocamp-btn');
+            const nextBtn = document.getElementById('ocamp-next-btn');
+
+            btns.forEach(b => b.classList.add('opacity-50', 'pointer-events-none'));
+            fb.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-300', 'text-emerald-800', 'bg-rose-50', 'border-rose-300', 'text-rose-800');
+
+            if (isCorrect) {
+                btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800');
+                btn.classList.remove('opacity-50');
+                
+                fb.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-800');
+                fb.querySelector('#ocamp-result').innerHTML = `<h4 class="font-black text-lg mb-2"><i class="fa-solid fa-check-circle"></i> 生存策略正確！</h4><p class="text-sm">${data.success}</p>`;
+                
+                nextBtn.classList.remove('hidden');
+                if (ocampIndex === ocampData.length - 1) {
+                    nextBtn.innerText = "完成背包整理！";
+                }
+            } else {
+                btn.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-800', 'animate-shake');
+                btn.classList.remove('opacity-50');
+                
+                fb.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-800');
+                fb.querySelector('#ocamp-result').innerHTML = `<h4 class="font-black text-lg mb-2"><i class="fa-solid fa-triangle-exclamation"></i> 社交危機！</h4><p class="text-sm">${data.fail}</p>`;
+                
+                setTimeout(() => {
+                    btn.classList.remove('animate-shake', 'bg-rose-50', 'border-rose-400', 'text-rose-800');
+                    btns.forEach(b => b.classList.remove('opacity-50', 'pointer-events-none'));
+                    fb.classList.add('hidden');
+                }, 4000);
+            }
+        }
+
+        function nextOcamp() {
+            ocampIndex++;
+            if (ocampIndex < ocampData.length) {
+                loadOcampData();
+            } else {
+                document.getElementById('ocamp-scenario').innerText = "🎉 恭喜你掌握了保護自己又不失禮的大專生存法！";
+                document.getElementById('ocamp-options').innerHTML = "";
+                document.getElementById('ocamp-feedback').classList.add('hidden');
+            }
+        }
+
+        // ----------------------------------------------------
+        // 5. 大專人際界線防禦盾 (擴充至 6 題)
+        // ----------------------------------------------------
+        const shieldData = [
+            {
+                scenario: "行過校園，有學會 (Society) 嘅人捉住你狂 Sell，要你俾錢入會，仲話唔入會就識唔到朋友。",
+                speech: "「多謝你嘅介紹，不過我暫時無打算入會。唔阻你搵其他同學啦，拜拜。」",
+                desc: "「溫和堅定盾」：大專裡拒絕推銷是常有的事。禮貌地拒絕並果斷轉身離開，對方不會糾纏。"
+            },
+            {
+                scenario: "你住 Hall (宿舍)，同房 (Roommate) 凌晨 3 點帶咗班朋友返黎開 Party，你聽朝 8 點有早堂要上。",
+                speech: "「唔好意思大家，我聽朝 8 點有考試/早堂，依家要訓啦。可唔可以麻煩你哋移步去 Common Room 玩？唔該晒。」",
+                desc: "「清晰指令盾」：不要啞忍到天亮！直接、具體地說出你的需求（去Common Room玩）和不可抗力的原因（明早考試/早堂）。"
+            },
+            {
+                scenario: "同組做 Project，有組員話自己要返 Part-time 好忙，叫你幫佢做埋佢嗰份，話你「反正都咁叻」。",
+                speech: "「我都好想幫你，但我自己都有其他 Assignment 要趕，真係做唔切。如果你有困難，我哋可以一齊同 Tutor 申請延期。」",
+                desc: "「底線防禦盾」：拒絕道德綁架！用「自己的學業」作為防護罩，絕不承擔別人應負的責任。"
+            },
+            {
+                scenario: "學會前輩 (老鬼) 逼你通宵搞活動：「你咁早走？唔為個莊著想嘅？有冇熱血㗎你！」",
+                speech: "「我都好想幫手搞呢個活動，但我今個星期有兩份 Mid-term，真係抽唔到時間，下次再預埋我啦。」",
+                desc: "「拒絕情緒勒索盾」：肯定對方的活動（好想幫手），但搬出客觀因素（考試/讀書），守護自己的休息時間。"
+            },
+            {
+                scenario: "Ocamp 玩遊戲時，負責人強迫大家玩一些會引起尷尬身體接觸的遊戲，聲稱「玩唔起就係唔合群」。",
+                speech: "「我對呢個遊戲有啲抗拒，我留喺度幫你地做評判/計分員啦，你地繼續玩！」",
+                desc: "「角色轉換盾」：不直接批評遊戲，而是主動申請轉換為「邊緣安全角色（如計分員、攝影師）」，合法抽身！"
+            },
+            {
+                scenario: "有同學知道你寫 Essay 好高分，要求你將成份功課 Send 俾佢「參考下」。",
+                speech: "「唔好意思呀，學校對抄襲 (Plagiarism) 捉得好嚴，為保障大家都係唔 Send 啦。但我可以同你分享下我用咗咩 Reference 網站。」",
+                desc: "「法規防禦盾」：大專對抄襲處罰極嚴。直接搬出學校規矩做擋箭牌，並提供有限度的幫助（分享網站），既安全又不傷和氣。"
+            }
+        ];
+
+        let currentShieldIndex = 0;
+        let shieldSpeechText = "";
+
+        function loadShieldData() {
+            const data = shieldData[currentShieldIndex];
+            document.getElementById('shield-counter').innerText = `情境 ${currentShieldIndex + 1} / ${shieldData.length}`;
+            document.getElementById('shield-scenario').innerText = data.scenario;
+            
+            const container = document.getElementById('shield-options');
+            container.innerHTML = `
+                <button onclick="activateShield('${data.speech}', '${data.desc}')" class="bg-white hover:bg-pink-100 border-2 border-pink-200 p-4 rounded-xl text-left transition-all shadow-sm">
+                    <div class="text-2xl mb-1 text-emerald-500"><i class="fa-solid fa-shield-halved"></i> 啟動正確防禦盾</div>
+                    <p class="text-xs text-slate-500">點擊查看標準應對話術</p>
+                </button>
+                <button onclick="activateShield('...', '❌ 錯誤防禦！大發脾氣或默默忍受都不能解決問題。在大學裡，你需要學會理性溝通！')" class="bg-white hover:bg-rose-50 border-2 border-pink-200 p-4 rounded-xl text-left transition-all shadow-sm">
+                    <div class="text-2xl mb-1 text-rose-500"><i class="fa-solid fa-burst"></i> 錯誤應對 (發脾氣/啞忍)</div>
+                    <p class="text-xs text-slate-500">這會破壞關係或讓自己受傷</p>
+                </button>
+            `;
+            
+            if(Math.random() > 0.5) {
+                container.appendChild(container.firstElementChild);
+            }
+
+            document.getElementById('shield-display').classList.add('hidden');
+            document.getElementById('shield-next-btn').classList.add('hidden');
+        }
+
+        function activateShield(customSpeech, descText) {
+            const display = document.getElementById('shield-display');
+            const speechEl = document.getElementById('shield-speech');
+            const descEl = document.getElementById('shield-result-desc');
+            const nextBtn = document.getElementById('shield-next-btn');
+            const btns = document.querySelectorAll('#shield-options button');
+
+            btns.forEach(b => b.classList.add('opacity-50', 'pointer-events-none'));
+            display.classList.remove('hidden');
+            display.classList.add('animate-pop');
+
+            if (customSpeech === "...") {
+                speechEl.innerText = "【 錯誤示範，沒有啟動保護 】";
+                speechEl.className = "text-base md:text-lg font-black text-rose-700 bg-rose-50 py-3 px-6 rounded-lg mb-4 w-full shadow-inner animate-shake";
+                shieldSpeechText = "";
+                
+                setTimeout(() => {
+                    display.classList.add('hidden');
+                    btns.forEach(b => b.classList.remove('opacity-50', 'pointer-events-none'));
+                }, 2500);
+            } else {
+                speechEl.className = "text-base md:text-lg font-black text-pink-700 bg-pink-50 py-3 px-6 rounded-lg mb-4 w-full shadow-inner";
+                speechEl.innerText = `💬 練習說：「${customSpeech}」`;
+                shieldSpeechText = customSpeech;
+                playShieldTTS();
+                
+                descEl.innerText = descText;
+                nextBtn.classList.remove('hidden');
+                if (currentShieldIndex === shieldData.length - 1) {
+                    nextBtn.innerText = "完成防禦盾訓練";
+                }
+            }
+        }
+
+        function playShieldTTS() {
+            if (shieldSpeechText === "") return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(shieldSpeechText);
+                utterance.lang = 'zh-HK'; 
+                utterance.pitch = 1.0;
+                utterance.rate = 0.9; 
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function nextShield() {
+            currentShieldIndex++;
+            if (currentShieldIndex < shieldData.length) {
+                loadShieldData();
+            } else {
+                document.getElementById('shield-scenario').innerText = "🎉 恭喜！你已經掌握了大專人際邊界的守護技巧！";
+                document.getElementById('shield-options').innerHTML = "";
+                document.getElementById('shield-display').classList.add('hidden');
+                document.getElementById('shield-next-btn').classList.add('hidden');
+            }
+        }
+
+        // ----------------------------------------------------
+        // 6. 教授通訊修復器 (Email 禮儀)
+        // ----------------------------------------------------
+        const emailData = [
+            {
+                scenario: "【情境】：你想問教授關於 Assignment 1 的截止日期。",
+                badHTML: `<div class="mb-2"><span class="text-xs text-rose-300 font-bold">To: Prof. Lee</span></div><div class="mb-3 pb-2 border-b border-slate-600"><span class="text-xs text-slate-400 mr-2">Subject:</span> (無主旨)</div><div class="text-slate-200">喂，份 assignment 係咪聽日交？快啲覆我。</div>`,
+                goodHTML: `<div class="mb-2"><span class="text-xs text-emerald-300 font-bold">To: Prof. Lee</span></div><div class="mb-3 pb-2 border-b border-slate-600"><span class="text-xs text-slate-400 mr-2">Subject:</span> Enquiry about Assignment 1 Deadline (Chan Siu Ming, Class 1A)</div><div class="text-slate-200">Dear Prof. Lee,<br><br>Good morning. I am Chan Siu Ming from Class 1A. Could you please clarify the deadline for Assignment 1?<br><br>Best regards,<br>Chan Siu Ming</div>`,
+                success: "主旨必須寫明「目的」與「你的身分」。內文必須有尊稱 (Dear Prof.) 及署名。教授每天收幾百封信，清楚有禮貌的 Email 才會得到快速回覆！"
+            },
+            {
+                scenario: "【情境】：你生病了，想向 Tutor 申請請假。",
+                badHTML: `<div class="mb-2"><span class="text-xs text-rose-300 font-bold">To: Tutor Wong</span></div><div class="mb-3 pb-2 border-b border-slate-600"><span class="text-xs text-slate-400 mr-2">Subject:</span> 請假</div><div class="text-slate-200">我病咗，今日唔返學啦。</div>`,
+                goodHTML: `<div class="mb-2"><span class="text-xs text-emerald-300 font-bold">To: Tutor Wong</span></div><div class="mb-3 pb-2 border-b border-slate-600"><span class="text-xs text-slate-400 mr-2">Subject:</span> Sick Leave Application for Tutorial (Nov 12) - Chan Siu Ming (ID: 123456)</div><div class="text-slate-200">Dear Tutor Wong,<br><br>I am writing to inform you that I am sick today and cannot attend the tutorial. I will provide the medical certificate in the next class.<br><br>Thank you.</div>`,
+                success: "請假 Email 必須在主旨寫明日程與學號，內文要交代後續安排（如補交醫生紙）。這展現了你的責任心！"
+            },
+            {
+                scenario: "【情境】：你想問教授關於 Mid-term 成績的問題。",
+                badHTML: `<div class="mb-2"><span class="text-xs text-rose-300 font-bold">To: Prof. Lee</span></div><div class="mb-3 pb-2 border-b border-slate-600"><span class="text-xs text-slate-400 mr-2">Subject:</span> WHY MY GRADE SO LOW???</div><div class="text-slate-200">Professor, you gave me a C. I think my answer is correct. Change it.</div>`,
+                goodHTML: `<div class="mb-2"><span class="text-xs text-emerald-300 font-bold">To: Prof. Lee</span></div><div class="mb-3 pb-2 border-b border-slate-600"><span class="text-xs text-slate-400 mr-2">Subject:</span> Request for Mid-term Feedback - Chan Siu Ming (ID: 123456)</div><div class="text-slate-200">Dear Prof. Lee,<br><br>I received my mid-term grade. Could I schedule a brief meeting during your office hours to review my mistakes? I would like to improve for the final exam.<br><br>Best regards.</div>`,
+                success: "絕對不要用質問或命令的語氣（Change it/WHY）。將「質疑成績」轉化為「尋求反饋以求進步 (Request for Feedback)」，教授會非常樂意指導你！"
+            }
+        ];
+
+        let currentEmailIndex = 0;
+
+        function loadEmailData() {
+            const data = emailData[currentEmailIndex];
+            document.getElementById('email-counter').innerText = `信件 ${currentEmailIndex + 1} / ${emailData.length}`;
+            document.getElementById('email-scenario').innerText = data.scenario;
+            
+            const container = document.getElementById('email-options');
+            
+            const btnBad = `<button onclick="checkEmail(false, this)" class="email-btn flex flex-col h-full bg-slate-800 border-2 border-slate-600 hover:border-purple-400 p-0 rounded-xl overflow-hidden transition-all text-left shadow-lg">
+                <div class="bg-slate-700 w-full p-3 border-b border-slate-600 font-bold text-rose-400 flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i> 選擇 A
+                </div>
+                <div class="p-5 font-mono text-sm leading-relaxed flex-grow w-full">
+                    ${data.badHTML}
+                </div>
+            </button>`;
+            
+            const btnGood = `<button onclick="checkEmail(true, this)" class="email-btn flex flex-col h-full bg-slate-800 border-2 border-slate-600 hover:border-purple-400 p-0 rounded-xl overflow-hidden transition-all text-left shadow-lg">
+                <div class="bg-slate-700 w-full p-3 border-b border-slate-600 font-bold text-emerald-400 flex items-center gap-2">
+                    <i class="fa-solid fa-check"></i> 選擇 B
+                </div>
+                <div class="p-5 font-mono text-sm leading-relaxed flex-grow w-full">
+                    ${data.goodHTML}
+                </div>
+            </button>`;
+
+            if(Math.random() > 0.5) {
+                container.innerHTML = btnGood + btnBad;
+            } else {
+                container.innerHTML = btnBad + btnGood;
+            }
+
+            document.getElementById('email-feedback').classList.add('hidden');
+            document.getElementById('email-next-btn').classList.add('hidden');
+        }
+
+        function checkEmail(isCorrect, btn) {
+            const data = emailData[currentEmailIndex];
+            const btns = document.querySelectorAll('.email-btn');
+            const fb = document.getElementById('email-feedback');
+            const fbResult = document.getElementById('email-result');
+            const nextBtn = document.getElementById('email-next-btn');
+            
+            btns.forEach(b => b.classList.add('opacity-50', 'pointer-events-none'));
+            fb.classList.remove('hidden', 'bg-purple-900', 'border-purple-400', 'text-purple-100', 'bg-rose-900', 'border-rose-400', 'text-rose-100');
+
+            if (isCorrect) {
+                btn.classList.replace('border-slate-600', 'border-purple-400');
+                btn.classList.remove('opacity-50');
+
+                fb.classList.add('bg-purple-900', 'border-purple-400', 'text-purple-100');
+                fbResult.innerHTML = `
+                    <h4 class="font-black text-lg mb-2 text-purple-300"><i class="fa-solid fa-check-circle"></i> 專業 Email 裝備成功！</h4>
+                    <p class="text-sm font-medium leading-relaxed">${data.success}</p>
+                `;
+                
+                nextBtn.classList.remove('hidden');
+                if (currentEmailIndex === emailData.length - 1) {
+                    nextBtn.innerText = "完成 Email 修復訓練！";
+                }
+            } else {
+                btn.classList.replace('border-slate-600', 'border-rose-400');
+                btn.classList.add('animate-shake');
+                btn.classList.remove('opacity-50');
+
+                fb.classList.add('bg-rose-900', 'border-rose-400', 'text-rose-100');
+                fbResult.innerHTML = `
+                    <h4 class="font-black text-lg mb-2 text-rose-300"><i class="fa-solid fa-skull-crossbones"></i> 死亡 Email 警告！</h4>
+                    <p class="text-sm font-medium leading-relaxed">沒有主旨、沒有稱呼、語氣無禮，這會讓你被教授列入黑名單！請選擇專業的學術格式！</p>
+                `;
+
+                setTimeout(() => {
+                    btn.classList.remove('animate-shake');
+                    btn.classList.replace('border-rose-400', 'border-slate-600');
+                    btns.forEach(b => b.classList.remove('opacity-50', 'pointer-events-none'));
+                    fb.classList.add('hidden');
+                }, 3000);
+            }
+        }
+
+        function nextEmail() {
+            currentEmailIndex++;
+            if (currentEmailIndex < emailData.length) {
+                loadEmailData();
+            } else {
+                document.getElementById('email-scenario').innerText = "🎉 恭喜！你已經掌握了與教授溝通的專業 Email 禮儀！";
+                document.getElementById('email-options').innerHTML = "";
+                document.getElementById('email-feedback').classList.add('hidden');
+            }
+        }
+
+        // ----------------------------------------------------
+        // 7. 大專生存終極模擬器 (10 題)
+        // ----------------------------------------------------
+        const quizData = [
+            {
+                icon: "📧",
+                question: "你發了一封 Email 給教授問關於測驗的問題，但等了兩天都沒回覆。你應該：",
+                options: [
+                    { text: "覺得教授討厭自己，在同學群組裡大罵教授不負責任。", isCorrect: false },
+                    { text: "檢查 Email 是否寫明了自己的姓名、學號和課堂編號，然後禮貌地發一封 Follow-up (跟進) 郵件再問一次。", isCorrect: true }
+                ],
+                successTitle: "✅ 理性處理問題！",
+                successText: "大專教授通常很忙，漏看 Email 是常有的事。不需要將這件事「個人化」。有禮貌地再發一次是正確的做法！"
+            },
+            {
+                icon: "👥",
+                question: "做 Group Project 時，有組員提出了一個你覺得完全行不通的方案。",
+                options: [
+                    { text: "立刻拍枱說：「你個 Idea 好蠢，根本做唔到！」", isCorrect: false },
+                    { text: "說：「呢個諗法幾特別，不過如果我地要喺一星期內完成，可能會唔夠時間，不如我地試下另一個方向？」", isCorrect: true }
+                ],
+                successTitle: "✅ 高情商溝通！",
+                successText: "在大學裡，直接批評別人是扣分的。用「客觀條件（時間不夠）」來婉拒，既給了對方面子，又解決了問題。"
+            },
+            {
+                icon: "👻",
+                question: "群組裡的 Free-rider (搭便車組員) 一直不交他負責的 PPT，明晚就要報告了！",
+                options: [
+                    { text: "首先在 WhatsApp 給予溫和提醒：「Hi 同學，見你仲未 update 你個 part，你今晚 10 點前可唔可以放上 Google Drive？有困難記得出聲。」", isCorrect: true },
+                    { text: "覺得很生氣，什麼都不說，自己一個人默默哭著幫他做完，讓他白白拿高分。", isCorrect: false }
+                ],
+                successTitle: "✅ 守護全組利益與界線！",
+                successText: "大學需要學會保障自己的權益。先給予溫和催促 (Gentle Reminder)，若不回覆再保留證據向 Tutor 報告，這是非常專業的處理方式！"
+            },
+            {
+                icon: "🧊",
+                question: "導修課 (Tutorial) 教授要求 4 人一組，你沒有認識的人，感到非常害怕。",
+                options: [
+                    { text: "躲在角落滑手機，心想「一定冇人想同我一組」，直到教授強行把你塞進一組。", isCorrect: false },
+                    { text: "啟動破冰 SOP：掃描落單的同學，深呼吸走過去問：「Hello，請問你哋這組齊人未？介唔介意加埋我？」", isCorrect: true }
+                ],
+                successTitle: "✅ 完美潛入小組！",
+                successText: "其實很多新生跟你一樣緊張！一個簡單的「請問齊人未」就能成功破冰，化解危機！"
+            },
+            {
+                icon: "📡",
+                question: "同科目的同學下課後各自走散了，沒有人叫你一起吃午餐，你覺得：",
+                options: [
+                    { text: "啟動認知濾鏡：「大學係散餐制，佢哋可能趕住返 Part-time 或上另一堂，呢個係正常文化，唔關我事。」", isCorrect: true },
+                    { text: "覺得自己一定是個討厭鬼，所以大家都排擠我、孤立我。", isCorrect: false }
+                ],
+                successTitle: "✅ 期望值調節成功！",
+                successText: "Hi-Bye Friend 是大學的常態。接受每個人都有自己的時間表，不把別人的離開「個人化」來打擊自己！"
+            },
+            {
+                icon: "🛡️",
+                question: "學會前輩 (老鬼) 用情緒勒索逼你通宵搞活動：「你咁早走？唔為個莊著想嘅？」",
+                options: [
+                    { text: "覺得很有罪惡感，只好放棄明天的測驗溫習，留下來通宵幫忙。", isCorrect: false },
+                    { text: "啟動防禦盾：「我都好想幫手搞呢個活動，但我今個星期有兩份 Mid-term，真係抽唔到時間，下次再預埋我啦。」", isCorrect: true }
+                ],
+                successTitle: "✅ 邊界防衛成功！",
+                successText: "學業永遠是大專的第一優先。學會溫和、大方地表明底線並拒絕情緒勒索，才能在大學長久生存。"
+            },
+            {
+                icon: "🏕️",
+                question: "在 Ocamp 玩遊戲時，大家一直大聲喊叫和推撞，你覺得感官過載（好嘈）極度不舒服。",
+                options: [
+                    { text: "主動和負責人說：「我今日唔太舒服，我可唔可以負責喺側邊幫大家做計分員/幫手影相呀？」", isCorrect: true },
+                    { text: "硬生生忍受，然後因為太辛苦而在現場崩潰發脾氣大叫。", isCorrect: false }
+                ],
+                successTitle: "✅ 完美轉換角色！",
+                successText: "提供替代方案（做計分員/攝影師）能讓你不被邊緣化，同時避開了讓自己感官過載的環節！"
+            },
+            {
+                icon: "🛏️",
+                question: "你的宿舍室友未經你同意，就擅自用了你的洗衣液和洗頭水。",
+                options: [
+                    { text: "直接把他的東西丟到走廊上報復。", isCorrect: false },
+                    { text: "冷靜地找他談：「我見到你用咗我嘅洗衣液。我地一齊住，我希望大家用對方物品前先問一聲，好嗎？」", isCorrect: true }
+                ],
+                successTitle: "✅ 建立健康界線！",
+                successText: "室友摩擦很常見。不爆發、不啞忍，直接說出你的底線和期望，是成熟大人處理同居問題的方法。"
+            },
+            {
+                icon: "📝",
+                question: "你發現大專的論文（Essay）要求和中學完全不同，字數多且需要很多 Reference。",
+                options: [
+                    { text: "照著中學的方法隨便寫寫交差。", isCorrect: false },
+                    { text: "主動去圖書館參加「學術寫作工作坊」，或者預約學校的 Writing Center 尋求輔導。", isCorrect: true }
+                ],
+                successTitle: "✅ 活用大學設施！",
+                successText: "大學裡有很多隱藏的支援服務。特工懂得利用環境資源來提升自己的裝備能力！"
+            },
+            {
+                icon: "⚖️",
+                question: "大專有很多學會（上莊）、兼職和活動，你覺得時間完全不夠用，壓力很大。",
+                options: [
+                    { text: "學會拒絕。排列優先次序（學業 > 核心活動），把不必要的活動退掉，保障休息時間。", isCorrect: true },
+                    { text: "死撐著全部參加，最後因為 Burnout（耗盡）而全部表現都很差，甚至生病。", isCorrect: false }
+                ],
+                successTitle: "✅ 完美的能量管理！",
+                successText: "大專生活不是要「全部都要」，而是學會「選擇與放棄」。保護自己的能量值，才是長遠的生存之道！"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        function initQuiz() {
+            const savedExp = localStorage.getItem('agent_exp') || '0';
+            document.getElementById('current-total-exp').innerText = savedExp;
+            
+            loadHibyeData();
+            loadShieldData();
+            loadEmailData();
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function loadQuestion(index) {
+            const data = quizData[index];
+            document.getElementById('game-counter').innerText = `第 ${index + 1} / ${quizData.length} 局`;
+            document.getElementById('game-icon').innerText = data.icon;
+            document.getElementById('game-question').innerText = data.question;
+            
+            const progress = (index / quizData.length) * 100;
+            document.getElementById('game-progress').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('game-options');
+            optionsContainer.innerHTML = '';
+            
+            data.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'game-option w-full text-left p-4 rounded-xl border-2 border-slate-100 hover:border-teal-400 hover:bg-teal-50 transition-all font-medium text-slate-700 bg-white text-xs md:text-sm';
+                btn.innerText = opt.text;
+                btn.onclick = () => checkAnswer(opt.isCorrect, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('game-feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(isCorrect, selectedBtn) {
+            const data = quizData[currentQuestionIndex];
+            const feedbackBox = document.getElementById('game-feedback');
+            const title = document.getElementById('feedback-title');
+            const text = document.getElementById('feedback-text');
+            const icon = document.getElementById('feedback-icon');
+            const nextBtn = document.getElementById('next-btn');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+            
+            const allBtns = document.querySelectorAll('.game-option');
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                selectedBtn.classList.replace('border-slate-100', 'border-emerald-500');
+                selectedBtn.classList.replace('hover:border-teal-400', 'border-emerald-500');
+                selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'font-bold');
+                
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-200');
+                title.className = "font-bold text-base md:text-lg mb-1 text-emerald-800";
+                icon.innerHTML = '<i class="fa-solid fa-check-circle text-emerald-500"></i>';
+                title.innerText = data.successTitle;
+                text.innerText = data.successText;
+                
+                nextBtn.classList.remove('hidden');
+                if(currentQuestionIndex === quizData.length - 1) {
+                    nextBtn.innerText = "完成大專考核！";
+                } else {
+                    nextBtn.innerHTML = '下一局 <i class="fa-solid fa-arrow-right ml-1"></i>';
+                }
+            } else {
+                selectedBtn.classList.add('animate-shake', 'bg-rose-50', 'border-rose-300', 'text-rose-700');
+                
+                feedbackBox.classList.add('bg-rose-50', 'border-rose-200');
+                title.className = "font-bold text-base md:text-lg mb-1 text-rose-800";
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-500"></i>';
+                title.innerText = data.failTitle;
+                text.innerText = data.failText;
+
+                setTimeout(() => {
+                    selectedBtn.classList.remove('animate-shake');
+                    allBtns.forEach(b => b.disabled = false);
+                }, 1000);
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                document.getElementById('game-progress').style.width = `100%`;
+                document.getElementById('game-container').classList.add('hidden');
+                document.getElementById('mission-complete-zone').classList.remove('hidden');
+            }
+        }
+
+        function completeMission() {
+            const btn = document.getElementById('claimBtn');
+            const msg = document.getElementById('successMsg');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在加密存檔...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            
+            let currentExp = parseInt(localStorage.getItem('agent_exp') || '0');
+            currentExp += 300;
+            localStorage.setItem('agent_exp', currentExp.toString());
+            localStorage.setItem('mission_college_completed', 'true');
+            
+            setTimeout(() => {
+                btn.classList.add('hidden');
+                msg.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }, 1000);
+        }
+
+        window.onload = () => {
+            initQuiz();
+        };
+    </script>
+</body>
+</html>
