@@ -813,22 +813,41 @@ sessionState.level = Math.floor(sessionState.exp / 250);
         }
 
         // ================= 頁面初始化 =================
-        window.onload = function() {
+window.onload = function() {
     const cachedAuth = localStorage.getItem('sen_authorized');
     const cachedUser = localStorage.getItem('sen_user');
+    
     if (cachedAuth === 'true') {
         sessionState.isAuthorized = true;
         sessionState.userId = cachedUser || "協作同工";
         sessionState.unlockedAll = true;
-        document.getElementById('login-btn-text').innerText = "已授權解鎖";
-        document.getElementById('login-btn').className = "bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2";
+        const loginBtnText = document.getElementById('login-btn-text');
+        if (loginBtnText) loginBtnText.innerText = "已授權解鎖";
+        const loginBtn = document.getElementById('login-btn');
+        if (loginBtn) loginBtn.className = "bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2";
     }
 
-    if (localStorage.getItem('mission_bullying_completed') === 'true' || document.referrer.includes('student_')) {
-        renderStudentDashboard();
-    } else {
-        renderHome();
+    // 🌟 完美的標籤路由系統 (Hash Routing)
+    function handleRoute() {
+        const hash = window.location.hash;
+        
+        if (hash === '#student') {
+            if (typeof renderStudentDashboard === 'function') renderStudentDashboard();
+        } else if (hash === '#teacher') {
+            if (typeof renderTeacherDashboard === 'function') renderTeacherDashboard();
+        } else if (hash === '#parent') {
+            if (typeof renderParentDashboard === 'function') renderParentDashboard();
+        } else {
+            // 如果網址沒有標籤 (如直接進入 index.html)，預設回到首頁大廳
+            if (typeof renderHome === 'function') renderHome(); 
+        }
     }
+
+    // 監聽網址變化，支援瀏覽器的「上一頁/下一頁」按鈕
+    window.addEventListener('hashchange', handleRoute);
+
+    // 初始載入時執行一次路由判斷
+    handleRoute();
 };
     </script>
 </body>
