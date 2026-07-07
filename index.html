@@ -813,6 +813,49 @@ sessionState.level = Math.floor(sessionState.exp / 250);
         }
 
         // ================= 頁面初始化 =================
+// ====================================================================
+// 🌟 智慧標籤路由系統 (請替換 index.html 底部的路由與渲染控制邏輯)
+// ====================================================================
+
+// 1. 修改或封裝你的基礎導航函數，讓它們在切換時自動更新網址的 Hash 標籤
+const originalRenderHome = renderHome;
+renderHome = function() {
+    window.location.hash = '';
+    if (typeof originalRenderHome === 'function') originalRenderHome();
+};
+
+const originalRenderStudentDashboard = renderStudentDashboard;
+renderStudentDashboard = function() {
+    window.location.hash = '#student';
+    if (typeof originalRenderStudentDashboard === 'function') originalRenderStudentDashboard();
+};
+
+// 如果你的 renderSection 是通用函數，請修改為會自動同步 Hash
+const originalRenderSection = renderSection;
+renderSection = function(sectionId) {
+    window.location.hash = '#' + sectionId;
+    if (typeof originalRenderSection === 'function') originalRenderSection(sectionId);
+};
+
+// 2. 核心路由監聽與處理器
+function handleRoute() {
+    const hash = window.location.hash;
+    
+    if (hash === '#student') {
+        if (typeof originalRenderStudentDashboard === 'function') originalRenderStudentDashboard();
+    } else if (hash === '#parent') {
+        if (typeof originalRenderSection === 'function') originalRenderSection('parent');
+    } else if (hash === '#professional') {
+        if (typeof originalRenderSection === 'function') originalRenderSection('professional');
+    } else if (hash === '#sen_types') {
+        if (typeof originalRenderSection === 'function') originalRenderSection('sen_types');
+    } else {
+        // 如果沒有標籤，或標籤為空，預設渲染首頁
+        if (typeof originalRenderHome === 'function') originalRenderHome();
+    }
+}
+
+// 3. 頁面載入時的初始化
 window.onload = function() {
     const cachedAuth = localStorage.getItem('sen_authorized');
     const cachedUser = localStorage.getItem('sen_user');
@@ -827,26 +870,21 @@ window.onload = function() {
         if (loginBtn) loginBtn.className = "bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2";
     }
 
-    // 🌟 完美的標籤路由系統 (Hash Routing)
-    function handleRoute() {
-        const hash = window.location.hash;
-        
-        if (hash === '#student') {
-            if (typeof renderStudentDashboard === 'function') renderStudentDashboard();
-        } else if (hash === '#teacher') {
-            if (typeof renderTeacherDashboard === 'function') renderTeacherDashboard();
-        } else if (hash === '#parent') {
-            if (typeof renderParentDashboard === 'function') renderParentDashboard();
-        } else {
-            // 如果網址沒有標籤 (如直接進入 index.html)，預設回到首頁大廳
-            if (typeof renderHome === 'function') renderHome(); 
-        }
-    }
-
-    // 監聽網址變化，支援瀏覽器的「上一頁/下一頁」按鈕
+    // 監聽網址 Hash 變化（支援瀏覽器前進、後退按鈕）
     window.addEventListener('hashchange', handleRoute);
 
-    // 初始載入時執行一次路由判斷
+    // 檢查是否有剛通關的任務需要導回學生大廳
+    if (localStorage.getItem('mission_college_completed') === 'true' || 
+        localStorage.getItem('mission_bullying_completed') === 'true' ||
+        localStorage.getItem('mission_interview_completed') === 'true') {
+        // 清理臨時通關標記，避免每次刷京都強鎖學生基地
+        localStorage.removeItem('mission_college_completed');
+        localStorage.removeItem('mission_bullying_completed');
+        localStorage.removeItem('mission_interview_completed');
+        window.location.hash = '#student';
+    }
+
+    // 執行一次初始路由分配
     handleRoute();
 };
     </script>
