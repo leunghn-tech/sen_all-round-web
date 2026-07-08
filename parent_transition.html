@@ -128,7 +128,7 @@
                         <div class="space-y-2.5">
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-black text-slate-400 uppercase tracking-wider block"><i class="fa-solid fa-arrow-down-1-9"></i> 大腦過渡日程表 (Your Routine)</span>
-                                <button onclick="resetGame()" class="text-[10px] font-bold text-rose-600 hover:underline">重設</button>
+                                <button onclick="resetGame()" class="text-[10px] font-bold text-rose-600 hover:underline">重設全部</button>
                             </div>
                             <div class="space-y-2" id="target-slots">
                                 <!-- 由 JS 動態注入 -->
@@ -138,24 +138,65 @@
                     </div>
 
                     <!-- 遊戲結果驗證與獎勵 -->
-                    <div id="game-result-panel" class="hidden p-5 rounded-2xl border border-indigo-100 bg-indigo-50/40 text-indigo-900 flex flex-col gap-4 transition-all duration-300">
+                    <div id="game-result-panel" class="hidden p-5 rounded-2xl border flex flex-col gap-4 transition-all duration-300">
                         <div class="flex items-start gap-3.5">
                             <span class="text-2xl" id="game-result-icon">🎉</span>
                             <div class="space-y-1">
                                 <h5 class="font-black text-sm sm:text-base" id="game-result-title">常規建立成功！</h5>
-                                <p class="text-xs sm:text-sm leading-relaxed text-slate-600" id="game-result-desc"></p>
+                                <p class="text-xs sm:text-sm leading-relaxed" id="game-result-desc"></p>
                             </div>
                         </div>
-                        <!-- 優化建議：加入一鍵列印功能 (mock) -->
+                        <!-- 成功後的列印功能 (mock) -->
                         <div id="print-action-container" class="hidden border-t border-emerald-200/50 pt-3 mt-1 text-right">
-                            <button onclick="mockPrintRoutine()" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition">
+                            <button onclick="mockPrintRoutine()" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition shadow-sm">
                                 <i class="fa-solid fa-print"></i> 列印專屬視覺圖卡
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- 模塊二：三大轉銜管教思維糾錯測驗 (Corrective Quiz) -->
+                <!-- 模塊二 (新增)：情緒調節紅綠燈 (Emotion Traffic Light) -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h3 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-traffic-light text-indigo-600"></i> <span>過渡期情緒調節紅綠燈</span>
+                        </h3>
+                    </div>
+                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                        轉銜期面對環境巨變，孩子極易產生情緒崩潰 (Meltdown)。請讓孩子指出目前的情緒顏色，或由家長觀察後點擊，獲取即時的特教平伏策略：
+                    </p>
+                    
+                    <div class="flex gap-6 sm:gap-10 justify-center py-2">
+                        <!-- 紅燈 -->
+                        <button onclick="showEmotionStrategy('red')" class="group relative flex flex-col items-center gap-2">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-rose-500 group-hover:bg-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.6)] border-4 border-rose-200 transition-all transform group-hover:scale-110 group-active:scale-95"></div>
+                            <span class="text-[10px] sm:text-xs font-bold text-rose-600">情緒崩潰</span>
+                        </button>
+                        <!-- 黃燈 -->
+                        <button onclick="showEmotionStrategy('yellow')" class="group relative flex flex-col items-center gap-2">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-amber-400 group-hover:bg-amber-300 shadow-[0_0_15px_rgba(251,191,36,0.6)] border-4 border-amber-100 transition-all transform group-hover:scale-110 group-active:scale-95"></div>
+                            <span class="text-[10px] sm:text-xs font-bold text-amber-600">焦慮升級</span>
+                        </button>
+                        <!-- 綠燈 -->
+                        <button onclick="showEmotionStrategy('green')" class="group relative flex flex-col items-center gap-2">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-500 group-hover:bg-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.6)] border-4 border-emerald-200 transition-all transform group-hover:scale-110 group-active:scale-95"></div>
+                            <span class="text-[10px] sm:text-xs font-bold text-emerald-600">平靜就緒</span>
+                        </button>
+                    </div>
+
+                    <!-- 情緒策略顯示區 -->
+                    <div id="emotion-strategy-panel" class="hidden p-5 rounded-2xl border transition-all duration-300 mt-2">
+                        <div class="flex items-start gap-3.5">
+                            <div id="emotion-icon" class="text-2xl mt-0.5 shrink-0"></div>
+                            <div class="space-y-1.5 w-full">
+                                <h4 id="emotion-title" class="font-black text-sm sm:text-base"></h4>
+                                <div id="emotion-desc" class="text-xs sm:text-sm leading-relaxed space-y-2 mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模塊三：三大轉銜管教思維糾錯測驗 (Corrective Quiz) -->
                 <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-6">
                     <div class="flex justify-between items-center border-b border-slate-100 pb-2">
                         <h3 class="text-base sm:text-lg font-black text-slate-800 flex items-center gap-2">
@@ -193,47 +234,47 @@
 
         </div>
 
-        <!-- 模塊四：官方轉銜指南及政策文件庫下載 -->
+        <!-- 模塊四：官方轉銜指南真實連結 -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-5">
             <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-folder-open text-indigo-600"></i> 官方轉銜指南及實用工具下載
+                <i class="fa-solid fa-arrow-up-right-from-square text-indigo-600"></i> 官方轉銜指南及實用資源連結
             </h3>
             <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                除了我們線上提供的常規訓練，家長及同工亦可透過下載以下香港教育局、考評局及社福界權威機構的政策與視覺工具檔案，協助學童在實體環境中落實：
+                以下連結引導至香港教育局、考評局及權威社福機構的官方網頁，家長可直接獲取最新的入學適應手冊、特殊調適指引及支援服務：
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-1">
                 
-                <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl space-y-3 flex flex-col justify-between">
+                <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl space-y-3 flex flex-col justify-between hover:shadow-md transition duration-300">
                     <div>
                         <span class="bg-rose-100 text-rose-800 text-[10px] font-bold px-2 py-0.5 rounded-full block w-max">小一適應</span>
-                        <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mt-1">教育局《小一適應錦囊 (家長版)》</h4>
-                        <p class="text-slate-500 text-[11px] leading-relaxed mt-1">官方提供的入學銜接常規指導，包含社交與常規轉換細節說明。</p>
+                        <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mt-2">教育局家長資訊：小一入學</h4>
+                        <p class="text-slate-500 text-[11px] leading-relaxed mt-1">官方提供的入學銜接常規指導與選校資訊，幫助家長與孩子平穩過渡。</p>
                     </div>
-                    <button onclick="downloadMockPDF('小一適應錦囊')" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-file-arrow-down"></i> <span>模擬下載 PDF</span>
-                    </button>
+                    <a href="https://www.edb.gov.hk/tc/student-parents/parents-related/parent-info/index.html" target="_blank" rel="noopener noreferrer" class="w-full bg-white border border-indigo-200 hover:bg-indigo-50 text-indigo-700 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-link"></i> <span>前往 EDB 官方網頁</span>
+                    </a>
                 </div>
 
-                <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl space-y-3 flex flex-col justify-between">
+                <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl space-y-3 flex flex-col justify-between hover:shadow-md transition duration-300">
                     <div>
                         <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full block w-max">中一適應</span>
-                        <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mt-1">香港耀能協會《中一過渡全攻略》</h4>
-                        <p class="text-slate-500 text-[11px] leading-relaxed mt-1">專為 ADHD 及 ASD 學童量身定制，指導如何適應全英文學科轉型。</p>
+                        <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mt-2">香港耀能協會 (SAHK)</h4>
+                        <p class="text-slate-500 text-[11px] leading-relaxed mt-1">提供專為 ASD 及 ADHD 等學童設計的青年發展與中學適應服務資源。</p>
                     </div>
-                    <button onclick="downloadMockPDF('中一過渡全攻略')" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-file-arrow-down"></i> <span>模擬下載 PDF</span>
-                    </button>
+                    <a href="https://www.sahk1963.org.hk/" target="_blank" rel="noopener noreferrer" class="w-full bg-white border border-indigo-200 hover:bg-indigo-50 text-indigo-700 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-link"></i> <span>前往耀能協會首頁</span>
+                    </a>
                 </div>
 
-                <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl space-y-3 flex flex-col justify-between">
+                <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl space-y-3 flex flex-col justify-between hover:shadow-md transition duration-300">
                     <div>
                         <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full block w-max">考評調適</span>
-                        <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mt-1">考評局《特殊調適指引》</h4>
-                        <p class="text-slate-500 text-[11px] leading-relaxed mt-1">詳列 DSE 考評局針對各類別 SEN 加時、特別試室及讀題器的官方申報門檻。</p>
+                        <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mt-2">考評局：特殊需要考生調適</h4>
+                        <p class="text-slate-500 text-[11px] leading-relaxed mt-1">詳列 DSE 針對各類別 SEN 加時、特別試室及輔助儀器的官方申報指引與表格。</p>
                     </div>
-                    <button onclick="downloadMockPDF('文憑試特殊調適指引')" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-file-arrow-down"></i> <span>模擬下載 PDF</span>
-                    </button>
+                    <a href="https://www.hkeaa.edu.hk/tc/Candidates/special_needs_candidates/" target="_blank" rel="noopener noreferrer" class="w-full bg-white border border-indigo-200 hover:bg-indigo-50 text-indigo-700 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-link"></i> <span>前往 HKEAA 查閱</span>
+                    </a>
                 </div>
 
             </div>
@@ -245,11 +286,11 @@
     <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto">
         <div class="max-w-7xl mx-auto px-4 text-center space-y-1 text-xs text-slate-500">
             <p>© 2026 香港教育與 SEN 專業協作網絡 - 成長過渡與生命轉銜模組</p>
-            <p class="font-mono">所有拼圖邏輯、管教思維及 DSE 特殊調配指南均經教育心理專家審定。</p>
+            <p class="font-mono">所有拼圖邏輯、情緒調節策略及 DSE 特殊調配指南均經特教原則審定。</p>
         </div>
     </footer>
 
-    <!-- JavaScript 核心控制、Web Audio 合成與拼圖遊戲邏輯 -->
+    <!-- JavaScript 核心控制 -->
     <script>
         let currentTab = 'primary'; // 默認選中幼升小
 
@@ -280,10 +321,6 @@
             }, 3000);
         }
 
-        function downloadMockPDF(docName) {
-            showToast(`正在為您下載《${docName}》PDF 檔案...`, 'info');
-        }
-        
         function mockPrintRoutine() {
             showToast('已將「專屬視覺圖卡」傳送至列印隊列 🖨️', 'success');
         }
@@ -366,41 +403,41 @@
         }
 
         // ==========================================
-        // 2. 左右大腦過渡常規拼圖遊戲數據庫 (Interactive Puzzle Hub)
+        // 2. 左右大腦過渡常規拼圖遊戲數據庫 (優化防挫折機制)
         // ==========================================
         const gameDatabase = {
             primary: {
                 title: "小一常規：早晨上學視覺常規排排看",
-                instructions: "幼升小轉軌最大的痛點是早晨的慌亂。家長和孩子可點擊左邊無序的早晨步驟卡，將它們按<b>科學視覺時間表</b>的合理順序拼入右格中，訓練孩子的工作記憶與自理能力：",
+                instructions: "幼升小轉軌最大的痛點是早晨的慌亂。請點擊左邊無序的早晨步驟卡，將它們按<b>科學視覺時間表</b>拼入右格中：<br/><span class='text-emerald-600 font-bold text-xs mt-1 block'><i class='fa-solid fa-shield-heart'></i> 防挫折機制：若排錯，系統會自動幫您保留正確的卡片，只退回錯誤卡片！</span>",
                 steps: [
                     { id: "P1", text: "睜開眼，核對床頭『早晨視覺常規卡』，預估出門倒計時", order: 1 },
                     { id: "P2", text: "自己穿好昨晚備妥的校服（練習拉拉鍊與扣鈕扣）", order: 2 },
                     { id: "P3", text: "到洗手間獨立完成刷牙、洗臉等自理清潔", order: 3 },
                     { id: "P4", text: "進食早餐，在玄關核對『三色文件夾書包清單』後出門", order: 4 }
                 ],
-                feedbackSuccess: "太棒了！這種高度結構化的早晨安排（Visual schedules & predictable routines）能為剛入讀小一、面臨分離焦慮的學童提供極高的心理控制感，減少磨蹭與哭鬧！<br/>建議您可點擊下方按鈕，將這份清單列印出來貼在房門口！"
+                feedbackSuccess: "太棒了！這種高度結構化的早晨安排能為面臨分離焦慮的學童提供極高的心理控制感！<br/>建議您可點擊下方按鈕，將這份清單列印出來貼在房門口！"
             },
             secondary: {
                 title: "中一常規：全英文新學科學科適應大排練",
-                instructions: "進入中一後，多門全新學科（如科學、歷史）轉為全英文教學，是讀寫障礙（SpLD）或專注力不足孩子的難關。請按<b>專業特教多感官適應順序</b>排定學習常規：",
+                instructions: "進入中一後，多門學科轉為全英文教學。請按<b>專業特教多感官適應順序</b>排定學習常規：<br/><span class='text-emerald-600 font-bold text-xs mt-1 block'><i class='fa-solid fa-shield-heart'></i> 防挫折機制：若排錯，系統會自動幫您保留正確的卡片，只退回錯誤卡片！</span>",
                 steps: [
                     { id: "S1", text: "聽英文生字發音，將生字卡正面寫拼音及中文字，反面寫英文單字", order: 1 },
                     { id: "S2", text: "每天反覆聽 5 分鐘課文英文朗讀音檔（聽覺與多感官 VAKT 接軌）", order: 2 },
                     { id: "S3", text: "利用圖像概念地圖（Mindmap）在紙上串起不同學科概念的關聯", order: 3 },
                     { id: "S4", text: "建立『單詞答題默契卡』，允許孩子做課堂功課時看字卡提示，再逐步脫鉤", order: 4 }
                 ],
-                feedbackSuccess: "完美排列！這套多感官 VAKT（視覺、聽覺、動覺、觸覺）與拆解步驟策略，能有效減低 SpLD 學生在全英文學科轉軌中的大腦認知負載！"
+                feedbackSuccess: "完美排列！這套多感官 VAKT 與拆解步驟策略，能有效減低 SEN 學生在全英文學科轉軌中的大腦認知負載！"
             },
             post: {
                 title: "生涯規劃：DSE 中學文憑試特殊考評調適申報流程",
-                instructions: "文憑試（DSE）的特殊考評調適（如加時 25%、讀題器、獨立試室）直接影響 SEN 學生的升學命運。請按<b>官方嚴格申報時間表</b>排列以下步驟：",
+                instructions: "請按<b>官方嚴格申報時間表</b>排列以下 DSE 考評調適步驟：<br/><span class='text-emerald-600 font-bold text-xs mt-1 block'><i class='fa-solid fa-shield-heart'></i> 防挫折機制：若排錯，系統會自動幫您保留正確的卡片，只退回錯誤卡片！</span>",
                 steps: [
-                    { id: "W1", text: "收集並備齊心理學家報告、醫管局診斷書，以及學校日常三層支援考試調適紀錄", order: 1 },
-                    { id: "W2", text: "在高中五上學期，由學校特教協調主任（SENCO）向考評局正式遞交特殊調適申請表", order: 2 },
-                    { id: "W3", text: "接獲考評局正式審批通知，細節核實批准之加時百分比、大細寫寬免與軟硬件輔助", order: 3 },
-                    { id: "W4", text: "於校內高中模擬考試（Mock Exams）中，多次演練、適應 25% 加時之時間重新規劃分配", order: 4 }
+                    { id: "W1", text: "收集並備齊心理學家報告、醫管局診斷書，以及學校日常支援紀錄", order: 1 },
+                    { id: "W2", text: "在高中五上學期，由學校特教協調主任（SENCO）向考評局正式遞交申請表", order: 2 },
+                    { id: "W3", text: "接獲考評局正式審批通知，細節核實批准之加時百分比與輔助", order: 3 },
+                    { id: "W4", text: "於校內高中模擬考試（Mock Exams）中，多次演練適應加時之重新規劃", order: 4 }
                 ],
-                feedbackSuccess: "完美申報！DSE 特別考評申請流程繁複，必須提前在中五申請，更最重要的是在『模擬考』中多次演練如何利用多出的加時，避免考試時手忙腳亂，這在臨床上稱為考前去脫敏調試。"
+                feedbackSuccess: "完美申報！最重要的是在『模擬考』中多次演練如何利用多出的加時，避免考試時手忙腳亂，這在臨床上稱為考前去脫敏調試。"
             }
         };
 
@@ -424,11 +461,10 @@
             document.getElementById('game-instructions').innerHTML = db.instructions;
             
             document.getElementById('game-result-panel').classList.add('hidden');
-            // 只在第一關顯示列印按鈕
             const printBtn = document.getElementById('print-action-container');
             if(currentTab === 'primary') {
                 printBtn.classList.remove('hidden');
-                printBtn.style.display = 'none'; // 初始隱藏，成功才顯示
+                printBtn.style.display = 'none'; 
             } else {
                 printBtn.classList.add('hidden');
             }
@@ -451,10 +487,10 @@
                 const btn = document.createElement('button');
                 
                 if (isUsed) {
-                    btn.className = "w-full text-left p-3 border border-slate-200 bg-slate-50 text-slate-400 rounded-xl text-xs line-through cursor-not-allowed";
+                    btn.className = "w-full text-left p-3 border border-slate-200 bg-slate-50 text-slate-400 rounded-xl text-xs line-through cursor-not-allowed opacity-50";
                     btn.disabled = true;
                 } else {
-                    btn.className = "w-full text-left p-3 border border-indigo-100 bg-white hover:bg-indigo-50/50 text-indigo-950 font-medium rounded-xl text-xs transition duration-200 shadow-sm flex items-start gap-2 active:scale-95";
+                    btn.className = "w-full text-left p-3 border border-indigo-200 bg-white hover:bg-indigo-50/80 text-indigo-950 font-medium rounded-xl text-xs transition duration-200 shadow-sm flex items-start gap-2 active:scale-95";
                     btn.onclick = () => addStepToTarget(step);
                 }
 
@@ -468,22 +504,23 @@
                 const filledItem = gameState.userSelection[i];
 
                 if (filledItem) {
-                    slot.className = "w-full p-3 border border-purple-200 bg-purple-50/40 text-purple-950 rounded-xl text-xs flex justify-between items-start gap-2 shadow-inner transition duration-300";
+                    slot.className = "w-full p-3 border border-purple-200 bg-purple-50/60 text-purple-950 rounded-xl text-xs flex justify-between items-start gap-2 shadow-inner transition duration-300";
                     slot.innerHTML = `
                         <div class="flex items-start gap-2">
                             <span class="bg-purple-600 text-white w-5 h-5 rounded-full flex items-center justify-center font-black shrink-0 text-[10px]">${i + 1}</span>
                             <span class="font-bold">${filledItem.text}</span>
                         </div>
-                        <button onclick="removeStepFromTarget(${i})" class="text-rose-500 hover:text-rose-700 text-sm p-0.5"><i class="fa-solid fa-circle-minus"></i></button>
+                        <button onclick="removeStepFromTarget(${i})" class="text-rose-400 hover:text-rose-600 text-sm p-0.5 transition" title="移除此項"><i class="fa-solid fa-circle-minus"></i></button>
                     `;
                 } else {
-                    slot.className = "w-full p-3.5 border border-dashed border-slate-200 bg-slate-50/50 text-slate-400 rounded-xl text-xs text-center font-medium";
-                    slot.innerHTML = `<i class="fa-solid fa-circle-arrow-down mr-1"></i> 第 ${i + 1} 步 常規格`;
+                    slot.className = "w-full p-3.5 border-2 border-dashed border-slate-200 bg-slate-50/50 text-slate-400 rounded-xl text-xs text-center font-medium";
+                    slot.innerHTML = `<i class="fa-solid fa-arrow-down mr-1 opacity-50"></i> 第 ${i + 1} 步 常規格`;
                 }
 
                 targetContainer.appendChild(slot);
             }
 
+            // 只有在全部填滿時才進行驗證
             if (gameState.userSelection.every(item => item !== null)) {
                 checkGameResult();
             }
@@ -506,12 +543,26 @@
 
         function resetGame() {
             initRoutineGame();
-            showToast("常規遊戲已重設", "info");
+            showToast("已重設，請重新挑戰", "info");
         }
 
+        // 修改：具備防挫折機制的結果檢查
         function checkGameResult() {
             const db = gameDatabase[currentTab];
-            const isCorrect = gameState.userSelection.every((step, idx) => step.order === (idx + 1));
+            let allCorrect = true;
+            let hasError = false;
+
+            // 驗證每個選項
+            for (let i = 0; i < gameState.userSelection.length; i++) {
+                const step = gameState.userSelection[i];
+                if (step && step.order !== (i + 1)) {
+                    allCorrect = false;
+                    hasError = true;
+                    // 【核心修改】自動將排錯的卡片設為 null，使其退回左側，保留正確的
+                    gameState.userSelection[i] = null; 
+                }
+            }
+
             const panel = document.getElementById('game-result-panel');
             const icon = document.getElementById('game-result-icon');
             const title = document.getElementById('game-result-title');
@@ -520,9 +571,9 @@
 
             panel.classList.remove('hidden');
 
-            if (isCorrect) {
+            if (allCorrect) {
                 icon.innerText = "🎉";
-                title.innerText = "完美排列！大腦過渡常規建立成功！";
+                title.innerText = "完美排列！過渡常規建立成功！";
                 title.className = "font-black text-emerald-900 text-sm sm:text-base";
                 desc.innerHTML = db.feedbackSuccess;
                 desc.className = "text-xs sm:text-sm leading-relaxed text-emerald-700";
@@ -532,19 +583,24 @@
 
                 playSuccessSound();
                 createConfettiShower();
-                showToast("🏆 太棒了！日常轉銜日程規劃完全正確！", "success");
-            } else {
-                icon.innerText = "⚠️";
-                title.innerText = "常規卡住！順序中似乎有些認知混淆...";
+                showToast("🏆 太棒了！日程規劃完全正確！", "success");
+            } else if (hasError) {
+                icon.innerHTML = "<i class='fa-solid fa-shield-heart text-rose-500'></i>";
+                title.innerText = "部分順序有誤，已自動為您保留正確的卡片！";
                 title.className = "font-black text-rose-950 text-sm sm:text-base";
-                desc.innerHTML = "<b>特教引導：</b>不要氣餒，試著檢查哪一步的步驟卡在孩子身上會引發挫折？（例如：是否未核對好就先出發？）請點擊格子右側的『減號』或點選右上角『重設』按鈕，再次帶領孩子思考。";
+                desc.innerHTML = "<b>特教引導：</b>不要氣餒，我們已經把排錯的卡片退回左側了。請試著重新思考剩下的步驟順序，再次點擊填入空缺處。";
                 desc.className = "text-xs sm:text-sm leading-relaxed text-rose-800";
                 panel.className = "p-5 rounded-2xl border border-rose-200 bg-rose-50 text-rose-950 flex flex-col gap-4 transition-all duration-300 mt-4 shadow-sm";
                 
                 if(currentTab === 'primary') printBtn.style.display = 'none';
 
                 playErrorSound();
-                showToast("❌ 順序有些許不和諧，請再次嘗試。", "error");
+                showToast("❌ 順序有誤，已退回不正確的卡片！", "error");
+                
+                // 延遲一點點重新渲染，讓使用者看到發生了什麼事
+                setTimeout(() => {
+                    renderGamePanels();
+                }, 100);
             }
         }
 
@@ -562,6 +618,150 @@
             }
         }
 
+        // ==========================================
+        // 2.5 階段專屬情緒調節紅綠燈邏輯 (動態切換)
+        // ==========================================
+        const tabEmotionStrategies = {
+            primary: {
+                red: { 
+                    title: "🔴 幼升小紅燈：情緒崩潰 (分離焦慮大爆發)", 
+                    desc: [
+                        "<b>大腦狀態：</b> 杏仁核劫持，被「分離恐懼」淹沒，出現大哭、抱大腿、拒絕穿校服等本能抗拒。",
+                        "<b>緊急策略 1：停止說教與威脅。</b> 不要說「你再喊我就唔要你」，這會讓恐懼感加倍，導致更嚴重的崩潰。",
+                        "<b>緊急策略 2：提供深壓覺 (Proprioception)。</b> 給予緊緊的擁抱（如果孩子允許），或讓他鑽進有重量的被子裡，幫助神經系統物理降溫。",
+                        "<b>緊急策略 3：同理並接納。</b> 簡單回應：「我知道新學校好陌生，你好驚，媽媽喺度陪你。」"
+                    ], 
+                    colorClass: "bg-rose-50 border-rose-200 text-rose-900",
+                    iconClass: "text-rose-500 fa-solid fa-child-reaching"
+                },
+                yellow: { 
+                    title: "🟡 幼升小黃燈：焦慮升級 (不安與燥動)", 
+                    desc: [
+                        "<b>大腦狀態：</b> 工作記憶瀕臨過載，可能出現咬指甲、說肚子痛、或無故發脾氣。",
+                        "<b>調節策略 1：吹泡泡呼吸法。</b> 讓孩子想像在吹大泡泡，深深吸氣，慢慢呼氣，啟動副交感神經。",
+                        "<b>調節策略 2：視覺重置。</b> 拿出「早晨視覺日程表」，指出：「我們現在只做穿鞋子這一步，做完就可以出門。」減輕不可控感。",
+                        "<b>調節策略 3：過渡性客體。</b> 允許孩子帶一件體積小、沒有聲音的安心小物（如小手帕）放在口袋。"
+                    ], 
+                    colorClass: "bg-amber-50 border-amber-200 text-amber-900",
+                    iconClass: "text-amber-500 fa-solid fa-face-frown-open"
+                },
+                green: { 
+                    title: "🟢 幼升小綠燈：平靜就緒 (可吸收新資訊)", 
+                    desc: [
+                        "<b>大腦狀態：</b> 前額葉理性腦在線，能夠吸收新資訊、進行遊戲及學習。",
+                        "<b>鞏固策略 1：具體讚賞。</b> 「我看到你剛才自己整理好書包，做得非常好！」強化成功經驗。",
+                        "<b>鞏固策略 2：趁機演練。</b> 在這時候進行「幼升小」的常規預演或上方的拼圖遊戲，大腦吸收率最高。",
+                        "<b>鞏固策略 3：賦予微小責任。</b> 讓孩子擔任「開門小助手」，建立他對上學流程的掌控感。"
+                    ], 
+                    colorClass: "bg-emerald-50 border-emerald-200 text-emerald-900",
+                    iconClass: "text-emerald-500 fa-solid fa-face-smile"
+                }
+            },
+            secondary: {
+                red: { 
+                    title: "🔴 小升中紅燈：情緒風暴 (學業過載與青春期爆發)", 
+                    desc: [
+                        "<b>大腦狀態：</b> 面對海量全英文學科與同儕壓力，執行功能完全當機。表現為摔門、撕功課、強烈敵意拒絕溝通。",
+                        "<b>緊急策略 1：給予絕對的空間 (Space)。</b> 青春期孩子極需界線。停止追問，讓他們退回房間，告知「我會在外面等你，準備好隨時找我」。",
+                        "<b>緊急策略 2：移除當下學業要求。</b> 此時逼迫寫功課只會引發更激烈的親子衝突，先讓大腦冷卻才是首要任務。",
+                        "<b>緊急策略 3：非語言的關心。</b> 遞上一杯冷水或小點心，不附加任何條件或問句。"
+                    ], 
+                    colorClass: "bg-rose-50 border-rose-200 text-rose-900",
+                    iconClass: "text-rose-500 fa-solid fa-door-closed"
+                },
+                yellow: { 
+                    title: "🟡 小升中黃燈：焦慮升級 (逃避與拖延)", 
+                    desc: [
+                        "<b>大腦狀態：</b> 面對不懂的英文生字或複雜專題，大腦選擇「戰或逃」。表現為狂打機逃避、與家人頂嘴、坐立不安。",
+                        "<b>調節策略 1：4-7-8 呼吸法與感統轉移。</b> 給予減壓沙包、指尖陀螺，讓燥動的身體能量有出口。",
+                        "<b>調節策略 2：鷹架拆解 (Scaffolding)。</b> 不要說「快去做功課」，而是說「我們一起先把英文書拿出來，看頭兩條題目就好」。",
+                        "<b>調節策略 3：同理語言。</b> 「中一突然轉全英文真係好難，唔係你蠢，係大腦需要時間適應。」"
+                    ], 
+                    colorClass: "bg-amber-50 border-amber-200 text-amber-900",
+                    iconClass: "text-amber-500 fa-solid fa-book-open-reader"
+                },
+                green: { 
+                    title: "🟢 小升中綠燈：平靜就緒 (可進行規劃)", 
+                    desc: [
+                        "<b>大腦狀態：</b> 情緒平穩，願意溝通，能夠進行邏輯思考與長遠計劃。",
+                        "<b>鞏固策略 1：共同建立系統。</b> 趁此時一起整理「三色文件夾」或檢視下週的測驗時間表。",
+                        "<b>鞏固策略 2：探討防禦機制。</b> 討論如果在學校感到壓力大時，可以去哪裡躲避（例如圖書館、社工室）。",
+                        "<b>鞏固策略 3：確認其獨立性。</b> 讚賞他們解決問題的努力，尊重他們作為半個成年人的隱私與選擇。"
+                    ], 
+                    colorClass: "bg-emerald-50 border-emerald-200 text-emerald-900",
+                    iconClass: "text-emerald-500 fa-solid fa-handshake"
+                }
+            },
+            post: {
+                red: { 
+                    title: "🔴 職涯/大專紅燈：危機崩潰 (災難化思考與恐慌)", 
+                    desc: [
+                        "<b>大腦狀態：</b> 面對放榜失利、面試失敗或職場社交挫折，陷入「我一輩子都完了」的極端災難化思考，可能伴隨恐慌發作或極度隱蔽。",
+                        "<b>緊急策略 1：零要求陪伴 (Zero Demand)。</b> 絕對禁止在此刻討論「搵工」、「重讀」或未來規劃，確保環境安全即可。",
+                        "<b>緊急策略 2：著陸練習 (Grounding)。</b> 引導 5-4-3-2-1 感官著陸法（說出 5 件看到的事物、4 件摸到的事物...）將意識拉回當下。",
+                        "<b>緊急策略 3：接納負面情緒。</b> 允許他們感到沮喪，不急著用「好小事啫」、「下次再努力」等毒性正能量 (Toxic Positivity) 壓抑他們。"
+                    ], 
+                    colorClass: "bg-rose-50 border-rose-200 text-rose-900",
+                    iconClass: "text-rose-500 fa-solid fa-cloud-bolt"
+                },
+                yellow: { 
+                    title: "🟡 職涯/大專黃燈：焦慮升級 (社交退縮與迷惘)", 
+                    desc: [
+                        "<b>大腦狀態：</b> 對未知的環境（新校園、新公司）感到恐懼，表現為失眠、拒絕查看電郵、不想出門接觸人。",
+                        "<b>調節策略 1：降低刺激與期望。</b> 暫時把「找一份全職工作」的巨大目標放下，轉移到低壓力的活動（如散步、組裝模型）。",
+                        "<b>調節策略 2：結構化日常。</b> 即使不上學/不上班，也盡量維持規律的作息時間，保持生理時鐘穩定，防止情緒進一步惡化。",
+                        "<b>調節策略 3：提供選擇而非指令。</b> 「你想今天先看看這份單張，還是明天我們去展能中心走走？」讓青年保有控制權。"
+                    ], 
+                    colorClass: "bg-amber-50 border-amber-200 text-amber-900",
+                    iconClass: "text-amber-500 fa-solid fa-compass"
+                },
+                green: { 
+                    title: "🟢 職涯/大專綠燈：平靜就緒 (小步子重建)", 
+                    desc: [
+                        "<b>大腦狀態：</b> 接受了現狀，情緒穩定，能夠理性看待自己的優勢與限制。",
+                        "<b>鞏固策略 1：自我倡導演練。</b> 陪青年練習如何向未來的僱主或教授禮貌地表達：「我有 ASD，在嘈雜環境下工作效率會受影響，請問能否安排較安靜的座位？」",
+                        "<b>鞏固策略 2：小步子規劃。</b> 將大目標拆細。今天只負責「打開求職網站看 5 分鐘」，明天再處理「填寫個人資料」，積累成功感。",
+                        "<b>鞏固策略 3：連結同路人支援。</b> 鼓勵參與特教青年的興趣小組或職涯工作坊，建立「我不孤單」的社會支持網絡。"
+                    ], 
+                    colorClass: "bg-emerald-50 border-emerald-200 text-emerald-900",
+                    iconClass: "text-emerald-500 fa-solid fa-seedling"
+                }
+            }
+        };
+
+        function showEmotionStrategy(color) {
+            const panel = document.getElementById('emotion-strategy-panel');
+            const title = document.getElementById('emotion-title');
+            const desc = document.getElementById('emotion-desc');
+            const icon = document.getElementById('emotion-icon');
+            
+            // 根據當前選擇的 Tab 取得對應階段的情緒策略
+            const data = tabEmotionStrategies[currentTab][color];
+
+            panel.classList.remove('hidden');
+            panel.className = `p-5 rounded-2xl border transition-all duration-300 mt-4 shadow-sm ${data.colorClass}`;
+            
+            icon.innerHTML = `<i class="${data.iconClass}"></i>`;
+            title.innerText = data.title;
+            
+            // 渲染列表說明
+            desc.innerHTML = data.desc.map(line => `<p class="flex items-start gap-1.5"><i class="fa-solid fa-check text-[10px] mt-1 opacity-70"></i> <span>${line}</span></p>`).join('');
+
+            // 音效反饋
+            initAudio();
+            if(audioCtx) {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(color === 'red' ? 200 : color === 'yellow' ? 300 : 400, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.2);
+            }
+        }
 
         // ==========================================
         // 3. 三大轉銜 Tab 專屬糾錯測驗資料庫與邏輯
@@ -612,7 +812,7 @@
                 question: "DSE 放榜後，自閉症（ASD）的孩子成績不理想。他隨後鎖自己在房間，拒絕出門求職，甚至不與父母對視。這時家長應如何打破家庭僵局？",
                 options: {
                     A: "覺得他一輩子完蛋了，每天隔著門痛罵：「聽日立刻跟我去勞工處見工！」",
-                    B: "理解這是 ASD 學童在生涯目標重大偏離時引發的「災難化焦慮」。先給予溫和陪伴，隨後聯絡「職業康復中心」進行低起點小步子職涯重建。",
+                    B: "理解這是 ASD 學童在生涯目標重大偏離時引發的「災難化焦慮」。先給予溫和陪伴，隨後聯絡「職業康復中心」或「展能中心」進行低起點小步子職涯重建。",
                     C: "完全隨他去，覺得「我也沒辦法了」，每日把飯盒放在房門口，任由他隱蔽一整年。"
                 },
                 answer: "B",
@@ -623,7 +823,7 @@
                 },
                 feedbackDesc: {
                     A: "<b>臨床分析：</b>自閉症青年在面臨人生規劃非預期改變時，大腦彈性極低。粗暴強迫去勞工處面試，其強烈的社交焦慮會引發驚恐爆發。",
-                    B: "<b>臨床分析：</b>ASD 青年極需高度結構、清晰指引的『小步子過渡』。展能就業或 VR 提供非競爭、包容性強的培訓，幫助他安全降溫與社會接軌。",
+                    B: "<b>臨床分析：</b>ASD 青年極需高度結構、清晰指引的『小步子過渡』。展能就業或低強度培訓，能幫助他安全降溫與社會接軌。",
                     C: "<b>臨床分析：</b>隱蔽青年的社交脫鉤時間一旦超過 6 個月，社會回歸難度會呈指數上升。給予低刺激度的日常互動才是科學修復途徑。"
                 }
             }
@@ -677,7 +877,7 @@
         }
 
         // ==========================================
-        // 4. 動態渲染右側理論與家長支援區 (卡片優化版)
+        // 4. 動態渲染右側理論與家長支援區 
         // ==========================================
         const theoryDatabase = {
             primary: `
@@ -693,14 +893,18 @@
 
                         <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/20">
                             <h4 class="font-bold flex items-center gap-2 text-sm"><i class="fa-solid fa-handshake-angle text-rose-300"></i> 2. 明確重聚承諾</h4>
-                            <p class="text-xs mt-1.5 opacity-90 leading-relaxed">分離時最怕含糊。給予如 <b class="bg-indigo-800 px-1 rounded">「下課鐘一響，媽媽會在校門大樹下第一個等你」</b> 這樣具體、具溫度的承諾。</p>
+                            <p class="text-xs mt-1.5 opacity-90 leading-relaxed">分離時最怕含糊。給予如 <b class="bg-indigo-800 px-1 rounded">「下課鐘一響，媽媽會在校門大樹下等你」</b> 這樣具體、具溫度的承諾。</p>
                         </div>
                         
-                        <!-- 家校溝通神器 -->
+                        <!-- 家校溝通神器 (移除了假下載按鈕，改為實務文字指引) -->
                         <div class="mt-4 bg-indigo-800/50 p-4 rounded-xl border border-indigo-400">
-                            <h4 class="font-bold text-sm mb-2"><i class="fa-solid fa-file-signature text-emerald-300"></i> 新學期·一頁紙孩子說明書</h4>
-                            <p class="text-xs opacity-90 mb-3">開學直接交給新班主任，減少資訊斷層誤會。</p>
-                            <button onclick="downloadMockPDF('一頁紙孩子說明書範本')" class="w-full bg-white text-indigo-700 font-bold py-2 rounded-lg text-xs hover:bg-indigo-50 transition">下載填寫範本</button>
+                            <h4 class="font-bold text-sm mb-2"><i class="fa-solid fa-file-signature text-emerald-300"></i> 製作「一頁紙孩子說明書」</h4>
+                            <p class="text-xs opacity-90 mb-2">開學時交給新班主任，減少誤會。內容應包含：</p>
+                            <ul class="text-[11px] opacity-80 list-disc list-inside space-y-1">
+                                <li>孩子的強項與興趣 (破冰用)</li>
+                                <li>可能會引發焦慮的「地雷區」</li>
+                                <li>有效安撫情緒的「3個小動作」</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -749,7 +953,7 @@
             // 基礎理論區
             let htmlStr = theoryDatabase[currentTab];
 
-            // 附加家長充電角 (Parent Well-being) - 優化建議 5
+            // 附加家長充電角 (Parent Well-being)
             htmlStr += `
                 <div class="bg-orange-50 border border-orange-100 rounded-3xl p-6 shadow-sm relative overflow-hidden mt-6">
                     <div class="flex items-start gap-3">
@@ -758,7 +962,7 @@
                         </div>
                         <div>
                             <h4 class="font-black text-orange-800 text-sm">家長充電角 (Parent Well-being)</h4>
-                            <p class="text-xs text-orange-700/80 mt-1 leading-relaxed">
+                            <p class="text-xs text-orange-700/80 mt-1.5 leading-relaxed">
                                 陪伴 SEN 孩子轉銜是一場耗力的馬拉松。在你為孩子建立安全網的同時，請記得：<b>「你已經做得非常好了。」</b>深呼吸，今晚給自己 15 分鐘的獨處時光，抱抱辛苦的自己。
                             </p>
                         </div>
@@ -783,6 +987,9 @@
             const activeBtn = document.getElementById(`tab-${tabId}`);
             activeBtn.classList.remove('text-slate-600', 'border-transparent');
             activeBtn.classList.add('text-indigo-700', 'bg-indigo-50', 'border-indigo-100', 'shadow-sm');
+
+            // 隱藏情緒面板
+            document.getElementById('emotion-strategy-panel').classList.add('hidden');
 
             // 重新初始化對應的內容
             initRoutineGame();
