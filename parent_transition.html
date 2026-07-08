@@ -33,41 +33,13 @@
             pointer-events: none;
             animation: confetti-fall 3s linear forwards;
         }
-
-        /* 無障礙高對比度樣式 */
-        body.a11y-high-contrast {
-            background-color: #000000 !important;
-            color: #ffffff !important;
+        
+        /* 浮動通知動畫 */
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
-        body.a11y-high-contrast * {
-            background-color: transparent !important;
-            color: #ffffff !important;
-            border-color: #ffffff !important;
-            box-shadow: none !important;
-        }
-        body.a11y-high-contrast .bg-white, body.a11y-high-contrast .bg-indigo-50, body.a11y-high-contrast .bg-purple-50 {
-            background-color: #121212 !important;
-            border: 2px solid #ffffff !important;
-        }
-        body.a11y-high-contrast button, body.a11y-high-contrast a, body.a11y-high-contrast select {
-            background-color: #000000 !important;
-            color: #ffff00 !important;
-            border: 2px solid #ffff00 !important;
-        }
-        body.a11y-high-contrast button:hover {
-            background-color: #ffff00 !important;
-            color: #000000 !important;
-        }
-        body.a11y-high-contrast .text-indigo-800, body.a11y-high-contrast .text-purple-800 {
-            color: #ffff00 !important;
-        }
-
-        html.a11y-large-text { font-size: 125% !important; }
-
-        .tts-highlight {
-            background-color: rgba(253, 224, 71, 0.4) !important;
-            transition: background-color 0.3s ease;
-        }
+        .toast-enter { animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     </style>
 </head>
 <body class="text-slate-800 flex flex-col min-h-screen text-sm sm:text-base pb-12">
@@ -78,9 +50,9 @@
     <!-- 頂部導航 -->
     <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-indigo-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center gap-2 text-indigo-700 hover:text-indigo-900 font-extrabold transition">
+            <a href="#" class="flex items-center gap-2 text-indigo-700 hover:text-indigo-900 font-extrabold transition">
                 <i class="fa-solid fa-house-medical text-lg"></i>
-                <span>返回協作平台首頁</span>
+                <span>SEN 家長協作平台</span>
             </a>
             <div class="flex items-center gap-2">
                 <span class="bg-indigo-100 text-indigo-800 text-xs font-black px-2.5 py-1 rounded-full uppercase"><i class="fa-solid fa-route mr-1 animate-pulse"></i>生涯與生命轉銜</span>
@@ -109,13 +81,13 @@
 
         <!-- 轉銜階段 Tab 切換按鈕 -->
         <div class="flex flex-wrap gap-2.5 bg-white p-2 rounded-2xl shadow-sm border border-slate-100 justify-center">
-            <button id="tab-primary" onclick="switchTransitionTab('primary')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-indigo-700 bg-indigo-50 border border-indigo-100 shadow-sm">
+            <button id="tab-primary" onclick="switchTransitionTab('primary')" class="tab-btn flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-indigo-700 bg-indigo-50 border border-indigo-100 shadow-sm">
                 <i class="fa-solid fa-child-reaching"></i> 1. 幼升小過渡 (K3-P1)
             </button>
-            <button id="tab-secondary" onclick="switchTransitionTab('secondary')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
+            <button id="tab-secondary" onclick="switchTransitionTab('secondary')" class="tab-btn flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50 border border-transparent">
                 <i class="fa-solid fa-graduation-cap"></i> 2. 小升中過渡 (P6-S1)
             </button>
-            <button id="tab-post" onclick="switchTransitionTab('post')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
+            <button id="tab-post" onclick="switchTransitionTab('post')" class="tab-btn flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50 border border-transparent">
                 <i class="fa-solid fa-building-columns"></i> 3. 大專及職場過渡 (Post-School)
             </button>
         </div>
@@ -166,11 +138,19 @@
                     </div>
 
                     <!-- 遊戲結果驗證與獎勵 -->
-                    <div id="game-result-panel" class="hidden p-5 rounded-2xl border border-indigo-100 bg-indigo-50/40 text-indigo-900 flex items-start gap-3.5 transition-all duration-300">
-                        <span class="text-2xl" id="game-result-icon">🎉</span>
-                        <div class="space-y-1">
-                            <h5 class="font-black text-sm sm:text-base" id="game-result-title">常規建立成功！</h5>
-                            <p class="text-xs sm:text-sm leading-relaxed text-slate-600" id="game-result-desc"></p>
+                    <div id="game-result-panel" class="hidden p-5 rounded-2xl border border-indigo-100 bg-indigo-50/40 text-indigo-900 flex flex-col gap-4 transition-all duration-300">
+                        <div class="flex items-start gap-3.5">
+                            <span class="text-2xl" id="game-result-icon">🎉</span>
+                            <div class="space-y-1">
+                                <h5 class="font-black text-sm sm:text-base" id="game-result-title">常規建立成功！</h5>
+                                <p class="text-xs sm:text-sm leading-relaxed text-slate-600" id="game-result-desc"></p>
+                            </div>
+                        </div>
+                        <!-- 優化建議：加入一鍵列印功能 (mock) -->
+                        <div id="print-action-container" class="hidden border-t border-emerald-200/50 pt-3 mt-1 text-right">
+                            <button onclick="mockPrintRoutine()" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition">
+                                <i class="fa-solid fa-print"></i> 列印專屬視覺圖卡
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -193,12 +173,12 @@
                     </div>
 
                     <!-- 回饋框 -->
-                    <div id="quiz-feedback" class="hidden p-5 rounded-2xl border transition-all duration-300">
+                    <div id="quiz-feedback" class="hidden p-5 rounded-2xl border transition-all duration-300 mt-4">
                         <div class="flex items-start gap-3.5">
                             <div id="feedback-icon" class="text-2xl mt-0.5 shrink-0"></div>
                             <div class="space-y-1.5">
                                 <h4 id="feedback-title" class="font-black text-sm sm:text-base"></h4>
-                                <p id="feedback-desc" class="text-xs sm:text-sm leading-relaxed text-slate-600"></p>
+                                <p id="feedback-desc" class="text-xs sm:text-sm leading-relaxed"></p>
                             </div>
                         </div>
                     </div>
@@ -248,7 +228,7 @@
                 <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl space-y-3 flex flex-col justify-between">
                     <div>
                         <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full block w-max">考評調適</span>
-                        <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mt-1">考評局《香港中學文憑試特殊調適指引》</h4>
+                        <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mt-1">考評局《特殊調適指引》</h4>
                         <p class="text-slate-500 text-[11px] leading-relaxed mt-1">詳列 DSE 考評局針對各類別 SEN 加時、特別試室及讀題器的官方申報門檻。</p>
                     </div>
                     <button onclick="downloadMockPDF('文憑試特殊調適指引')" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
@@ -272,6 +252,41 @@
     <!-- JavaScript 核心控制、Web Audio 合成與拼圖遊戲邏輯 -->
     <script>
         let currentTab = 'primary'; // 默認選中幼升小
+
+        // ==========================================
+        // 0. 通用工具與 UI 反饋
+        // ==========================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-enter flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border text-sm font-bold backdrop-blur-sm pointer-events-auto w-max ml-auto ${
+                type === 'success' ? 'bg-emerald-500/90 border-emerald-400 text-white' : 
+                type === 'error' ? 'bg-rose-500/90 border-rose-400 text-white' : 
+                'bg-indigo-600/90 border-indigo-400 text-white'
+            }`;
+            
+            const icon = type === 'success' ? '<i class="fa-solid fa-circle-check"></i>' : 
+                         type === 'error' ? '<i class="fa-solid fa-circle-exclamation"></i>' : 
+                         '<i class="fa-solid fa-circle-info"></i>';
+                         
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function downloadMockPDF(docName) {
+            showToast(`正在為您下載《${docName}》PDF 檔案...`, 'info');
+        }
+        
+        function mockPrintRoutine() {
+            showToast('已將「專屬視覺圖卡」傳送至列印隊列 🖨️', 'success');
+        }
 
         // ==========================================
         // 1. Web Audio API 音訊合成
@@ -332,6 +347,24 @@
             osc2.stop(now + 0.35);
         }
 
+        function playClickPitched(index) {
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const baseFreq = 261.63; // C4
+            const multiplier = 1 + (index * 0.15);
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(baseFreq * multiplier, now);
+            gain.gain.setValueAtTime(0.05, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.15);
+        }
+
         // ==========================================
         // 2. 左右大腦過渡常規拼圖遊戲數據庫 (Interactive Puzzle Hub)
         // ==========================================
@@ -345,7 +378,7 @@
                     { id: "P3", text: "到洗手間獨立完成刷牙、洗臉等自理清潔", order: 3 },
                     { id: "P4", text: "進食早餐，在玄關核對『三色文件夾書包清單』後出門", order: 4 }
                 ],
-                feedbackSuccess: "太棒了！這種高度結構化的早晨安排（Visual schedules & predictable routines）能為剛入讀小一、面臨分離焦慮的學童提供極高的心理控制感，減少磨蹭與哭鬧！"
+                feedbackSuccess: "太棒了！這種高度結構化的早晨安排（Visual schedules & predictable routines）能為剛入讀小一、面臨分離焦慮的學童提供極高的心理控制感，減少磨蹭與哭鬧！<br/>建議您可點擊下方按鈕，將這份清單列印出來貼在房門口！"
             },
             secondary: {
                 title: "中一常規：全英文新學科學科適應大排練",
@@ -356,7 +389,7 @@
                     { id: "S3", text: "利用圖像概念地圖（Mindmap）在紙上串起不同學科概念的關聯", order: 3 },
                     { id: "S4", text: "建立『單詞答題默契卡』，允許孩子做課堂功課時看字卡提示，再逐步脫鉤", order: 4 }
                 ],
-                feedbackSuccess: "完美排列！這套多感官 VAKT（視覺、聽覺、動覺、觸覺）與拆解步驟（Task Analysis）策略，能有效減低 SpLD 學生在全英文學科轉軌中的大腦認知負載！"
+                feedbackSuccess: "完美排列！這套多感官 VAKT（視覺、聽覺、動覺、觸覺）與拆解步驟策略，能有效減低 SpLD 學生在全英文學科轉軌中的大腦認知負載！"
             },
             post: {
                 title: "生涯規劃：DSE 中學文憑試特殊考評調適申報流程",
@@ -376,7 +409,6 @@
             userSelection: []
         };
 
-        // 打亂數組
         function shuffleArray(array) {
             const arr = [...array];
             for (let i = arr.length - 1; i > 0; i--) {
@@ -386,18 +418,23 @@
             return arr;
         }
 
-        // 初始化拼圖小遊戲
         function initRoutineGame() {
             const db = gameDatabase[currentTab];
             document.getElementById('game-title').innerText = `互動特教遊戲：${db.title}`;
             document.getElementById('game-instructions').innerHTML = db.instructions;
             
-            // 隱藏結果反饋
             document.getElementById('game-result-panel').classList.add('hidden');
+            // 只在第一關顯示列印按鈕
+            const printBtn = document.getElementById('print-action-container');
+            if(currentTab === 'primary') {
+                printBtn.classList.remove('hidden');
+                printBtn.style.display = 'none'; // 初始隱藏，成功才顯示
+            } else {
+                printBtn.classList.add('hidden');
+            }
 
             gameState.shuffledSteps = shuffleArray(db.steps);
             gameState.userSelection = Array(db.steps.length).fill(null);
-
             renderGamePanels();
         }
 
@@ -408,7 +445,7 @@
             poolContainer.innerHTML = '';
             targetContainer.innerHTML = '';
 
-            // 1. 渲染待選池 (左側)
+            // 待選池
             gameState.shuffledSteps.forEach(step => {
                 const isUsed = gameState.userSelection.some(sel => sel && sel.id === step.id);
                 const btn = document.createElement('button');
@@ -425,7 +462,7 @@
                 poolContainer.appendChild(btn);
             });
 
-            // 2. 渲染目標格 (右側)
+            // 目標格
             for (let i = 0; i < gameState.userSelection.length; i++) {
                 const slot = document.createElement('div');
                 const filledItem = gameState.userSelection[i];
@@ -447,7 +484,6 @@
                 targetContainer.appendChild(slot);
             }
 
-            // 檢查是否排滿，如果排滿就進行正確性驗證
             if (gameState.userSelection.every(item => item !== null)) {
                 checkGameResult();
             }
@@ -457,7 +493,6 @@
             const emptyIdx = gameState.userSelection.indexOf(null);
             if (emptyIdx !== -1) {
                 gameState.userSelection[emptyIdx] = step;
-                initAudio();
                 playClickPitched(emptyIdx);
                 renderGamePanels();
             }
@@ -465,6 +500,7 @@
 
         function removeStepFromTarget(index) {
             gameState.userSelection[index] = null;
+            document.getElementById('game-result-panel').classList.add('hidden');
             renderGamePanels();
         }
 
@@ -473,25 +509,6 @@
             showToast("常規遊戲已重設", "info");
         }
 
-        // 給星星加入音調上升感
-        function playClickPitched(index) {
-            if (!audioCtx) return;
-            const now = audioCtx.currentTime;
-            const baseFreq = 261.63; // C4
-            const multiplier = 1 + (index * 0.15);
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(baseFreq * multiplier, now);
-            gain.gain.setValueAtTime(0.05, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(now);
-            osc.stop(now + 0.15);
-        }
-
-        // 驗證遊戲結果
         function checkGameResult() {
             const db = gameDatabase[currentTab];
             const isCorrect = gameState.userSelection.every((step, idx) => step.order === (idx + 1));
@@ -499,32 +516,38 @@
             const icon = document.getElementById('game-result-icon');
             const title = document.getElementById('game-result-title');
             const desc = document.getElementById('game-result-desc');
+            const printBtn = document.getElementById('print-action-container');
 
             panel.classList.remove('hidden');
 
             if (isCorrect) {
                 icon.innerText = "🎉";
                 title.innerText = "完美排列！大腦過渡常規建立成功！";
-                title.className = "font-black text-indigo-950 text-sm sm:text-base";
+                title.className = "font-black text-emerald-900 text-sm sm:text-base";
                 desc.innerHTML = db.feedbackSuccess;
-                panel.className = "p-5 rounded-2xl border border-emerald-200 bg-emerald-50/50 text-emerald-950 flex items-start gap-3.5 transition-all duration-300 mt-4 shadow-sm";
+                desc.className = "text-xs sm:text-sm leading-relaxed text-emerald-700";
+                panel.className = "p-5 rounded-2xl border border-emerald-200 bg-emerald-50 text-emerald-950 flex flex-col gap-4 transition-all duration-300 mt-4 shadow-sm";
+                
+                if(currentTab === 'primary') printBtn.style.display = 'block';
+
                 playSuccessSound();
-                createConfettiShower(); // 激發碎屑彩屑特效
+                createConfettiShower();
                 showToast("🏆 太棒了！日常轉銜日程規劃完全正確！", "success");
             } else {
                 icon.innerText = "⚠️";
                 title.innerText = "常規卡住！順序中似乎有些認知混淆...";
                 title.className = "font-black text-rose-950 text-sm sm:text-base";
-                desc.innerHTML = "<b>特教引導：</b>不要氣餒，試著檢查哪一步的步驟卡在孩子身上會引發挫折？（例如：是否未在早晨出門核對前就先刷好了牙？是否還沒有製作雙面生字卡就開始狂聽音檔？）請點擊格子右側的『減號』或點選右上角『重設』按鈕，再次帶領孩子思考。";
-                panel.className = "p-5 rounded-2xl border border-rose-200 bg-rose-50/40 text-rose-950 flex items-start gap-3.5 transition-all duration-300 mt-4 shadow-sm";
+                desc.innerHTML = "<b>特教引導：</b>不要氣餒，試著檢查哪一步的步驟卡在孩子身上會引發挫折？（例如：是否未核對好就先出發？）請點擊格子右側的『減號』或點選右上角『重設』按鈕，再次帶領孩子思考。";
+                desc.className = "text-xs sm:text-sm leading-relaxed text-rose-800";
+                panel.className = "p-5 rounded-2xl border border-rose-200 bg-rose-50 text-rose-950 flex flex-col gap-4 transition-all duration-300 mt-4 shadow-sm";
+                
+                if(currentTab === 'primary') printBtn.style.display = 'none';
+
                 playErrorSound();
                 showToast("❌ 順序有些許不和諧，請再次嘗試。", "error");
             }
         }
 
-        // ==========================================
-        // 3. 五彩紙屑 (Confetti) 絢麗慶祝動效
-        // ==========================================
         function createConfettiShower() {
             const colors = ['#818cf8', '#a78bfa', '#ec4899', '#34d399', '#fbbf24', '#f87171'];
             for (let i = 0; i < 40; i++) {
@@ -535,15 +558,13 @@
                 conf.style.animationDelay = Math.random() * 1.5 + 's';
                 conf.style.transform = `scale(${Math.random() * 0.8 + 0.4})`;
                 document.body.appendChild(conf);
-                
-                // 3.5秒後自動移除，防止DOM累積卡頓
                 setTimeout(() => { conf.remove(); }, 3500);
             }
         }
 
 
         // ==========================================
-        // 4. 三大轉銜 Tab 專屬糾錯測驗資料庫
+        // 3. 三大轉銜 Tab 專屬糾錯測驗資料庫與邏輯
         // ==========================================
         const tabQuizDatabase = {
             primary: {
@@ -551,7 +572,7 @@
                 question: "當 K3 升讀小一的第一個月，原本乖巧的孩子突然在出門前大哭大鬧、拒絕穿校服、甚至裝肚子痛不肯上學。作為家長，最科學且能提供自控適應的第一步是什麼？",
                 options: {
                     A: "黑臉嚴厲指責，覺得他恃寵生嬌：「小學大個仔喇！點可以咁懶唔返學？你再扭計我就話俾班主任聽！」",
-                    B: "蹲下來擁抱他，同理他的緊張，並指向門邊的「視覺提示卡」：「媽媽知道轉新學校好緊張、好陌生。我哋睇下提示卡，做完今朝4個小怪獸任務，媽媽下午放學喺學校門口第一時間等Sunny，好嗎？」",
+                    B: "蹲下來擁抱他，同理他的緊張，並指向門邊的「視覺提示卡」：「媽媽知道轉新學校好緊張。我哋睇下提示卡，做完今朝小任務，放學喺學校門口第一時間等Sunny，好嗎？」",
                     C: "妥協，覺得孩子可能真的生病了，直接打電話向校方請假，陪他在家打機度過這一天。"
                 },
                 answer: "B",
@@ -561,249 +582,216 @@
                     C: "C 選擇：一味妥協和請假，會強化其「逃避行為」，使學校恐懼固化為逃學行為。"
                 },
                 feedbackDesc: {
-                    A: "<b>臨床分析：</b>幼升小是孩子第一次面臨高度結構化的學業。裝病和哭鬧是杏仁核被「分離焦慮（Separation Anxiety）」劫持時的本能抗拒。搬出班主任來威脅，只會加深孩子把學校與痛苦進行威脅聯想（Adverse associations），使拒學情緒螺旋升級。",
-                    B: "<b>臨床分析：</b>太棒了！1. <b>情感確認（Validation）</b>：承認新環境的確恐怖，建立家庭安全邊界。2. <b>視覺日常引導</b>：將漫長的上學分解為4個可控任務，降溫其失控感。3. <b>明確承諾</b>：明確告知何時會重聚，徹底化解分離恐懼焦慮。",
-                    C: "<b>臨床分析：</b>特教或常規兒童在面臨焦慮時，大腦會本能尋求「逃避（Avoidance）」以降低不適感。家長一旦妥協請假，孩子大腦就會得到『只要我大鬧就能逃避上學』的錯誤負向增強（Negative reinforcement），導致下一次上學變得更加艱難、演變為長期拒學障礙。"
+                    A: "<b>臨床分析：</b>幼升小是孩子第一次面臨高度結構化的學業。裝病和哭鬧是杏仁核被「分離焦慮」劫持時的本能抗拒。搬出班主任來威脅，只會加深孩子把學校與痛苦進行威脅聯想。",
+                    B: "<b>臨床分析：</b>太棒了！1. <b>情感確認（Validation）</b>：承認新環境的確恐怖。2. <b>視覺日常引導</b>：將漫長的上學分解為可控任務。3. <b>明確承諾</b>：明確告知何時會重聚，徹底化解分離恐懼焦慮。",
+                    C: "<b>臨床分析：</b>特教兒童在面臨焦慮時大腦會本能尋求「逃避」。家長一旦妥協請假，孩子大腦就會得到『只要我大鬧就能逃避』的錯誤負向增強，演變為長期拒學障礙。"
                 }
             },
             secondary: {
                 title: "🏫 小升中思維：全英文學科轉型與執行功能崩潰糾錯",
-                question: "中一生Sunny在小學時成绩優異，但升入中一後由於轉為全英文中學（EMI），學科大增，他開始交不出功課、手冊雜亂、英文生字默寫慘敗。家長此時最應進行什麼認知轉換？",
+                question: "中一生Sunny升入中一後由於轉為全英文中學（EMI），學科大增，他開始交不出功課、手冊雜亂、英文生字默寫慘敗。家長此時最應進行什麼認知轉換？",
                 options: {
-                    A: "覺得孩子升中後自傲、心散：「以前小學默書次次一百分，依家中學就差到咁，肯定係你掛住打機、上課唔專心！」",
-                    B: "意識到這是中一學科大增引起的「執行功能過載與語言屏障」，協助他落實三色文件夾分類收納、多感官 VAKT 記生字，並向 SENCO 申請英文默題減免等三層支援。",
+                    A: "覺得孩子升中後自傲、心散：「以前小學默書次次一百分，依家中學就差到咁，肯定係你掛住打機！」",
+                    B: "意識到這是中一學科大增引起的「執行功能過載與語言屏障」，協助他落實三色文件夾分類收納，並向 SENCO 申請支援。",
                     C: "直接請最貴的私人英文補習老師，每天幫他狂寫 2 小時英文練習題以硬幹成績。"
                 },
                 answer: "B",
                 feedbackTitle: {
-                    A: "A 選擇：錯誤的責備，會直接摧毀孩子本已脆弱的自信、引發學業退縮。",
+                    A: "A 選擇：錯誤的責備，會直接摧毀孩子本已脆弱的自信。",
                     B: "B 選擇：極其專業！這是應對中一執行功能與學科轉型瓶頸的臨床黃金策略！",
                     C: "C 選擇：強行加壓灌輸只會引發嚴重的心理崩潰與親子對決。"
                 },
                 feedbackDesc: {
-                    A: "<b>臨床分析：</b>小學升中學，學科從 4 門激增至 10 多門，加上語言轉換，對工作記憶與組織計畫（Executive functioning）提出了極高要求。這時孩子的退步是認知結構在警報，並不是「懶散或打機過多」。一味指責只會讓他感到被孤立、自暴自棄、徹底放棄學習。",
-                    B: "<b>臨床分析：</b>精準對齊！進入中一，孩子不再是單純溫習。我們在 Module 1/2 開發的三色文件夾執書包和多感官沙盤，能從神經層面給予學童組織力的骨架支持。多選調適、家校聯合，這才是保護中一孩子不掉隊的臨床科學防線。",
-                    C: "<b>臨床分析：</b>此時孩子的問題在於<b>「大腦無法組織海量資訊與處理感官焦慮」</b>。補習社強行灌輸罰寫抄寫，無疑是在孩子已經超載的硬碟上追加寫入垃圾檔案。不僅無法提高成绩，更容易引發嚴重的反叛和青少年抑鬱。"
+                    A: "<b>臨床分析：</b>學科從 4 門激增至 10 多門，加上語言轉換，對工作記憶提出了極高要求。退步是認知結構在警報，一味指責只會讓他徹底放棄學習。",
+                    B: "<b>臨床分析：</b>精準對齊！三色文件夾執書包能從神經層面給予學童組織力的骨架支持。多選調適、家校聯合，才是保護中一孩子不掉隊的臨床科學防線。",
+                    C: "<b>臨床分析：</b>此時孩子的問題在於<b>「大腦無法組織海量資訊」</b>。補習社強行灌輸罰寫，無疑是在孩子已經超載的硬碟上追加寫入垃圾檔案。"
                 }
             },
             post: {
                 title: "💼 職涯大專思維：DSE 成績不理想與足不出戶危機糾錯",
-                question: "DSE 放榜後，自閉症（ASD）的孩子成績不理想、無法入讀本地大學。他隨後鎖自己在房間，拒絕出門、拒絕求職或報讀副學士，甚至不與父母對視。這時家長應如何打破家庭僵局？",
+                question: "DSE 放榜後，自閉症（ASD）的孩子成績不理想。他隨後鎖自己在房間，拒絕出門求職，甚至不與父母對視。這時家長應如何打破家庭僵局？",
                 options: {
-                    A: "覺得他一輩子完蛋了，每天隔著門痛罵：「DSE 考得差唔緊要，但你唔可以一世做隱蔽青年廢物！聽日立刻跟我去勞工處見工！」",
-                    B: "理解這是 ASD 學童在生涯目標重大偏離時引發的「創傷後解體與前途災難化焦慮」。家長應先保持冷靜，給予溫和陪伴。隨後帶其聯絡香港「職業康復中心（VR）」、或報讀提供 SEN 主任的大專基礎文憑，進行低起點小步子職涯重建。",
-                    C: "完全隨他去，覺得「生下這樣的孩子我也沒辦法了」，每日把飯盒放在房門口，任由他隱蔽一整年。"
+                    A: "覺得他一輩子完蛋了，每天隔著門痛罵：「聽日立刻跟我去勞工處見工！」",
+                    B: "理解這是 ASD 學童在生涯目標重大偏離時引發的「災難化焦慮」。先給予溫和陪伴，隨後聯絡「職業康復中心」進行低起點小步子職涯重建。",
+                    C: "完全隨他去，覺得「我也沒辦法了」，每日把飯盒放在房門口，任由他隱蔽一整年。"
                 },
                 answer: "B",
                 feedbackTitle: {
                     A: "A 選擇：粗暴催促只會把在懸崖邊掙扎的孩子徹底推入隱世自閉黑洞！",
-                    B: "B 選擇：無懈可擊！這是臨床心理學上對 ASD 青年職涯轉銜最溫柔、最專業的救贖！",
+                    B: "B 選擇：無懈可擊！這是臨床心理學上對 ASD 青年職涯轉銜最溫柔的救贖！",
                     C: "C 選擇：完全放任會使隱蔽青年狀態固化、重度社會化脫鉤。"
                 },
                 feedbackDesc: {
-                    A: "<b>臨床分析：</b>自閉症（ASD）青年在面臨人生規劃的「非預期改變」時（如 DSE 失敗），其大腦彈性極低，常將失敗擴大為『我一輩子都是廢物』的嚴重災難化聯想。粗暴強迫去勞工處面試，其強烈的社交焦慮會引發驚恐爆發，加劇其隱蔽不出門的自閉傾向。",
-                    B: "<b>臨床分析：</b>這才是真正的生命導航！ASD 青年極需高度結構、清晰指引的『小步子過渡階段（Post-School Transitions）』。1. <b>大專 SEN 支援</b>：大專設有特殊教育需要主任（SENCO），能為他安排分流輔導。2. <b>展能就業或 VR（職業康復）</b>：提供非競爭、包容性強的實用技能培訓，這才能幫助他安全降溫，逐步與社會接軌。",
-                    C: "<b>臨床分析：</b>放任與放棄也是家庭系統失靈的表現。隱蔽青年的社交脫鉤時間一旦超過 6 個月，其社會回歸難度會呈指數上升。給予低刺激度的日常互動（如邀請他一起倒垃圾、做家務），並尋求社區外展社工（YOT）介入，才是科學的修復途徑。"
+                    A: "<b>臨床分析：</b>自閉症青年在面臨人生規劃非預期改變時，大腦彈性極低。粗暴強迫去勞工處面試，其強烈的社交焦慮會引發驚恐爆發。",
+                    B: "<b>臨床分析：</b>ASD 青年極需高度結構、清晰指引的『小步子過渡』。展能就業或 VR 提供非競爭、包容性強的培訓，幫助他安全降溫與社會接軌。",
+                    C: "<b>臨床分析：</b>隱蔽青年的社交脫鉤時間一旦超過 6 個月，社會回歸難度會呈指數上升。給予低刺激度的日常互動才是科學修復途徑。"
                 }
             }
         };
 
-        function loadTabSpecificQuiz(tabKey) {
-            const quiz = tabQuizDatabase[tabKey];
-            if (!quiz) return;
-
+        function loadTabSpecificQuiz() {
+            const quiz = tabQuizDatabase[currentTab];
             document.getElementById('quiz-question-title').innerHTML = quiz.question;
 
             const optionsContainer = document.getElementById('quiz-options');
             const feedbackContainer = document.getElementById('quiz-feedback');
             
-            feedbackContainer.classList.add('hidden'); // 切換 Tab 時隱藏上一個反饋
+            feedbackContainer.classList.add('hidden'); 
+            optionsContainer.innerHTML = '';
 
-            optionsContainer.innerHTML = `
-                <button onclick="submitTabQuiz('${tabKey}', 'A')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-indigo-400 hover:bg-indigo-50/30 transition flex items-start gap-3 w-full active:scale-[0.99]">
-                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">A</span>
-                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.A}</span>
-                </button>
-                <button onclick="submitTabQuiz('${tabKey}', 'B')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-indigo-400 hover:bg-indigo-50/30 transition flex items-start gap-3 w-full active:scale-[0.99]">
-                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">B</span>
-                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.B}</span>
-                </button>
-                <button onclick="submitTabQuiz('${tabKey}', 'C')" class="quiz-btn text-left border border-slate-200 rounded-2xl p-4 hover:border-indigo-400 hover:bg-indigo-50/30 transition flex items-start gap-3 w-full active:scale-[0.99]">
-                    <span class="bg-slate-100 text-slate-700 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs">C</span>
-                    <span class="text-slate-800 text-xs sm:text-sm">${quiz.options.C}</span>
-                </button>
-            `;
+            Object.keys(quiz.options).forEach(optKey => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-200 transition-all text-sm text-slate-700 font-medium flex gap-3 group items-start";
+                btn.onclick = () => checkQuizAnswer(optKey);
+                btn.innerHTML = `<span class="bg-white border border-slate-300 text-slate-500 w-7 h-7 rounded-md flex items-center justify-center font-bold shrink-0 group-hover:bg-indigo-100 group-hover:text-indigo-700 group-hover:border-indigo-300 transition-colors shadow-sm">${optKey}</span> <span class="pt-1 leading-relaxed">${quiz.options[optKey]}</span>`;
+                optionsContainer.appendChild(btn);
+            });
         }
 
-        function submitTabQuiz(tabKey, choice) {
-            const quiz = tabQuizDatabase[tabKey];
-            const feedback = document.getElementById('quiz-feedback');
-            const fIcon = document.getElementById('feedback-icon');
-            const fTitle = document.getElementById('feedback-title');
-            const fDesc = document.getElementById('feedback-desc');
+        function checkQuizAnswer(selectedOpt) {
+            const quiz = tabQuizDatabase[currentTab];
+            const isCorrect = selectedOpt === quiz.answer;
+            const feedbackContainer = document.getElementById('quiz-feedback');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackDesc = document.getElementById('feedback-desc');
 
-            feedback.classList.remove('hidden');
+            feedbackContainer.classList.remove('hidden');
 
-            if (choice === quiz.answer) {
-                fIcon.innerHTML = '✅';
-                fTitle.innerText = quiz.feedbackTitle[choice];
-                fTitle.className = "font-black text-emerald-800 text-sm sm:text-base";
-                fDesc.innerHTML = quiz.feedbackDesc[choice];
-                feedback.className = "p-5 rounded-2xl border border-emerald-100 bg-emerald-50/40 text-emerald-950";
+            if (isCorrect) {
+                feedbackContainer.className = "p-5 rounded-2xl border transition-all duration-300 mt-4 bg-emerald-50 border-emerald-200 text-emerald-900 shadow-sm";
+                feedbackIcon.innerHTML = "<i class='fa-solid fa-lightbulb text-emerald-500'></i>";
+                feedbackTitle.className = "font-black text-emerald-900 text-sm sm:text-base";
+                feedbackDesc.className = "text-xs sm:text-sm leading-relaxed text-emerald-800";
                 playSuccessSound();
-                showToast("✅ 答對了！恭喜家長建立起極佳的特教心理學管教思維！", "success");
+                createConfettiShower();
             } else {
-                fIcon.innerHTML = '❌';
-                fTitle.innerText = quiz.feedbackTitle[choice];
-                fTitle.className = "font-black text-rose-800 text-sm sm:text-base";
-                fDesc.innerHTML = quiz.feedbackDesc[choice];
-                feedback.className = "p-5 rounded-2xl border border-rose-100 bg-rose-50/40 text-rose-950";
-                playErrorSound();
-                showToast("❌ 答案仍有些許偏差，請細心閱讀臨床分析指南。", "error");
+                feedbackContainer.className = "p-5 rounded-2xl border transition-all duration-300 mt-4 bg-rose-50 border-rose-200 text-rose-900 shadow-sm";
+                feedbackIcon.innerHTML = "<i class='fa-solid fa-circle-exclamation text-rose-500'></i>";
+                feedbackTitle.className = "font-black text-rose-900 text-sm sm:text-base";
+                feedbackDesc.className = "text-xs sm:text-sm leading-relaxed text-rose-800";
             }
+
+            feedbackTitle.innerHTML = quiz.feedbackTitle[selectedOpt];
+            feedbackDesc.innerHTML = quiz.feedbackDesc[selectedOpt];
         }
 
         // ==========================================
-        // 5. 三板塊頂部切換與右欄理論解說卡片動態加載 (Education Theory Columns)
+        // 4. 動態渲染右側理論與家長支援區 (卡片優化版)
         // ==========================================
-        const transitionTheoryData = {
+        const theoryDatabase = {
             primary: `
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
-                    <h4 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center gap-1.5">
-                        🏫 K3 升小一：應對環境轉折與分離焦慮
-                    </h4>
-                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                        幼稚園是高師生比、彈性玩耍的溫和環境。而小一則是固定課堂、高自理要求（如自控小便、不准隨意走動、高默寫）。
-                    </p>
-                    <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 space-y-2 text-[11px] text-indigo-950">
-                        <strong class="font-bold block">💡 臨床特教黃金策略：</strong>
-                        <p class="leading-relaxed">
-                            1. <b>建立視覺可控性 (Visual Predictability)：</b>上小一前，帶領孩子多次參觀小學校園、適應實體小學課桌。在家貼好『早晨視覺小怪獸常規卡』，用卡片引導代替口頭催促。<br><br>
-                            2. <b>明確重聚承諾：</b>分離焦慮重的學童極怕家長忘記接放學。家長應明確承諾『下課鐘一響，媽媽會在校門大樹下第一個等你』，徹底調降杏仁核不安全感。
-                        </p>
+                <div class="bg-indigo-600 rounded-3xl p-6 text-white shadow-md relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-8xl"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="relative z-10 space-y-4">
+                        <h3 class="font-black text-lg border-b border-indigo-400/50 pb-2 flex items-center gap-2"><i class="fa-solid fa-star"></i> 臨床特教黃金策略</h3>
+                        
+                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/20">
+                            <h4 class="font-bold flex items-center gap-2 text-sm"><i class="fa-solid fa-eye text-yellow-300"></i> 1. 建立視覺可控性</h4>
+                            <p class="text-xs mt-1.5 opacity-90 leading-relaxed">對 SEN 孩子來說，聽覺指令易消散。將行程化為<b>實體圖片</b>，能大幅降低未知帶來的恐懼。</p>
+                        </div>
+
+                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/20">
+                            <h4 class="font-bold flex items-center gap-2 text-sm"><i class="fa-solid fa-handshake-angle text-rose-300"></i> 2. 明確重聚承諾</h4>
+                            <p class="text-xs mt-1.5 opacity-90 leading-relaxed">分離時最怕含糊。給予如 <b class="bg-indigo-800 px-1 rounded">「下課鐘一響，媽媽會在校門大樹下第一個等你」</b> 這樣具體、具溫度的承諾。</p>
+                        </div>
+                        
+                        <!-- 家校溝通神器 -->
+                        <div class="mt-4 bg-indigo-800/50 p-4 rounded-xl border border-indigo-400">
+                            <h4 class="font-bold text-sm mb-2"><i class="fa-solid fa-file-signature text-emerald-300"></i> 新學期·一頁紙孩子說明書</h4>
+                            <p class="text-xs opacity-90 mb-3">開學直接交給新班主任，減少資訊斷層誤會。</p>
+                            <button onclick="downloadMockPDF('一頁紙孩子說明書範本')" class="w-full bg-white text-indigo-700 font-bold py-2 rounded-lg text-xs hover:bg-indigo-50 transition">下載填寫範本</button>
+                        </div>
                     </div>
                 </div>
             `,
             secondary: `
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
-                    <h4 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center gap-1.5">
-                        🎓 P6 升中一：執行功能瓶頸與全英文轉軌
-                    </h4>
-                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                        進入中學後，學科呈倍數上升，加上中文中學 (C&MA) 到英文中學 (EMI) 的學科語言大跨越，是讀寫障礙學童極易出現全盤崩潰的隱形高危期。
-                    </p>
-                    <div class="bg-purple-50 border border-purple-200 rounded-2xl p-4 text-[11px] text-purple-950">
-                        ⚠️ <b>「過度超載與自信重創」：</b>
-                        此時孩子的功課欠交和成績下滑，通常是大腦執行功能（Executive Functions）因過多學科和繁瑣流程而當機。
-                        <br><br>
-                        <b>解法：</b>家長不要強行責怪，而應協助孩子建立『四色分类功課文件夾』；在英文背誦上，採用我們之前開發的 VAKT（視覺、聽覺、動覺、觸覺聯合）多感官沙盤，幫助孩子逐步脫開中文提示。
+                <div class="bg-teal-600 rounded-3xl p-6 text-white shadow-md relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-8xl"><i class="fa-solid fa-sitemap"></i></div>
+                    <div class="relative z-10 space-y-4">
+                        <h3 class="font-black text-lg border-b border-teal-400/50 pb-2 flex items-center gap-2"><i class="fa-solid fa-star"></i> 小升中特教黃金策略</h3>
+                        
+                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/20">
+                            <h4 class="font-bold flex items-center gap-2 text-sm"><i class="fa-solid fa-brain text-yellow-300"></i> 1. 執行功能鷹架 (Scaffolding)</h4>
+                            <p class="text-xs mt-1.5 opacity-90 leading-relaxed">中學需要極強自我管理。家長需先代為建立「三色收納夾」、「每日功課核對表」，再逐步放手。</p>
+                        </div>
+
+                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/20">
+                            <h4 class="font-bold flex items-center gap-2 text-sm"><i class="fa-solid fa-users text-rose-300"></i> 2. 青春期社交導航</h4>
+                            <p class="text-xs mt-1.5 opacity-90 leading-relaxed">準備「情境應對句型卡」，例如 <b class="bg-teal-800 px-1 rounded">「如果同學借功課抄，我可以說...」</b>，預演防欺凌策略。</p>
+                        </div>
                     </div>
                 </div>
             `,
             post: `
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
-                    <h4 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center gap-1.5">
-                        💼 生涯規劃：文憑試 DSE 及成人過渡
-                    </h4>
-                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                        高中 DSE 文憑試對 SEN 青年來說是生命中的巨震。一旦放榜成绩不理想要轉換軌道，自閉症（ASD）或過活躍障礙的學童極易出現嚴重的前途災難化心理。
-                    </p>
-                    <div class="bg-violet-50 border border-violet-200 rounded-2xl p-4 text-[11px] text-violet-950">
-                        🏛️ <b>特殊考評與職業過渡：</b>
-                        1. <b>HKEAA DSE 考評局特別考評：</b>必須提早在中五上學期申請！25% 延時及特別試室能極大舒緩考試焦慮。<br><br>
-                        2. <b>職業康復及青年外展 (Vocational Rehab & SENS)：</b>若無法升讀主流大專，請積極聯絡香港耀能、協康會或社署資助的「展能就業/輔助就業（VR）中心」，用安全、分步有引導的模擬職場，幫助孩子緩步實現社會化自立。
+                <div class="bg-sky-600 rounded-3xl p-6 text-white shadow-md relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-8xl"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="relative z-10 space-y-4">
+                        <h3 class="font-black text-lg border-b border-sky-400/50 pb-2 flex items-center gap-2"><i class="fa-solid fa-star"></i> 職場/大專特教黃金策略</h3>
+                        
+                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/20">
+                            <h4 class="font-bold flex items-center gap-2 text-sm"><i class="fa-solid fa-bullhorn text-yellow-300"></i> 1. 自我倡導 (Self-advocacy)</h4>
+                            <p class="text-xs mt-1.5 opacity-90 leading-relaxed">教導青年如何用平靜、專業的語氣向教授或僱主說明自己的特殊需要與強項。</p>
+                        </div>
+
+                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/20">
+                            <h4 class="font-bold flex items-center gap-2 text-sm"><i class="fa-solid fa-temperature-arrow-down text-rose-300"></i> 2. 職涯失敗降溫機制</h4>
+                            <p class="text-xs mt-1.5 opacity-90 leading-relaxed">當面試受挫時，需有明確的「情緒安全網」，避免青年陷入災難化思考而隱蔽不出。</p>
+                        </div>
                     </div>
                 </div>
             `
         };
 
-        function switchTransitionTab(tabKey) {
-            currentTab = tabKey;
+        function renderTheoryColumn() {
+            const theoryContainer = document.getElementById('right-theory-column');
+            
+            // 基礎理論區
+            let htmlStr = theoryDatabase[currentTab];
 
-            // 更新頂部按鈕高亮
-            const tabs = ['primary', 'secondary', 'post'];
-            tabs.forEach(t => {
-                const el = document.getElementById(`tab-${t}`);
-                if (t === tabKey) {
-                    el.className = "flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-indigo-700 bg-indigo-50 border border-indigo-100 shadow-sm";
-                } else {
-                    el.className = "flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50";
-                }
+            // 附加家長充電角 (Parent Well-being) - 優化建議 5
+            htmlStr += `
+                <div class="bg-orange-50 border border-orange-100 rounded-3xl p-6 shadow-sm relative overflow-hidden mt-6">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-orange-100 text-orange-500 w-10 h-10 rounded-full flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-mug-hot"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-black text-orange-800 text-sm">家長充電角 (Parent Well-being)</h4>
+                            <p class="text-xs text-orange-700/80 mt-1 leading-relaxed">
+                                陪伴 SEN 孩子轉銜是一場耗力的馬拉松。在你為孩子建立安全網的同時，請記得：<b>「你已經做得非常好了。」</b>深呼吸，今晚給自己 15 分鐘的獨處時光，抱抱辛苦的自己。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            theoryContainer.innerHTML = htmlStr;
+        }
+
+        // ==========================================
+        // 5. 核心 Tab 切換邏輯
+        // ==========================================
+        function switchTransitionTab(tabId) {
+            currentTab = tabId;
+            
+            // 更新按鈕視覺狀態
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-indigo-700', 'bg-indigo-50', 'border-indigo-100', 'shadow-sm');
+                btn.classList.add('text-slate-600', 'border-transparent');
             });
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.remove('text-slate-600', 'border-transparent');
+            activeBtn.classList.add('text-indigo-700', 'bg-indigo-50', 'border-indigo-100', 'shadow-sm');
 
-            // 更新右側理論卡
-            document.getElementById('right-theory-column').innerHTML = transitionTheoryData[tabKey];
-
-            // 重新初始化對應的拼圖小遊戲與糾錯測驗
+            // 重新初始化對應的內容
             initRoutineGame();
-            loadTabSpecificQuiz(tabKey);
+            loadTabSpecificQuiz();
+            renderTheoryColumn();
         }
 
-        // ==========================================
-        // 6. 模擬下載 PDF（無阻礙與彈窗，Toast 反饋）
-        // ==========================================
-        function downloadMockPDF(title) {
-            playSuccessSound();
-            showToast(`📂 正在為您封裝並打包《${title}》調適 PDF 下載文件包...`, "success");
-            setTimeout(() => {
-                showToast(`🎉 成功！《${title}》已下載完成（模擬下載，文件已保存至 Downloads 下載欄）。`, "info");
-            }, 1500);
-        }
-
-        // ==========================================
-        // 7. 輔助通知系統 (Toast) & A11y 狀態同步
-        // ==========================================
-        function showToast(message, type = "success") {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
-            
-            let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
-            let borderClass = 'border-emerald-100 shadow-emerald-50/50';
-            if (type === 'error') {
-                icon = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
-                borderClass = 'border-rose-100 shadow-rose-50/50';
-            } else if (type === 'info') {
-                icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
-                borderClass = 'border-blue-100 shadow-blue-50/50';
-            }
-            
-            toast.className += ` ${borderClass}`;
-            toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
-            
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
-            }, 10);
-            
-            setTimeout(() => {
-                toast.classList.add('translate-y-2', 'opacity-0');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }, 4000);
-        }
-
-        function syncA11ySettings() {
-            const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
-            const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
-            
-            if (cachedContrast === 'true') {
-                document.body.classList.add('a11y-high-contrast');
-            }
-            if (cachedLargeText === 'true') {
-                document.documentElement.classList.add('a11y-large-text');
-            }
-        }
-
-        // ==========================================
-        // 頁面初始化
-        // ==========================================
-        window.onload = function() {
-            syncA11ySettings();
-            
-            // 默認加載幼升小
+        // 初始化加載
+        window.onload = () => {
             switchTransitionTab('primary');
         };
     </script>
