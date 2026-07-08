@@ -581,26 +581,34 @@
         // ----------------------------------------------------
         function playRadar(btn, text, colorClass, icon, speechText = "", pitch = 1, rate = 1) {
             const resultBox = btn.parentElement.querySelector('.radar-result');
+            
+            // 防止重複點擊
+            if (btn.classList.contains('animate-spin')) return;
             btn.classList.add('animate-spin');
             
             if ('speechSynthesis' in window && speechText !== "") {
+                // 先取消所有正在播放的語音
                 window.speechSynthesis.cancel(); 
-                const utterance = new SpeechSynthesisUtterance(speechText);
-                utterance.lang = 'zh-HK'; 
-                utterance.pitch = pitch;  
-                utterance.rate = rate;    
                 
-                utterance.onend = () => {
-                    btn.classList.remove('animate-spin');
-                    resultBox.classList.remove('hidden');
-                    resultBox.innerHTML = `<span class="${colorClass}">${icon} 真正意思：${text}</span>`;
-                };
-                utterance.onerror = () => {
-                    btn.classList.remove('animate-spin');
-                    resultBox.classList.remove('hidden');
-                    resultBox.innerHTML = `<span class="${colorClass}">${icon} 真正意思：${text}</span>`;
-                };
-                window.speechSynthesis.speak(utterance);
+                // 延遲 50ms 再播放，增加在移動端瀏覽器的穩定性
+                setTimeout(() => {
+                    const utterance = new SpeechSynthesisUtterance(speechText);
+                    utterance.lang = 'zh-HK'; 
+                    utterance.pitch = pitch;  
+                    utterance.rate = rate;    
+                    
+                    utterance.onend = () => {
+                        btn.classList.remove('animate-spin');
+                        resultBox.classList.remove('hidden');
+                        resultBox.innerHTML = `<span class="${colorClass}">${icon} 真正意思：${text}</span>`;
+                    };
+                    utterance.onerror = () => {
+                        btn.classList.remove('animate-spin');
+                        resultBox.classList.remove('hidden');
+                        resultBox.innerHTML = `<span class="${colorClass}">${icon} 真正意思：${text}</span>`;
+                    };
+                    window.speechSynthesis.speak(utterance);
+                }, 50);
             } else {
                 setTimeout(() => {
                     btn.classList.remove('animate-spin');
@@ -726,16 +734,20 @@
             const icon = document.getElementById('feedback-icon');
             const nextBtn = document.getElementById('next-btn');
 
-            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+            // 隱藏之前的回饋
+            feedbackBox.classList.add('hidden');
             
+            // 立即鎖定所有按鈕，防止重複點擊
             const allBtns = document.querySelectorAll('.game-option');
             allBtns.forEach(b => b.disabled = true);
 
             if (isCorrect) {
+                // 正確答案邏輯
                 selectedBtn.classList.replace('border-slate-100', 'border-emerald-500');
                 selectedBtn.classList.replace('hover:border-purple-400', 'border-emerald-500');
                 selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'font-bold');
                 
+                feedbackBox.classList.remove('hidden', 'bg-rose-50', 'border-rose-200');
                 feedbackBox.classList.add('bg-emerald-50', 'border-emerald-200');
                 title.className = "font-bold text-lg mb-1 text-emerald-800";
                 icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
@@ -749,18 +761,21 @@
                     nextBtn.innerHTML = '進入下一個檔案 <i class="fa-solid fa-arrow-right ml-1"></i>';
                 }
             } else {
+                // 錯誤答案邏輯
                 selectedBtn.classList.add('animate-shake', 'bg-rose-50', 'border-rose-300', 'text-rose-700');
                 
+                feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200');
                 feedbackBox.classList.add('bg-rose-50', 'border-rose-200');
                 title.className = "font-bold text-lg mb-1 text-rose-800";
                 icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-500"></i>';
                 title.innerText = data.failTitle;
                 text.innerText = data.failText;
 
+                // 錯誤後短暫延遲再解鎖，讓玩家有時間看回饋並防止連點
                 setTimeout(() => {
-                    selectedBtn.classList.remove('animate-shake');
+                    selectedBtn.classList.remove('animate-shake', 'bg-rose-50', 'border-rose-300', 'text-rose-700');
                     allBtns.forEach(b => b.disabled = false);
-                }, 500);
+                }, 800);
             }
         }
 
