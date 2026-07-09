@@ -25,7 +25,8 @@
             top: 50%;
             left: 50%;
             width: 1122px;
-            height: 793px;
+            min-height: 793px; /* 允許畫布隨著內容增多而自動長高 */
+            height: auto;
             transform-origin: center center;
             background-color: #ffffff;
             border: 1px solid #cbd5e1;
@@ -104,7 +105,7 @@
                 </div>
                 <div onclick="selectRoom('chunking')" id="room-chunking" class="room-card p-3 rounded-2xl flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-scissors"></i></div>
-                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">4. 終極任務：拆解魔王</h3><p class="text-[11px] text-slate-500 mt-1">5步微步驟粉碎3大任務</p></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">4. 終極任務：拆解魔王</h3><p class="text-[11px] text-slate-500 mt-1">5步微步驟粉碎大任務</p></div>
                 </div>
                 <div onclick="selectRoom('buffer')" id="room-buffer" class="room-card p-3 rounded-2xl flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-brain"></i></div>
@@ -149,7 +150,7 @@
 
     <script>
         // ==========================================
-        // UI 控制與縮放引擎
+        // UI 控制與動態高度縮放引擎 (解決一切裁切問題)
         // ==========================================
         let isSidebarOpen = true;
 
@@ -163,7 +164,6 @@
                 sidebar.classList.remove('flex');
                 sidebar.classList.add('hidden');
             }
-            // 延遲重算縮放，讓畫面有時間重新佈局
             setTimeout(resizeCanvas, 50);
         }
 
@@ -174,15 +174,24 @@
             
             if(!container || !canvas) return;
 
+            // 暫時解除縮放，獲取內容真實高度
+            canvas.style.transform = `translate(-50%, -50%) scale(1)`;
+            
             const baseWidth = 1122;
-            const baseHeight = 793;
-            const padding = window.innerWidth < 768 ? 20 : 60; 
+            canvas.style.height = 'auto'; // 允許自動生長
+            const baseHeight = Math.max(793, canvas.offsetHeight); // 取得實際需要的高度，最少為 A4
+
+            const padding = window.innerWidth < 768 ? 20 : 40; 
             const availableWidth = container.clientWidth - padding;
             const availableHeight = container.clientHeight - padding;
 
             if (availableWidth <= 0 || availableHeight <= 0) return;
 
+            // 計算最小縮放比，確保長或寬都能完美納入螢幕
             const scale = Math.min(availableWidth / baseWidth, availableHeight / baseHeight);
+            
+            // 套用自適應高度與縮放
+            canvas.style.height = `${baseHeight}px`;
             canvas.style.transform = `translate(-50%, -50%) scale(${scale})`;
         }
         window.addEventListener('resize', resizeCanvas);
@@ -197,6 +206,16 @@
         let pomoInterval;
         let boardTimer;
         let isPomoRunning = false;
+        let pomoSeconds = 1200;
+
+        let currentDefuseIndex = 0;
+        let currentLaserStep = 1;
+        let selectedBufferIcons = new Set();
+        let boardSecs = 100;
+        let currentSortIndex = 0; 
+        let sortedCount = 0;
+        let isQuestionInspected = false; 
+        let shotTargets = new Set();
 
         function updateHUD(staminaDiff) {
             stamina = Math.max(0, Math.min(100, stamina + staminaDiff));
@@ -234,7 +253,7 @@
         function fireConfetti() {
             const container = document.getElementById('confetti-container');
             if (!container) return;
-            container.innerHTML = ''; // 清空舊的
+            container.innerHTML = ''; 
             const emojis = ['🎉', '✨', '🏆', '⭐', '🎈'];
             for(let i=0; i<40; i++) {
                 let conf = document.createElement('div');
@@ -259,8 +278,8 @@
         
         // 1. AT
         const atTasks = [
-            { title: "【中文科】", text: "SpLD 學生最大的挫折來自於「死磕文字」。大腦在解碼文字形體時需要耗費極大電量，導致短時間內產生大腦極度疲勞。我們需要教導學生使用科技武器來「繞過」障礙，將精力集中在理解核心知識上。" },
-            { title: "【英文科】", text: "For many SpLD students, the English language presents a unique challenge due to its opaque orthography. Decoding words phonetically drains working memory. Text-to-speech software can be a game changer." },
+            { title: "【中文科】", text: "讀寫障礙學生最大的挫折來自於「死磕文字」。大腦在解碼文字形體時需要耗費極大電量，導致短時間內產生大腦極度疲勞。我們需要教導學生使用科技武器來「繞過」障礙，將精力集中在理解核心知識上。" },
+            { title: "【英文科】", text: "For many students, the English language presents a unique challenge due to its opaque orthography. Decoding words phonetically drains working memory. Text-to-speech software can be a game changer." },
             { title: "【數學科】", text: "小明和小華去文具店買東西。小明買了3打原價每打$24的鉛筆，現在特價八折。小華買了5個價值$15的橡皮擦。如果他們合資用一張$500鈔票付款，應找回多少錢？(請列式計算)" }
         ];
 
@@ -268,12 +287,12 @@
         const decodingTasks = [
             { target: '贏', parts: ['亡', '口', '月', '貝', '凡'] },
             { target: '謝', parts: ['言', '身', '寸'] },
-            { target: '樹', parts: ['木', '吉', '寸'] },
+            { target: '樹', parts: ['木', '豆', '寸'] },
             { target: '遊', parts: ['方', '𠂉', '子', '辶'] },
             { target: '街', parts: ['彳', '圭', '亍'] },
             { target: '腳', parts: ['月', '谷', '卩'] },
             { target: '斑', parts: ['王', '文', '王'] },
-            { target: '辨', parts: ['辛', '刀', '辛'] },
+            { target: '辨', parts: ['辛', '刂', '辛'] },
             { target: '辯', parts: ['辛', '言', '辛'] },
             { target: '瓣', parts: ['辛', '瓜', '辛'] }
         ];
@@ -299,35 +318,54 @@
             { title: "校務處任務", audio: "去校務處交請假信，記得帶埋學生證去扱印。", icons: [ {e:'🏢',t:'校務處'}, {e:'✉️',t:'請假信'}, {e:'🪪',t:'學生證'} ] }
         ];
 
-        // 6. Spatial (10 關 - 英文/數字方向)
+        // 6. Spatial (10 關)
         const spatialTasks = [
-            { title: "【bed 法則】分辨 b / d", emoji: "👌🛏️👌", sub: "左手 b • 右手 d" },
-            { title: "【pig 法則】分辨 p / q", emoji: "👍🐖👍", sub: "左手 p • 右手 q (朝下)" },
-            { title: "【眼球方向】saw / was", emoji: "👀➡️", sub: "字序鏡像顛倒訓練" },
-            { title: "【眼球方向】on / no", emoji: "👀➡️", sub: "字序鏡像顛倒訓練" },
-            { title: "【上下翻轉】m / w", emoji: "⬆️ ⬇️", sub: "McDonalds(m) vs Water(w)" },
-            { title: "【上下翻轉】n / u", emoji: "⬆️ ⬇️", sub: "山洞(n) vs 水杯(u)" },
-            { title: "【左右鏡像】s / z", emoji: "⬅️ ➡️", sub: "曲線方向訓練" },
-            { title: "【數字翻轉】6 / 9", emoji: "🔄", sub: "圓圈在下(6) vs 圓圈在上(9)" },
-            { title: "【數字鏡像】E / 3", emoji: "⬅️ ➡️", sub: "向右開口(E) vs 向左開口(3)" },
-            { title: "【字母辨識】C / D", emoji: "🔍", sub: "弧線與直線區分" }
+            { title: "分辨 b / d", emoji: "b / d", sub: "【bed 法則】：雙手比OK，左手b、右手d，拼成床" },
+            { title: "分辨 p / q", emoji: "p / q", sub: "【pig 法則】：雙手比讚朝下，左手p、右手q" },
+            { title: "分辨 saw / was", emoji: "saw / was", sub: "【字序鏡像顛倒】：注意閱讀方向應由左至右" },
+            { title: "分辨 on / no", emoji: "on / no", sub: "【字序鏡像顛倒】：注意閱讀方向應由左至右" },
+            { title: "分辨 m / w", emoji: "m / w", sub: "【上下翻轉】：McDonalds (m) vs Water (w)" },
+            { title: "分辨 n / u", emoji: "n / u", sub: "【上下翻轉】：山洞 (n) vs 水杯 (u)" },
+            { title: "分辨 s / z", emoji: "s / z", sub: "【左右鏡像】：注意 S 的彎曲方向如蛇" },
+            { title: "分辨 6 / 9", emoji: "6 / 9", sub: "【數字翻轉】：圓圈在下 (6) vs 圓圈在上 (9)" },
+            { title: "分辨 E / 3", emoji: "E / 3", sub: "【左右鏡像】：向右開口 (E) vs 向左開口 (3)" },
+            { title: "分辨 C / D", emoji: "C / D", sub: "【形狀混淆】：弧線開口 (C) vs 直線加弧線 (D)" }
         ];
 
-        // 9. OCR / Exam Survival (10 關)
+        // 7. OCR
+        const ocrTasks = [
+            { title: "【中文科】", text: "寫作核心：在撰寫議論文時，必須運用多角度思考，包括經濟、社會、文化層面，並以具體古語或例子支持論點..." },
+            { title: "【英文科】", text: "Grammar Focus: Present Perfect Tense vs. Past Simple Tense. Use Present Perfect for actions that happened at an unspecified time before now..." },
+            { title: "【數學科】", text: "幾何定理證明：若三角形 ABC 為直角三角形，根據畢氏定理，斜邊的平方等於其餘兩邊的平方和，即 a² + b² = c²..." }
+        ];
+
+        // 8. Sorting Items
+        const sortingItems = [ 
+            { icon: "📄", text: "數學工作紙", folder: "blue" }, 
+            { icon: "📝", text: "中文默書紙", folder: "red" }, 
+            { icon: "📖", text: "英文課本", folder: "yellow" },
+            { icon: "📗", text: "常識作業", folder: "green" },
+            { icon: "📐", text: "數學用具", folder: "blue" },
+            { icon: "📙", text: "英文生字簿", folder: "yellow" }
+        ];
+
+        // 9. Exam Survival (10 關 - 完全去標籤化)
         const examTasks = [
-            { title: "【中文科】", target: "2026年", target2: "黃主任", text: "DSE 專題報告：教育局近年來積極推廣學術融合。其中，特殊教育支援團隊在 <strong id='examTarget_1' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>2026年</strong>，由 <strong id='examTarget_2' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>黃主任</strong> 帶領，於全港推行特別考試調適..." },
-            { title: "【英文科】", target: "Climate", target2: "Global Warming", text: "The issue of <strong id='examTarget_1' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>Climate</strong> change is alarming. Scientists believe that <strong id='examTarget_2' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>Global Warming</strong> will melt the polar ice caps by 2050..." },
-            { title: "【數學科】", target: "畢氏定理", target2: "直角三角形", text: "幾何定理證明：若為 <strong id='examTarget_2' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>直角三角形</strong>，根據 <strong id='examTarget_1' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>畢氏定理</strong>，斜邊的平方等於其餘兩邊的平方和..." },
-            { title: "【歷史科】", target: "1939年", target2: "二戰", text: "第二次世界大戰（<strong id='examTarget_2' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>二戰</strong>）爆發於 <strong id='examTarget_1' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>1939年</strong>，當時德國閃擊波蘭，英法隨後宣戰..." },
-            { title: "【地理科】", target: "板塊移動", target2: "地震", text: "日本位於環太平洋火山帶，頻繁的 <strong id='examTarget_1' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>板塊移動</strong> 導致該地區經常發生強烈 <strong id='examTarget_2' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>地震</strong>..." },
-            { title: "【生物科】", target: "葉綠素", target2: "光合作用", text: "植物透過葉片中的 <strong id='examTarget_1' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>葉綠素</strong> 吸收陽光，並進行 <strong id='examTarget_2' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>光合作用</strong> 製造食物與氧氣..." },
-            { title: "【經濟科】", target: "需求下降", target2: "價格下跌", text: "當市場上某商品的 <strong id='examTarget_1' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>需求下降</strong>，而供應保持不變時，該商品的 <strong id='examTarget_2' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>價格下跌</strong> 是一種必然趨勢..." },
-            { title: "【企會財】", target: "資產", target2: "負債", text: "在資產負債表中，企業的總 <strong id='examTarget_1' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>資產</strong> 必須等於其 <strong id='examTarget_2' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>負債</strong> 與擁有者權益的總和..." },
-            { title: "【物理科】", target: "動能", target2: "位能", text: "當過山車從最高點俯衝時，其重力 <strong id='examTarget_2' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>位能</strong> 會逐漸轉化為巨大的 <strong id='examTarget_1' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>動能</strong>..." },
-            { title: "【化學科】", target: "酸性", target2: "pH值", text: "當溶液的 <strong id='examTarget_2' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>pH值</strong> 低於 7 時，表示該溶液呈 <strong id='examTarget_1' class='text-slate-800 transition cursor-pointer hover:text-fuchsia-500 underline decoration-4 decoration-fuchsia-300'>酸性</strong>，數字越小酸性越強..." }
+            { title: "【中文科】", question: "這篇報告的推行年份是哪一年？由誰帶領？", target: "2026年", target2: "黃主任", text: "專題報告：近年來，社會各界積極推廣環保意識。其中，環境保護署在 <span id='examTarget_1' onclick=\"shootExamTarget('2026年', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>2026年</span>，由 <span id='examTarget_2' onclick=\"shootExamTarget('黃主任', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>黃主任</span> 帶領，於全港推行減廢回收計畫，成功改善了市民的環保習慣。" },
+            { title: "【英文科】", question: "What is the alarming issue? What will melt by 2050?", target: "Climate", target2: "Global Warming", text: "The issue of <span id='examTarget_1' onclick=\"shootExamTarget('Climate', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>Climate</span> change is alarming. Scientists believe that <span id='examTarget_2' onclick=\"shootExamTarget('Global Warming', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>Global Warming</span> will melt the polar ice caps by 2050..." },
+            { title: "【數學科】", question: "這一定理適用於什麼三角形？定理名稱是什麼？", target: "畢氏定理", target2: "直角三角形", text: "幾何定理證明：若為 <span id='examTarget_2' onclick=\"shootExamTarget('直角三角形', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>直角三角形</span>，根據 <span id='examTarget_1' onclick=\"shootExamTarget('畢氏定理', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>畢氏定理</span>，斜邊的平方等於其餘兩邊的平方和..." },
+            { title: "【歷史科】", question: "戰爭爆發於哪一年？簡稱是什麼？", target: "1939年", target2: "二戰", text: "第二次世界大戰（<span id='examTarget_2' onclick=\"shootExamTarget('二戰', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>二戰</span>）爆發於 <span id='examTarget_1' onclick=\"shootExamTarget('1939年', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>1939年</span>，當時德國閃擊波蘭，英法隨後宣戰..." },
+            { title: "【地理科】", question: "導致地震的原因是什麼？引發了什麼災難？", target: "板塊移動", target2: "地震", text: "日本位於環太平洋火山帶，頻繁的 <span id='examTarget_1' onclick=\"shootExamTarget('板塊移動', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>板塊移動</span> 導致該地區經常發生強烈 <span id='examTarget_2' onclick=\"shootExamTarget('地震', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>地震</span>..." },
+            { title: "【生物科】", question: "植物透過什麼吸收陽光？進行什麼作用？", target: "葉綠素", target2: "光合作用", text: "植物透過葉片中的 <span id='examTarget_1' onclick=\"shootExamTarget('葉綠素', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>葉綠素</span> 吸收陽光，並進行 <span id='examTarget_2' onclick=\"shootExamTarget('光合作用', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>光合作用</span> 製造食物與氧氣..." },
+            { title: "【經濟科】", question: "什麼情況下會導致價格下跌？必然趨勢是什麼？", target: "需求下降", target2: "價格下跌", text: "當市場上某商品的 <span id='examTarget_1' onclick=\"shootExamTarget('需求下降', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>需求下降</span>，而供應保持不變時，該商品的 <span id='examTarget_2' onclick=\"shootExamTarget('價格下跌', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>價格下跌</span> 是一種必然趨勢..." },
+            { title: "【企會財】", question: "資產必須等於什麼的總和？", target: "資產", target2: "負債", text: "在資產負債表中，企業的總 <span id='examTarget_1' onclick=\"shootExamTarget('資產', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>資產</span> 必須等於其 <span id='examTarget_2' onclick=\"shootExamTarget('負債', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>負債</span> 與擁有者權益的總和..." },
+            { title: "【物理科】", question: "過山車俯衝時，什麼能量會轉化為什麼能量？", target: "動能", target2: "位能", text: "當過山車從最高點俯衝時，其重力 <span id='examTarget_2' onclick=\"shootExamTarget('位能', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>位能</span> 會逐漸轉化為巨大的 <span id='examTarget_1' onclick=\"shootExamTarget('動能', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>動能</span>..." },
+            { title: "【化學科】", target: "酸性", target2: "pH值", question: "什麼數值低於7表示酸性？", text: "當溶液的 <span id='examTarget_2' onclick=\"shootExamTarget('pH值', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>pH值</span> 低於 7 時，表示該溶液呈 <span id='examTarget_1' onclick=\"shootExamTarget('酸性', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>酸性</span>，數字越小酸性越強..." }
         ];
 
-        // 渲染主函數
+        // ==========================================
+        // 渲染主函數 (完美防溢出)
+        // ==========================================
         function selectRoom(roomId) {
             clearInterval(pomoInterval);
             clearInterval(boardTimer);
@@ -347,57 +385,57 @@
             const canvas = document.getElementById('posterPrintArea');
             let html = "";
             const confettiContainer = document.getElementById('confetti-container');
-            if (confettiContainer) {
-                confettiContainer.innerHTML = ''; // 清空特效
-            }
+            if (confettiContainer) { confettiContainer.innerHTML = ''; }
 
             if(roomId === "at") {
                 const at = atTasks[currentTaskIndex];
                 html = `
-                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0">
-                            <div>
-                                <span class="text-2xl font-bold text-sky-500 uppercase tracking-widest">特工訓練房 1</span>
-                                <h1 class="text-5xl font-black text-slate-800 mt-2">🛠️ 科技特工裝備庫 (Assistive Tech)</h1>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="changeTask('at', 0)" class="px-5 py-2 rounded-xl font-bold text-2xl ${currentTaskIndex===0 ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">中文</button>
-                                <button onclick="changeTask('at', 1)" class="px-5 py-2 rounded-xl font-bold text-2xl ${currentTaskIndex===1 ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">英文</button>
-                                <button onclick="changeTask('at', 2)" class="px-5 py-2 rounded-xl font-bold text-2xl ${currentTaskIndex===2 ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">數學</button>
-                            </div>
+                    <div class="flex justify-between items-center border-b-2 border-slate-200 px-8 py-5 shrink-0 bg-white z-10 shadow-sm">
+                        <div class="shrink-0 mr-6">
+                            <span class="text-xl font-bold text-sky-500 uppercase tracking-widest">特工訓練房 1</span>
+                            <h1 class="text-4xl font-black text-slate-800 mt-1">🛠️ 科技特工裝備庫 (Assistive Tech)</h1>
                         </div>
-                        
-                        <!-- 嚴格的左右分屏，確保 overflow 不會擠壓按鈕 -->
-                        <div class="flex gap-10 flex-grow py-8 min-h-0">
-                            <!-- 左側：閱讀區 (加入 overflow-y-auto 獨立滾動) -->
-                            <div class="w-[60%] flex flex-col h-full bg-slate-50 border-4 border-slate-200 rounded-3xl p-8 relative overflow-hidden shadow-inner">
+                        <div class="flex flex-wrap gap-2 flex-grow justify-end items-center">
+                            <button onclick="changeTask('at', 0)" class="px-5 py-2 rounded-xl font-bold text-lg ${currentTaskIndex===0 ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">中文</button>
+                            <button onclick="changeTask('at', 1)" class="px-5 py-2 rounded-xl font-bold text-lg ${currentTaskIndex===1 ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">英文</button>
+                            <button onclick="changeTask('at', 2)" class="px-5 py-2 rounded-xl font-bold text-lg ${currentTaskIndex===2 ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">數學</button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-grow p-6 bg-slate-50 overflow-hidden flex flex-col relative min-h-0">
+                        <div class="flex gap-6 flex-grow h-full min-h-0">
+                            <!-- 左側：閱讀區 -->
+                            <div class="w-[60%] flex flex-col bg-white border-2 border-slate-200 rounded-3xl p-6 relative shadow-sm overflow-hidden min-h-0">
                                 <div id="readingRuler" class="absolute left-0 w-full bg-yellow-300/40 border-y-4 border-yellow-400 pointer-events-none hidden transition-all duration-100 z-10" style="height: 60px; top: 120px;"></div>
-                                <div id="simReaderText" class="text-slate-700 font-bold transition-all duration-300 overflow-y-auto custom-scrollbar pb-4 pr-4" style="font-size: 24px; line-height: 1.8; height: 100%;">
-                                    <p class="mb-4 text-emerald-600 text-3xl">${at.title}</p>
+                                <div id="simReaderText" class="text-slate-700 font-bold transition-all duration-300 overflow-y-auto custom-scrollbar pr-4 pb-8" style="font-size: 24px; line-height: 1.8;">
+                                    <p class="mb-4 text-emerald-600 text-2xl">${at.title}</p>
                                     <p>${at.text}</p>
                                 </div>
                             </div>
                             
-                            <!-- 右側：控制器 (固定高度不滾動) -->
-                            <div class="w-[40%] bg-white border-4 border-slate-200 rounded-3xl p-8 flex flex-col justify-between shadow-xl h-full shrink-0">
-                                <div class="space-y-6">
-                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4"><i class="fa-solid fa-sliders text-sky-500"></i> 視覺魔法調適尺</h3>
+                            <!-- 右側：控制器 -->
+                            <div class="w-[40%] bg-white border-2 border-slate-200 rounded-3xl p-6 flex flex-col shadow-xl min-h-0">
+                                <div class="space-y-4 flex-grow overflow-y-auto custom-scrollbar pr-2">
+                                    <h3 class="font-black text-slate-800 text-2xl flex items-center gap-2 border-b-2 border-slate-100 pb-3"><i class="fa-solid fa-sliders text-sky-500"></i> 視覺魔法調適尺</h3>
                                     <div>
-                                        <div class="flex justify-between text-xl font-bold text-slate-500 mb-3"><span>字體大小</span><span id="fVal" class="text-sky-600">24px</span></div>
-                                        <input type="range" min="20" max="60" value="24" oninput="adjustMagicFilter('size', this.value)" class="w-full h-4 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                                        <div class="flex justify-between text-base font-bold text-slate-500 mb-2"><span>字體大小</span><span id="fVal" class="text-sky-600">24px</span></div>
+                                        <input type="range" min="20" max="60" value="24" oninput="adjustMagicFilter('size', this.value)" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                                     </div>
                                     <div>
-                                        <div class="flex justify-between text-xl font-bold text-slate-500 mb-3"><span>行距間隔</span><span id="hVal" class="text-sky-600">1.8</span></div>
-                                        <input type="range" min="12" max="40" value="18" oninput="adjustMagicFilter('height', this.value / 10)" class="w-full h-4 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                                        <div class="flex justify-between text-base font-bold text-slate-500 mb-2"><span>行距間隔</span><span id="hVal" class="text-sky-600">1.8</span></div>
+                                        <input type="range" min="12" max="40" value="18" oninput="adjustMagicFilter('height', this.value / 10)" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                                     </div>
-                                    <div class="flex items-center justify-between bg-slate-50 p-6 rounded-2xl border-2 border-slate-100 mt-6">
-                                        <span class="text-2xl font-bold text-slate-700">黃色護眼閱讀尺</span>
-                                        <input type="checkbox" id="rulerCheckbox" onchange="toggleReadingRuler(this)" class="w-6 h-6 accent-sky-600 cursor-pointer">
+                                    <div class="flex items-center justify-between bg-slate-50 p-4 rounded-xl border-2 border-slate-100 mt-4">
+                                        <span class="text-lg font-bold text-slate-700">黃色護眼閱讀尺</span>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" id="rulerCheckbox" onchange="toggleReadingRuler(this)" class="sr-only peer">
+                                            <div class="w-12 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="space-y-4 pt-6 border-t-2 border-slate-100 mt-4">
-                                    <button onclick="readWithEyes()" class="w-full bg-rose-50 hover:bg-rose-100 border-2 border-rose-200 text-rose-600 font-black py-5 rounded-2xl transition text-2xl flex items-center justify-center gap-3"><i class="fa-solid fa-eye-low-vision"></i> 肉眼硬讀 (體力 -40%)</button>
-                                    <button onclick="useTTS()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-5 rounded-2xl transition text-2xl flex items-center justify-center gap-3 shadow-lg"><i class="fa-solid fa-glasses"></i> 語音朗讀 (TTS 輔助)</button>
+                                <div class="space-y-3 pt-4 border-t-2 border-slate-100 shrink-0 mt-2">
+                                    <button onclick="readWithEyes()" class="w-full bg-rose-50 hover:bg-rose-100 border-2 border-rose-200 text-rose-600 font-bold py-3.5 rounded-xl transition text-lg flex items-center justify-center gap-2"><i class="fa-solid fa-eye-low-vision"></i> 肉眼硬讀 (體力 -40%)</button>
+                                    <button onclick="useTTS()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-xl transition text-lg flex items-center justify-center gap-2 shadow-md"><i class="fa-solid fa-glasses"></i> 語音朗讀 (TTS 輔助)</button>
                                 </div>
                             </div>
                         </div>
@@ -408,30 +446,30 @@
                 const dec = decodingTasks[currentTaskIndex];
                 currentDefuseIndex = 0;
                 html = `
-                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0">
-                            <div>
-                                <span class="text-2xl font-bold text-purple-500 uppercase tracking-widest">特工訓練房 2</span>
-                                <h1 class="text-5xl font-black text-slate-800 mt-2">🧩 密碼拆解室 (10 大關卡)</h1>
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-8 py-5 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-purple-500 uppercase tracking-widest">特工訓練房 2</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🧩 密碼拆解室 (10 大關卡)</h1>
                             </div>
-                            <div class="flex gap-3 overflow-x-auto max-w-[500px] custom-scrollbar pb-2">
-                                ${decodingTasks.map((_, i) => `<button onclick="changeTask('decoding', ${i})" class="px-5 py-2 rounded-xl font-bold text-xl shrink-0 ${currentTaskIndex===i ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
+                            <div class="flex flex-wrap gap-2 flex-grow justify-end items-center">
+                                ${decodingTasks.map((_, i) => `<button onclick="changeTask('decoding', ${i})" class="px-3 py-1.5 rounded-lg font-bold text-sm ${currentTaskIndex===i ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
                             </div>
                         </div>
-                        <div class="flex flex-col justify-center items-center flex-grow py-4 min-h-0 overflow-y-auto">
-                            <div class="flex items-center gap-6 mb-6">
-                                <i class="fa-solid fa-bomb text-rose-500 text-6xl"></i>
-                                <span class="text-[160px] font-black text-purple-600 bg-purple-100 px-8 py-2 rounded-[2rem] shadow-inner drop-shadow-xl leading-none">${dec.target}</span>
+                        <div class="flex-grow p-6 bg-slate-50 overflow-y-auto flex flex-col items-center justify-center min-h-0 custom-scrollbar">
+                            <div class="flex items-center gap-6 mb-4">
+                                <i class="fa-solid fa-bomb text-rose-500 text-5xl"></i>
+                                <span class="text-[160px] font-black text-purple-600 bg-purple-100 px-8 py-2 rounded-[2rem] shadow-inner drop-shadow-xl leading-none border-4 border-purple-200">${dec.target}</span>
                             </div>
-                            <p class="text-3xl text-slate-500 font-bold mb-10 text-center bg-slate-100 px-8 py-3 rounded-2xl">請按正確的書寫/空間順序，點擊下方碎裂部件來組裝並拆除炸彈。</p>
+                            <p class="text-2xl text-slate-500 font-bold mb-8 text-center bg-white border-2 border-slate-200 px-6 py-3 rounded-2xl shadow-sm">請按正確的書寫/空間順序，點擊下方碎裂部件來組裝並拆除炸彈。</p>
                             
-                            <div class="flex justify-center items-center gap-6 mb-12 flex-wrap" id="defuseContainer">
-                                ${dec.parts.map((p, i) => `<div id="defuseBox_${i}" class="w-28 h-28 bg-slate-50 border-4 border-dashed border-slate-300 rounded-3xl flex items-center justify-center font-black text-6xl text-slate-300">?</div>`).join('')}
+                            <div class="flex justify-center items-center gap-4 mb-8 flex-wrap" id="defuseContainer">
+                                ${dec.parts.map((p, i) => `<div id="defuseBox_${i}" class="w-24 h-24 bg-white border-4 border-dashed border-slate-300 rounded-3xl flex items-center justify-center font-black text-5xl text-slate-300">?</div>`).join('')}
                             </div>
                             
-                            <div class="flex justify-center gap-8 flex-wrap">
+                            <div class="flex justify-center gap-4 flex-wrap">
                                 ${[...dec.parts].sort(() => Math.random() - 0.5).map((p, i) => `
-                                    <button id="def_btn_${i}" onclick="clickDefuseComponent('${p}', 'def_btn_${i}')" class="w-32 h-32 bg-white hover:bg-slate-50 border-4 border-slate-200 rounded-[2rem] font-black text-6xl text-slate-700 shadow-xl active:scale-95 transition hover:border-purple-400">${p}</button>
+                                    <button id="def_btn_${i}" onclick="clickDefuseComponent('${p}', 'def_btn_${i}')" class="w-28 h-28 bg-white hover:bg-slate-50 border-4 border-slate-200 rounded-[2rem] font-black text-6xl text-slate-700 shadow-xl active:scale-95 transition hover:border-purple-400">${p}</button>
                                 `).join('')}
                             </div>
                         </div>
@@ -440,35 +478,37 @@
             } 
             else if (roomId === "stamina") {
                 html = `
-                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0">
-                            <div>
-                                <span class="text-2xl font-bold text-emerald-500 uppercase tracking-widest">特工訓練房 3</span>
-                                <h1 class="text-5xl font-black text-slate-800 mt-2">🔋 能量管理與番茄鐘 (Stamina Timer)</h1>
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-8 py-5 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-emerald-500 uppercase tracking-widest">特工訓練房 3</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🔋 能量管理與番茄鐘 (Stamina Timer)</h1>
                             </div>
                         </div>
-                        <div class="grid grid-cols-12 gap-12 flex-grow py-10 min-h-0">
-                            <div class="col-span-6 flex flex-col justify-between bg-slate-50 border-4 border-slate-200 rounded-[3rem] p-12 shadow-lg h-full overflow-y-auto">
-                                <div>
-                                    <h3 class="font-black text-slate-800 text-4xl flex items-center gap-4 mb-6"><i class="fa-solid fa-battery-half text-rose-500"></i> 任務體力消耗模擬</h3>
-                                    <p class="text-2xl text-slate-600 leading-relaxed font-bold mb-8">SpLD 特工在不同任務下的耗電量不同。嘗試點擊不同任務，觀察右上角體力條的變化！</p>
+                        <div class="flex-grow p-6 bg-slate-50 overflow-hidden flex flex-col relative min-h-0">
+                            <div class="flex gap-8 flex-grow h-full min-h-0">
+                                <div class="w-1/2 flex flex-col justify-between bg-white border-2 border-slate-200 rounded-3xl p-8 shadow-sm h-full overflow-y-auto custom-scrollbar">
+                                    <div>
+                                        <h3 class="font-black text-slate-800 text-2xl flex items-center gap-2 mb-4"><i class="fa-solid fa-battery-half text-rose-500"></i> 任務體力消耗模擬</h3>
+                                        <p class="text-lg text-slate-600 leading-relaxed font-bold mb-6">SpLD 特工在不同任務下的耗電量不同。嘗試點擊不同任務，觀察右上角體力條的變化！</p>
+                                    </div>
+                                    <div class="space-y-4 mt-auto">
+                                        <button onclick="updateHUD(-80); showToast('✍️ 瘋狂抄寫極度耗能！體力 -80%', 'error');" class="w-full bg-white hover:bg-rose-50 border-2 border-rose-200 text-rose-600 font-bold py-4 rounded-2xl transition text-xl shadow-sm">✍️ 連續抄寫 30 分鐘</button>
+                                        <button onclick="updateHUD(-40); showToast('📖 閱讀長文耗能中等！體力 -40%', 'error');" class="w-full bg-white hover:bg-amber-50 border-2 border-amber-200 text-amber-600 font-bold py-4 rounded-2xl transition text-xl shadow-sm">📖 閱讀長篇理解文章</button>
+                                        <button onclick="updateHUD(20); showToast('💬 討論發表比較輕鬆！體力回充 +20%', 'success');" class="w-full bg-white hover:bg-blue-50 border-2 border-blue-200 text-blue-600 font-bold py-4 rounded-2xl transition text-xl shadow-sm">💬 小組口頭討論發表</button>
+                                    </div>
                                 </div>
-                                <div class="space-y-6 mt-auto">
-                                    <button onclick="updateHUD(-80); showToast('✍️ 瘋狂抄寫極度耗能！體力 -80%', 'error');" class="w-full bg-white hover:bg-rose-50 border-4 border-rose-200 text-rose-600 font-black py-6 rounded-3xl transition text-3xl shadow-sm">✍️ 連續抄寫 30 分鐘</button>
-                                    <button onclick="updateHUD(-40); showToast('📖 閱讀長文耗能中等！體力 -40%', 'error');" class="w-full bg-white hover:bg-amber-50 border-4 border-amber-200 text-amber-600 font-black py-6 rounded-3xl transition text-3xl shadow-sm">📖 閱讀長篇理解文章</button>
-                                    <button onclick="updateHUD(20); showToast('💬 討論發表比較輕鬆！體力回充 +20%', 'success');" class="w-full bg-white hover:bg-blue-50 border-4 border-blue-200 text-blue-600 font-black py-6 rounded-3xl transition text-3xl shadow-sm">💬 小組口頭討論發表</button>
-                                </div>
-                            </div>
-                            <div class="col-span-6 flex flex-col justify-between bg-white border-[6px] border-emerald-400 rounded-[3rem] p-12 shadow-2xl text-center h-full">
-                                <h3 class="font-black text-slate-800 text-4xl flex items-center justify-center gap-4 mb-6"><i class="fa-solid fa-stopwatch text-emerald-500"></i> 20+5 番茄鐘計時器</h3>
-                                <div class="my-auto flex flex-col items-center justify-center">
-                                    <span id="pomoTime" class="text-[130px] font-black text-emerald-500 font-mono tracking-tighter drop-shadow-md leading-none">20:00</span>
-                                    <p id="pomoStatus" class="text-3xl text-slate-500 font-bold mt-6 uppercase tracking-widest bg-slate-100 px-6 py-2 rounded-xl">Ready to Focus</p>
-                                    <p class="text-lg text-rose-500 font-bold mt-6">(註：真實 20 分鐘已加速縮短為 20 秒。小休時體力將自動重置 100%)</p>
-                                </div>
-                                <div class="flex gap-6 mt-8">
-                                    <button onclick="startPomodoro()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-black py-6 rounded-3xl text-3xl transition shadow-xl">開始專注</button>
-                                    <button onclick="resetPomodoro()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-black py-6 rounded-3xl text-3xl transition shadow-md">重置</button>
+                                <div class="w-1/2 flex flex-col justify-between bg-white border-[4px] border-emerald-400 rounded-3xl p-8 shadow-xl text-center h-full">
+                                    <h3 class="font-black text-slate-800 text-2xl flex items-center justify-center gap-2 mb-4"><i class="fa-solid fa-stopwatch text-emerald-500"></i> 20+5 番茄鐘計時器</h3>
+                                    <div class="my-auto flex flex-col items-center justify-center">
+                                        <span id="pomoTime" class="text-[100px] font-black text-emerald-500 font-mono tracking-tighter drop-shadow-md leading-none">20:00</span>
+                                        <p id="pomoStatus" class="text-xl text-slate-500 font-bold mt-4 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-lg">Ready to Focus</p>
+                                        <p class="text-sm text-rose-500 font-bold mt-4">(系統加速模擬：真實 20 分鐘縮短為 20 秒。<br>小休時體力將自動重置 100%)</p>
+                                    </div>
+                                    <div class="flex gap-4 mt-6">
+                                        <button onclick="startPomodoro()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-2xl text-xl transition shadow-md">開始專注</button>
+                                        <button onclick="resetPomodoro()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-4 rounded-2xl text-xl transition shadow-sm">重置</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -479,38 +519,38 @@
                 const chk = chunkingTasks[currentTaskIndex];
                 currentLaserStep = 1;
                 html = `
-                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0">
-                            <div>
-                                <span class="text-2xl font-bold text-rose-500 uppercase tracking-widest">特工訓練房 4</span>
-                                <h1 class="text-5xl font-black text-slate-800 mt-2">⚔️ 終極任務：拆解大魔王 (Task Chunking)</h1>
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-8 py-5 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-rose-500 uppercase tracking-widest">特工訓練房 4</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">⚔️ 終極任務：拆解大魔王</h1>
                             </div>
-                            <div class="flex gap-3">
-                                <button onclick="changeTask('chunking', 0)" class="px-6 py-3 rounded-xl font-bold text-2xl ${currentTaskIndex===0 ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">作文</button>
-                                <button onclick="changeTask('chunking', 1)" class="px-6 py-3 rounded-xl font-bold text-2xl ${currentTaskIndex===1 ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">報告</button>
-                                <button onclick="changeTask('chunking', 2)" class="px-6 py-3 rounded-xl font-bold text-2xl ${currentTaskIndex===2 ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">溫習</button>
+                            <div class="flex flex-wrap gap-2 flex-grow justify-end items-center">
+                                <button onclick="changeTask('chunking', 0)" class="px-5 py-2 rounded-xl font-bold text-lg ${currentTaskIndex===0 ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">作文</button>
+                                <button onclick="changeTask('chunking', 1)" class="px-5 py-2 rounded-xl font-bold text-lg ${currentTaskIndex===1 ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">報告</button>
+                                <button onclick="changeTask('chunking', 2)" class="px-5 py-2 rounded-xl font-bold text-lg ${currentTaskIndex===2 ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">溫習</button>
                             </div>
                         </div>
-                        <div class="grid grid-cols-12 gap-12 flex-grow py-10 min-h-0">
-                            <div class="col-span-6 flex flex-col justify-between bg-slate-50 border-4 border-slate-200 rounded-[3rem] p-10 shadow-lg h-full">
-                                <div class="text-center py-8 flex-grow flex flex-col items-center justify-center">
-                                    <div id="monsterEmoji" class="text-[180px] mb-8 transition-all duration-300 drop-shadow-2xl">${chk.emoji}</div>
-                                    <h2 id="monsterName" class="text-5xl font-black text-rose-600 mb-6">大魔王：${chk.name}</h2>
-                                    <p id="monsterHp" class="text-3xl text-slate-500 font-bold mb-4">HP: 100%</p>
-                                    <div class="w-full max-w-lg bg-slate-200 h-8 rounded-full overflow-hidden border-4 border-slate-300 shadow-inner">
+                        <div class="flex-grow p-6 bg-slate-50 overflow-hidden flex flex-col relative min-h-0">
+                            <div class="flex gap-8 flex-grow h-full min-h-0">
+                                <div class="w-[50%] flex flex-col justify-center items-center bg-white border-2 border-slate-200 rounded-3xl p-8 shadow-sm h-full">
+                                    <div id="monsterEmoji" class="text-[140px] mb-6 transition-all duration-300 drop-shadow-xl">${chk.emoji}</div>
+                                    <h2 id="monsterName" class="text-4xl font-black text-rose-600 mb-4">大魔王：${chk.name}</h2>
+                                    <p id="monsterHp" class="text-2xl text-slate-500 font-bold mb-3">HP: 100%</p>
+                                    <div class="w-full max-w-sm bg-slate-200 h-6 rounded-full overflow-hidden border-2 border-slate-300 shadow-inner">
                                         <div id="monsterHpBar" class="bg-rose-500 h-full transition-all duration-500" style="width: 100%;"></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-span-6 bg-white border-[6px] border-slate-200 rounded-[3rem] p-10 flex flex-col justify-between shadow-2xl h-full overflow-y-auto custom-scrollbar">
-                                <h3 class="font-black text-slate-800 text-4xl flex items-center gap-4 border-b-2 border-slate-100 pb-6 mb-8 shrink-0"><i class="fa-solid fa-wand-magic-sparkles text-rose-500"></i> 切割雷射發射器</h3>
-                                <div class="space-y-6 flex-grow flex flex-col justify-center">
-                                    ${chk.steps.map((step, i) => `
-                                        <button onclick="fireLaser(${i+1})" id="lBtn${i+1}" ${i>0 ? 'disabled' : ''} class="w-full ${i===0 ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-4 border-slate-300' : 'bg-slate-50 text-slate-400 border-4 border-slate-200 cursor-not-allowed'} font-black text-3xl py-6 rounded-3xl transition text-left px-8 flex items-center justify-between shadow-sm">
-                                            <span>${step}</span>
-                                            <span class="text-xl px-4 py-2 rounded-xl ${i===0 ? 'bg-slate-300 text-slate-800' : 'bg-slate-200 text-slate-400'}">${i===0 ? 'Ready' : 'Locked'}</span>
-                                        </button>
-                                    `).join('')}
+                                <div class="w-[50%] bg-white border-[4px] border-slate-200 rounded-3xl p-6 flex flex-col justify-between shadow-xl h-full overflow-y-auto custom-scrollbar">
+                                    <h3 class="font-black text-slate-800 text-2xl flex items-center gap-2 border-b-2 border-slate-100 pb-3 mb-4 shrink-0"><i class="fa-solid fa-wand-magic-sparkles text-rose-500"></i> 切割雷射發射器</h3>
+                                    <div class="space-y-3 flex-grow flex flex-col justify-center">
+                                        ${chk.steps.map((step, i) => `
+                                            <button onclick="fireLaser(${i+1})" id="lBtn${i+1}" ${i>0 ? 'disabled' : ''} class="w-full ${i===0 ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-2 border-slate-300' : 'bg-white text-slate-400 border-2 border-slate-200 cursor-not-allowed'} font-bold text-xl py-4 rounded-xl transition text-left px-5 flex items-center justify-between shadow-sm">
+                                                <span>${step}</span>
+                                                <span class="text-sm px-3 py-1 rounded-lg ${i===0 ? 'bg-slate-300 text-slate-800' : 'bg-slate-100 text-slate-400'}">${i===0 ? 'Ready' : 'Locked'}</span>
+                                            </button>
+                                        `).join('')}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -521,35 +561,37 @@
                 const buf = bufferTasks[currentTaskIndex];
                 selectedBufferIcons.clear();
                 html = `
-                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white relative">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0">
-                            <div>
-                                <span class="text-2xl font-bold text-teal-500 uppercase tracking-widest">特工訓練房 5</span>
-                                <h1 class="text-5xl font-black text-slate-800 mt-2">🎧 情報緩衝區 (10 大關卡)</h1>
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-8 py-5 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-teal-500 uppercase tracking-widest">特工訓練房 5</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🎧 情報緩衝區 (10 大關卡)</h1>
                             </div>
-                            <div class="flex gap-3 overflow-x-auto max-w-[400px] custom-scrollbar pb-2">
-                                ${bufferTasks.map((_, i) => `<button onclick="changeTask('buffer', ${i})" class="px-5 py-2 rounded-xl font-bold text-xl shrink-0 ${currentTaskIndex===i ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
+                            <div class="flex flex-wrap gap-2 flex-grow justify-end items-center">
+                                ${bufferTasks.map((_, i) => `<button onclick="changeTask('buffer', ${i})" class="px-3 py-1.5 rounded-lg font-bold text-sm ${currentTaskIndex===i ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
                             </div>
                         </div>
-                        <div class="grid grid-cols-12 gap-12 flex-grow py-10 min-h-0">
-                            <div class="col-span-5 flex flex-col justify-between bg-slate-50 border-4 border-slate-200 rounded-[3rem] p-10 text-center shadow-lg h-full overflow-y-auto custom-scrollbar">
-                                <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-200 pb-6 mb-8 text-left shrink-0"><i class="fa-solid fa-volume-high text-teal-500"></i> ${buf.title}</h3>
-                                <div class="py-12 bg-white rounded-[2rem] border-4 border-slate-200 flex-grow flex flex-col justify-center shadow-inner">
-                                    <div class="text-[100px] animate-pulse text-teal-500 mb-8"><i class="fa-solid fa-signal"></i></div>
-                                    <p class="text-3xl text-slate-600 font-bold px-8 leading-relaxed" id="audioTextDisplay">「點擊下方播放語音」</p>
+                        <div class="flex-grow p-6 bg-slate-50 overflow-hidden flex flex-col relative min-h-0">
+                            <div class="flex gap-8 flex-grow h-full min-h-0">
+                                <div class="w-[45%] flex flex-col justify-between bg-white border-2 border-slate-200 rounded-3xl p-6 text-center shadow-sm h-full overflow-y-auto custom-scrollbar">
+                                    <h3 class="font-black text-slate-800 text-2xl flex items-center gap-2 border-b-2 border-slate-100 pb-3 mb-4 text-left shrink-0"><i class="fa-solid fa-volume-high text-teal-500"></i> ${buf.title}</h3>
+                                    <div class="py-8 bg-slate-50 rounded-3xl border-2 border-slate-200 flex-grow flex flex-col justify-center shadow-inner">
+                                        <div class="text-[70px] animate-pulse text-teal-500 mb-4"><i class="fa-solid fa-signal"></i></div>
+                                        <p class="text-xl text-slate-600 font-bold px-4 leading-relaxed" id="audioTextDisplay">「點擊下方播放語音」</p>
+                                    </div>
+                                    <button onclick="playMemoryAudio('${buf.audio}')" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 rounded-xl transition text-xl shadow-md mt-4 shrink-0"><i class="fa-solid fa-ear-listen mr-2"></i> 播放語音</button>
                                 </div>
-                                <button onclick="playMemoryAudio('${buf.audio}')" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-black py-6 rounded-3xl transition text-3xl shadow-xl mt-8 shrink-0"><i class="fa-solid fa-ear-listen mr-3"></i> 播放語音</button>
-                            </div>
-                            <div class="col-span-7 bg-white border-[6px] border-slate-200 rounded-[3rem] p-10 flex flex-col justify-between shadow-2xl h-full overflow-y-auto custom-scrollbar">
-                                <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-6 mb-8 shrink-0"><i class="fa-solid fa-object-group text-teal-500"></i> 請選出 3 個圖像密碼：</h3>
-                                <div class="grid grid-cols-3 gap-6 flex-grow content-start">
-                                    ${[...buf.icons, {e:'🍔',t:'買小食'}, {e:'⚽',t:'去操場'}, {e:'💤',t:'瞓覺'}].sort(()=>Math.random()-0.5).map(ic => `
-                                        <button onclick="selectBufferIcon('${ic.t}', this)" class="buf-icon-btn p-8 bg-slate-50 border-4 border-slate-200 rounded-3xl text-center hover:border-teal-400 transition shadow-sm h-[180px] flex flex-col items-center justify-center">
-                                            <span class="text-[70px] block mb-4">${ic.e}</span><p class="text-2xl text-slate-600 font-black">${ic.t}</p>
-                                        </button>
-                                    `).join('')}
+                                <div class="w-[55%] bg-white border-[4px] border-slate-200 rounded-3xl p-6 flex flex-col justify-between shadow-xl h-full overflow-y-auto custom-scrollbar">
+                                    <h3 class="font-black text-slate-800 text-2xl flex items-center gap-2 border-b-2 border-slate-100 pb-3 mb-4 shrink-0"><i class="fa-solid fa-object-group text-teal-500"></i> 請選出 3 個圖像密碼：</h3>
+                                    <div class="grid grid-cols-3 gap-3 flex-grow content-start">
+                                        ${[...buf.icons, {e:'🍔',t:'買小食'}, {e:'⚽',t:'去操場'}, {e:'💤',t:'瞓覺'}].sort(()=>Math.random()-0.5).map(ic => `
+                                            <button onclick="selectBufferIcon('${ic.t}', this)" class="buf-icon-btn p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl text-center hover:border-teal-400 transition shadow-sm flex flex-col items-center justify-center min-h-[120px]">
+                                                <span class="text-[45px] block mb-1">${ic.e}</span><p class="text-sm text-slate-600 font-bold">${ic.t}</p>
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                    <button onclick="verifyBufferCode()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl transition text-xl shadow-md mt-4 shrink-0"><i class="fa-solid fa-key mr-2"></i> 驗證情報緩衝</button>
                                 </div>
-                                <button onclick="verifyBufferCode()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-black py-6 rounded-3xl transition text-3xl shadow-lg mt-8 shrink-0"><i class="fa-solid fa-key mr-3"></i> 驗證情報緩衝</button>
                             </div>
                         </div>
                     </div>
@@ -558,25 +600,27 @@
             else if (roomId === "spatial") {
                 const spa = spatialTasks[currentTaskIndex];
                 html = `
-                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0">
-                            <div>
-                                <span class="text-2xl font-bold text-amber-500 uppercase tracking-widest">特工訓練房 6</span>
-                                <h1 class="text-5xl font-black text-slate-800 mt-2">🧭 空間與鏡像定位儀 (10 大關卡)</h1>
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-8 py-5 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-amber-500 uppercase tracking-widest">特工訓練房 6</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🧭 空間與鏡像定位儀 (10 大關卡)</h1>
                             </div>
-                            <div class="flex gap-3 overflow-x-auto max-w-[400px] custom-scrollbar pb-2">
-                                ${spatialTasks.map((_, i) => `<button onclick="changeTask('spatial', ${i})" class="px-5 py-2 rounded-xl font-bold text-xl shrink-0 ${currentTaskIndex===i ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
+                            <div class="flex flex-wrap gap-2 flex-grow justify-end items-center">
+                                ${spatialTasks.map((_, i) => `<button onclick="changeTask('spatial', ${i})" class="px-3 py-1.5 rounded-lg font-bold text-sm ${currentTaskIndex===i ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
                             </div>
                         </div>
                         
-                        <p class="text-2xl text-slate-600 font-bold my-6 bg-amber-50 px-8 py-5 rounded-2xl border-2 border-amber-200 shadow-sm shrink-0">
-                            💡 <strong>指引：</strong> 讀寫障礙常將形狀相似的字母或數字左右/上下反轉。此區訓練大腦的空間方向感定位。請朗讀並做出下方提示動作。
-                        </p>
+                        <div class="flex-grow p-6 bg-slate-50 overflow-y-auto flex flex-col custom-scrollbar">
+                            <p class="text-lg text-slate-600 font-bold mb-4 bg-white px-6 py-4 rounded-2xl border border-slate-200 shadow-sm shrink-0">
+                                💡 <strong>指引：</strong> 讀寫障礙常將形狀相似的字母或數字左右/上下反轉。此區訓練大腦的空間方向感定位。請朗讀並做出下方提示動作。
+                            </p>
 
-                        <div class="flex flex-col items-center justify-center flex-grow py-8 bg-slate-50 rounded-[3rem] border-4 border-slate-200 shadow-inner min-h-0">
-                            <h3 class="font-black text-slate-800 text-5xl mb-12">${spa.title}</h3>
-                            <div class="text-[150px] drop-shadow-lg mb-12">${spa.emoji}</div>
-                            <div class="bg-amber-100 border-4 border-amber-300 text-amber-800 font-black px-12 py-6 rounded-3xl text-4xl shadow-md">${spa.sub}</div>
+                            <div class="flex flex-col items-center justify-center flex-grow py-8 bg-white rounded-[2rem] border-2 border-slate-200 shadow-sm min-h-[400px]">
+                                <h3 class="font-black text-slate-800 text-4xl mb-8">${spa.title}</h3>
+                                <div class="text-[120px] drop-shadow-lg mb-8 font-black tracking-widest">${spa.emoji}</div>
+                                <div class="bg-amber-50 border-2 border-amber-300 text-amber-800 font-bold px-10 py-4 rounded-2xl text-2xl shadow-sm">${spa.sub}</div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -584,42 +628,42 @@
             else if (roomId === "ocr") {
                 const ocr = ocrTasks[currentTaskIndex];
                 html = `
-                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0">
-                            <div>
-                                <span class="text-2xl font-bold text-cyan-500 uppercase tracking-widest">特工訓練房 7</span>
-                                <h1 class="text-5xl font-black text-slate-800 mt-2">📸 實時情報截取戰術 (OCR Bypass)</h1>
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-8 py-5 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-cyan-500 uppercase tracking-widest">特工訓練房 7</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">📸 實時情報截取戰術 (OCR Bypass)</h1>
                             </div>
-                            <div class="flex gap-2">
-                                <button onclick="changeTask('ocr', 0)" class="px-5 py-2 rounded-xl font-bold text-2xl ${currentTaskIndex===0 ? 'bg-cyan-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">中文</button>
-                                <button onclick="changeTask('ocr', 1)" class="px-5 py-2 rounded-xl font-bold text-2xl ${currentTaskIndex===1 ? 'bg-cyan-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">英文</button>
-                                <button onclick="changeTask('ocr', 2)" class="px-5 py-2 rounded-xl font-bold text-2xl ${currentTaskIndex===2 ? 'bg-cyan-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">數學</button>
+                            <div class="flex flex-wrap gap-2 flex-grow justify-end items-center">
+                                ${ocrTasks.map((_, i) => `<button onclick="changeTask('ocr', ${i})" class="px-5 py-2 rounded-xl font-bold text-lg ${currentTaskIndex===i ? 'bg-cyan-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
                             </div>
                         </div>
-                        <div class="grid grid-cols-12 gap-12 flex-grow py-10 min-h-0">
-                            <div class="col-span-7 flex flex-col justify-between bg-slate-800 border-[6px] border-slate-700 rounded-[3rem] p-10 shadow-2xl h-full overflow-hidden">
-                                <div class="bg-slate-900 p-8 rounded-3xl border-4 border-slate-700 flex-grow flex flex-col justify-between relative min-h-0">
-                                    <div class="mb-6 flex justify-between items-center shrink-0">
-                                        <span class="text-2xl text-emerald-400 font-black">${ocr.title}</span>
-                                        <span class="text-2xl text-rose-500 font-black bg-rose-500/20 px-4 py-2 rounded-2xl border-2 border-rose-500/50"><i class="fa-solid fa-hourglass-start animate-spin mr-2"></i> 老師 5 秒後擦黑板</span>
-                                    </div>
-                                    <div id="boardText" class="text-white font-bold text-4xl leading-loose text-center py-10 select-none transition-all duration-1000 flex-grow flex items-center px-8 overflow-y-auto custom-scrollbar">
-                                        ${ocr.text}
-                                    </div>
-                                    <div class="w-full bg-slate-800 h-6 rounded-full overflow-hidden border-2 border-slate-600 mt-6 shrink-0">
-                                        <div id="boardTimerBar" class="bg-rose-500 h-full transition-all" style="width: 100%;"></div>
+                        <div class="flex-grow p-6 bg-slate-50 overflow-hidden flex flex-col relative min-h-0">
+                            <div class="flex gap-8 flex-grow h-full min-h-0">
+                                <div class="w-[60%] flex flex-col justify-between bg-slate-800 border-4 border-slate-700 rounded-[2rem] p-6 shadow-xl h-full overflow-hidden">
+                                    <div class="bg-slate-900 p-6 rounded-2xl border-2 border-slate-700 flex-grow flex flex-col justify-between relative min-h-0">
+                                        <div class="mb-4 flex justify-between items-center shrink-0">
+                                            <span class="text-xl text-emerald-400 font-black">${ocr.title}</span>
+                                            <span class="text-lg text-rose-500 font-bold bg-rose-500/20 px-3 py-1.5 rounded-lg border border-rose-500/50"><i class="fa-solid fa-hourglass-start animate-spin mr-2"></i> 老師 5 秒後擦黑板</span>
+                                        </div>
+                                        <div id="boardText" class="text-white font-bold text-2xl leading-relaxed text-center py-6 select-none transition-all duration-1000 flex-grow flex items-center px-4 overflow-y-auto custom-scrollbar">
+                                            ${ocr.text}
+                                        </div>
+                                        <div class="w-full bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-600 mt-4 shrink-0">
+                                            <div id="boardTimerBar" class="bg-rose-500 h-full transition-all" style="width: 100%;"></div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-span-5 bg-white border-4 border-slate-200 rounded-[3rem] p-10 flex flex-col justify-between shadow-xl h-full overflow-y-auto">
-                                <div>
-                                    <h3 class="font-black text-slate-800 text-4xl flex items-center gap-3 border-b-4 border-slate-100 pb-6 mb-8"><i class="fa-solid fa-camera text-cyan-500"></i> 快門 OCR 戰術</h3>
-                                    <p class="text-2xl text-slate-600 leading-relaxed font-bold mb-8">一邊聽一邊抄會造成大腦當機。<strong>請在計時結束前點擊「相機快門」，使用拍照後 OCR 代償！</strong></p>
-                                </div>
-                                <button onclick="triggerOcrShutter()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-black py-10 rounded-3xl transition text-4xl flex items-center justify-center gap-4 shadow-2xl mb-8 shrink-0"><i class="fa-solid fa-camera-retro animate-pulse"></i> 點擊快門拍照</button>
-                                <div class="pt-8 border-t-4 border-slate-100 shrink-0">
-                                    <span class="text-xl font-black text-slate-400 block mb-4">戰術 B (預先索取)：</span>
-                                    <button onclick="updateHUD(5); showToast('📧 已向老師申請提前獲取 PPT 講義！');" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black py-6 rounded-2xl text-2xl transition flex items-center justify-center gap-3 border-2 border-slate-300 shadow-sm"><i class="fa-solid fa-envelope"></i> 預先發送 PPT 請求</button>
+                                <div class="w-[40%] bg-white border-2 border-slate-200 rounded-[2rem] p-6 flex flex-col justify-between shadow-sm h-full overflow-y-auto custom-scrollbar">
+                                    <div>
+                                        <h3 class="font-black text-slate-800 text-2xl flex items-center gap-2 border-b-2 border-slate-100 pb-3 mb-4"><i class="fa-solid fa-camera text-cyan-500"></i> 快門 OCR 戰術</h3>
+                                        <p class="text-lg text-slate-600 leading-relaxed font-bold mb-6">一邊聽一邊抄會造成大腦當機。<strong>請在計時結束前點擊「相機快門」，使用拍照後 OCR 代償！</strong></p>
+                                    </div>
+                                    <button onclick="triggerOcrShutter()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-6 rounded-2xl transition text-2xl flex items-center justify-center gap-3 shadow-md mb-6 shrink-0"><i class="fa-solid fa-camera-retro animate-pulse"></i> 點擊快門拍照</button>
+                                    <div class="pt-4 border-t-2 border-slate-100 shrink-0">
+                                        <span class="text-sm font-bold text-slate-400 block mb-2">戰術 B (預先索取)：</span>
+                                        <button onclick="updateHUD(5); showToast('📧 已向老師申請提前獲取 PPT 講義！');" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl text-lg transition flex items-center justify-center gap-2 border border-slate-200"><i class="fa-solid fa-envelope"></i> 預先發送 PPT 請求</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -629,39 +673,41 @@
             } 
             else if (roomId === "inventory") {
                 html = `
-                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6">
-                            <div>
-                                <span class="text-2xl font-bold text-indigo-500 uppercase tracking-widest">特工訓練房 8</span>
-                                <h1 class="text-5xl font-black text-slate-800 mt-2">🎒 裝備庫存管理系統 (Executive Organizer)</h1>
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-8 py-5 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-indigo-500 uppercase tracking-widest">特工訓練房 8</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🎒 裝備庫存管理系統 (Executive Organizer)</h1>
                             </div>
                         </div>
-                        <div class="grid grid-cols-12 gap-12 flex-grow py-10 min-h-0">
-                            <div class="col-span-5 flex flex-col justify-between bg-slate-50 border-4 border-slate-200 rounded-[3rem] p-10 text-center shadow-lg h-full overflow-y-auto">
-                                <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-200 pb-6 mb-6 text-left shrink-0"><i class="fa-solid fa-boxes-stacked text-indigo-500"></i> 待整理物品</h3>
-                                <div class="py-16 bg-white rounded-[3rem] border-4 border-slate-200 flex flex-col justify-center items-center gap-8 my-4 flex-grow shadow-inner">
-                                    <div id="currentItemIcon" class="text-[130px] drop-shadow-md">📘</div>
-                                    <p id="currentItemText" class="text-3xl text-slate-600 font-black">數學工作紙 (Math)</p>
+                        <div class="flex-grow p-6 bg-slate-50 overflow-hidden flex flex-col relative min-h-0">
+                            <div class="flex gap-8 flex-grow h-full min-h-0">
+                                <div class="w-[45%] flex flex-col justify-between bg-white border-2 border-slate-200 rounded-3xl p-8 text-center shadow-sm h-full overflow-y-auto custom-scrollbar">
+                                    <h3 class="font-black text-slate-800 text-2xl flex items-center gap-2 border-b-2 border-slate-100 pb-3 mb-4 text-left shrink-0"><i class="fa-solid fa-boxes-stacked text-indigo-500"></i> 待整理物品</h3>
+                                    <div class="py-10 bg-slate-50 rounded-3xl border-2 border-slate-200 flex flex-col justify-center items-center gap-4 my-2 flex-grow shadow-inner">
+                                        <div id="currentItemIcon" class="text-[100px] drop-shadow-sm">📄</div>
+                                        <p id="currentItemText" class="text-2xl text-slate-600 font-bold">數學工作紙</p>
+                                    </div>
+                                    <span class="text-lg text-slate-400 font-bold mt-2 shrink-0">請點選右側正確顏色歸檔</span>
                                 </div>
-                                <span class="text-2xl text-slate-400 font-bold mt-4 shrink-0">請點選右側正確顏色歸檔</span>
-                            </div>
-                            <div class="col-span-7 bg-white border-[6px] border-slate-200 rounded-[3rem] p-10 flex flex-col justify-between shadow-2xl h-full overflow-y-auto">
-                                <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-6 mb-8 shrink-0"><i class="fa-solid fa-folder-open text-indigo-500"></i> 四色視覺化文件夾</h3>
-                                <div class="grid grid-cols-2 gap-8 flex-grow">
-                                    <button onclick="sortItemToFolder('red')" class="p-8 bg-rose-50 hover:bg-rose-100 border-4 border-rose-200 rounded-3xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-4 shadow-sm">
-                                        <span class="text-[80px]">📁</span><p class="text-3xl text-rose-600 font-black mt-2">中文夾</p>
-                                    </button>
-                                    <button onclick="sortItemToFolder('yellow')" class="p-8 bg-amber-50 hover:bg-amber-100 border-4 border-amber-200 rounded-3xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-4 shadow-sm">
-                                        <span class="text-[80px]">📁</span><p class="text-3xl text-amber-600 font-black mt-2">英文夾</p>
-                                    </button>
-                                    <button onclick="sortItemToFolder('blue')" class="p-8 bg-blue-50 hover:bg-blue-100 border-4 border-blue-200 rounded-3xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-4 shadow-sm">
-                                        <span class="text-[80px]">📁</span><p class="text-3xl text-blue-600 font-black mt-2">數學夾</p>
-                                    </button>
-                                    <button onclick="sortItemToFolder('green')" class="p-8 bg-emerald-50 hover:bg-emerald-100 border-4 border-emerald-200 rounded-3xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-4 shadow-sm">
-                                        <span class="text-[80px]">📁</span><p class="text-3xl text-emerald-600 font-black mt-2">常識夾</p>
-                                    </button>
+                                <div class="w-[55%] bg-white border-[4px] border-slate-200 rounded-3xl p-8 flex flex-col justify-between shadow-xl h-full overflow-y-auto custom-scrollbar">
+                                    <h3 class="font-black text-slate-800 text-2xl flex items-center gap-2 border-b-2 border-slate-100 pb-3 mb-6 shrink-0"><i class="fa-solid fa-folder-open text-indigo-500"></i> 四色視覺化文件夾</h3>
+                                    <div class="grid grid-cols-2 gap-4 flex-grow">
+                                        <button onclick="sortItemToFolder('red')" class="p-6 bg-rose-50 hover:bg-rose-100 border-2 border-rose-200 rounded-2xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-2 shadow-sm">
+                                            <span class="text-[60px]">📁</span><p class="text-xl text-rose-600 font-bold mt-1">中文夾</p>
+                                        </button>
+                                        <button onclick="sortItemToFolder('yellow')" class="p-6 bg-amber-50 hover:bg-amber-100 border-2 border-amber-200 rounded-2xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-2 shadow-sm">
+                                            <span class="text-[60px]">📁</span><p class="text-xl text-amber-600 font-bold mt-1">英文夾</p>
+                                        </button>
+                                        <button onclick="sortItemToFolder('blue')" class="p-6 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-2xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-2 shadow-sm">
+                                            <span class="text-[60px]">📁</span><p class="text-xl text-blue-600 font-bold mt-1">數學夾</p>
+                                        </button>
+                                        <button onclick="sortItemToFolder('green')" class="p-6 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 rounded-2xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-2 shadow-sm">
+                                            <span class="text-[60px]">📁</span><p class="text-xl text-emerald-600 font-bold mt-1">常識夾</p>
+                                        </button>
+                                    </div>
+                                    <button onclick="verifySortingResult()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl transition text-xl shadow-md mt-6 shrink-0"><i class="fa-solid fa-square-check mr-2"></i> 驗證庫存整理</button>
                                 </div>
-                                <button onclick="verifySortingResult()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-black py-6 rounded-2xl transition text-3xl shadow-xl mt-8 shrink-0"><i class="fa-solid fa-square-check mr-3"></i> 驗證庫存整理</button>
                             </div>
                         </div>
                     </div>
@@ -673,40 +719,39 @@
                 isQuestionInspected = false;
                 shotTargets.clear();
                 html = `
-                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0">
-                            <div>
-                                <span class="text-2xl font-bold text-fuchsia-500 uppercase tracking-widest">特工訓練房 9</span>
-                                <h1 class="text-5xl font-black text-slate-800 mt-2">⏱️ 限時拆彈考場結界 (10 大科目)</h1>
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-8 py-5 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-fuchsia-500 uppercase tracking-widest">特工訓練房 9</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">⏱️ 限時拆彈考場結界 (10 大科目)</h1>
                             </div>
-                            <div class="flex gap-3 overflow-x-auto max-w-[400px] custom-scrollbar pb-2">
-                                ${examTasks.map((_, i) => `<button onclick="changeTask('survival', ${i})" class="px-5 py-2 rounded-xl font-bold text-xl shrink-0 ${currentTaskIndex===i ? 'bg-fuchsia-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
+                            <div class="flex flex-wrap gap-2 flex-grow justify-end items-center">
+                                ${examTasks.map((_, i) => `<button onclick="changeTask('survival', ${i})" class="px-3 py-1.5 rounded-lg font-bold text-sm ${currentTaskIndex===i ? 'bg-fuchsia-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
                             </div>
                         </div>
-                        <div class="grid grid-cols-12 gap-12 flex-grow py-10 min-h-0">
-                            <div class="col-span-8 flex flex-col justify-between bg-slate-50 border-4 border-slate-200 rounded-[3rem] p-10 shadow-lg h-full overflow-hidden">
-                                <div class="bg-white p-8 rounded-[2rem] border-4 border-slate-200 flex-grow flex flex-col justify-between relative shadow-inner min-h-0">
-                                    <div class="flex justify-between items-center shrink-0 border-b-4 border-slate-100 pb-6 mb-6">
-                                        <span class="text-3xl text-rose-500 font-black bg-rose-50 px-4 py-2 rounded-xl border-2 border-rose-200"><i class="fa-solid fa-stopwatch animate-pulse mr-2"></i> 倒數 20 秒</span>
-                                        <span id="examScore" class="text-fuchsia-600 font-black text-3xl bg-fuchsia-50 px-4 py-2 rounded-xl border-2 border-fuchsia-200">狙擊點：0/2</span>
+                        <div class="flex-grow p-6 bg-slate-50 overflow-hidden flex flex-col relative min-h-0">
+                            <div class="flex gap-8 flex-grow h-full min-h-0">
+                                <div class="w-[65%] flex flex-col justify-between bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm h-full overflow-hidden">
+                                    <div class="flex justify-between items-center shrink-0 border-b-2 border-slate-100 pb-3 mb-4">
+                                        <span class="text-xl text-rose-500 font-bold bg-rose-50 px-3 py-1 rounded-lg border border-rose-200"><i class="fa-solid fa-stopwatch animate-pulse mr-2"></i> 倒數 20 秒</span>
+                                        <span id="examScore" class="text-fuchsia-600 font-bold text-xl bg-fuchsia-50 px-3 py-1 rounded-lg border border-fuchsia-200">狙擊點：0/2</span>
                                     </div>
-                                    <div id="examArticleBox" class="text-slate-700 font-bold text-3xl leading-loose py-4 select-none overflow-y-auto custom-scrollbar pr-6 flex-grow">
+                                    <!-- 文章區塊獨立滾動 -->
+                                    <div id="examArticleBox" class="text-slate-700 font-medium text-xl leading-loose py-2 select-none overflow-y-auto custom-scrollbar pr-4 flex-grow pointer-events-none">
                                         ${exm.text}
                                     </div>
-                                    <div class="bg-slate-800 p-6 rounded-2xl border-4 border-slate-700 text-2xl font-black text-white mt-6 shrink-0 shadow-lg" id="currentQuestionBox">
-                                        🚨 狙擊目標：這段文字提到了哪兩個關鍵詞？
+                                    <div class="bg-slate-800 p-4 rounded-xl border-2 border-slate-700 text-lg font-bold text-white mt-4 shrink-0 shadow-md" id="currentQuestionBox">
+                                        🚨 狙擊目標：${exm.question}
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-span-4 bg-white border-[6px] border-slate-200 rounded-[3rem] p-10 flex flex-col justify-between shadow-2xl h-full overflow-y-auto custom-scrollbar">
-                                <div>
-                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-6 mb-8"><i class="fa-solid fa-crosshairs text-fuchsia-500"></i> ${exm.title} 狙擊鏡</h3>
-                                    <p class="text-2xl text-slate-500 leading-relaxed font-bold mb-8">逐字讀必死！<strong>請先點擊「掃描題目」，圈出關鍵字後，快速定位答案！</strong></p>
-                                </div>
-                                <div class="space-y-6 mt-auto">
-                                    <button onclick="scanExamQuestion()" id="examScanBtn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-black py-6 rounded-2xl text-3xl transition flex items-center justify-center gap-3 border-4 border-slate-300 shadow-md"><i class="fa-solid fa-magnifying-glass"></i> 掃描題目</button>
-                                    <button onclick="shootExamTarget('${exm.target}')" id="examShootBtn1" disabled class="w-full bg-slate-50 text-slate-400 font-black py-6 rounded-2xl text-3xl text-left px-6 flex items-center justify-between border-4 border-slate-200 cursor-not-allowed transition shadow-sm"><span>🎯 ${exm.target}</span><span class="text-sm bg-slate-200 px-3 py-1.5 rounded-lg">Locked</span></button>
-                                    <button onclick="shootExamTarget('${exm.target2}')" id="examShootBtn2" disabled class="w-full bg-slate-50 text-slate-400 font-black py-6 rounded-2xl text-3xl text-left px-6 flex items-center justify-between border-4 border-slate-200 cursor-not-allowed transition shadow-sm"><span>🎯 ${exm.target2}</span><span class="text-sm bg-slate-200 px-3 py-1.5 rounded-lg">Locked</span></button>
+                                <div class="w-[35%] bg-white border-[4px] border-slate-200 rounded-3xl p-6 flex flex-col justify-between shadow-xl h-full overflow-y-auto custom-scrollbar">
+                                    <div>
+                                        <h3 class="font-black text-slate-800 text-2xl flex items-center gap-2 border-b-2 border-slate-100 pb-3 mb-4"><i class="fa-solid fa-crosshairs text-fuchsia-500"></i> ${exm.title} 狙擊鏡</h3>
+                                        <p class="text-base text-slate-500 leading-relaxed font-bold mb-6">逐字讀必死！<strong>請先點擊「掃描題目」，再到左方文章點擊關鍵字！</strong></p>
+                                    </div>
+                                    <div class="space-y-4 mt-auto">
+                                        <button onclick="scanExamQuestion()" id="examScanBtn" class="w-full bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-bold py-4 rounded-2xl text-xl transition flex items-center justify-center gap-2 shadow-md"><i class="fa-solid fa-magnifying-glass animate-pulse"></i> 掃描題目關鍵字</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -725,7 +770,7 @@
         }
 
         // ==========================================
-        // 互動函數區
+        // 互動函數
         // ==========================================
 
         function changeTask(room, index) {
@@ -760,7 +805,7 @@
         function moveReadingRuler(e) {
             const ruler = document.getElementById('readingRuler');
             const parentRect = e.currentTarget.getBoundingClientRect();
-            ruler.style.top = `${e.clientY - parentRect.top - 40}px`;
+            ruler.style.top = `${e.clientY - parentRect.top - 30}px`;
         }
 
         function readWithEyes() {
@@ -785,19 +830,13 @@
             showToast("🔊 語音 TTS 啟動！寬行距大字模式，體力恢復 20%", "success");
         }
 
-        function simulateSTT() {
-            updateHUD(10);
-            showToast("✨ 口述語音轉文字 (STT) 模擬成功！避開手寫！", "success");
-        }
-
-        let currentDefuseIndex = 0;
         function clickDefuseComponent(char, btnId) {
             const dec = decodingTasks[currentTaskIndex];
             if(char === dec.parts[currentDefuseIndex]) {
                 const box = document.getElementById(`defuseBox_${currentDefuseIndex}`);
                 if(box) {
                     box.innerText = char;
-                    box.className = "w-24 h-24 bg-purple-50 border-4 border-purple-400 rounded-2xl flex items-center justify-center font-black text-5xl text-purple-600 shadow-md";
+                    box.className = "w-24 h-24 bg-purple-50 border-4 border-purple-400 rounded-2xl flex items-center justify-center font-black text-5xl text-purple-600 shadow-md fade-in";
                 }
                 document.getElementById(btnId).style.visibility = 'hidden';
                 currentDefuseIndex++;
@@ -817,14 +856,14 @@
             if(isPomoRunning) return;
             isPomoRunning = true;
             document.getElementById('pomoStatus').innerText = "Focusing...";
-            document.getElementById('pomoStatus').className = "text-3xl text-emerald-500 font-black mt-6 uppercase tracking-widest animate-pulse";
+            document.getElementById('pomoStatus').className = "text-2xl text-emerald-500 font-black mt-4 uppercase tracking-widest animate-pulse";
             pomoInterval = setInterval(() => {
                 pomoSeconds -= 60; 
                 if(pomoSeconds <= 0) {
                     clearInterval(pomoInterval);
                     document.getElementById('pomoTime').innerText = "05:00";
                     document.getElementById('pomoStatus').innerText = "Break Time!";
-                    document.getElementById('pomoStatus').className = "text-3xl text-amber-500 font-black mt-6 uppercase tracking-widest animate-bounce";
+                    document.getElementById('pomoStatus').className = "text-2xl text-amber-500 font-black mt-4 uppercase tracking-widest animate-bounce";
                     stamina = 100;
                     updateHUD(0); 
                     showToast("⏰ 20分鐘衝刺結束！進入小休，體力已完全重置為 100%！", "success");
@@ -842,7 +881,7 @@
             pomoSeconds = 1200;
             document.getElementById('pomoTime').innerText = "20:00";
             document.getElementById('pomoStatus').innerText = "Ready to Focus";
-            document.getElementById('pomoStatus').className = "text-3xl text-slate-500 font-bold mt-6 uppercase tracking-widest";
+            document.getElementById('pomoStatus').className = "text-2xl text-slate-500 font-bold mt-4 uppercase tracking-widest";
         }
 
         function fireLaser(step) {
@@ -851,15 +890,15 @@
             document.getElementById('monsterHp').innerText = `HP: ${hpMap[step]}%`;
             document.getElementById('monsterHpBar').style.width = `${hpMap[step]}%`;
             
-            document.getElementById(`lBtn${step}`).className = "w-full bg-rose-50 border-4 border-rose-500 text-rose-600 font-black text-3xl py-6 rounded-3xl text-left px-8 flex items-center justify-between shadow-lg transform scale-[1.02] transition";
-            document.getElementById(`lBtn${step}`).innerHTML = `<span>✓ 已完成</span><span class="text-xl bg-rose-500 px-4 py-2 rounded-xl text-white">Done</span>`;
+            document.getElementById(`lBtn${step}`).className = "w-full bg-rose-50 border-2 border-rose-500 text-rose-600 font-bold text-2xl py-5 rounded-2xl text-left px-6 flex items-center justify-between shadow-sm transform scale-[1.02] transition";
+            document.getElementById(`lBtn${step}`).innerHTML = `<span>✓ 已完成</span><span class="text-base bg-rose-500 px-3 py-1 rounded-lg text-white">Done</span>`;
 
             if (step < 5) {
                 currentLaserStep++;
                 const next = document.getElementById(`lBtn${currentLaserStep}`);
                 next.disabled = false;
-                next.className = "w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-black border-4 border-slate-300 text-3xl py-6 rounded-3xl transition text-left px-8 flex items-center justify-between shadow-sm cursor-pointer";
-                next.querySelector('span:last-child').className = "text-xl bg-slate-300 px-4 py-2 rounded-xl text-slate-800";
+                next.className = "w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border-2 border-slate-300 text-2xl py-5 rounded-2xl transition text-left px-6 flex items-center justify-between shadow-sm cursor-pointer";
+                next.querySelector('span:last-child').className = "text-base bg-slate-300 px-3 py-1 rounded-lg text-slate-800";
                 next.querySelector('span:last-child').innerText = `Ready`;
             }
 
@@ -868,7 +907,7 @@
             if (step === 5) {
                 document.getElementById('monsterEmoji').innerText = "👼";
                 document.getElementById('monsterName').innerText = "大魔王已被粉碎！";
-                document.getElementById('monsterName').className = "text-5xl font-black text-emerald-500 mb-6";
+                document.getElementById('monsterName').className = "text-4xl font-black text-emerald-500 mb-4";
                 updateHUD(20);
                 showToast("🏆 任務切割策略完勝！大魔王被粉碎！", "success");
                 fireConfetti();
@@ -877,7 +916,6 @@
             }
         }
 
-        let selectedBufferIcons = new Set();
         function playMemoryAudio(audioText) {
             document.getElementById('audioTextDisplay').innerText = `「${audioText}」`;
             if ('speechSynthesis' in window) {
@@ -890,11 +928,11 @@
         function selectBufferIcon(key, btn) {
             if(selectedBufferIcons.has(key)) {
                 selectedBufferIcons.delete(key);
-                btn.className = "buf-icon-btn p-8 bg-slate-50 border-4 border-slate-200 rounded-3xl text-center hover:border-teal-400 transition shadow-sm h-[180px] flex flex-col items-center justify-center";
+                btn.className = "buf-icon-btn p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl text-center hover:border-teal-400 transition shadow-sm flex flex-col items-center justify-center";
             } else {
                 if(selectedBufferIcons.size >= 3) { showToast("記憶體 (RAM) 已滿，最多 3 個圖標！", "error"); return; }
                 selectedBufferIcons.add(key);
-                btn.className = "buf-icon-btn p-8 bg-teal-50 border-4 border-teal-500 rounded-3xl text-center transition shadow-lg transform scale-105 h-[180px] flex flex-col items-center justify-center";
+                btn.className = "buf-icon-btn p-4 bg-teal-50 border-2 border-teal-500 rounded-2xl text-center transition shadow-md transform scale-105 flex flex-col items-center justify-center";
             }
         }
         function verifyBufferCode() {
@@ -933,9 +971,7 @@
             clearInterval(boardTimer); updateHUD(15);
             showToast("📸 咔嚓！OCR 文字辨識完成，100% 避開抄寫疲勞！", "success");
         }
-        function simulateRequestEmail() { updateHUD(5); showToast("📧 已向老師申請提前獲取 PPT 講義！"); }
 
-        let currentSortIndex = 0; let sortedCount = 0;
         function initSortingItem() { currentSortIndex=0; sortedCount=0; showNextSortingItem(); }
         function showNextSortingItem() {
             if(currentSortIndex >= sortingItems.length) {
@@ -960,27 +996,35 @@
             } else { showToast("有歸類錯誤，請點選按鈕重新挑戰！", "error"); initSortingItem(); }
         }
 
-        let isQuestionInspected = false; let shotTargets = new Set();
         function scanExamQuestion() {
             isQuestionInspected = true;
-            document.getElementById('currentQuestionBox').innerHTML = "🚨 <strong>已開啟狙擊鏡：</strong> 關鍵字已亮起！";
-            document.getElementById('examTarget_1').className = "text-rose-600 font-black bg-rose-100 px-3 py-1 rounded-lg animate-pulse cursor-pointer border-4 border-rose-300";
-            document.getElementById('examTarget_2').className = "text-fuchsia-600 font-black bg-fuchsia-100 px-3 py-1 rounded-lg animate-pulse cursor-pointer border-4 border-fuchsia-300";
+            const exm = examTasks[currentTaskIndex];
+            document.getElementById('currentQuestionBox').innerHTML = `🚨 <strong>已開啟狙擊鏡：</strong> 請在上方文章中找出並點擊【${exm.target}】與【${exm.target2}】！`;
             
-            document.getElementById('examShootBtn1').disabled = false;
-            document.getElementById('examShootBtn1').className = "w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-black py-6 rounded-2xl text-3xl text-left px-8 flex items-center justify-between border-4 border-slate-300 cursor-pointer transition shadow-md";
-            document.getElementById('examShootBtn2').disabled = false;
-            document.getElementById('examShootBtn2').className = "w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-black py-6 rounded-2xl text-3xl text-left px-8 flex items-center justify-between border-4 border-slate-300 cursor-pointer transition shadow-md";
+            // 移除 pointer-events-none，讓文字可點擊
+            document.getElementById('examArticleBox').classList.remove('pointer-events-none');
             
-            showToast("🔍 狙擊鏡已鎖定題目！考卷中關鍵字已亮起！");
+            // 加上可點擊的視覺提示 (hover 時才明顯)
+            const t1 = document.getElementById('examTarget_1');
+            const t2 = document.getElementById('examTarget_2');
+            t1.classList.add('hover:bg-fuchsia-200', 'hover:text-fuchsia-800');
+            t2.classList.add('hover:bg-fuchsia-200', 'hover:text-fuchsia-800');
+            
+            showToast("🔍 狙擊鏡已開啟！請在文章中尋找目標關鍵字並點擊！");
         }
-        function shootExamTarget(t) {
+        function shootExamTarget(t, element) {
             if(!isQuestionInspected) return;
+            if(shotTargets.has(t)) return; // 防止重複點擊
+            
             shotTargets.add(t);
+            element.classList.add('bg-fuchsia-500', 'text-white', 'px-2', 'py-1', 'rounded-lg', 'shadow-md');
+            element.classList.remove('hover:bg-fuchsia-200', 'hover:text-fuchsia-800');
+            
             document.getElementById('examScore').innerText = `狙擊點：${shotTargets.size}/2`;
             showToast(`🎯 擊中關鍵詞：[${t}]！`);
+            
             if(shotTargets.size === 2) { 
-                updateHUD(20); showToast("🏆 考場拆彈成功！運用 Skimming 快速定位！", "success"); fireConfetti(); 
+                updateHUD(20); showToast("🏆 考場拆彈成功！運用 Skimming 快速定位答案！", "success"); fireConfetti(); 
             }
         }
 
