@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ADHD 實戰訓練基地 | SEN Care Professional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans HK', sans-serif; background-color: #f1f5f9; color: #334155; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .room-card { transition: all 0.3s ease; cursor: pointer; background-color: #ffffff; border: 1px solid #e2e8f0; }
+        .room-card:hover { border-color: #f59e0b; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .room-card.active { border-color: #f59e0b; background-color: #fffbeb; box-shadow: inset 4px 0 0 #f59e0b, 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+
+        #canvasContainer { position: relative; width: 100%; height: 100%; overflow: hidden; background-color: #e2e8f0; }
+        #posterPrintArea {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1122px;
+            min-height: 793px;
+            height: auto;
+            transform-origin: center center;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 錯誤震動彈回動畫 (Bounce-back) */
+        .shake-bounce { animation: shakeBounce 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shakeBounce {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        /* 泡泡破裂動畫 */
+        .pop-anim { animation: popOut 0.3s forwards; }
+        @keyframes popOut {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* 撒花特效容器 */
+        #confetti-container { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
+
+        /* ADHD 專用時間流逝干擾特效 */
+        .time-blindness { animation: blurFlash 3s infinite alternate; }
+        @keyframes blurFlash {
+            0% { filter: blur(0px); opacity: 1; }
+            50% { filter: blur(3px); opacity: 0.8; }
+            100% { filter: blur(0px); opacity: 1; }
+        }
+
+        /* 記憶圖案高亮指示動畫 */
+        .highlight-pulse { animation: pulseBg 1s ease-in-out; }
+        @keyframes pulseBg {
+            0%, 100% { border-color: #cbd5e1; background-color: #f8fafc; }
+            50% { border-color: #2dd4bf; background-color: #f0fdfa; transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col">
+
+    <!-- 頂部導航 -->
+    <nav class="h-16 flex-none bg-white border-b border-slate-200 z-50 shadow-sm flex items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-4">
+            <a href="professional_dashboard.html" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 font-bold">
+                <i class="fa-solid fa-arrow-left text-sm"></i>
+                <span class="text-sm hidden sm:inline">返回協作平台</span>
+            </a>
+            <div class="flex flex-col justify-center border-l border-slate-200 pl-4">
+                <h1 class="text-sm sm:text-base font-black tracking-tight leading-none text-amber-600">ADHD 專注力特工訓練基地</h1>
+                <span class="text-[10px] text-slate-500 font-bold block mt-1 uppercase tracking-widest">ADHD Agent Training Camp</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <button onclick="toggleSidebar()" class="bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold px-4 py-2 rounded-xl transition shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-bars-staggered"></i> <span class="hidden sm:inline">隱藏/顯示目錄</span>
+            </button>
+
+            <!-- 實時 HUD 指示器 -->
+            <div class="flex items-center gap-2 text-sm font-bold bg-slate-50 px-4 py-2 rounded-xl border border-slate-200 shadow-inner">
+                <span class="text-slate-600 hidden md:inline">特工電量：</span>
+                <i class="fa-solid fa-bolt text-amber-500 md:hidden"></i>
+                <div class="w-20 sm:w-32 bg-slate-200 h-3 rounded-full overflow-hidden border border-slate-300">
+                    <div id="hudStamina" class="bg-emerald-500 h-full transition-all duration-300" style="width: 100%;"></div>
+                </div>
+                <span id="hudStaminaText" class="text-emerald-600 min-w-[40px] text-right font-black">100%</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col md:flex-row overflow-hidden relative bg-slate-50 w-full h-full">
+        
+        <!-- 左側選單 -->
+        <aside id="sidebarMenu" class="flex-none w-full md:w-[320px] lg:w-[380px] h-[30%] md:h-full bg-white border-r border-slate-200 flex flex-col z-20 shadow-lg transition-all duration-300">
+            <div class="p-4 border-b border-slate-100 bg-slate-50 shrink-0">
+                <h2 class="text-sm font-black uppercase text-amber-600 tracking-wider mb-1"><i class="fa-solid fa-list-check text-amber-500 mr-2"></i> 訓練科目選單</h2>
+                <p class="text-xs text-slate-500 font-bold">10 大核心特質訓練任務</p>
+            </div>
+            <div class="flex-grow overflow-y-auto p-3 space-y-2 custom-scrollbar pb-6">
+                <div onclick="selectRoom('ef')" id="room-ef" class="room-card active p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-chess-knight"></i></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">1. 執行功能指揮中心</h3><p class="text-[11px] text-slate-500 mt-1">時間盲模擬與視覺提示板</p></div>
+                </div>
+                <div onclick="selectRoom('impulse')" id="room-impulse" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-hand"></i></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">2. 衝動煞車測試區</h3><p class="text-[11px] text-slate-500 mt-1">Stroop 斯特魯普效應測試</p></div>
+                </div>
+                <div onclick="selectRoom('stamina')" id="room-stamina" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-battery-three-quarters"></i></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">3. 動能調節與番茄鐘</h3><p class="text-[11px] text-slate-500 mt-1">引擎轉速控制與小休衝刺</p></div>
+                </div>
+                <div onclick="selectRoom('wm_new')" id="room-wm_new" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-memory"></i></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">4. 情報暫存記憶體</h3><p class="text-[11px] text-slate-500 mt-1">干擾彈體驗與記憶外包戰術</p></div>
+                </div>
+                <div onclick="selectRoom('initiation')" id="room-initiation" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-rocket"></i></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">5. 微型任務啟動引擎</h3><p class="text-[11px] text-slate-500 mt-1">克服癱瘓與任務切碎機</p></div>
+                </div>
+                <div onclick="selectRoom('social')" id="room-social" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-users"></i></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">6. 社交雷達與輪候</h3><p class="text-[11px] text-slate-500 mt-1">插嘴、沒耐性與碰撞控制</p></div>
+                </div>
+                <div onclick="selectRoom('distraction')" id="room-distraction" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">7. 環境抗干擾戰術</h3><p class="text-[11px] text-slate-500 mt-1">桌面除錯與極簡環境設定</p></div>
+                </div>
+                <div onclick="selectRoom('rsd')" id="room-rsd" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-fuchsia-100 text-fuchsia-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-heart-crack"></i></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">8. 情緒防護罩 (RSD)</h3><p class="text-[11px] text-slate-500 mt-1">打破災難化思考與拒絕敏感</p></div>
+                </div>
+                <div onclick="selectRoom('inventory')" id="room-inventory" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-boxes-packing"></i></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">9. 桌面與書包收納系統</h3><p class="text-[11px] text-slate-500 mt-1">防呆防錯色彩分類結界</p></div>
+                </div>
+                <div onclick="selectRoom('exam')" id="room-exam" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-bullseye"></i></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">10. 考場專注力結界</h3><p class="text-[11px] text-slate-500 mt-1">大意錯漏與審題狙擊訓練</p></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 右側畫布 -->
+        <section class="flex-grow h-[70%] md:h-full relative overflow-hidden" id="canvasContainer">
+            <div id="posterScaleWrapper" style="transform-origin: center center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                <div id="posterPrintArea" class="a4-canvas">
+                    <!-- 內容由 JS 注入 -->
+                    <div id="confetti-container"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="fixed bottom-8 right-8 bg-white border border-slate-200 rounded-2xl shadow-2xl py-4 px-6 flex items-center gap-4 opacity-0 translate-y-10 transition-all duration-300 pointer-events-none z-[300]">
+        <i class="fa-solid fa-circle-check text-emerald-500 text-2xl" id="toastIcon"></i>
+        <span id="toastMsg" class="text-lg font-black text-slate-800"></span>
+    </div>
+
+    <!-- 腳本邏輯 -->
+    <script>
+        // ==========================================
+        // 全局變數集中宣告
+        // ==========================================
+        let isSidebarOpen = true;
+        let stamina = 100;
+        let currentRoom = "ef";
+        let currentTaskIndex = 0; 
+        
+        let pomoInterval = null;
+        let isPomoRunning = false;
+        let pomoSeconds = 1200;
+
+        let isTimeBlindness = false;
+        let currentSortIndex = 0; 
+        let sortedCount = 0;
+        
+        let isQuestionInspected = false; 
+        let shotTargets = new Set();
+        
+        let distractionTimer = null;
+        let distractorsLeft = 4;
+        
+        // R4 Working Memory
+        const wmEmojiPool = ['🕶️', '🚀', '💻', '🎯', '🔑', '🛡️', '🧪', '📡', '⌚', '🔍'];
+        let wmMissionSequence = []; 
+        let wmShuffledSequence = []; 
+        let wmUserRecall = []; 
+        let wmShowTimer = null;
+        let wmShowIndex = 0;
+        let wmActiveTool = null; 
+        let wmState = "ready"; 
+
+        // R5 Initiation
+        let taskChunked = false;
+        let microStepsDone = 0;
+        let currentLaserStep = 1;
+
+        // R6 Social
+        let socialAnswered = false;
+        let socialIsCorrect = false;
+
+        // R8 RSD
+        let rsdBubblesActive = 3;
+
+        // R2 Stroop Test
+        const stroopBaseColors = [
+            { name: '紅色', val: 'red', css: 'text-red-600' },
+            { name: '藍色', val: 'blue', css: 'text-blue-600' },
+            { name: '綠色', val: 'green', css: 'text-green-600' },
+            { name: '黃色', val: 'yellow', css: 'text-yellow-500' },
+            { name: '紫色', val: 'purple', css: 'text-purple-600' }
+        ];
+
+        const stroopLevels = Array.from({length: 10}, () => {
+            return Array.from({length: 10}, () => {
+                const wordObj = stroopBaseColors[Math.floor(Math.random() * stroopBaseColors.length)];
+                let colorObj = stroopBaseColors[Math.floor(Math.random() * stroopBaseColors.length)];
+                while(colorObj.val === wordObj.val) {
+                    colorObj = stroopBaseColors[Math.floor(Math.random() * stroopBaseColors.length)];
+                }
+                let opts = [colorObj];
+                while(opts.length < 3) {
+                    let randomOpt = stroopBaseColors[Math.floor(Math.random() * stroopBaseColors.length)];
+                    if(!opts.find(x => x.val === randomOpt.val)) {
+                        opts.push(randomOpt);
+                    }
+                }
+                opts.sort(() => Math.random() - 0.5); 
+                return { word: wordObj.name, colorClass: colorObj.css, correct: colorObj.val, options: opts };
+            });
+        });
+
+        let currentStroopQIndex = 0;
+        let currentStroopScore = 0;
+        let isStroopFinished = false;
+
+        // ==========================================
+        // ADHD 關卡資料庫
+        // ==========================================
+        const chunkingTasks = [
+            { name: "執拾極度混亂的房間", emoji: "🌪️", steps: ["1. 只把垃圾丟進垃圾桶", "2. 把所有衣服丟進籃子", "3. 把書本放回書架", "4. 擦乾淨書桌", "5. 房間變乾淨了"] },
+            { name: "開始做討厭的數學功課", emoji: "📐", steps: ["1. 拿出數學課本和筆", "2. 寫上今天的日期", "3. 只做第一題", "4. 做完三題休息5分鐘", "5. 功課完成了"] },
+            { name: "完成小組專題報告", emoji: "📚", steps: ["1. 和同學討論題目", "2. 上網找兩篇資料", "3. 貼上 PPT", "4. 寫三句演講稿", "5. 準備好報告了"] }
+        ];
+
+        const socialTasks = [
+            { 
+                situation: "別人說話時很想插嘴，你應該怎麼做？", 
+                emoji: "🗣️", 
+                options: ["大聲蓋過他的聲音", "用手輕輕蓋住嘴巴，在心裡數 5 秒", "直接走開不聽了"],
+                correct: 1
+            },
+            {
+                situation: "玩遊戲輸了想發脾氣，你應該怎麼做？",
+                emoji: "😡",
+                options: ["把玩具丟在地上", "指責別人作弊", "深呼吸，跟自己說「這只是一個遊戲」"],
+                correct: 2
+            },
+            {
+                situation: "排隊覺得很不耐煩，你應該怎麼做？",
+                emoji: "⏳",
+                options: ["在原地輕輕動動腳趾，觀察周圍的東西", "推前面的人叫他走快點", "直接插隊到最前面"],
+                correct: 0
+            },
+            {
+                situation: "想拿同學桌上的文具，你應該怎麼做？",
+                emoji: "✏️",
+                options: ["先拿來用，等一下再還", "先開口問「請問我可以借用嗎？」", "趁他不在偷偷拿走"],
+                correct: 1
+            },
+            {
+                situation: "同學不小心撞到你，你應該怎麼做？",
+                emoji: "💥",
+                options: ["馬上用力推回去", "先想「他可能不是故意的」，再問他原因", "大聲罵他"],
+                correct: 1
+            }
+        ];
+
+        const sortingItems = [ 
+            { icon: "📱", text: "手提電話", folder: "distract" }, 
+            { icon: "📘", text: "數學課本", folder: "keep" }, 
+            { icon: "🎮", text: "遊戲機", folder: "distract" },
+            { icon: "✏️", text: "文具盒", folder: "keep" },
+            { icon: "📓", text: "家課手冊", folder: "keep" },
+            { icon: "🤖", text: "變形玩具", folder: "distract" }
+        ];
+
+        const examTasks = [
+            { title: "【中文科】", question: "這篇文章的作者最喜歡甚麼季節？原因是甚麼？", target: "秋天", target2: "涼爽", text: "我一年四季中最喜歡 <span id='examTarget_1' onclick=\"shootExamTarget('秋天', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>秋天</span>，因為天氣非常 <span id='examTarget_2' onclick=\"shootExamTarget('涼爽', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>涼爽</span>，不會像夏天那樣滿頭大汗。" },
+            { title: "【英文科】", question: "What is Tom's favorite sport and when does he play it?", target: "basketball", target2: "Sunday", text: "Tom loves to play <span id='examTarget_1' onclick=\"shootExamTarget('basketball', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>basketball</span> with his friends. They usually meet at the park every <span id='examTarget_2' onclick=\"shootExamTarget('Sunday', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>Sunday</span>." },
+            { title: "【數學科】", question: "小明買了多少個蘋果？每個多少錢？", target: "5個", target2: "10", text: "小明去超級市場買了 <span id='examTarget_1' onclick=\"shootExamTarget('5個', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>5個</span> 蘋果，每個蘋果售價為 <span id='examTarget_2' onclick=\"shootExamTarget('10', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>10</span> 元，請問他總共付了多少錢？" }
+        ];
+
+        // ==========================================
+        // UI 控制與動態高度縮放引擎
+        // ==========================================
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebarMenu');
+            isSidebarOpen = !isSidebarOpen;
+            if (isSidebarOpen) {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('flex');
+            } else {
+                sidebar.classList.remove('flex');
+                sidebar.classList.add('hidden');
+            }
+            setTimeout(resizeCanvas, 50);
+        }
+
+        function resizeCanvas() {
+            const container = document.getElementById('canvasContainer');
+            const wrapper = document.getElementById('posterScaleWrapper');
+            const canvas = document.getElementById('posterPrintArea');
+            
+            if(!container || !canvas || !wrapper) return;
+
+            canvas.style.transform = `translate(-50%, -50%) scale(1)`;
+            
+            const baseWidth = 1122;
+            canvas.style.height = 'auto'; 
+            const baseHeight = Math.max(793, canvas.offsetHeight);
+
+            const padding = window.innerWidth < 768 ? 20 : 40; 
+            const availableWidth = container.clientWidth - padding;
+            const availableHeight = container.clientHeight - padding;
+
+            if (availableWidth <= 0 || availableHeight <= 0) return;
+
+            const scale = Math.min(availableWidth / baseWidth, availableHeight / baseHeight);
+            canvas.style.height = `${baseHeight}px`;
+            canvas.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        // ==========================================
+        // HUD & Toast
+        // ==========================================
+        function updateHUD(staminaDiff) {
+            stamina = Math.max(0, Math.min(100, stamina + staminaDiff));
+            const bar = document.getElementById('hudStamina');
+            const text = document.getElementById('hudStaminaText');
+            if (bar && text) {
+                bar.style.width = `${stamina}%`;
+                text.innerText = `${stamina}%`;
+                if(stamina <= 30) {
+                    bar.className = "bg-rose-500 h-full transition-all duration-300";
+                    text.className = "text-rose-600 min-w-[40px] text-right font-black animate-pulse";
+                } else if(stamina <= 60) {
+                    bar.className = "bg-amber-400 h-full transition-all duration-300";
+                    text.className = "text-amber-600 min-w-[40px] text-right font-black";
+                } else {
+                    bar.className = "bg-emerald-500 h-full transition-all duration-300";
+                    text.className = "text-emerald-600 min-w-[40px] text-right font-black";
+                }
+            }
+        }
+
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            const icon = document.getElementById('toastIcon');
+            if (!toast || !msgEl || !icon) return;
+
+            msgEl.innerText = msg;
+            icon.className = type === 'error' ? "fa-solid fa-circle-exclamation text-rose-500 text-3xl" : "fa-solid fa-circle-check text-emerald-500 text-3xl";
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 2500);
+        }
+
+        function fireConfetti() {
+            const container = document.getElementById('confetti-container');
+            if (!container) return;
+            container.innerHTML = ''; 
+            const emojis = ['🎉', '✨', '🏆', '⭐', '🎈'];
+            for(let i=0; i<40; i++) {
+                let conf = document.createElement('div');
+                conf.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                conf.style.position = 'absolute';
+                conf.style.left = Math.random() * 100 + '%';
+                conf.style.top = '-10%';
+                conf.style.fontSize = (Math.random() * 30 + 30) + 'px';
+                conf.style.transition = 'top 2s ease-in, opacity 2s ease-out';
+                container.appendChild(conf);
+                setTimeout(() => {
+                    conf.style.top = '110%';
+                    conf.style.opacity = '0';
+                }, 50);
+            }
+        }
+
+        // ==========================================
+        // 渲染主函數 (完美防溢出)
+        // ==========================================
+        function selectRoom(roomId) {
+            clearInterval(pomoInterval);
+            clearInterval(distractionTimer);
+            clearTimeout(wmShowTimer);
+            
+            isPomoRunning = false;
+            currentTaskIndex = 0; 
+            currentRoom = roomId;
+            isTimeBlindness = false;
+            
+            // State Resets
+            wmState = "ready"; 
+            wmUserRecall = [];
+            wmActiveTool = null;
+            taskChunked = false; 
+            microStepsDone = 0;
+            currentStroopQIndex = 0;
+            currentStroopScore = 0;
+            isStroopFinished = false;
+            socialAnswered = false;
+            socialIsCorrect = false;
+            rsdBubblesActive = 3;
+            currentSortIndex = 0;
+            sortedCount = 0;
+            isQuestionInspected = false;
+            shotTargets.clear();
+
+            document.querySelectorAll('.room-card').forEach(card => card.classList.remove('active'));
+            const activeCard = document.getElementById(`room-${roomId}`);
+            if(activeCard) activeCard.classList.add('active');
+
+            renderRoom(roomId);
+            setTimeout(resizeCanvas, 30);
+        }
+
+        function renderRoom(roomId) {
+            const canvas = document.getElementById('posterPrintArea');
+            let html = "";
+
+            if(roomId === "ef") {
+                html = `
+                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white overflow-hidden pb-12">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0 bg-white z-10">
+                            <div class="shrink-0 mr-4">
+                                <span class="text-2xl font-bold text-blue-500 uppercase tracking-widest">特工訓練房 1</span>
+                                <h1 class="text-5xl font-black text-slate-800 mt-2">🧠 執行功能指揮中心</h1>
+                            </div>
+                        </div>
+                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
+                            <div class="flex gap-8 flex-grow h-auto min-h-full pb-6">
+                                <div class="w-[58%] flex flex-col bg-white border-4 border-slate-200 rounded-[1.5rem] p-8 shadow-sm h-auto pb-14 relative overflow-visible">
+                                    <div class="bg-white p-6 rounded-2xl border border-slate-200 mb-6 space-y-4 shadow-sm flex-grow flex flex-col justify-center items-center text-center transition-all duration-500" id="timeBlindnessScreen">
+                                        <i class="fa-regular fa-clock text-7xl text-slate-300 mb-4"></i>
+                                        <h2 class="text-3xl font-black text-slate-700">時間感模擬</h2>
+                                        <p class="text-lg text-slate-600 font-medium">ADHD 學生常有「時間盲」，無法準確感受時間流逝，覺得「5分鐘像1小時」。</p>
+                                    </div>
+                                    <div class="bg-blue-50 border-2 border-blue-200 p-4 rounded-2xl mt-auto shrink-0 shadow-sm w-full">
+                                        <span class="text-xl font-black text-blue-900 block mb-3"><i class="fa-solid fa-eye-low-vision"></i> 體驗：時間盲干擾控制器</span>
+                                        <div class="flex gap-3">
+                                            <button onclick="toggleTimeBlindness()" id="btnTimeBlindness" class="w-full bg-white hover:bg-blue-100 border-2 border-blue-200 py-3 rounded-xl text-lg font-bold text-slate-700 transition shadow-sm">🌀 啟動時間盲干擾 (關閉)</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-[42%] bg-white border-[4px] border-slate-200 rounded-[1.5rem] p-8 pb-14 flex flex-col justify-between shadow-xl h-auto">
+                                    <div>
+                                        <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-chalkboard"></i> 「先...然後...」提示板</h3>
+                                        <p class="text-xl text-slate-500 font-bold mb-8">對於抗拒的任務，利用清晰的獎勵機制降低執行阻力。</p>
+                                    </div>
+                                    <div class="flex flex-col gap-6 flex-grow justify-center mb-6">
+                                        <div class="bg-red-50 border-4 border-red-200 rounded-3xl p-6 shadow-sm">
+                                            <h4 class="text-2xl font-black text-red-700 mb-2">1️⃣ 先 (First)</h4>
+                                            <p class="text-xl text-slate-700 font-bold">完成 3 行數學功課</p>
+                                        </div>
+                                        <div class="flex justify-center"><i class="fa-solid fa-arrow-down text-4xl text-slate-300"></i></div>
+                                        <div class="bg-green-50 border-4 border-green-300 rounded-3xl p-6 shadow-md transform scale-105">
+                                            <h4 class="text-2xl font-black text-green-700 mb-2">2️⃣ 然後 (Then)</h4>
+                                            <p class="text-xl text-slate-700 font-bold">玩 5 分鐘 iPad 🎮</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } 
+            else if (roomId === "impulse") {
+                const levelData = stroopLevels[currentTaskIndex];
+                const imp = levelData[currentStroopQIndex];
+                html = `
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-4">
+                                <span class="text-xl font-bold text-rose-500 uppercase tracking-widest">特工訓練房 2</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🛑 衝動煞車測試區 (10 大關卡)</h1>
+                            </div>
+                            <div class="flex gap-2 overflow-x-auto w-full max-w-[500px] hide-scrollbar pb-1 justify-start shrink-0">
+                                <button onclick="scrollImpTabs(-1)" class="px-2 text-slate-400 hover:text-rose-600 font-bold"><i class="fa-solid fa-chevron-left"></i></button>
+                                <div class="flex gap-2 overflow-x-auto hide-scrollbar scroll-smooth" id="impTabsContainer">
+                                    ${stroopLevels.map((_, i) => `<button onclick="changeTask('impulse', ${i})" class="px-4 py-1.5 rounded-xl font-bold text-base shrink-0 ${currentTaskIndex===i ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
+                                </div>
+                                <button onclick="scrollImpTabs(1)" class="px-2 text-slate-400 hover:text-rose-600 font-bold"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
+                            <div class="flex gap-8 flex-grow h-auto min-h-full pb-6">
+                                <div class="w-[58%] flex flex-col bg-white border-[4px] border-slate-200 rounded-[1.5rem] p-5 pb-14 shadow-inner h-auto justify-center items-center text-center">
+                                    ${!isStroopFinished ? `
+                                        <div class="w-full flex justify-between items-center px-4 mb-4 border-b-2 border-slate-100 pb-2">
+                                            <span class="text-xl text-slate-500 font-bold bg-white px-4 py-1 rounded-xl shadow-sm border border-slate-200">進度：${currentStroopQIndex + 1} / 10</span>
+                                            <span class="text-xl text-rose-600 font-black bg-rose-100 px-4 py-1 rounded-xl shadow-sm border border-rose-200">得分：${currentStroopScore}</span>
+                                        </div>
+                                        <h3 class="text-2xl font-black text-slate-700 mb-2">斯特魯普效應 (Stroop Effect)</h3>
+                                        <p class="text-lg text-slate-500 font-bold mb-6 bg-slate-50 px-6 py-2 rounded-xl border border-slate-200">⚠️ 請點擊與文字「<span class="text-rose-600 font-black">顏色</span>」相符的按鈕，不要管文字寫什麼！</p>
+                                        <div class="text-[180px] font-black tracking-widest mb-12 drop-shadow-lg ${imp.colorClass}">${imp.word}</div>
+                                        <div class="flex justify-center gap-6 w-full px-4">
+                                            ${imp.options.map(opt => `<button onclick="checkStroop('${opt.val}', '${imp.correct}')" class="flex-1 bg-white border-[6px] border-slate-200 hover:border-slate-400 text-slate-700 font-black py-6 rounded-[2rem] text-4xl shadow-md transition active:scale-95">${opt.name}</button>`).join('')}
+                                        </div>
+                                    ` : `
+                                        <div class="flex flex-col items-center justify-center h-full w-full fade-in">
+                                            <div class="text-[140px] mb-6 drop-shadow-lg decoration-only">🏆</div>
+                                            <h2 class="text-5xl font-black text-rose-600 mb-6">關卡 ${currentTaskIndex + 1} 結算</h2>
+                                            <p class="text-3xl text-slate-600 font-bold mb-4">總得分</p>
+                                            <p class="text-[80px] font-black text-rose-500 bg-rose-50 px-12 py-4 rounded-[3rem] border-8 border-rose-200 mb-12 shadow-inner">${currentStroopScore} <span class="text-4xl text-rose-400">/ 10</span></p>
+                                            <div class="flex gap-6 w-full max-w-lg">
+                                                <button onclick="retryStroop()" class="flex-1 bg-white border-[6px] border-slate-300 hover:bg-slate-100 text-slate-600 font-black py-5 rounded-2xl text-2xl transition shadow-sm">重玩本關</button>
+                                                <button onclick="nextStroopLevel()" class="flex-1 bg-rose-500 hover:bg-rose-600 border-[6px] border-rose-600 text-white font-black py-5 rounded-2xl text-2xl transition shadow-md">下一關 <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                                            </div>
+                                        </div>
+                                    `}
+                                </div>
+                                <div class="w-[42%] bg-white border-[4px] border-slate-200 rounded-[1.5rem] p-8 pb-14 flex flex-col shadow-xl h-auto">
+                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-hand text-rose-500"></i> 停・想・做 (Stop-Think-Do)</h3>
+                                    <p class="text-xl text-slate-600 font-bold mb-6">當大腦想要衝動時，教導學生按下煞車掣：</p>
+                                    <div class="space-y-6 flex-grow">
+                                        <div class="bg-red-50 border-2 border-red-200 p-6 rounded-2xl flex items-center gap-4">
+                                            <div class="w-16 h-16 bg-red-500 rounded-full text-white flex items-center justify-center text-3xl font-black shrink-0">🛑</div>
+                                            <div><h4 class="text-2xl font-black text-red-800">停一停 (Stop)</h4><p class="text-slate-600 font-bold">深呼吸，雙手放平</p></div>
+                                        </div>
+                                        <div class="bg-yellow-50 border-2 border-yellow-200 p-6 rounded-2xl flex items-center gap-4">
+                                            <div class="w-16 h-16 bg-yellow-400 rounded-full text-white flex items-center justify-center text-3xl font-black shrink-0">🤔</div>
+                                            <div><h4 class="text-2xl font-black text-yellow-800">想一想 (Think)</h4><p class="text-slate-600 font-bold">這樣做會有甚麼後果？</p></div>
+                                        </div>
+                                        <div class="bg-green-50 border-2 border-green-200 p-6 rounded-2xl flex items-center gap-4">
+                                            <div class="w-16 h-16 bg-green-500 rounded-full text-white flex items-center justify-center text-3xl font-black shrink-0">✅</div>
+                                            <div><h4 class="text-2xl font-black text-green-800">慢慢做 (Do)</h4><p class="text-slate-600 font-bold">選擇一個最好的方法</p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } 
+            else if (roomId === "stamina") {
+                html = `
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-emerald-500 uppercase tracking-widest">特工訓練房 3</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🔋 動能調節與番茄鐘</h1>
+                            </div>
+                        </div>
+                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
+                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
+                                <div class="w-[50%] flex flex-col justify-between bg-white border-4 border-slate-200 rounded-[2.5rem] p-10 pb-14 shadow-sm h-auto">
+                                    <div>
+                                        <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 mb-6"><i class="fa-solid fa-gauge-high text-emerald-500"></i> 大腦引擎轉速控制</h3>
+                                        <p class="text-xl text-slate-600 leading-relaxed font-bold mb-8">ADHD 學生的狀態容易走極端。點擊嘗試調節轉速：</p>
+                                    </div>
+                                    <div class="space-y-6 mt-auto">
+                                        <button onclick="updateHUD(-80); showToast('🏎️ 引擎過熱！多動、坐立不安、插嘴。', 'error');" class="w-full bg-red-50 hover:bg-red-100 border-4 border-red-200 text-red-700 font-black py-6 rounded-3xl transition text-2xl shadow-sm flex items-center justify-center gap-4"><span class="text-4xl">🏎️</span> 太快了 (Hyper)</button>
+                                        <button onclick="updateHUD(20); showToast('🚗 狀態極佳！能專注學習。', 'success');" class="w-full bg-green-50 hover:bg-green-100 border-4 border-green-300 text-green-700 font-black py-6 rounded-3xl transition text-2xl shadow-md transform scale-105 flex items-center justify-center gap-4"><span class="text-4xl">🚗</span> 剛剛好 (Just Right)</button>
+                                        <button onclick="updateHUD(-40); showToast('🚜 引擎死火！發呆、想睡覺。', 'error');" class="w-full bg-blue-50 hover:bg-blue-100 border-4 border-blue-200 text-blue-700 font-black py-6 rounded-3xl transition text-2xl shadow-sm flex items-center justify-center gap-4"><span class="text-4xl">🚜</span> 太慢了 (Sluggish)</button>
+                                    </div>
+                                </div>
+                                <div class="w-[50%] flex flex-col justify-between bg-white border-[6px] border-emerald-400 rounded-[2.5rem] p-10 pb-14 shadow-2xl text-center h-auto">
+                                    <h3 class="font-black text-slate-800 text-3xl flex items-center justify-center gap-4 mb-4"><i class="fa-solid fa-stopwatch text-emerald-500"></i> 20+5 番茄鐘計時器</h3>
+                                    <div class="my-auto flex flex-col items-center justify-center">
+                                        <span id="pomoTime" class="text-[120px] font-black text-emerald-500 font-mono tracking-tighter drop-shadow-md leading-none">20:00</span>
+                                        <p id="pomoStatus" class="text-2xl text-slate-500 font-bold mt-4 uppercase tracking-widest bg-slate-100 px-6 py-2 rounded-xl">Ready to Focus</p>
+                                        <p class="text-base text-rose-500 font-bold mt-6">(系統加速模擬：真實 20 分鐘縮短為 20 秒。<br>小休時電量將自動重置 100%)</p>
+                                    </div>
+                                    <div class="flex gap-6 mt-6">
+                                        <button onclick="startPomodoro()" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-black py-5 rounded-2xl text-2xl transition shadow-lg">開始專注</button>
+                                        <button onclick="resetPomodoro()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-black py-5 rounded-2xl text-2xl transition shadow-md">重置</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (roomId === "wm_new") {
+                const totalLevels = 8;
+                html = `
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-teal-500 uppercase tracking-widest">特工訓練房 4</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🧠 情報暫存記憶體 (工作記憶)</h1>
+                            </div>
+                            <div class="flex gap-2 overflow-x-auto w-full max-w-[500px] hide-scrollbar pb-1 justify-start shrink-0">
+                                <button onclick="scrollBufTabs(-1)" class="px-2 text-slate-400 hover:text-teal-600 font-bold"><i class="fa-solid fa-chevron-left"></i></button>
+                                <div class="flex gap-1.5 overflow-x-auto hide-scrollbar scroll-smooth" id="bufTabsContainer">
+                                    ${Array.from({length: totalLevels}, (_, i) => `
+                                        <button onclick="changeTask('wm_new', ${i})" class="px-4 py-1.5 rounded-xl font-bold text-base shrink-0 ${currentTaskIndex===i ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>
+                                    `).join('')}
+                                </div>
+                                <button onclick="scrollBufTabs(1)" class="px-2 text-slate-400 hover:text-teal-600 font-bold"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
+                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
+                                <div class="w-[60%] flex flex-col items-center justify-center bg-white border-[6px] border-teal-300 rounded-[2.5rem] p-10 pb-14 shadow-xl h-auto relative overflow-visible">
+                                    
+                                    <div id="wmState0" class="${wmState==='ready' ? 'flex' : 'hidden'} flex-col items-center w-full text-center">
+                                        <div class="text-[120px] mb-4 decoration-only opacity-80">📥</div>
+                                        <h2 class="text-4xl font-black text-slate-800 mb-4">記憶容量挑戰：關卡 ${currentTaskIndex + 1}</h2>
+                                        <p class="text-2xl text-slate-600 font-bold mb-8 max-w-lg">你需要按順序記住 <span class="text-teal-600 font-black text-3xl">${currentTaskIndex + 1}</span> 個特工道具。<br>隨後會發射「干擾彈」進行專注力破壞！</p>
+                                        <button onclick="startWMMission()" class="bg-teal-500 hover:bg-teal-600 text-white font-black px-12 py-5 rounded-3xl text-3xl shadow-lg transition transform hover:scale-105">開始記憶</button>
+                                    </div>
+
+                                    <div id="wmState1" class="${wmState==='showing' ? 'flex' : 'hidden'} flex-col items-center w-full">
+                                        <h2 class="text-3xl font-black text-rose-600 mb-8 animate-pulse">🔒 記住這個順序！ (${currentTaskIndex + 1}個物品)</h2>
+                                        <div class="flex gap-4 flex-wrap justify-center">
+                                            ${wmMissionSequence.map((item, idx) => `
+                                                <div id="wm_show_${idx}" class="w-28 h-28 bg-slate-50 border-4 border-slate-200 rounded-3xl flex items-center justify-center text-6xl shadow-sm transition-all duration-300">${item}</div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+
+                                    <div id="wmState2" class="${wmState==='distracting' ? 'flex' : 'hidden'} flex-col items-center justify-center w-full h-full absolute inset-0 bg-yellow-400 z-20 rounded-[2.2rem]">
+                                        <div class="text-[150px] animate-bounce decoration-only">🕊️</div>
+                                        <h1 class="text-6xl font-black text-red-700 bg-white px-10 py-5 rounded-3xl shadow-2xl mt-4 shake-bounce">🔔 警報！有鴿子飛過！</h1>
+                                    </div>
+
+                                    <div id="wmState3" class="${wmState==='recall' ? 'flex' : 'hidden'} flex-col items-center w-full mt-auto mb-auto">
+                                        <h2 class="text-3xl font-black text-teal-800 mb-6">按原順序點擊符號：</h2>
+                                        <div class="flex gap-4 mb-8 flex-wrap justify-center">
+                                            ${Array.from({length: currentTaskIndex + 1}).map((_, i) => `
+                                                <div id="wm_input_slot_${i}" class="w-20 h-20 bg-slate-50 border-4 border-dashed border-teal-300 rounded-2xl flex items-center justify-center text-5xl font-black">${wmUserRecall[i] || ''}</div>
+                                            `).join('')}
+                                        </div>
+                                        <div class="flex gap-6 justify-center flex-wrap mb-8">
+                                            ${wmShuffledSequence.map((item, idx) => `
+                                                <button id="wm_opt_btn_${idx}" onclick="pushWMRecall('${item}', 'wm_opt_btn_${idx}')" class="w-24 h-24 bg-white border-4 border-slate-200 rounded-3xl text-5xl shadow-md hover:border-teal-400 hover:bg-teal-50 transition active:scale-95 flex items-center justify-center">${item}</button>
+                                            `).join('')}
+                                        </div>
+                                        <div class="flex gap-4 w-full max-w-md">
+                                            <button onclick="resetWMTrial()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black py-4 rounded-2xl text-xl border-2 border-slate-300">重置選擇</button>
+                                            <button onclick="verifyWMMission()" class="flex-1 bg-teal-500 hover:bg-teal-600 text-white font-black py-4 rounded-2xl text-xl shadow-md">驗證密碼</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-[40%] bg-white border-[4px] border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col shadow-xl h-auto">
+                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-note-sticky text-teal-500"></i> 記憶防洗腦戰術</h3>
+                                    <p class="text-xl text-slate-600 leading-relaxed font-bold mb-6">工作記憶是 ADHD 最脆弱的短板。遇到干擾彈時，指令很容易在 1 秒內消失。</p>
+                                    <div class="bg-teal-50 border-2 border-teal-100 p-4 rounded-2xl mb-6">
+                                        <span class="text-lg font-black text-teal-900 block mb-2">🎁 輔助科技：特工備忘便簽</span>
+                                        <div class="flex gap-2">
+                                            <button id="btnWmNote" onclick="toggleWMTool('note')" class="flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition">✍️ 啟用特工筆記</button>
+                                            <button id="btnWmVoice" onclick="toggleWMTool('voice')" class="flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition">🗣️ 大聲覆述 (TTS)</button>
+                                        </div>
+                                    </div>
+                                    <ul class="space-y-4 text-lg text-slate-700 font-bold bg-slate-50 p-6 rounded-2xl border-2 border-slate-200 flex-grow">
+                                        <li class="flex items-start gap-3"><span class="text-teal-600">✍️</span> <span><strong>記憶外包：</strong> 不要死記硬背！聽完指示立刻用紙筆「外包」。</span></li>
+                                        <li class="flex items-start gap-3"><span class="text-teal-600">🗣️</span> <span><strong>回聲迴路：</strong> 大聲覆述一遍，能活化大腦聽覺暫存。</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (roomId === "initiation") {
+                const chk = chunkingTasks[currentTaskIndex];
+                html = `
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-purple-500 uppercase tracking-widest">特工訓練房 5</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🚀 微型任務啟動引擎 (Task Initiation)</h1>
+                            </div>
+                            <div class="flex gap-3 overflow-x-auto flex-grow justify-end items-center custom-scrollbar pb-2">
+                                <button onclick="changeTask('initiation', 0)" class="shrink-0 whitespace-nowrap px-6 py-2.5 rounded-xl font-bold text-xl ${currentTaskIndex===0 ? 'bg-purple-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">執拾房間</button>
+                                <button onclick="changeTask('initiation', 1)" class="shrink-0 whitespace-nowrap px-6 py-2.5 rounded-xl font-bold text-xl ${currentTaskIndex===1 ? 'bg-purple-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">數學功課</button>
+                                <button onclick="changeTask('initiation', 2)" class="shrink-0 whitespace-nowrap px-6 py-2.5 rounded-xl font-bold text-xl ${currentTaskIndex===2 ? 'bg-purple-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">專題報告</button>
+                            </div>
+                        </div>
+                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
+                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
+                                <div class="w-[50%] flex flex-col justify-center items-center bg-slate-200 border-8 border-stone-400 rounded-[3rem] p-10 pb-14 shadow-inner h-auto relative">
+                                    <h2 class="text-3xl font-black text-slate-600 mb-8 w-full text-center">恐懼牆 (Wall of Awful)</h2>
+                                    ${!taskChunked ? `
+                                        <button onclick="clickBigRustyButton()" id="rustyBtn" class="w-80 h-80 bg-gradient-to-br from-stone-500 to-stone-700 rounded-full border-[16px] border-stone-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center text-white transition active:scale-95">
+                                            <span class="text-4xl font-black opacity-80 mb-2">啟動任務：</span>
+                                            <span class="text-5xl font-black">${chk.name}</span>
+                                            <span class="text-stone-300 font-bold mt-4">(太沉重了...)</span>
+                                        </button>
+                                    ` : `
+                                        <div class="w-full flex flex-col gap-6 fade-in">
+                                            ${chk.steps.slice(0,3).map((st, i) => `
+                                                <button onclick="clickMicroStep(this, ${i+1})" class="w-full bg-white hover:bg-emerald-50 border-[6px] border-slate-300 text-slate-700 font-black text-3xl py-6 rounded-3xl transition shadow-md flex items-center px-8">
+                                                    <span class="w-16 h-16 rounded-full border-4 border-slate-300 mr-6 flex items-center justify-center check-circle"></span> ${st}
+                                                </button>
+                                            `).join('')}
+                                        </div>
+                                    `}
+                                </div>
+                                <div class="w-[50%] bg-white border-[6px] border-purple-300 rounded-[3rem] p-10 pb-14 flex flex-col shadow-2xl h-auto">
+                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-4 border-slate-100 pb-4 mb-8 shrink-0"><i class="fa-solid fa-scissors text-purple-500"></i> 任務切碎機</h3>
+                                    <p class="text-2xl text-slate-600 leading-relaxed font-bold mb-10">ADHD 常被誤會懶惰，其實是「啟動困難」。大任務太可怕了，我們需要把它切碎！</p>
+                                    ${!taskChunked ? `
+                                        <button onclick="shredTask()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-8 rounded-3xl text-4xl shadow-xl transition transform hover:scale-105 flex items-center justify-center gap-4 mt-auto">
+                                            <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> 裝入切碎機！
+                                        </button>
+                                    ` : `
+                                        <div class="mt-auto bg-emerald-100 border-4 border-emerald-300 p-8 rounded-3xl text-center fade-in">
+                                            <h4 class="text-3xl font-black text-emerald-800 mb-4">✅ 任務已輕量化！</h4>
+                                            <p class="text-xl text-emerald-700 font-bold">請點擊左側 3 個綠燈小任務。只要開始了 5 分鐘，大腦就會自己運轉下去！</p>
+                                        </div>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (roomId === "social") {
+                const spa = socialTasks[currentTaskIndex % socialTasks.length];
+                html = `
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-amber-600 uppercase tracking-widest">特工訓練房 6</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🤝 社交雷達與情境問答</h1>
+                            </div>
+                            <div class="flex gap-2 overflow-x-auto w-full max-w-[600px] hide-scrollbar pb-1 justify-start shrink-0">
+                                <button onclick="scrollSpaTabs(-1)" class="px-2 text-slate-400 hover:text-amber-600 font-bold"><i class="fa-solid fa-chevron-left"></i></button>
+                                <div class="flex gap-2 overflow-x-auto hide-scrollbar scroll-smooth" id="spaTabsContainer">
+                                    ${socialTasks.map((_, i) => `<button onclick="changeTask('social', ${i})" class="shrink-0 whitespace-nowrap px-4 py-1.5 rounded-xl font-bold text-base ${currentTaskIndex===i ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
+                                </div>
+                                <button onclick="scrollSpaTabs(1)" class="px-2 text-slate-400 hover:text-amber-600 font-bold"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
+                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
+                                <div class="w-[60%] flex flex-col justify-center items-center bg-white rounded-[2.5rem] border-4 border-slate-200 shadow-inner p-10 pb-14 h-auto">
+                                    <div class="text-[140px] drop-shadow-lg mb-8">${spa.emoji}</div>
+                                    <h3 class="font-black text-slate-800 text-3xl text-center leading-relaxed mb-6">情境：<br>${spa.situation}</h3>
+                                    ${socialAnswered && socialIsCorrect ? `<div class="bg-emerald-100 text-emerald-700 text-2xl font-black px-8 py-4 rounded-3xl animate-pulse border-4 border-emerald-300">✅ 社交雷達啟動成功！</div>` : ''}
+                                    ${socialAnswered && !socialIsCorrect ? `<div class="bg-rose-100 text-rose-700 text-2xl font-black px-8 py-4 rounded-3xl animate-pulse border-4 border-rose-300">❌ 社交地雷爆炸！</div>` : ''}
+                                </div>
+                                <div class="w-[40%] bg-white border-[6px] border-amber-300 rounded-[2.5rem] p-8 pb-14 flex flex-col shadow-xl h-auto">
+                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-4 border-slate-100 pb-4 mb-6 shrink-0"><i class="fa-solid fa-users text-amber-500"></i> 請選擇最佳應對</h3>
+                                    <div class="space-y-4 flex-grow flex flex-col justify-center">
+                                        ${spa.options.map((opt, idx) => `
+                                            <button onclick="checkSocialAnswer(${idx}, ${spa.correct})" 
+                                                class="w-full bg-slate-50 hover:bg-amber-50 border-4 ${socialAnswered ? (idx===spa.correct ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200 opacity-50') : 'border-slate-300'} text-slate-700 font-bold text-2xl py-5 rounded-2xl transition text-left px-6 shadow-sm">
+                                                ${opt}
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                    ${socialAnswered ? `
+                                        <button onclick="nextSocialTask()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-black py-4 rounded-2xl text-2xl transition shadow-md mt-6 shrink-0">下一題 <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } 
+            else if (roomId === "distraction") {
+                html = `
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-cyan-600 uppercase tracking-widest">特工訓練房 7</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🛡️ 環境抗干擾戰術 (執枱大作戰)</h1>
+                            </div>
+                        </div>
+                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
+                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
+                                <div class="w-[60%] flex flex-col justify-between bg-slate-800 border-[6px] border-slate-700 rounded-[2.5rem] p-8 pb-14 shadow-2xl h-auto relative">
+                                    <h2 class="text-3xl font-black text-white mb-4 z-10">凌亂的溫習桌面</h2>
+                                    <p class="text-xl text-slate-300 font-bold mb-6 z-10">點擊移除所有 <span class="text-rose-400 font-black">干擾物 (剩餘 <span id="distractCount">4</span> 個)</span>，只留下書本和筆！時間：<span id="distractTimerTxt">10</span>秒</p>
+                                    
+                                    <div class="flex-grow bg-slate-700 rounded-3xl border-4 border-slate-600 relative overflow-hidden flex items-center justify-center p-8 min-h-[300px]">
+                                        <div class="absolute text-[120px] decoration-only opacity-80" style="top: 20%; left: 30%;">📖</div>
+                                        <div class="absolute text-[80px] decoration-only opacity-80" style="bottom: 20%; right: 40%;">✏️</div>
+                                        
+                                        <button onclick="removeDistractor(this)" class="absolute text-[100px] hover:scale-110 transition drop-shadow-xl" style="top: 10%; right: 20%;">📱</button>
+                                        <button onclick="removeDistractor(this)" class="absolute text-[120px] hover:scale-110 transition drop-shadow-xl" style="bottom: 10%; left: 15%;">🎮</button>
+                                        <button onclick="removeDistractor(this)" class="absolute text-[90px] hover:scale-110 transition drop-shadow-xl" style="top: 40%; right: 10%;">🤖</button>
+                                        <button onclick="removeDistractor(this)" class="absolute text-[110px] hover:scale-110 transition drop-shadow-xl" style="bottom: 30%; right: 20%;">🗯️</button>
+                                    </div>
+                                    <button onclick="startDistractionGame()" class="w-full mt-6 bg-cyan-500 hover:bg-cyan-600 text-white font-black py-4 rounded-2xl text-2xl transition shadow-lg z-10">開始遊戲</button>
+                                </div>
+                                <div class="w-[40%] bg-white border-4 border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col shadow-xl h-auto">
+                                    <div>
+                                        <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-4 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-shield-halved text-cyan-500"></i> 極簡環境設定</h3>
+                                        <p class="text-xl text-slate-600 leading-relaxed font-bold mb-6">ADHD 大腦極容易被周遭事物吸走注意力。要做到專心，第一步是<strong>物理隔離</strong>！</p>
+                                    </div>
+                                    <ul class="space-y-6 text-xl text-slate-700 font-bold bg-slate-50 p-6 rounded-2xl border-2 border-slate-200 flex-grow">
+                                        <li>1. 桌面只放當下的功課和一枝筆。</li>
+                                        <li>2. 手機必須放在視線範圍外。</li>
+                                        <li>3. 座位避免面對走廊或窗戶。</li>
+                                        <li>4. 善用降噪耳機隔絕聲音干擾。</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } 
+            else if (roomId === "rsd") {
+                rsdBubblesActive = 3;
+                html = `
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-fuchsia-500 uppercase tracking-widest">特工訓練房 8</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🛡️ 情緒防護罩 (打破 RSD)</h1>
+                            </div>
+                        </div>
+                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
+                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
+                                <div class="w-[60%] flex flex-col justify-between bg-slate-100 border-4 border-slate-300 rounded-[2.5rem] p-8 pb-14 shadow-inner h-auto relative overflow-hidden">
+                                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-md mb-4 z-20">
+                                        <p class="text-slate-500 font-bold mb-1">📱 收到長官訊息：</p>
+                                        <h2 class="text-2xl font-black text-slate-800">「特工，你昨天的報告漏了一個數字。」</h2>
+                                    </div>
+                                    
+                                    <div class="flex-grow relative w-full flex flex-col items-center justify-center z-10 min-h-[300px]">
+                                        <div class="w-16 h-[80%] bg-slate-300 rounded-full border-4 border-slate-400 relative overflow-hidden shadow-inner">
+                                            <div id="rsdThermometer" class="absolute bottom-0 w-full bg-red-500 transition-all duration-700 h-[100%]" style="height: 100%;"></div>
+                                        </div>
+                                        <p class="mt-4 font-black text-2xl text-slate-600">RSD 警報器</p>
+                                        
+                                        <div id="bubble1" class="absolute top-[10%] left-[10%] bg-red-100 border-4 border-red-300 text-red-800 font-black p-4 rounded-[2rem] shadow-lg cursor-pointer transform rotate-[-5deg] hover:scale-105 transition" onclick="popBubble('bubble1')">長官覺得我很笨！</div>
+                                        <div id="bubble2" class="absolute top-[40%] right-[5%] bg-orange-100 border-4 border-orange-300 text-orange-800 font-black p-4 rounded-[2rem] shadow-lg cursor-pointer transform rotate-[3deg] hover:scale-105 transition" onclick="popBubble('bubble2')">我完了，我要被開除了！</div>
+                                        <div id="bubble3" class="absolute bottom-[20%] left-[5%] bg-rose-100 border-4 border-rose-300 text-rose-800 font-black p-4 rounded-[2rem] shadow-lg cursor-pointer transform rotate-[-2deg] hover:scale-105 transition" onclick="popBubble('bubble3')">我甚麼事情都做不好！</div>
+                                    </div>
+                                </div>
+                                <div class="w-[40%] bg-white border-[6px] border-fuchsia-300 rounded-[2.5rem] p-8 pb-14 flex flex-col shadow-xl h-auto">
+                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-4 border-slate-100 pb-4 mb-6 shrink-0"><i class="fa-solid fa-heart-crack text-fuchsia-500"></i> 對抗拒絕敏感性</h3>
+                                    <p class="text-xl text-slate-600 leading-relaxed font-bold mb-6">ADHD 大腦容易將中性的提醒放大成極度的批評。請點擊左側擊破「災難化泡泡」！</p>
+                                    
+                                    <div id="rationalChoices" class="mt-auto space-y-4 opacity-30 pointer-events-none transition duration-500">
+                                        <h4 class="text-2xl font-black text-fuchsia-800 mb-4">戴上理性分析眼鏡，客觀解讀是：</h4>
+                                        <button onclick="checkRsdChoice('A')" class="w-full bg-slate-100 border-4 border-slate-300 hover:bg-slate-200 text-slate-700 font-bold py-4 rounded-2xl text-xl text-left px-6 transition">A. 長官討厭我，在找我麻煩。</button>
+                                        <button onclick="checkRsdChoice('B')" class="w-full bg-fuchsia-50 border-4 border-fuchsia-300 hover:bg-fuchsia-100 text-fuchsia-800 font-bold py-4 rounded-2xl text-xl text-left px-6 transition">B. 長官只是要我補上數字，不代表我糟糕。</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            else if (roomId === "inventory") {
+                html = `
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-indigo-500 uppercase tracking-widest">特工訓練房 9</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🎒 桌面與書包收納系統</h1>
+                            </div>
+                        </div>
+                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
+                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
+                                <div class="w-[45%] flex flex-col justify-between bg-white border-4 border-slate-200 rounded-[2.5rem] p-8 pb-14 text-center shadow-sm h-auto">
+                                    <h3 class="font-black text-slate-800 text-2xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-4 text-left shrink-0"><i class="fa-solid fa-boxes-stacked text-indigo-500"></i> 待整理物品</h3>
+                                    <div id="sortingItemArea" class="py-10 bg-slate-50 rounded-[2rem] border-4 border-slate-200 flex flex-col justify-center items-center gap-6 my-2 flex-grow shadow-inner transition-transform">
+                                        <div id="currentItemIcon" class="text-[100px] drop-shadow-md">📘</div>
+                                        <p id="currentItemText" class="text-3xl text-slate-600 font-black">手提電話</p>
+                                    </div>
+                                    <span class="text-xl text-slate-400 font-bold mt-4 shrink-0">請判斷：它是需要的，還是干擾物？</span>
+                                </div>
+                                <div class="w-[55%] bg-white border-[6px] border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col justify-between shadow-2xl h-auto">
+                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-6 mb-8 shrink-0"><i class="fa-solid fa-folder-open text-indigo-500"></i> 收納區</h3>
+                                    <div class="grid grid-cols-2 gap-8 flex-grow">
+                                        <button onclick="sortItemToFolder('keep')" class="p-8 bg-blue-50 hover:bg-blue-100 border-4 border-blue-200 rounded-3xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-4 shadow-sm">
+                                            <span class="text-[80px]">🎒</span><p class="text-3xl text-blue-600 font-black mt-2">放進書包 (Keep)</p>
+                                        </button>
+                                        <button onclick="sortItemToFolder('distract')" class="p-8 bg-rose-50 hover:bg-rose-100 border-4 border-rose-200 rounded-3xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-4 shadow-sm">
+                                            <span class="text-[80px]">🗑️</span><p class="text-3xl text-rose-600 font-black mt-2">收走 (Distract)</p>
+                                        </button>
+                                    </div>
+                                    <button onclick="verifySortingResult()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-black py-6 rounded-2xl transition text-3xl shadow-xl mt-8 shrink-0"><i class="fa-solid fa-square-check mr-3"></i> 驗證是否整理好</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                setTimeout(initSortingItem, 50);
+            } 
+            else if (roomId === "exam") {
+                const exm = examTasks[currentTaskIndex % examTasks.length];
+                html = `
+                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                            <div class="shrink-0 mr-6">
+                                <span class="text-xl font-bold text-pink-500 uppercase tracking-widest">特工訓練房 10</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">⏱️ 考場專注力結界</h1>
+                            </div>
+                            <div class="flex gap-2 overflow-x-auto w-full max-w-[400px] hide-scrollbar pb-1 justify-start shrink-0">
+                                <button onclick="scrollExTabs(-1)" class="px-2 text-slate-400 hover:text-fuchsia-600 font-bold"><i class="fa-solid fa-chevron-left"></i></button>
+                                <div class="flex gap-2 overflow-x-auto hide-scrollbar scroll-smooth" id="exTabsContainer">
+                                    ${examTasks.map((_, i) => `<button onclick="changeTask('exam', ${i})" class="shrink-0 whitespace-nowrap px-4 py-1.5 rounded-xl font-bold text-base ${currentTaskIndex===i ? 'bg-pink-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
+                                </div>
+                                <button onclick="scrollExTabs(1)" class="px-2 text-slate-400 hover:text-fuchsia-600 font-bold"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
+                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
+                                <div class="w-[65%] flex flex-col justify-between bg-white border-4 border-slate-200 rounded-[2.5rem] p-8 pb-14 shadow-sm h-auto overflow-hidden">
+                                    <div class="flex justify-between items-center shrink-0 border-b-4 border-slate-100 pb-4 mb-4">
+                                        <span class="text-2xl text-rose-500 font-black bg-rose-50 px-4 py-2 rounded-xl border-2 border-rose-200"><i class="fa-solid fa-stopwatch animate-pulse mr-2"></i> ADHD 容易大意漏看重點</span>
+                                        <span id="examScore" class="text-fuchsia-600 font-bold text-2xl bg-fuchsia-50 px-4 py-1 rounded-lg border border-fuchsia-200">狙擊點：0/2</span>
+                                    </div>
+                                    <div id="examArticleBox" class="text-slate-700 font-medium text-3xl leading-loose py-4 select-none overflow-y-auto custom-scrollbar pr-4 flex-grow pointer-events-none min-h-[300px]">
+                                        ${exm.text}
+                                    </div>
+                                    <div class="bg-slate-800 p-5 rounded-2xl border-4 border-slate-700 text-xl font-black text-white mt-4 shrink-0 shadow-lg" id="currentQuestionBox">
+                                        🚨 題目：${exm.question}
+                                    </div>
+                                </div>
+                                <div class="w-[35%] bg-white border-[6px] border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col justify-between shadow-2xl h-auto">
+                                    <div>
+                                        <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-highlighter text-pink-500"></i> ${exm.title} 審題技巧</h3>
+                                        <p class="text-xl text-slate-600 leading-relaxed font-bold mb-6">教導 ADHD 學生：看題前提早<strong>拿螢光筆間低關鍵字</strong>！</p>
+                                    </div>
+                                    <div class="space-y-4 mt-auto">
+                                        <button onclick="scanExamQuestion()" id="examScanBtn" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-black py-4 rounded-2xl text-2xl transition flex items-center justify-center gap-2 shadow-md"><i class="fa-solid fa-magnifying-glass animate-pulse"></i> 掃描題目關鍵字</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            canvas.innerHTML = html;
+        }
+
+        // ==========================================
+        // 互動函數掛載區
+        // ==========================================
+
+        function toggleWMTool(tool) {
+            const btnNote = document.getElementById('btnWmNote');
+            const btnVoice = document.getElementById('btnWmVoice');
+            
+            if(tool === 'note') {
+                if(wmActiveTool === 'note') {
+                    wmActiveTool = null;
+                    if(btnNote) btnNote.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
+                } else {
+                    wmActiveTool = 'note';
+                    if(btnNote) btnNote.className = "flex-1 bg-teal-500 text-white border-2 border-teal-600 py-3 rounded-xl text-base font-black transition";
+                    if(btnVoice) btnVoice.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
+                    showToast("✍️ 特工筆記啟用！自動在干擾過後顯示提示！");
+                }
+            } else {
+                if(wmActiveTool === 'voice') {
+                    wmActiveTool = null;
+                    if(btnVoice) btnVoice.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
+                } else {
+                    wmActiveTool = 'voice';
+                    if(btnVoice) btnVoice.className = "flex-1 bg-teal-500 text-white border-2 border-teal-600 py-3 rounded-xl text-base font-black transition";
+                    if(btnNote) btnNote.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
+                    showToast("🗣️ 語音大聲覆述開啟！展示時自動觸發語音發音！");
+                }
+            }
+        }
+
+        function scrollImpTabs(dir) {
+            const container = document.getElementById('impTabsContainer');
+            if(container) container.scrollBy({ left: dir * 150, behavior: 'smooth' });
+        }
+        function scrollBufTabs(dir) {
+            const container = document.getElementById('bufTabsContainer');
+            if(container) container.scrollBy({ left: dir * 150, behavior: 'smooth' });
+        }
+        function scrollSpaTabs(dir) {
+            const container = document.getElementById('spaTabsContainer');
+            if(container) container.scrollBy({ left: dir * 150, behavior: 'smooth' });
+        }
+        function scrollExTabs(dir) {
+            const container = document.getElementById('exTabsContainer');
+            if(container) container.scrollBy({ left: dir * 150, behavior: 'smooth' });
+        }
+
+        function changeTask(room, index) {
+            currentTaskIndex = index;
+            if (room === 'impulse') {
+                currentStroopQIndex = 0;
+                currentStroopScore = 0;
+                isStroopFinished = false;
+            } else if (room === 'initiation') {
+                taskChunked = false;
+                microStepsDone = 0;
+                currentLaserStep = 1;
+            } else if (room === 'wm_new') {
+                wmUserRecall = [];
+                wmState = "ready";
+                clearTimeout(wmShowTimer);
+            } else if (room === 'exam') {
+                isQuestionInspected = false;
+                shotTargets.clear();
+            } else if (room === 'rsd') {
+                rsdBubblesActive = 3;
+            } else if (room === 'social') {
+                socialAnswered = false;
+                socialIsCorrect = false;
+            }
+            renderRoom(room);
+        }
+
+        // Room 1: Time Blindness
+        function toggleTimeBlindness() {
+            const screen = document.getElementById('timeBlindnessScreen');
+            const btn = document.getElementById('btnTimeBlindness');
+            isTimeBlindness = !isTimeBlindness;
+
+            if (isTimeBlindness) {
+                if(screen) screen.classList.add('time-blindness');
+                if(btn) {
+                    btn.innerText = "🌀 停止干擾 (已開啟)";
+                    btn.classList.replace('bg-white', 'bg-blue-100');
+                }
+                updateHUD(-20);
+                showToast("⚠️ 已啟動時間盲干擾！大腦無法掌握時間流逝...", "error");
+            } else {
+                if(screen) screen.classList.remove('time-blindness');
+                if(btn) {
+                    btn.innerText = "🌀 啟動時間盲干擾 (關閉)";
+                    btn.classList.replace('bg-blue-100', 'bg-white');
+                }
+                updateHUD(10);
+                showToast("✅ 已恢復正常視覺與時間感知！");
+            }
+        }
+
+        // Room 2: Stroop Test
+        function checkStroop(clickedVal, correctVal) {
+            if (clickedVal === correctVal) {
+                currentStroopScore++;
+                updateHUD(5);
+                showToast("✅ 正確！", "success");
+            } else {
+                updateHUD(-2);
+                showToast("❌ 衝動了！請看『顏色』而不是字義。", "error");
+            }
+            
+            currentStroopQIndex++;
+            if (currentStroopQIndex >= 10) {
+                isStroopFinished = true;
+                fireConfetti();
+            }
+            renderRoom('impulse');
+        }
+
+        function retryStroop() {
+            currentStroopQIndex = 0;
+            currentStroopScore = 0;
+            isStroopFinished = false;
+            renderRoom('impulse');
+        }
+
+        function nextStroopLevel() {
+            currentStroopQIndex = 0;
+            currentStroopScore = 0;
+            isStroopFinished = false;
+            currentTaskIndex = (currentTaskIndex + 1) % 10;
+            renderRoom('impulse');
+            scrollImpTabs(1); 
+        }
+
+        // Room 3: Pomodoro
+        function startPomodoro() {
+            if(isPomoRunning) return;
+            isPomoRunning = true;
+            document.getElementById('pomoStatus').innerText = "Focusing...";
+            document.getElementById('pomoStatus').className = "text-3xl text-emerald-500 font-black mt-6 uppercase tracking-widest animate-pulse";
+            pomoInterval = setInterval(() => {
+                pomoSeconds -= 60; 
+                if(pomoSeconds <= 0) {
+                    clearInterval(pomoInterval);
+                    document.getElementById('pomoTime').innerText = "05:00";
+                    document.getElementById('pomoStatus').innerText = "Break Time!";
+                    document.getElementById('pomoStatus').className = "text-3xl text-amber-500 font-black mt-6 uppercase tracking-widest animate-bounce";
+                    stamina = 100;
+                    updateHUD(0); 
+                    showToast("⏰ 20分鐘衝刺結束！進入小休，體力已完全重置為 100%！", "success");
+                    isPomoRunning = false;
+                } else {
+                    const mins = Math.floor(pomoSeconds / 60);
+                    const secs = pomoSeconds % 60;
+                    document.getElementById('pomoTime').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+        function resetPomodoro() {
+            clearInterval(pomoInterval);
+            isPomoRunning = false;
+            pomoSeconds = 1200;
+            document.getElementById('pomoTime').innerText = "20:00";
+            document.getElementById('pomoStatus').innerText = "Ready to Focus";
+            document.getElementById('pomoStatus').className = "text-3xl text-slate-500 font-bold mt-6 uppercase tracking-widest";
+        }
+
+        // Room 4: Working Memory 推進式
+        function changeWMLevel(levelIdx) {
+            currentTaskIndex = levelIdx;
+            wmUserRecall = [];
+            wmActiveTool = null;
+            wmState = "ready";
+            renderRoom('wm_new');
+        }
+
+        function startWMMission() {
+            wmUserRecall = [];
+            wmState = "showing";
+            
+            const count = currentTaskIndex + 1;
+            const shuffledPool = [...wmEmojiPool].sort(() => Math.random() - 0.5);
+            wmMissionSequence = shuffledPool.slice(0, count);
+
+            let distractors = wmEmojiPool.filter(x => !wmMissionSequence.includes(x));
+            distractors = distractors.sort(() => Math.random() - 0.5).slice(0, 3);
+            wmShuffledSequence = [...wmMissionSequence, ...distractors].sort(() => Math.random() - 0.5);
+
+            renderRoom('wm_new');
+
+            wmShowIndex = 0;
+            highlightNextWMItem();
+        }
+
+        function highlightNextWMItem() {
+            if (wmShowIndex < wmMissionSequence.length) {
+                const el = document.getElementById(`wm_show_${wmShowIndex}`);
+                if (el) {
+                    el.classList.add('highlight-pulse');
+                    if (wmActiveTool === 'voice' && 'speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        const utterance = new SpeechSynthesisUtterance("特工道具編號" + (wmShowIndex + 1));
+                        utterance.lang = 'zh-HK';
+                        utterance.rate = 1.0;
+                        window.speechSynthesis.speak(utterance);
+                    }
+                    setTimeout(() => {
+                        el.classList.remove('highlight-pulse');
+                        wmShowIndex++;
+                        wmShowTimer = setTimeout(highlightNextWMItem, 300); 
+                    }, 1000); 
+                }
+            } else {
+                showToast("⏰ 記憶時間結束！干擾彈正在逼近！");
+                setTimeout(triggerWMDistraction, 1000);
+            }
+        }
+
+        function triggerWMDistraction() {
+            clearTimeout(wmShowTimer);
+            wmState = "distracting";
+            renderRoom('wm_new');
+
+            if (wmActiveTool !== 'note') {
+                setTimeout(() => {
+                    wmState = "recall";
+                    renderRoom('wm_new');
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    wmState = "recall";
+                    renderRoom('wm_new');
+                    showToast("✍️ 特工筆記生效！你在旁邊記下了順序，無懼任何干擾！", "success");
+                    wmMissionSequence.forEach((item, idx) => {
+                        const slot = document.getElementById(`wm_input_slot_${idx}`);
+                        if(slot) {
+                            slot.innerText = item + " (筆記)";
+                            slot.className = "w-24 h-24 bg-teal-50 border-4 border-dashed border-teal-400 rounded-2xl flex flex-col items-center justify-center text-4xl font-black text-teal-800";
+                        }
+                    });
+                }, 1000);
+            }
+        }
+
+        function pushWMRecall(char, btnId) {
+            if(wmState !== 'recall') return;
+            
+            const existingIndex = wmUserRecall.indexOf(char);
+            if (existingIndex > -1) {
+                wmUserRecall.splice(existingIndex, 1);
+                document.getElementById(btnId).style.visibility = 'visible';
+                document.getElementById(btnId).style.opacity = '1';
+                for(let i=0; i<wmMissionSequence.length; i++) {
+                    const slot = document.getElementById(`wm_input_slot_${i}`);
+                    if(slot) {
+                        if (i < wmUserRecall.length) {
+                            slot.innerText = wmUserRecall[i];
+                            slot.className = "w-24 h-24 bg-teal-50 border-4 border-teal-400 rounded-2xl flex items-center justify-center text-5xl font-black fade-in";
+                        } else {
+                            slot.innerText = "";
+                            slot.className = "w-20 h-20 bg-slate-50 border-4 border-dashed border-teal-300 rounded-2xl flex items-center justify-center text-5xl font-black";
+                        }
+                    }
+                }
+                return;
+            }
+
+            if(wmUserRecall.length < wmMissionSequence.length) {
+                wmUserRecall.push(char);
+                document.getElementById(btnId).style.opacity = '0.5';
+                
+                const slotIdx = wmUserRecall.length - 1;
+                const slot = document.getElementById(`wm_input_slot_${slotIdx}`);
+                if(slot) {
+                    slot.innerText = char;
+                    slot.className = "w-24 h-24 bg-teal-50 border-4 border-teal-400 rounded-2xl flex items-center justify-center text-5xl font-black fade-in";
+                }
+            }
+        }
+
+        function resetWMTrial() {
+            wmUserRecall = [];
+            wmState = "recall";
+            renderRoom('wm_new');
+        }
+
+        function verifyWMMission() {
+            if (wmUserRecall.length < wmMissionSequence.length) {
+                showToast("請先點選填滿所有的密碼槽！", "error");
+                return;
+            }
+
+            let isCorrect = true;
+            for(let i=0; i<wmMissionSequence.length; i++) {
+                if(wmUserRecall[i] !== wmMissionSequence[i]) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            if(isCorrect) {
+                updateHUD(15);
+                showToast(`🏆 關卡 ${currentTaskIndex + 1} 解密成功！大腦 RAM 連續擴展！`, "success");
+                fireConfetti();
+                
+                if(currentTaskIndex < 7) {
+                    setTimeout(() => {
+                        changeWMLevel(currentTaskIndex + 1);
+                        scrollBufTabs(1);
+                    }, 2000);
+                } else {
+                    showToast("🏆 恭喜你通關了所有工作記憶訓練關卡！你已是神級特工！", "success");
+                }
+            } else {
+                updateHUD(-10);
+                showToast("❌ 情報混亂，解密失敗！大腦記憶已被完全洗掉，請重新挑戰本關。", "error");
+                resetWMTrial();
+            }
+        }
+
+        // Room 5: Task Initiation
+        function clickBigRustyButton() {
+            updateHUD(-10);
+            showToast("⚠️ 推力不足！大腦產生了 Paralysis 癱瘓感，需要切碎任務！", "error");
+            const btn = document.getElementById('rustyBtn');
+            if(btn) {
+                btn.classList.add('shake-bounce');
+                setTimeout(() => btn.classList.remove('shake-bounce'), 500);
+            }
+        }
+
+        function shredTask() {
+            taskChunked = true;
+            renderRoom('initiation');
+            showToast("✂️ 成功切碎任務！現在看起來簡單多了！");
+        }
+
+        function clickMicroStep(btn, step) {
+            if(btn.disabled) return;
+            btn.disabled = true;
+            btn.classList.replace('bg-white', 'bg-emerald-100');
+            btn.classList.replace('border-slate-300', 'border-emerald-400');
+            btn.querySelector('.check-circle').innerHTML = '✅';
+            microStepsDone++;
+            
+            if(microStepsDone === 3) {
+                updateHUD(20);
+                showToast("🏆 成功啟動！只要跨出前 5 分鐘，引擎就能順利運轉！", "success");
+                fireConfetti();
+            } else {
+                showToast(`🚀 完成微步驟 ${step}！`);
+            }
+        }
+
+        // Room 6: Social Q&A
+        function checkSocialAnswer(selectedIdx, correctIdx) {
+            socialAnswered = true;
+            socialIsCorrect = (selectedIdx === correctIdx);
+            if (socialIsCorrect) {
+                updateHUD(10);
+                showToast("🏆 答對了！你的社交煞車踩得非常好！", "success");
+                fireConfetti();
+            } else {
+                updateHUD(-10);
+                showToast("❌ 這樣做可能會讓別人不舒服喔，請再想想！", "error");
+            }
+            renderRoom('social');
+        }
+
+        function nextSocialTask() {
+            socialAnswered = false;
+            socialIsCorrect = false;
+            currentTaskIndex = (currentTaskIndex + 1) % socialTasks.length;
+            renderRoom('social');
+            scrollSpaTabs(1);
+        }
+
+        // Room 7: Distraction Game
+        function startDistractionGame() {
+            distractorsLeft = 4;
+            document.getElementById('distractCount').innerText = distractorsLeft;
+            
+            const btns = document.querySelectorAll('#room-distraction button');
+            btns.forEach(b => {
+                if (b.innerText.includes('📱') || b.innerText.includes('🎮') || b.innerText.includes('🤖') || b.innerText.includes('🗯️')) {
+                    b.style.display = 'block';
+                }
+            });
+
+            clearInterval(distractionTimer);
+            let dSecs = 10;
+            document.getElementById('distractTimerTxt').innerText = dSecs;
+            
+            distractionTimer = setInterval(() => {
+                dSecs--;
+                document.getElementById('distractTimerTxt').innerText = dSecs;
+                if(dSecs <= 0) {
+                    clearInterval(distractionTimer);
+                    if(distractorsLeft > 0) {
+                        showToast("⚠️ 時間到！大腦已被干擾物吸走注意力！", "error");
+                        updateHUD(-30);
+                    }
+                }
+            }, 1000);
+            showToast("🎮 遊戲開始！快點走所有會讓人分心的玩具！");
+        }
+
+        function removeDistractor(btn) {
+            btn.style.display = 'none';
+            distractorsLeft--;
+            document.getElementById('distractCount').innerText = distractorsLeft;
+            if(distractorsLeft === 0) {
+                clearInterval(distractionTimer);
+                showToast("🏆 完美！桌面只剩下書本和筆，這是最完美的學習環境！", "success");
+                updateHUD(20);
+                fireConfetti();
+            }
+        }
+        
+        // Room 8: RSD 
+        function popBubble(id) {
+            const bubble = document.getElementById(id);
+            if(!bubble) return;
+            bubble.classList.add('pop-anim');
+            setTimeout(() => { bubble.style.display = 'none'; }, 300);
+            
+            rsdBubblesActive--;
+            if(rsdBubblesActive === 0) {
+                document.getElementById('rationalChoices').classList.remove('opacity-30', 'pointer-events-none');
+                showToast("💭 成功擊破災難化泡泡！請選擇理性的解讀。");
+            }
+        }
+
+        function checkRsdChoice(choice) {
+            if(choice === 'B') {
+                document.getElementById('rsdThermometer').style.height = '20%';
+                document.getElementById('rsdThermometer').className = 'absolute bottom-0 w-full bg-emerald-500 transition-all duration-1000 h-[20%]';
+                updateHUD(20);
+                showToast("🏆 降溫成功！這只是中性的提醒，你很棒！", "success");
+                fireConfetti();
+            } else {
+                updateHUD(-20);
+                showToast("❌ 錯誤解讀！這會讓警報器繼續燃燒！", "error");
+            }
+        }
+
+        // Room 9: Sorting
+        function initSortingItem() { currentSortIndex=0; sortedCount=0; showNextSortingItem(); }
+        function showNextSortingItem() {
+            if(currentSortIndex >= sortingItems.length) {
+                document.getElementById('currentItemIcon').innerText = "✅";
+                document.getElementById('currentItemText').innerText = "所有物品已分類完成！"; return;
+            }
+            document.getElementById('currentItemIcon').innerText = sortingItems[currentSortIndex].icon;
+            document.getElementById('currentItemText').innerText = sortingItems[currentSortIndex].text;
+            document.getElementById('sortingItemArea').classList.remove('shake-bounce');
+        }
+        function sortItemToFolder(folder) {
+            if(currentSortIndex >= sortingItems.length) return;
+            
+            const itemArea = document.getElementById('sortingItemArea');
+            itemArea.classList.remove('shake-bounce'); 
+
+            if (sortingItems[currentSortIndex].folder === folder) {
+                sortedCount++; 
+                showToast("✅ 分類正確！", "success");
+                currentSortIndex++; 
+                showNextSortingItem();
+            } else {
+                showToast("❌ 放錯了！請再試一次！", "error");
+                void itemArea.offsetWidth; 
+                itemArea.classList.add('shake-bounce');
+            }
+        }
+        function verifySortingResult() {
+            if(sortedCount === sortingItems.length) { 
+                updateHUD(20); showToast("🏆 收納成功！出門不再漏帶東西！"); fireConfetti(); 
+            } else { showToast("還有物品未分類完成喔！", "error"); }
+        }
+
+        // Room 10: Exam Survival
+        function scanExamQuestion() {
+            isQuestionInspected = true;
+            const exm = examTasks[currentTaskIndex % examTasks.length];
+            document.getElementById('currentQuestionBox').innerHTML = `🚨 <strong>已開啟狙擊鏡：</strong> 請在上方文章中找出並點擊【${exm.target}】與【${exm.target2}】！`;
+            
+            document.getElementById('examArticleBox').classList.remove('pointer-events-none');
+            
+            const t1 = document.getElementById('examTarget_1');
+            const t2 = document.getElementById('examTarget_2');
+            if(t1) t1.classList.add('hover:bg-pink-200', 'hover:text-pink-800', 'border-b-4', 'border-dashed', 'border-pink-400');
+            if(t2) t2.classList.add('hover:bg-pink-200', 'hover:text-pink-800', 'border-b-4', 'border-dashed', 'border-pink-400');
+            
+            showToast("🔍 狙擊鏡已開啟！請在文章中尋找目標關鍵字並點擊！");
+        }
+        function shootExamTarget(t, element) {
+            if(!isQuestionInspected) return;
+            if(shotTargets.has(t)) return; 
+            
+            shotTargets.add(t);
+            element.classList.add('bg-pink-500', 'text-white', 'px-2', 'py-1', 'rounded-lg', 'shadow-md');
+            element.classList.remove('hover:bg-pink-200', 'hover:text-pink-800', 'border-b-4', 'border-dashed', 'border-pink-400');
+            
+            document.getElementById('examScore').innerText = `狙擊點：${shotTargets.size}/2`;
+            showToast(`🎯 擊中關鍵詞：[${t}]！`);
+            
+            if(shotTargets.size === 2) { 
+                updateHUD(20); showToast("🏆 考場拆彈成功！運用 Skimming 快速定位答案！", "success"); fireConfetti(); 
+            }
+        }
+
+        // ==========================================
+        // 初始化與安全掛載
+        // ==========================================
+        Object.assign(window, {
+            toggleSidebar, resizeCanvas, updateHUD, showToast, fireConfetti,
+            selectRoom, renderRoom, changeTask, scrollImpTabs, scrollBufTabs, scrollSpaTabs, scrollExTabs,
+            toggleTimeBlindness, checkStroop, retryStroop, nextStroopLevel,
+            startPomodoro, resetPomodoro, changeWMLevel, startWMMission, highlightNextWMItem, triggerWMDistraction, pushWMRecall, resetWMTrial, verifyWMMission, toggleWMTool,
+            clickBigRustyButton, shredTask, clickMicroStep,
+            checkSocialAnswer, nextSocialTask,
+            startDistractionGame, removeDistractor,
+            popBubble, checkRsdChoice,
+            initSortingItem, showNextSortingItem, sortItemToFolder, verifySortingResult,
+            scanExamQuestion, shootExamTarget
+        });
+
+        window.onload = function() { selectRoom('ef'); }
+    </script>
+</body>
+</html>
