@@ -42,7 +42,7 @@
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 錯誤震動彈回動畫 */
+        /* 錯誤震動彈回動畫 (Bounce-back) */
         .shake-bounce { animation: shakeBounce 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shakeBounce {
             0%, 100% { transform: translateX(0); }
@@ -58,8 +58,10 @@
             100% { transform: scale(0); opacity: 0; }
         }
 
+        /* 撒花特效容器 */
         #confetti-container { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
 
+        /* ADHD 專用時間流逝干擾特效 */
         .time-blindness { animation: blurFlash 3s infinite alternate; }
         @keyframes blurFlash {
             0% { filter: blur(0px); opacity: 1; }
@@ -67,11 +69,44 @@
             100% { filter: blur(0px); opacity: 1; }
         }
 
+        /* 記憶圖案高亮指示動畫 */
         .highlight-pulse { animation: pulseBg 1s ease-in-out; }
         @keyframes pulseBg {
             0%, 100% { border-color: #cbd5e1; background-color: #f8fafc; }
             50% { border-color: #2dd4bf; background-color: #f0fdfa; transform: scale(1.05); }
         }
+
+        /* ==========================================
+           🎯 Dropzone 拖曳放置區專屬視覺樣式
+           ========================================== */
+        .dropzone {
+            border: 3px dashed #94a3b8 !important; /* Tailwind slate-400 */
+            border-radius: 12px !important;
+            background-color: rgba(255, 255, 255, 0.5) !important;
+            transition: all 0.2s ease-in-out;
+        }
+        /* 懸停時高亮回饋 */
+        .dropzone.dropzone-hover {
+            border-color: #10b981 !important; /* Tailwind emerald-500 */
+            background-color: rgba(16, 185, 129, 0.15) !important;
+            transform: scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 可拖曳物品樣式 */
+        .draggable-item {
+            cursor: grab;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+        .draggable-item.dragging {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+        /* 阻止指標事件穿透內部元素干擾 Dropzone */
+        .dropzone * { pointer-events: none; }
     </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col">
@@ -183,7 +218,7 @@
         // ==========================================
         let isSidebarOpen = true;
         let stamina = 100;
-        let currentRoom = "social";
+        let currentRoom = "social"; // Default for testing
         let currentTaskIndex = 0; 
         
         let pomoInterval = null;
@@ -215,7 +250,7 @@
         let microStepsDone = 0;
         let currentLaserStep = 1;
 
-        // R6 Social Q&A State
+        // R6 Social State
         let socialAnswered = false;
         let socialIsCorrect = false;
         let isSocialFinished = false;
@@ -267,72 +302,15 @@
             { name: "完成小組專題報告", emoji: "📚", steps: ["1. 和同學討論題目", "2. 上網找兩篇資料", "3. 貼上 PPT", "4. 寫三句演講稿", "5. 準備好報告了"] }
         ];
 
-        // R6: Social Q&A 8 大情境
         const socialTasks = [
-            {
-                situation: "老師講課講到一半，你突然想到一個超級好笑的笑話，很想立刻講出來。",
-                emoji: "🗣️",
-                options: ["不管三七二十一，大聲把笑話講出來", "在心裡默數 5 秒，或者把笑話先寫在草稿紙上", "大聲嘆氣，舉手叫老師暫停"],
-                correct: 1,
-                feedbackCorrect: "太棒了！把想法寫下來可以防止忘記，又不會打斷老師。",
-                feedbackWrong: "這樣會打斷老師上課，同學也會覺得被打擾。試著啟動「社交煞車」！"
-            },
-            {
-                situation: "小賣部排隊等好久，前面的人動作又很慢，你覺得很不耐煩。",
-                emoji: "⏳",
-                options: ["推前面的人叫他走快點", "直接插隊到最前面", "在原地輕輕動動腳趾，觀察周圍的東西"],
-                correct: 2,
-                feedbackCorrect: "很好的社交煞車！轉移注意力能幫大腦度過無聊的等待時間。",
-                feedbackWrong: "推人或插隊會引發衝突！生氣時深呼吸，讓大腦冷靜下來。"
-            },
-            {
-                situation: "走廊上你走得太快，轉角處不小心用力撞到了同學，他的書掉了一地。",
-                emoji: "💥",
-                options: ["馬上怪他：「你走路不看路啊！」", "先說對不起，並幫他把書撿起來", "當作沒發生，趕快跑走"],
-                correct: 1,
-                feedbackCorrect: "非常有責任感！第一時間道歉和補救能瞬間化解別人的怒氣。",
-                feedbackWrong: "逃避或怪罪別人會讓小事變成大衝突。試著停下來承擔責任。"
-            },
-            {
-                situation: "玩桌遊時你輸了，覺得別人都在看你笑話，你覺得很生氣想發脾氣。",
-                emoji: "😡",
-                options: ["深呼吸，跟自己說「這只是一個遊戲」", "把桌遊弄亂，不讓大家繼續玩", "指責別人作弊才贏的"],
-                correct: 0,
-                feedbackCorrect: "情緒調控滿分！接受失敗是成長的一部分，輸了遊戲但不輸風度。",
-                feedbackWrong: "發脾氣會破壞大家的興致，下次就沒有人想跟你玩了。試試深呼吸！"
-            },
-            {
-                situation: "你看到同學桌上有一個超酷的變形金剛橡皮擦，你非常想拿來玩。",
-                emoji: "✏️",
-                options: ["趁他不在座位，偷偷拿來玩一下", "直接拿過來，說「借我看一下啦」", "先開口問：「請問我可以借看你的橡皮擦嗎？」"],
-                correct: 2,
-                feedbackCorrect: "太有禮貌了！尊重別人的界線，別人才會願意跟你分享。",
-                feedbackWrong: "未經同意拿別人的東西，會讓人覺得不被尊重，甚至被當作小偷喔。"
-            },
-            {
-                situation: "這堂課真的太沉悶了，你覺得坐立難安，很想離開座位走來走去。",
-                emoji: "🥱",
-                options: ["直接站起來在課室走動", "在筆記本上畫簡單的圖案，或喝一口水提神", "跟旁邊的同學大聲聊天"],
-                correct: 1,
-                feedbackCorrect: "很棒的微調技巧！用不干擾別人的方式讓大腦保持清醒。",
-                feedbackWrong: "離開座位或聊天會干擾課堂秩序。試著用「合法」的方式提神吧！"
-            },
-            {
-                situation: "老師在全班面前點名批評你沒有交功課，你覺得很沒面子又委屈。",
-                emoji: "😳",
-                options: ["先點頭接受，下課再找老師私下解釋", "大聲反駁：「我哪有！你針對我！」", "生氣地趴在桌上，整節課都不理老師"],
-                correct: 0,
-                feedbackCorrect: "非常成熟的做法！下課後私下溝通，老師會更願意聽你的解釋。",
-                feedbackWrong: "當眾反駁只會讓情況變得更糟。先讓情緒降溫，給雙方一個台階下。"
-            },
-            {
-                situation: "分組活動時，好朋友被分到另一組，沒有人主動邀請你同組。",
-                emoji: "🥺",
-                options: ["主動走到人數少的組別問：「我可以加入嗎？」", "趴在桌上哭，覺得大家都不喜歡我", "大發脾氣說：「我才不屑跟你們一組！」"],
-                correct: 0,
-                feedbackCorrect: "勇敢的社交破冰！主動出擊能打破孤立的僵局。",
-                feedbackWrong: "不要急著用負面想法困住自己。深呼吸，勇敢踏出第一步去問問看！"
-            }
+            { situation: "別人說話時很想插嘴，你應該怎麼做？", emoji: "🗣️", options: ["大聲蓋過他的聲音", "用手輕輕蓋住嘴巴，在心裡數 5 秒", "直接走開不聽了"], correct: 1, feedbackCorrect: "太棒了！把想法寫下來可以防止忘記，又不會打斷老師。", feedbackWrong: "這樣會打斷老師上課，同學也會覺得被打擾。試著啟動「社交煞車」！" },
+            { situation: "玩遊戲輸了想發脾氣，你應該怎麼做？", emoji: "😡", options: ["把玩具丟在地上", "指責別人作弊", "深呼吸，跟自己說「這只是一個遊戲」"], correct: 2, feedbackCorrect: "情緒調控滿分！接受失敗是成長的一部分，輸了遊戲但不輸風度。", feedbackWrong: "發脾氣會破壞大家的興致，下次就沒有人想跟你玩了。試試深呼吸！" },
+            { situation: "排隊覺得很不耐煩，你應該怎麼做？", emoji: "⏳", options: ["在原地輕輕動動腳趾，觀察周圍的東西", "推前面的人叫他走快點", "直接插隊到最前面"], correct: 0, feedbackCorrect: "很好的社交煞車！轉移注意力能幫大腦度過無聊的等待時間。", feedbackWrong: "推人或插隊會引發衝突！生氣時深呼吸，讓大腦冷靜下來。" },
+            { situation: "想拿同學桌上的文具，你應該怎麼做？", emoji: "✏️", options: ["先拿來用，等一下再還", "先開口問「請問我可以借用嗎？」", "趁他不在偷偷拿走"], correct: 1, feedbackCorrect: "太有禮貌了！尊重別人的界線，別人才會願意跟你分享。", feedbackWrong: "未經同意拿別人的東西，會讓人覺得不被尊重，甚至被當作小偷喔。" },
+            { situation: "同學不小心撞到你，你應該怎麼做？", emoji: "💥", options: ["馬上用力推回去", "先想「他可能不是故意的」，再問他原因", "大聲罵他"], correct: 1, feedbackCorrect: "非常有責任感！第一時間道歉和補救能瞬間化解別人的怒氣。", feedbackWrong: "逃避或怪罪別人會讓小事變成大衝突。試著停下來承擔責任。" },
+            { situation: "覺得老師講課很悶，你應該怎麼做？", emoji: "🥱", options: ["直接站起來在課室走動", "在筆記本上畫簡單的圖案，或喝一口水提神", "跟旁邊的同學大聲聊天"], correct: 1, feedbackCorrect: "很棒的微調技巧！用不干擾別人的方式讓大腦保持清醒。", feedbackWrong: "離開座位或聊天會干擾課堂秩序。試著用「合法」的方式提神吧！" },
+            { situation: "被老師點名批評，你應該怎麼做？", emoji: "😳", options: ["先點頭接受，下課再找老師私下解釋", "大聲反駁：「我哪有！你針對我！」", "生氣地趴在桌上，整節課都不理老師"], correct: 0, feedbackCorrect: "非常成熟的做法！下課後私下溝通，老師會更願意聽你的解釋。", feedbackWrong: "當眾反駁只會讓情況變得更糟。先讓情緒降溫，給雙方一個台階下。" },
+            { situation: "分組時沒有人跟你同組，你應該怎麼做？", emoji: "🥺", options: ["主動走到人數少的組別問：「我可以加入嗎？」", "趴在桌上哭，覺得大家都不喜歡我", "大發脾氣說：「我才不屑跟你們一組！」"], correct: 0, feedbackCorrect: "勇敢的社交破冰！主動出擊能打破孤立的僵局。", feedbackWrong: "不要急著用負面想法困住自己。深呼吸，勇敢踏出第一步去問問看！" }
         ];
 
         const sortingItems = [ 
@@ -349,6 +327,40 @@
             { title: "【英文科】", question: "What is Tom's favorite sport and when does he play it?", target: "basketball", target2: "Sunday", text: "Tom loves to play <span id='examTarget_1' onclick=\"shootExamTarget('basketball', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>basketball</span> with his friends. They usually meet at the park every <span id='examTarget_2' onclick=\"shootExamTarget('Sunday', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>Sunday</span>." },
             { title: "【數學科】", question: "小明買了多少個蘋果？每個多少錢？", target: "5個", target2: "10", text: "小明去超級市場買了 <span id='examTarget_1' onclick=\"shootExamTarget('5個', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>5個</span> 蘋果，每個蘋果售價為 <span id='examTarget_2' onclick=\"shootExamTarget('10', this)\" class='transition cursor-pointer rounded-lg px-1 hover:bg-slate-200'>10</span> 元，請問他總共付了多少錢？" }
         ];
+
+        // ==========================================
+        // 拖曳放置 (Drag & Drop) 事件管理
+        // ==========================================
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.id);
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        }
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+        function handleDragOver(e) {
+            e.preventDefault(); 
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.classList.add('dropzone-hover');
+        }
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dropzone-hover');
+        }
+        function handleDropFolder(e, folder) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dropzone-hover');
+            sortItemToFolder(folder);
+        }
+        function handleDropEnergy(e, diff, msg, type) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dropzone-hover');
+            handleEnergyAction(diff, msg, type);
+        }
+        function handleEnergyAction(diff, msg, type) {
+            updateHUD(diff);
+            showToast(msg, type);
+        }
 
         // ==========================================
         // UI 控制與動態高度縮放引擎
@@ -379,9 +391,11 @@
             canvas.style.height = 'auto'; 
             const baseHeight = Math.max(793, canvas.offsetHeight);
 
-            const padding = window.innerWidth < 768 ? 20 : 40; 
-            const availableWidth = container.clientWidth - padding;
-            const availableHeight = container.clientHeight - padding;
+            const paddingX = window.innerWidth < 768 ? 20 : 40; 
+            const paddingY = 80; 
+
+            const availableWidth = container.clientWidth - paddingX;
+            const availableHeight = container.clientHeight - paddingY;
 
             if (availableWidth <= 0 || availableHeight <= 0) return;
 
@@ -391,6 +405,9 @@
         }
         window.addEventListener('resize', resizeCanvas);
 
+        // ==========================================
+        // HUD & Toast
+        // ==========================================
         function updateHUD(staminaDiff) {
             stamina = Math.max(0, Math.min(100, stamina + staminaDiff));
             const bar = document.getElementById('hudStamina');
@@ -471,11 +488,9 @@
             currentStroopQIndex = 0;
             currentStroopScore = 0;
             isStroopFinished = false;
-            
             socialAnswered = false;
             socialIsCorrect = false;
             isSocialFinished = false;
-
             rsdBubblesActive = 3;
             currentSortIndex = 0;
             sortedCount = 0;
@@ -496,11 +511,11 @@
 
             if(roomId === "ef") {
                 html = `
-                    <div class="flex flex-col h-full justify-between p-12 text-slate-800 bg-white overflow-hidden pb-12">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0 bg-white z-10">
+                    <div class="flex flex-col flex-grow justify-between px-12 pt-14 pb-12 text-slate-800 bg-white rounded-[24px]">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 pb-6 shrink-0 bg-white z-10 overflow-visible">
                             <div class="shrink-0 mr-4">
-                                <span class="text-2xl font-bold text-blue-500 uppercase tracking-widest">特工訓練房 1</span>
-                                <h1 class="text-5xl font-black text-slate-800 mt-2">🧠 執行功能指揮中心</h1>
+                                <span class="text-2xl font-bold text-blue-500 uppercase tracking-widest leading-relaxed">特工訓練房 1</span>
+                                <h1 class="text-5xl font-black text-slate-800 mt-2 leading-tight">🧠 執行功能指揮中心</h1>
                             </div>
                         </div>
                         <div class="flex gap-6 flex-grow py-4 min-h-0 pb-12">
@@ -542,11 +557,11 @@
                 const levelData = stroopLevels[currentTaskIndex];
                 const imp = levelData[currentStroopQIndex];
                 html = `
-                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                    <div class="flex flex-col flex-grow bg-white relative rounded-[24px]">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 pt-10 pb-6 shrink-0 bg-white z-10 shadow-sm overflow-visible">
                             <div class="shrink-0 mr-4">
-                                <span class="text-xl font-bold text-rose-500 uppercase tracking-widest">特工訓練房 2</span>
-                                <h1 class="text-4xl font-black text-slate-800 mt-1">🛑 衝動煞車測試區 (10 大關卡)</h1>
+                                <span class="text-xl font-bold text-rose-500 uppercase tracking-widest leading-relaxed">特工訓練房 2</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1 leading-tight">🛑 衝動煞車測試區 (10 大關卡)</h1>
                             </div>
                             <div class="flex gap-2 overflow-x-auto w-full max-w-[500px] hide-scrollbar pb-1 justify-start shrink-0">
                                 <button onclick="scrollImpTabs(-1)" class="px-2 text-slate-400 hover:text-rose-600 font-bold"><i class="fa-solid fa-chevron-left"></i></button>
@@ -610,11 +625,11 @@
             } 
             else if (roomId === "stamina") {
                 html = `
-                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                    <div class="flex flex-col flex-grow bg-white relative rounded-[24px]">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 pt-10 pb-6 shrink-0 bg-white z-10 shadow-sm overflow-visible">
                             <div class="shrink-0 mr-6">
-                                <span class="text-xl font-bold text-emerald-500 uppercase tracking-widest">特工訓練房 3</span>
-                                <h1 class="text-4xl font-black text-slate-800 mt-1">🔋 動能調節與番茄鐘</h1>
+                                <span class="text-xl font-bold text-emerald-500 uppercase tracking-widest leading-relaxed">特工訓練房 3</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1 leading-tight">🔋 動能調節與番茄鐘</h1>
                             </div>
                         </div>
                         <div class="flex-grow p-8 bg-slate-50 overflow-hidden flex flex-col relative min-h-0 pb-10">
@@ -650,11 +665,11 @@
             else if (roomId === "wm_new") {
                 const totalLevels = 8;
                 html = `
-                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                    <div class="flex flex-col flex-grow bg-white relative rounded-[24px]">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 pt-10 pb-6 shrink-0 bg-white z-10 shadow-sm overflow-visible">
                             <div class="shrink-0 mr-6">
-                                <span class="text-xl font-bold text-teal-500 uppercase tracking-widest">特工訓練房 4</span>
-                                <h1 class="text-4xl font-black text-slate-800 mt-1">🧠 情報暫存記憶體 (工作記憶)</h1>
+                                <span class="text-xl font-bold text-teal-500 uppercase tracking-widest leading-relaxed">特工訓練房 4</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1 leading-tight">🧠 情報暫存記憶體 (工作記憶)</h1>
                             </div>
                             <div class="flex gap-2 overflow-x-auto w-full max-w-[500px] hide-scrollbar pb-1 justify-start shrink-0">
                                 <button onclick="scrollBufTabs(-1)" class="px-2 text-slate-400 hover:text-teal-600 font-bold"><i class="fa-solid fa-chevron-left"></i></button>
@@ -684,9 +699,9 @@
                                             `).join('')}
                                         </div>
                                     </div>
-                                    <div id="wmState2" class="${wmState==='distracting' ? 'flex' : 'hidden'} flex-col items-center justify-center w-full h-full absolute inset-0 bg-yellow-400 z-20">
+                                    <div id="wmState2" class="${wmState==='distracting' ? 'flex' : 'hidden'} flex-col items-center justify-center w-full h-full absolute inset-0 bg-yellow-400 z-20 rounded-[2.2rem]">
                                         <div class="text-[150px] animate-bounce decoration-only">🕊️</div>
-                                        <h1 class="text-6xl font-black text-red-700 bg-white px-10 py-5 rounded-3xl shadow-2xl mt-4 shake-bounce">🔔 警報！有鴿子飛過！</h1>
+                                        <h1 class="text-6xl font-black text-red-700 bg-white px-10 py-5 rounded-3xl shadow-2xl mt-4 shake-bounce">🔔 警報！有鴿子大聲飛過！</h1>
                                     </div>
                                     <div id="wmState3" class="${wmState==='recall' ? 'flex' : 'hidden'} flex-col items-center w-full mt-auto mb-auto">
                                         <h2 class="text-3xl font-black text-teal-800 mb-6">按原順序點擊符號：</h2>
@@ -729,11 +744,11 @@
             else if (roomId === "initiation") {
                 const chk = chunkingTasks[currentTaskIndex];
                 html = `
-                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                    <div class="flex flex-col flex-grow bg-white relative rounded-[24px]">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 pt-10 pb-6 shrink-0 bg-white z-10 shadow-sm overflow-visible">
                             <div class="shrink-0 mr-6">
-                                <span class="text-xl font-bold text-purple-500 uppercase tracking-widest">特工訓練房 5</span>
-                                <h1 class="text-4xl font-black text-slate-800 mt-1">🚀 微型任務啟動引擎 (Task Initiation)</h1>
+                                <span class="text-xl font-bold text-purple-500 uppercase tracking-widest leading-relaxed">特工訓練房 5</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1 leading-tight">🚀 微型任務啟動引擎 (Task Initiation)</h1>
                             </div>
                             <div class="flex gap-3 overflow-x-auto flex-grow justify-end items-center custom-scrollbar pb-2">
                                 <button onclick="changeTask('initiation', 0)" class="shrink-0 whitespace-nowrap px-5 py-2.5 rounded-xl font-bold text-xl ${currentTaskIndex===0 ? 'bg-purple-400 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}">執拾房間</button>
@@ -745,7 +760,6 @@
                             <div class="flex gap-10 flex-grow h-full min-h-0">
                                 <div class="w-[50%] flex flex-col justify-center items-center bg-slate-200 border-8 border-stone-400 rounded-[3rem] p-10 shadow-inner h-full relative">
                                     <h2 class="text-3xl font-black text-slate-600 mb-8 w-full text-center">恐懼牆 (Wall of Awful)</h2>
-                                    
                                     ${!taskChunked ? `
                                         <button onclick="clickBigRustyButton()" id="rustyBtn" class="w-80 h-80 bg-gradient-to-br from-stone-500 to-stone-700 rounded-full border-[16px] border-stone-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center text-white transition active:scale-95">
                                             <span class="text-4xl font-black opacity-80 mb-2">啟動任務：</span>
@@ -782,15 +796,15 @@
                 `;
             }
             else if (roomId === "social") {
-                const spa = socialTasks[currentTaskIndex];
+                const spa = socialTasks[currentTaskIndex % socialTasks.length];
                 html = `
-                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                    <div class="flex flex-col flex-grow bg-white relative rounded-[24px]">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 pt-10 pb-6 shrink-0 bg-white z-10 shadow-sm overflow-visible">
                             <div class="shrink-0 mr-6">
-                                <span class="text-xl font-bold text-amber-600 uppercase tracking-widest">特工訓練房 6</span>
-                                <h1 class="text-4xl font-black text-slate-800 mt-1">🤝 社交雷達與情境問答 (8 關)</h1>
+                                <span class="text-xl font-bold text-amber-600 uppercase tracking-widest leading-relaxed">特工訓練房 6</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1 leading-tight">🤝 社交雷達與情境問答</h1>
                             </div>
-                            <div class="flex gap-2 overflow-x-auto w-full max-w-[500px] hide-scrollbar pb-1 justify-start shrink-0">
+                            <div class="flex gap-2 overflow-x-auto w-full max-w-[600px] hide-scrollbar pb-1 justify-start shrink-0">
                                 <button onclick="scrollSpaTabs(-1)" class="px-2 text-slate-400 hover:text-amber-600 font-bold"><i class="fa-solid fa-chevron-left"></i></button>
                                 <div class="flex gap-2 overflow-x-auto hide-scrollbar scroll-smooth" id="spaTabsContainer">
                                     ${socialTasks.map((_, i) => `<button onclick="changeTask('social', ${i})" class="shrink-0 whitespace-nowrap px-4 py-1.5 rounded-xl font-bold text-base ${currentTaskIndex===i ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
@@ -843,11 +857,11 @@
             } 
             else if (roomId === "distraction") {
                 html = `
-                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                    <div class="flex flex-col flex-grow bg-white relative rounded-[24px]">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 pt-10 pb-6 shrink-0 bg-white z-10 shadow-sm overflow-visible">
                             <div class="shrink-0 mr-6">
-                                <span class="text-xl font-bold text-cyan-600 uppercase tracking-widest">特工訓練房 7</span>
-                                <h1 class="text-4xl font-black text-slate-800 mt-1">🛡️ 環境抗干擾戰術 (執枱大作戰)</h1>
+                                <span class="text-xl font-bold text-cyan-600 uppercase tracking-widest leading-relaxed">特工訓練房 7</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1 leading-tight">🛡️ 環境抗干擾戰術 (執枱大作戰)</h1>
                             </div>
                         </div>
                         <div class="flex-grow p-8 bg-slate-50 overflow-hidden flex flex-col relative min-h-0 pb-10">
@@ -887,11 +901,11 @@
             else if (roomId === "rsd") {
                 rsdBubblesActive = 3;
                 html = `
-                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                    <div class="flex flex-col flex-grow bg-white relative rounded-[24px]">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 pt-10 pb-6 shrink-0 bg-white z-10 shadow-sm overflow-visible">
                             <div class="shrink-0 mr-6">
-                                <span class="text-xl font-bold text-fuchsia-500 uppercase tracking-widest">特工訓練房 8</span>
-                                <h1 class="text-4xl font-black text-slate-800 mt-1">🛡️ 情緒防護罩 (打破 RSD)</h1>
+                                <span class="text-xl font-bold text-fuchsia-500 uppercase tracking-widest leading-relaxed">特工訓練房 8</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1 leading-tight">🛡️ 情緒防護罩 (打破 RSD)</h1>
                             </div>
                         </div>
                         <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
@@ -930,32 +944,32 @@
             }
             else if (roomId === "inventory") {
                 html = `
-                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                    <div class="flex flex-col flex-grow bg-white relative rounded-[24px]">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 pt-10 pb-6 shrink-0 bg-white z-10 shadow-sm overflow-visible">
                             <div class="shrink-0 mr-6">
-                                <span class="text-xl font-bold text-indigo-500 uppercase tracking-widest">特工訓練房 9</span>
-                                <h1 class="text-4xl font-black text-slate-800 mt-1">🎒 桌面與書包收納系統</h1>
+                                <span class="text-xl font-bold text-indigo-500 uppercase tracking-widest leading-relaxed">特工訓練房 9</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1 leading-tight">🎒 桌面與書包收納系統</h1>
                             </div>
                         </div>
                         <div class="flex-grow p-8 bg-slate-50 overflow-hidden flex flex-col relative min-h-0 pb-12">
                             <div class="flex gap-10 flex-grow h-full min-h-0">
                                 <div class="w-[45%] flex flex-col justify-between bg-white border-4 border-slate-200 rounded-[2.5rem] p-8 pb-14 text-center shadow-sm h-full overflow-y-auto custom-scrollbar">
                                     <h3 class="font-black text-slate-800 text-2xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-4 text-left shrink-0"><i class="fa-solid fa-boxes-stacked text-indigo-500"></i> 待整理物品</h3>
-                                    <div id="sortingItemArea" class="py-10 bg-slate-50 rounded-[2rem] border-4 border-slate-200 flex flex-col justify-center items-center gap-6 my-2 flex-grow shadow-inner transition-transform">
-                                        <div id="currentItemIcon" class="text-[100px] drop-shadow-md">📘</div>
-                                        <p id="currentItemText" class="text-3xl text-slate-600 font-black">手提電話</p>
+                                    <div id="sortingItemArea" draggable="true" ondragstart="handleDragStart(event)" ondragend="handleDragEnd(event)" class="draggable-item py-10 bg-white rounded-[2rem] border-4 border-slate-200 flex flex-col justify-center items-center gap-6 my-2 flex-grow shadow-sm transition-transform">
+                                        <div id="currentItemIcon" class="text-[100px] drop-shadow-md decoration-only pointer-events-none">📘</div>
+                                        <p id="currentItemText" class="text-3xl text-slate-600 font-black pointer-events-none">手提電話</p>
                                     </div>
                                     <span class="text-xl text-slate-400 font-bold mt-4 shrink-0">請判斷：它是需要的，還是干擾物？</span>
                                 </div>
                                 <div class="w-[55%] bg-white border-[6px] border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col justify-between shadow-2xl h-full overflow-y-auto custom-scrollbar">
-                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-6 mb-8 shrink-0"><i class="fa-solid fa-folder-open text-indigo-500"></i> 收納區</h3>
+                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-6 mb-8 shrink-0"><i class="fa-solid fa-folder-open text-indigo-500"></i> 收納區 (Dropzone)</h3>
                                     <div class="grid grid-cols-2 gap-8 flex-grow">
-                                        <button onclick="sortItemToFolder('keep')" class="p-8 bg-blue-50 hover:bg-blue-100 border-4 border-blue-200 rounded-3xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-4 shadow-sm">
-                                            <span class="text-[80px]">🎒</span><p class="text-3xl text-blue-600 font-black mt-2">放進書包 (Keep)</p>
-                                        </button>
-                                        <button onclick="sortItemToFolder('distract')" class="p-8 bg-rose-50 hover:bg-rose-100 border-4 border-rose-200 rounded-3xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-4 shadow-sm">
-                                            <span class="text-[80px]">🗑️</span><p class="text-3xl text-rose-600 font-black mt-2">收走 (Distract)</p>
-                                        </button>
+                                        <div onclick="sortItemToFolder('keep')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDropFolder(event, 'keep')" class="dropzone p-8 flex flex-col justify-center items-center gap-4 cursor-pointer shadow-sm">
+                                            <span class="text-[80px] pointer-events-none decoration-only">🎒</span><p class="text-3xl text-blue-600 font-black mt-2 pointer-events-none">放進書包</p>
+                                        </div>
+                                        <div onclick="sortItemToFolder('distract')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDropFolder(event, 'distract')" class="dropzone p-8 flex flex-col justify-center items-center gap-4 cursor-pointer shadow-sm">
+                                            <span class="text-[80px] pointer-events-none decoration-only">🗑️</span><p class="text-3xl text-rose-600 font-black mt-2 pointer-events-none">收起拿走</p>
+                                        </div>
                                     </div>
                                     <button onclick="verifySortingResult()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-black py-6 rounded-2xl transition text-3xl shadow-xl mt-8 shrink-0"><i class="fa-solid fa-square-check mr-3"></i> 驗證是否整理好</button>
                                 </div>
@@ -967,12 +981,14 @@
             } 
             else if (roomId === "exam") {
                 const exm = examTasks[currentTaskIndex % examTasks.length];
+                isQuestionInspected = false;
+                shotTargets.clear();
                 html = `
-                    <div class="flex flex-col h-full bg-white overflow-hidden relative">
-                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
+                    <div class="flex flex-col flex-grow bg-white relative rounded-[24px]">
+                        <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 pt-10 pb-6 shrink-0 bg-white z-10 shadow-sm overflow-visible">
                             <div class="shrink-0 mr-6">
-                                <span class="text-xl font-bold text-pink-500 uppercase tracking-widest">特工訓練房 10</span>
-                                <h1 class="text-4xl font-black text-slate-800 mt-1">⏱️ 考場專注力結界</h1>
+                                <span class="text-xl font-bold text-pink-500 uppercase tracking-widest leading-relaxed">特工訓練房 10</span>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1 leading-tight">⏱️ 考場專注力結界</h1>
                             </div>
                             <div class="flex gap-2 overflow-x-auto w-full max-w-[400px] hide-scrollbar pb-1 justify-start shrink-0">
                                 <button onclick="scrollExTabs(-1)" class="px-2 text-slate-400 hover:text-fuchsia-600 font-bold"><i class="fa-solid fa-chevron-left"></i></button>
@@ -1013,7 +1029,6 @@
 
             canvas.innerHTML = html;
             
-            // 綁定動態生成的按鈕 (如 Stroop Timer)
             if (roomId === "impulse" && !isStroopFinished) {
                 setTimeout(startStroopTimer, 50);
             }
@@ -1032,9 +1047,9 @@
             stroopTimerInterval = setInterval(() => {
                 stroopTimeRemaining -= 50;
                 const percentage = (stroopTimeRemaining / STROOP_MAX_TIME) * 100;
-                const bar = document.getElementById('stroopProgressBar');
-                if (bar) {
-                    bar.style.width = `${Math.max(0, percentage)}%`;
+                const progressEl = document.getElementById('stroopProgressBar');
+                if (progressEl) {
+                    progressEl.style.width = `${Math.max(0, percentage)}%`;
                 }
 
                 if (stroopTimeRemaining <= 0) {
@@ -1054,33 +1069,6 @@
                 fireConfetti();
             }
             renderRoom('impulse');
-        }
-
-        function toggleWMTool(tool) {
-            const btnNote = document.getElementById('btnWmNote');
-            const btnVoice = document.getElementById('btnWmVoice');
-            
-            if(tool === 'note') {
-                if(wmActiveTool === 'note') {
-                    wmActiveTool = null;
-                    if(btnNote) btnNote.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
-                } else {
-                    wmActiveTool = 'note';
-                    if(btnNote) btnNote.className = "flex-1 bg-teal-500 text-white border-2 border-teal-600 py-3 rounded-xl text-base font-black transition";
-                    if(btnVoice) btnVoice.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
-                    showToast("✍️ 特工筆記啟用！自動在干擾過後顯示提示！");
-                }
-            } else {
-                if(wmActiveTool === 'voice') {
-                    wmActiveTool = null;
-                    if(btnVoice) btnVoice.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
-                } else {
-                    wmActiveTool = 'voice';
-                    if(btnVoice) btnVoice.className = "flex-1 bg-teal-500 text-white border-2 border-teal-600 py-3 rounded-xl text-base font-black transition";
-                    if(btnNote) btnNote.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
-                    showToast("🗣️ 語音大聲覆述開啟！展示時自動觸發語音發音！");
-                }
-            }
         }
 
         function scrollImpTabs(dir) {
@@ -1122,12 +1110,10 @@
             } else if (room === 'social') {
                 socialAnswered = false;
                 socialIsCorrect = false;
-                isSocialFinished = false;
             }
             renderRoom(room);
         }
 
-        // Room 1: Time Blindness
         function toggleTimeBlindness() {
             const screen = document.getElementById('timeBlindnessScreen');
             const btn = document.getElementById('btnTimeBlindness');
@@ -1152,9 +1138,8 @@
             }
         }
 
-        // Room 2: Stroop Test
         function checkStroop(clickedVal, correctVal) {
-            clearInterval(stroopTimerInterval); // Stop timer immediately
+            clearInterval(stroopTimerInterval); 
             
             if (clickedVal === correctVal) {
                 currentStroopScore++;
@@ -1189,7 +1174,6 @@
             scrollImpTabs(1); 
         }
 
-        // Room 3: Pomodoro
         function startPomodoro() {
             if(isPomoRunning) return;
             isPomoRunning = true;
@@ -1213,6 +1197,7 @@
                 }
             }, 1000);
         }
+
         function resetPomodoro() {
             clearInterval(pomoInterval);
             isPomoRunning = false;
@@ -1222,7 +1207,6 @@
             document.getElementById('pomoStatus').className = "text-3xl text-slate-500 font-bold mt-6 uppercase tracking-widest";
         }
 
-        // Room 4: Working Memory 推進式
         function changeWMLevel(levelIdx) {
             currentTaskIndex = levelIdx;
             wmUserRecall = [];
@@ -1357,7 +1341,7 @@
 
             if(isCorrect) {
                 updateHUD(15);
-                showToast(`🏆 關卡 ${currentTaskIndex + 1} 解密成功！大腦 RAM 連續擴展！`, "success");
+                showToast(`🏆 關卡 ${currentTaskIndex + 1} 解密成功！`, "success");
                 fireConfetti();
                 
                 if(currentTaskIndex < 7) {
@@ -1365,13 +1349,38 @@
                         changeWMLevel(currentTaskIndex + 1);
                         scrollBufTabs(1);
                     }, 2000);
-                } else {
-                    showToast("🏆 恭喜你通關了所有工作記憶訓練關卡！你已是神級特工！", "success");
                 }
             } else {
                 updateHUD(-10);
-                showToast("❌ 情報混亂，解密失敗！大腦記憶已被完全洗掉，請重新挑戰本關。", "error");
+                showToast("❌ 情報混亂，解密失敗！請重新挑戰本關。", "error");
                 resetWMTrial();
+            }
+        }
+
+        function toggleWMTool(tool) {
+            const btnNote = document.getElementById('btnWmNote');
+            const btnVoice = document.getElementById('btnWmVoice');
+            
+            if(tool === 'note') {
+                if(wmActiveTool === 'note') {
+                    wmActiveTool = null;
+                    if(btnNote) btnNote.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
+                } else {
+                    wmActiveTool = 'note';
+                    if(btnNote) btnNote.className = "flex-1 bg-teal-500 text-white border-2 border-teal-600 py-3 rounded-xl text-base font-black transition";
+                    if(btnVoice) btnVoice.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
+                    showToast("✍️ 特工筆記啟用！自動在干擾過後顯示提示！");
+                }
+            } else {
+                if(wmActiveTool === 'voice') {
+                    wmActiveTool = null;
+                    if(btnVoice) btnVoice.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
+                } else {
+                    wmActiveTool = 'voice';
+                    if(btnVoice) btnVoice.className = "flex-1 bg-teal-500 text-white border-2 border-teal-600 py-3 rounded-xl text-base font-black transition";
+                    if(btnNote) btnNote.className = "flex-1 bg-white hover:bg-teal-100 border-2 border-teal-200 py-3 rounded-xl text-base font-bold text-slate-700 transition";
+                    showToast("🗣️ 語音大聲覆述開啟！展示時自動觸發語音發音！");
+                }
             }
         }
 
@@ -1409,9 +1418,9 @@
             }
         }
 
-        // Room 6: Social Q&A Game (New)
+        // Room 6: Social Q&A
         function checkSocialAnswer(selectedIdx, correctIdx) {
-            if (socialAnswered) return; // Prevent double click
+            if (socialAnswered) return;
             socialAnswered = true;
             socialIsCorrect = (selectedIdx === correctIdx);
             
@@ -1444,7 +1453,7 @@
             socialAnswered = false;
             socialIsCorrect = false;
             renderRoom('social');
-            scrollSpaTabs(-10); // scroll back to start
+            scrollSpaTabs(-10); 
         }
 
         // Room 7: Distraction Game
@@ -1594,10 +1603,11 @@
             startDistractionGame, removeDistractor,
             popBubble, checkRsdChoice,
             initSortingItem, showNextSortingItem, sortItemToFolder, verifySortingResult,
-            scanExamQuestion, shootExamTarget
+            scanExamQuestion, shootExamTarget,
+            handleDragStart, handleDragEnd, handleDragOver, handleDragLeave, handleDropFolder, handleDropEnergy, handleEnergyAction
         });
 
-        window.onload = function() { selectRoom('social'); } // Set default room to social for testing
+        window.onload = function() { selectRoom('ef'); } 
     </script>
 </body>
 </html>
