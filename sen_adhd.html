@@ -42,7 +42,7 @@
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 錯誤震動彈回動畫 (Bounce-back) */
+        /* 錯誤震動彈回動畫 */
         .shake-bounce { animation: shakeBounce 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shakeBounce {
             0%, 100% { transform: translateX(0); }
@@ -58,10 +58,8 @@
             100% { transform: scale(0); opacity: 0; }
         }
 
-        /* 撒花特效容器 */
         #confetti-container { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
 
-        /* ADHD 專用時間流逝干擾特效 */
         .time-blindness { animation: blurFlash 3s infinite alternate; }
         @keyframes blurFlash {
             0% { filter: blur(0px); opacity: 1; }
@@ -69,7 +67,6 @@
             100% { filter: blur(0px); opacity: 1; }
         }
 
-        /* 記憶圖案高亮指示動畫 */
         .highlight-pulse { animation: pulseBg 1s ease-in-out; }
         @keyframes pulseBg {
             0%, 100% { border-color: #cbd5e1; background-color: #f8fafc; }
@@ -118,7 +115,7 @@
                 <p class="text-xs text-slate-500 font-bold">10 大核心特質訓練任務</p>
             </div>
             <div class="flex-grow overflow-y-auto p-3 space-y-2 custom-scrollbar pb-6">
-                <div onclick="selectRoom('ef')" id="room-ef" class="room-card active p-3 rounded-2xl flex items-center gap-3">
+                <div onclick="selectRoom('ef')" id="room-ef" class="room-card p-3 rounded-2xl flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-chess-knight"></i></div>
                     <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">1. 執行功能指揮中心</h3><p class="text-[11px] text-slate-500 mt-1">時間盲模擬與視覺提示板</p></div>
                 </div>
@@ -138,9 +135,9 @@
                     <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-rocket"></i></div>
                     <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">5. 微型任務啟動引擎</h3><p class="text-[11px] text-slate-500 mt-1">克服癱瘓與任務切碎機</p></div>
                 </div>
-                <div onclick="selectRoom('social')" id="room-social" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                <div onclick="selectRoom('social')" id="room-social" class="room-card active p-3 rounded-2xl flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-users"></i></div>
-                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">6. 社交雷達與輪候</h3><p class="text-[11px] text-slate-500 mt-1">插嘴、沒耐性與碰撞控制</p></div>
+                    <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">6. 社交雷達與輪候</h3><p class="text-[11px] text-slate-500 mt-1">情境問答與社交煞車演練</p></div>
                 </div>
                 <div onclick="selectRoom('distraction')" id="room-distraction" class="room-card p-3 rounded-2xl flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-shield-halved"></i></div>
@@ -186,7 +183,7 @@
         // ==========================================
         let isSidebarOpen = true;
         let stamina = 100;
-        let currentRoom = "ef";
+        let currentRoom = "social";
         let currentTaskIndex = 0; 
         
         let pomoInterval = null;
@@ -218,9 +215,10 @@
         let microStepsDone = 0;
         let currentLaserStep = 1;
 
-        // R6 Social
+        // R6 Social Q&A State
         let socialAnswered = false;
         let socialIsCorrect = false;
+        let isSocialFinished = false;
 
         // R8 RSD
         let rsdBubblesActive = 3;
@@ -256,9 +254,12 @@
         let currentStroopQIndex = 0;
         let currentStroopScore = 0;
         let isStroopFinished = false;
+        let stroopTimerInterval = null;
+        let stroopTimeRemaining = 3000; 
+        const STROOP_MAX_TIME = 3000; 
 
         // ==========================================
-        // ADHD 關卡資料庫
+        // 核心關卡資料庫
         // ==========================================
         const chunkingTasks = [
             { name: "執拾極度混亂的房間", emoji: "🌪️", steps: ["1. 只把垃圾丟進垃圾桶", "2. 把所有衣服丟進籃子", "3. 把書本放回書架", "4. 擦乾淨書桌", "5. 房間變乾淨了"] },
@@ -266,36 +267,71 @@
             { name: "完成小組專題報告", emoji: "📚", steps: ["1. 和同學討論題目", "2. 上網找兩篇資料", "3. 貼上 PPT", "4. 寫三句演講稿", "5. 準備好報告了"] }
         ];
 
+        // R6: Social Q&A 8 大情境
         const socialTasks = [
-            { 
-                situation: "別人說話時很想插嘴，你應該怎麼做？", 
-                emoji: "🗣️", 
-                options: ["大聲蓋過他的聲音", "用手輕輕蓋住嘴巴，在心裡數 5 秒", "直接走開不聽了"],
-                correct: 1
+            {
+                situation: "老師講課講到一半，你突然想到一個超級好笑的笑話，很想立刻講出來。",
+                emoji: "🗣️",
+                options: ["不管三七二十一，大聲把笑話講出來", "在心裡默數 5 秒，或者把笑話先寫在草稿紙上", "大聲嘆氣，舉手叫老師暫停"],
+                correct: 1,
+                feedbackCorrect: "太棒了！把想法寫下來可以防止忘記，又不會打斷老師。",
+                feedbackWrong: "這樣會打斷老師上課，同學也會覺得被打擾。試著啟動「社交煞車」！"
             },
             {
-                situation: "玩遊戲輸了想發脾氣，你應該怎麼做？",
-                emoji: "😡",
-                options: ["把玩具丟在地上", "指責別人作弊", "深呼吸，跟自己說「這只是一個遊戲」"],
-                correct: 2
-            },
-            {
-                situation: "排隊覺得很不耐煩，你應該怎麼做？",
+                situation: "小賣部排隊等好久，前面的人動作又很慢，你覺得很不耐煩。",
                 emoji: "⏳",
-                options: ["在原地輕輕動動腳趾，觀察周圍的東西", "推前面的人叫他走快點", "直接插隊到最前面"],
-                correct: 0
+                options: ["推前面的人叫他走快點", "直接插隊到最前面", "在原地輕輕動動腳趾，觀察周圍的東西"],
+                correct: 2,
+                feedbackCorrect: "很好的社交煞車！轉移注意力能幫大腦度過無聊的等待時間。",
+                feedbackWrong: "推人或插隊會引發衝突！生氣時深呼吸，讓大腦冷靜下來。"
             },
             {
-                situation: "想拿同學桌上的文具，你應該怎麼做？",
-                emoji: "✏️",
-                options: ["先拿來用，等一下再還", "先開口問「請問我可以借用嗎？」", "趁他不在偷偷拿走"],
-                correct: 1
-            },
-            {
-                situation: "同學不小心撞到你，你應該怎麼做？",
+                situation: "走廊上你走得太快，轉角處不小心用力撞到了同學，他的書掉了一地。",
                 emoji: "💥",
-                options: ["馬上用力推回去", "先想「他可能不是故意的」，再問他原因", "大聲罵他"],
-                correct: 1
+                options: ["馬上怪他：「你走路不看路啊！」", "先說對不起，並幫他把書撿起來", "當作沒發生，趕快跑走"],
+                correct: 1,
+                feedbackCorrect: "非常有責任感！第一時間道歉和補救能瞬間化解別人的怒氣。",
+                feedbackWrong: "逃避或怪罪別人會讓小事變成大衝突。試著停下來承擔責任。"
+            },
+            {
+                situation: "玩桌遊時你輸了，覺得別人都在看你笑話，你覺得很生氣想發脾氣。",
+                emoji: "😡",
+                options: ["深呼吸，跟自己說「這只是一個遊戲」", "把桌遊弄亂，不讓大家繼續玩", "指責別人作弊才贏的"],
+                correct: 0,
+                feedbackCorrect: "情緒調控滿分！接受失敗是成長的一部分，輸了遊戲但不輸風度。",
+                feedbackWrong: "發脾氣會破壞大家的興致，下次就沒有人想跟你玩了。試試深呼吸！"
+            },
+            {
+                situation: "你看到同學桌上有一個超酷的變形金剛橡皮擦，你非常想拿來玩。",
+                emoji: "✏️",
+                options: ["趁他不在座位，偷偷拿來玩一下", "直接拿過來，說「借我看一下啦」", "先開口問：「請問我可以借看你的橡皮擦嗎？」"],
+                correct: 2,
+                feedbackCorrect: "太有禮貌了！尊重別人的界線，別人才會願意跟你分享。",
+                feedbackWrong: "未經同意拿別人的東西，會讓人覺得不被尊重，甚至被當作小偷喔。"
+            },
+            {
+                situation: "這堂課真的太沉悶了，你覺得坐立難安，很想離開座位走來走去。",
+                emoji: "🥱",
+                options: ["直接站起來在課室走動", "在筆記本上畫簡單的圖案，或喝一口水提神", "跟旁邊的同學大聲聊天"],
+                correct: 1,
+                feedbackCorrect: "很棒的微調技巧！用不干擾別人的方式讓大腦保持清醒。",
+                feedbackWrong: "離開座位或聊天會干擾課堂秩序。試著用「合法」的方式提神吧！"
+            },
+            {
+                situation: "老師在全班面前點名批評你沒有交功課，你覺得很沒面子又委屈。",
+                emoji: "😳",
+                options: ["先點頭接受，下課再找老師私下解釋", "大聲反駁：「我哪有！你針對我！」", "生氣地趴在桌上，整節課都不理老師"],
+                correct: 0,
+                feedbackCorrect: "非常成熟的做法！下課後私下溝通，老師會更願意聽你的解釋。",
+                feedbackWrong: "當眾反駁只會讓情況變得更糟。先讓情緒降溫，給雙方一個台階下。"
+            },
+            {
+                situation: "分組活動時，好朋友被分到另一組，沒有人主動邀請你同組。",
+                emoji: "🥺",
+                options: ["主動走到人數少的組別問：「我可以加入嗎？」", "趴在桌上哭，覺得大家都不喜歡我", "大發脾氣說：「我才不屑跟你們一組！」"],
+                correct: 0,
+                feedbackCorrect: "勇敢的社交破冰！主動出擊能打破孤立的僵局。",
+                feedbackWrong: "不要急著用負面想法困住自己。深呼吸，勇敢踏出第一步去問問看！"
             }
         ];
 
@@ -355,9 +391,6 @@
         }
         window.addEventListener('resize', resizeCanvas);
 
-        // ==========================================
-        // HUD & Toast
-        // ==========================================
         function updateHUD(staminaDiff) {
             stamina = Math.max(0, Math.min(100, stamina + staminaDiff));
             const bar = document.getElementById('hudStamina');
@@ -416,11 +449,12 @@
         }
 
         // ==========================================
-        // 渲染主函數 (完美防溢出)
+        // 渲染主函數
         // ==========================================
         function selectRoom(roomId) {
             clearInterval(pomoInterval);
             clearInterval(distractionTimer);
+            clearInterval(stroopTimerInterval);
             clearTimeout(wmShowTimer);
             
             isPomoRunning = false;
@@ -437,8 +471,11 @@
             currentStroopQIndex = 0;
             currentStroopScore = 0;
             isStroopFinished = false;
+            
             socialAnswered = false;
             socialIsCorrect = false;
+            isSocialFinished = false;
+
             rsdBubblesActive = 3;
             currentSortIndex = 0;
             sortedCount = 0;
@@ -466,36 +503,34 @@
                                 <h1 class="text-5xl font-black text-slate-800 mt-2">🧠 執行功能指揮中心</h1>
                             </div>
                         </div>
-                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
-                            <div class="flex gap-8 flex-grow h-auto min-h-full pb-6">
-                                <div class="w-[58%] flex flex-col bg-white border-4 border-slate-200 rounded-[1.5rem] p-8 shadow-sm h-auto pb-14 relative overflow-visible">
-                                    <div class="bg-white p-6 rounded-2xl border border-slate-200 mb-6 space-y-4 shadow-sm flex-grow flex flex-col justify-center items-center text-center transition-all duration-500" id="timeBlindnessScreen">
-                                        <i class="fa-regular fa-clock text-7xl text-slate-300 mb-4"></i>
-                                        <h2 class="text-3xl font-black text-slate-700">時間感模擬</h2>
-                                        <p class="text-lg text-slate-600 font-medium">ADHD 學生常有「時間盲」，無法準確感受時間流逝，覺得「5分鐘像1小時」。</p>
-                                    </div>
-                                    <div class="bg-blue-50 border-2 border-blue-200 p-4 rounded-2xl mt-auto shrink-0 shadow-sm w-full">
-                                        <span class="text-xl font-black text-blue-900 block mb-3"><i class="fa-solid fa-eye-low-vision"></i> 體驗：時間盲干擾控制器</span>
-                                        <div class="flex gap-3">
-                                            <button onclick="toggleTimeBlindness()" id="btnTimeBlindness" class="w-full bg-white hover:bg-blue-100 border-2 border-blue-200 py-3 rounded-xl text-lg font-bold text-slate-700 transition shadow-sm">🌀 啟動時間盲干擾 (關閉)</button>
-                                        </div>
+                        <div class="flex gap-6 flex-grow py-4 min-h-0 pb-12">
+                            <div class="w-[58%] flex flex-col bg-slate-50 border-2 border-slate-200 rounded-[1.5rem] p-8 relative shadow-inner overflow-y-auto custom-scrollbar">
+                                <div class="bg-white p-6 rounded-2xl border border-slate-200 mb-6 space-y-4 shadow-sm flex-grow flex flex-col justify-center items-center text-center transition-all duration-500" id="timeBlindnessScreen">
+                                    <i class="fa-regular fa-clock text-7xl text-slate-300 mb-4"></i>
+                                    <h2 class="text-3xl font-black text-slate-700">時間感模擬</h2>
+                                    <p class="text-lg text-slate-600 font-medium">ADHD 學生常有「時間盲」，無法準確感受時間流逝，覺得「5分鐘像1小時」。</p>
+                                </div>
+                                <div class="bg-blue-50 border-2 border-blue-200 p-4 rounded-2xl mt-auto shrink-0 shadow-sm w-full">
+                                    <span class="text-xl font-black text-blue-900 block mb-3"><i class="fa-solid fa-eye-low-vision"></i> 體驗：時間盲干擾控制器</span>
+                                    <div class="flex gap-3">
+                                        <button onclick="toggleTimeBlindness()" id="btnTimeBlindness" class="w-full bg-white hover:bg-blue-100 border-2 border-blue-200 py-3 rounded-xl text-lg font-bold text-slate-700 transition shadow-sm">🌀 啟動時間盲干擾 (關閉)</button>
                                     </div>
                                 </div>
-                                <div class="w-[42%] bg-white border-[4px] border-slate-200 rounded-[1.5rem] p-8 pb-14 flex flex-col justify-between shadow-xl h-auto">
-                                    <div>
-                                        <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-chalkboard"></i> 「先...然後...」提示板</h3>
-                                        <p class="text-xl text-slate-500 font-bold mb-8">對於抗拒的任務，利用清晰的獎勵機制降低執行阻力。</p>
+                            </div>
+                            <div class="w-[42%] bg-white border-4 border-slate-200 rounded-[1.5rem] p-8 flex flex-col justify-between shadow-xl h-full shrink-0">
+                                <div>
+                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-chalkboard"></i> 「先...然後...」提示板</h3>
+                                    <p class="text-xl text-slate-500 font-bold mb-8">對於抗拒的任務，利用清晰的獎勵機制降低執行阻力。</p>
+                                </div>
+                                <div class="flex flex-col gap-6 flex-grow justify-center mb-6">
+                                    <div class="bg-red-50 border-4 border-red-200 rounded-3xl p-6 shadow-sm">
+                                        <h4 class="text-2xl font-black text-red-700 mb-2">1️⃣ 先 (First)</h4>
+                                        <p class="text-xl text-slate-700 font-bold">完成 3 行數學功課</p>
                                     </div>
-                                    <div class="flex flex-col gap-6 flex-grow justify-center mb-6">
-                                        <div class="bg-red-50 border-4 border-red-200 rounded-3xl p-6 shadow-sm">
-                                            <h4 class="text-2xl font-black text-red-700 mb-2">1️⃣ 先 (First)</h4>
-                                            <p class="text-xl text-slate-700 font-bold">完成 3 行數學功課</p>
-                                        </div>
-                                        <div class="flex justify-center"><i class="fa-solid fa-arrow-down text-4xl text-slate-300"></i></div>
-                                        <div class="bg-green-50 border-4 border-green-300 rounded-3xl p-6 shadow-md transform scale-105">
-                                            <h4 class="text-2xl font-black text-green-700 mb-2">2️⃣ 然後 (Then)</h4>
-                                            <p class="text-xl text-slate-700 font-bold">玩 5 分鐘 iPad 🎮</p>
-                                        </div>
+                                    <div class="flex justify-center"><i class="fa-solid fa-arrow-down text-4xl text-slate-300"></i></div>
+                                    <div class="bg-green-50 border-4 border-green-300 rounded-3xl p-6 shadow-md transform scale-105">
+                                        <h4 class="text-2xl font-black text-green-700 mb-2">2️⃣ 然後 (Then)</h4>
+                                        <p class="text-xl text-slate-700 font-bold">玩 5 分鐘 iPad 🎮</p>
                                     </div>
                                 </div>
                             </div>
@@ -521,49 +556,51 @@
                                 <button onclick="scrollImpTabs(1)" class="px-2 text-slate-400 hover:text-rose-600 font-bold"><i class="fa-solid fa-chevron-right"></i></button>
                             </div>
                         </div>
-                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
-                            <div class="flex gap-8 flex-grow h-auto min-h-full pb-6">
-                                <div class="w-[58%] flex flex-col bg-white border-[4px] border-slate-200 rounded-[1.5rem] p-5 pb-14 shadow-inner h-auto justify-center items-center text-center">
-                                    ${!isStroopFinished ? `
-                                        <div class="w-full flex justify-between items-center px-4 mb-4 border-b-2 border-slate-100 pb-2">
-                                            <span class="text-xl text-slate-500 font-bold bg-white px-4 py-1 rounded-xl shadow-sm border border-slate-200">進度：${currentStroopQIndex + 1} / 10</span>
-                                            <span class="text-xl text-rose-600 font-black bg-rose-100 px-4 py-1 rounded-xl shadow-sm border border-rose-200">得分：${currentStroopScore}</span>
+                        
+                        <div class="flex gap-6 flex-grow py-4 min-h-0 px-6 pb-12">
+                            <div class="w-[58%] flex flex-col bg-slate-50 border-2 border-slate-200 rounded-[1.5rem] p-5 pb-10 relative shadow-inner overflow-y-auto custom-scrollbar justify-center items-center text-center">
+                                ${!isStroopFinished ? `
+                                    <div class="w-full flex justify-between items-center px-4 mb-4 border-b-2 border-slate-100 pb-2 shrink-0">
+                                        <span class="text-xl text-slate-500 font-bold bg-white px-4 py-1 rounded-xl shadow-sm border border-slate-200">進度：${currentStroopQIndex + 1} / 10</span>
+                                        <span class="text-xl text-rose-600 font-black bg-rose-100 px-4 py-1 rounded-xl shadow-sm border border-rose-200">得分：${currentStroopScore}</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden border border-slate-300 mb-4 shrink-0">
+                                        <div id="stroopProgressBar" class="bg-rose-500 h-full" style="width: 100%; transition: width 0.05s linear;"></div>
+                                    </div>
+                                    <h3 class="text-2xl font-black text-slate-700 mb-2 shrink-0">斯特魯普效應 (Stroop Effect)</h3>
+                                    <p class="text-lg text-slate-500 font-bold mb-4 bg-white px-6 py-2 rounded-xl border border-slate-200 shrink-0">⚠️ 請點擊與文字「<span class="text-rose-600 font-black">顏色</span>」相符的按鈕，不要管文字寫什麼！</p>
+                                    <div class="text-[180px] font-black tracking-widest mb-8 drop-shadow-lg ${imp.colorClass}">${imp.word}</div>
+                                    <div class="flex justify-center gap-6 w-full px-4 shrink-0">
+                                        ${imp.options.map(opt => `<button onclick="checkStroop('${opt.val}', '${imp.correct}')" class="flex-1 bg-white border-[6px] border-slate-200 hover:border-slate-400 text-slate-700 font-black py-6 rounded-[2rem] text-4xl shadow-md transition active:scale-95">${opt.name}</button>`).join('')}
+                                    </div>
+                                ` : `
+                                    <div class="flex flex-col items-center justify-center h-full w-full fade-in">
+                                        <div class="text-[140px] mb-6 drop-shadow-lg decoration-only">🏆</div>
+                                        <h2 class="text-5xl font-black text-rose-600 mb-6">關卡 ${currentTaskIndex + 1} 結算</h2>
+                                        <p class="text-3xl text-slate-600 font-bold mb-4">總得分</p>
+                                        <p class="text-[80px] font-black text-rose-500 bg-rose-50 px-12 py-4 rounded-[3rem] border-8 border-rose-200 mb-12 shadow-inner">${currentStroopScore} <span class="text-4xl text-rose-400">/ 10</span></p>
+                                        <div class="flex gap-6 w-full max-w-lg">
+                                            <button onclick="retryStroop()" class="flex-1 bg-white border-[6px] border-slate-300 hover:bg-slate-100 text-slate-600 font-black py-5 rounded-2xl text-2xl transition shadow-sm">重玩本關</button>
+                                            <button onclick="nextStroopLevel()" class="flex-1 bg-rose-500 hover:bg-rose-600 border-[6px] border-rose-600 text-white font-black py-5 rounded-2xl text-2xl transition shadow-md">下一關 <i class="fa-solid fa-arrow-right ml-2"></i></button>
                                         </div>
-                                        <h3 class="text-2xl font-black text-slate-700 mb-2">斯特魯普效應 (Stroop Effect)</h3>
-                                        <p class="text-lg text-slate-500 font-bold mb-6 bg-slate-50 px-6 py-2 rounded-xl border border-slate-200">⚠️ 請點擊與文字「<span class="text-rose-600 font-black">顏色</span>」相符的按鈕，不要管文字寫什麼！</p>
-                                        <div class="text-[180px] font-black tracking-widest mb-12 drop-shadow-lg ${imp.colorClass}">${imp.word}</div>
-                                        <div class="flex justify-center gap-6 w-full px-4">
-                                            ${imp.options.map(opt => `<button onclick="checkStroop('${opt.val}', '${imp.correct}')" class="flex-1 bg-white border-[6px] border-slate-200 hover:border-slate-400 text-slate-700 font-black py-6 rounded-[2rem] text-4xl shadow-md transition active:scale-95">${opt.name}</button>`).join('')}
-                                        </div>
-                                    ` : `
-                                        <div class="flex flex-col items-center justify-center h-full w-full fade-in">
-                                            <div class="text-[140px] mb-6 drop-shadow-lg decoration-only">🏆</div>
-                                            <h2 class="text-5xl font-black text-rose-600 mb-6">關卡 ${currentTaskIndex + 1} 結算</h2>
-                                            <p class="text-3xl text-slate-600 font-bold mb-4">總得分</p>
-                                            <p class="text-[80px] font-black text-rose-500 bg-rose-50 px-12 py-4 rounded-[3rem] border-8 border-rose-200 mb-12 shadow-inner">${currentStroopScore} <span class="text-4xl text-rose-400">/ 10</span></p>
-                                            <div class="flex gap-6 w-full max-w-lg">
-                                                <button onclick="retryStroop()" class="flex-1 bg-white border-[6px] border-slate-300 hover:bg-slate-100 text-slate-600 font-black py-5 rounded-2xl text-2xl transition shadow-sm">重玩本關</button>
-                                                <button onclick="nextStroopLevel()" class="flex-1 bg-rose-500 hover:bg-rose-600 border-[6px] border-rose-600 text-white font-black py-5 rounded-2xl text-2xl transition shadow-md">下一關 <i class="fa-solid fa-arrow-right ml-2"></i></button>
-                                            </div>
-                                        </div>
-                                    `}
-                                </div>
-                                <div class="w-[42%] bg-white border-[4px] border-slate-200 rounded-[1.5rem] p-8 pb-14 flex flex-col shadow-xl h-auto">
-                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-hand text-rose-500"></i> 停・想・做 (Stop-Think-Do)</h3>
-                                    <p class="text-xl text-slate-600 font-bold mb-6">當大腦想要衝動時，教導學生按下煞車掣：</p>
-                                    <div class="space-y-6 flex-grow">
-                                        <div class="bg-red-50 border-2 border-red-200 p-6 rounded-2xl flex items-center gap-4">
-                                            <div class="w-16 h-16 bg-red-500 rounded-full text-white flex items-center justify-center text-3xl font-black shrink-0">🛑</div>
-                                            <div><h4 class="text-2xl font-black text-red-800">停一停 (Stop)</h4><p class="text-slate-600 font-bold">深呼吸，雙手放平</p></div>
-                                        </div>
-                                        <div class="bg-yellow-50 border-2 border-yellow-200 p-6 rounded-2xl flex items-center gap-4">
-                                            <div class="w-16 h-16 bg-yellow-400 rounded-full text-white flex items-center justify-center text-3xl font-black shrink-0">🤔</div>
-                                            <div><h4 class="text-2xl font-black text-yellow-800">想一想 (Think)</h4><p class="text-slate-600 font-bold">這樣做會有甚麼後果？</p></div>
-                                        </div>
-                                        <div class="bg-green-50 border-2 border-green-200 p-6 rounded-2xl flex items-center gap-4">
-                                            <div class="w-16 h-16 bg-green-500 rounded-full text-white flex items-center justify-center text-3xl font-black shrink-0">✅</div>
-                                            <div><h4 class="text-2xl font-black text-green-800">慢慢做 (Do)</h4><p class="text-slate-600 font-bold">選擇一個最好的方法</p></div>
-                                        </div>
+                                    </div>
+                                `}
+                            </div>
+                            <div class="w-[42%] bg-white border-4 border-slate-200 rounded-[1.5rem] p-8 pb-12 flex flex-col shadow-xl h-full shrink-0 overflow-y-auto">
+                                <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-hand text-rose-500"></i> 停・想・做 (Stop-Think-Do)</h3>
+                                <p class="text-xl text-slate-600 font-bold mb-6">當大腦想要衝動時，教導學生按下煞車掣：</p>
+                                <div class="space-y-6 flex-grow">
+                                    <div class="bg-red-50 border-2 border-red-200 p-6 rounded-2xl flex items-center gap-4">
+                                        <div class="w-16 h-16 bg-red-500 rounded-full text-white flex items-center justify-center text-3xl font-black shrink-0">🛑</div>
+                                        <div><h4 class="text-2xl font-black text-red-800">停一停 (Stop)</h4><p class="text-slate-600 font-bold">深呼吸，雙手放平</p></div>
+                                    </div>
+                                    <div class="bg-yellow-50 border-2 border-yellow-200 p-6 rounded-2xl flex items-center gap-4">
+                                        <div class="w-16 h-16 bg-yellow-400 rounded-full text-white flex items-center justify-center text-3xl font-black shrink-0">🤔</div>
+                                        <div><h4 class="text-2xl font-black text-yellow-800">想一想 (Think)</h4><p class="text-slate-600 font-bold">這樣做會有甚麼後果？</p></div>
+                                    </div>
+                                    <div class="bg-green-50 border-2 border-green-200 p-6 rounded-2xl flex items-center gap-4">
+                                        <div class="w-16 h-16 bg-green-500 rounded-full text-white flex items-center justify-center text-3xl font-black shrink-0">✅</div>
+                                        <div><h4 class="text-2xl font-black text-green-800">慢慢做 (Do)</h4><p class="text-slate-600 font-bold">選擇一個最好的方法</p></div>
                                     </div>
                                 </div>
                             </div>
@@ -580,9 +617,9 @@
                                 <h1 class="text-4xl font-black text-slate-800 mt-1">🔋 動能調節與番茄鐘</h1>
                             </div>
                         </div>
-                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
-                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
-                                <div class="w-[50%] flex flex-col justify-between bg-white border-4 border-slate-200 rounded-[2.5rem] p-10 pb-14 shadow-sm h-auto">
+                        <div class="flex-grow p-8 bg-slate-50 overflow-hidden flex flex-col relative min-h-0 pb-10">
+                            <div class="flex gap-10 flex-grow h-full min-h-0">
+                                <div class="w-[50%] flex flex-col justify-between bg-white border-4 border-slate-200 rounded-[2.5rem] p-10 shadow-sm h-full overflow-y-auto custom-scrollbar">
                                     <div>
                                         <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 mb-6"><i class="fa-solid fa-gauge-high text-emerald-500"></i> 大腦引擎轉速控制</h3>
                                         <p class="text-xl text-slate-600 leading-relaxed font-bold mb-8">ADHD 學生的狀態容易走極端。點擊嘗試調節轉速：</p>
@@ -593,7 +630,7 @@
                                         <button onclick="updateHUD(-40); showToast('🚜 引擎死火！發呆、想睡覺。', 'error');" class="w-full bg-blue-50 hover:bg-blue-100 border-4 border-blue-200 text-blue-700 font-black py-6 rounded-3xl transition text-2xl shadow-sm flex items-center justify-center gap-4"><span class="text-4xl">🚜</span> 太慢了 (Sluggish)</button>
                                     </div>
                                 </div>
-                                <div class="w-[50%] flex flex-col justify-between bg-white border-[6px] border-emerald-400 rounded-[2.5rem] p-10 pb-14 shadow-2xl text-center h-auto">
+                                <div class="w-[50%] flex flex-col justify-between bg-white border-[6px] border-emerald-400 rounded-[2.5rem] p-10 shadow-2xl text-center h-full">
                                     <h3 class="font-black text-slate-800 text-3xl flex items-center justify-center gap-4 mb-4"><i class="fa-solid fa-stopwatch text-emerald-500"></i> 20+5 番茄鐘計時器</h3>
                                     <div class="my-auto flex flex-col items-center justify-center">
                                         <span id="pomoTime" class="text-[120px] font-black text-emerald-500 font-mono tracking-tighter drop-shadow-md leading-none">20:00</span>
@@ -630,17 +667,15 @@
                             </div>
                         </div>
                         
-                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
-                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
-                                <div class="w-[60%] flex flex-col items-center justify-center bg-white border-[6px] border-teal-300 rounded-[2.5rem] p-10 pb-14 shadow-xl h-auto relative overflow-visible">
-                                    
+                        <div class="flex-grow p-8 bg-slate-50 overflow-hidden flex flex-col relative min-h-0 pb-12">
+                            <div class="flex gap-10 flex-grow h-full min-h-0">
+                                <div class="w-[60%] flex flex-col items-center justify-center bg-white border-[6px] border-teal-300 rounded-[2.5rem] p-10 shadow-xl h-full relative overflow-hidden">
                                     <div id="wmState0" class="${wmState==='ready' ? 'flex' : 'hidden'} flex-col items-center w-full text-center">
                                         <div class="text-[120px] mb-4 decoration-only opacity-80">📥</div>
                                         <h2 class="text-4xl font-black text-slate-800 mb-4">記憶容量挑戰：關卡 ${currentTaskIndex + 1}</h2>
                                         <p class="text-2xl text-slate-600 font-bold mb-8 max-w-lg">你需要按順序記住 <span class="text-teal-600 font-black text-3xl">${currentTaskIndex + 1}</span> 個特工道具。<br>隨後會發射「干擾彈」進行專注力破壞！</p>
                                         <button onclick="startWMMission()" class="bg-teal-500 hover:bg-teal-600 text-white font-black px-12 py-5 rounded-3xl text-3xl shadow-lg transition transform hover:scale-105">開始記憶</button>
                                     </div>
-
                                     <div id="wmState1" class="${wmState==='showing' ? 'flex' : 'hidden'} flex-col items-center w-full">
                                         <h2 class="text-3xl font-black text-rose-600 mb-8 animate-pulse">🔒 記住這個順序！ (${currentTaskIndex + 1}個物品)</h2>
                                         <div class="flex gap-4 flex-wrap justify-center">
@@ -649,12 +684,10 @@
                                             `).join('')}
                                         </div>
                                     </div>
-
-                                    <div id="wmState2" class="${wmState==='distracting' ? 'flex' : 'hidden'} flex-col items-center justify-center w-full h-full absolute inset-0 bg-yellow-400 z-20 rounded-[2.2rem]">
+                                    <div id="wmState2" class="${wmState==='distracting' ? 'flex' : 'hidden'} flex-col items-center justify-center w-full h-full absolute inset-0 bg-yellow-400 z-20">
                                         <div class="text-[150px] animate-bounce decoration-only">🕊️</div>
                                         <h1 class="text-6xl font-black text-red-700 bg-white px-10 py-5 rounded-3xl shadow-2xl mt-4 shake-bounce">🔔 警報！有鴿子飛過！</h1>
                                     </div>
-
                                     <div id="wmState3" class="${wmState==='recall' ? 'flex' : 'hidden'} flex-col items-center w-full mt-auto mb-auto">
                                         <h2 class="text-3xl font-black text-teal-800 mb-6">按原順序點擊符號：</h2>
                                         <div class="flex gap-4 mb-8 flex-wrap justify-center">
@@ -673,7 +706,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="w-[40%] bg-white border-[4px] border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col shadow-xl h-auto">
+                                <div class="w-[40%] bg-white border-[4px] border-slate-200 rounded-[2.5rem] p-8 flex flex-col shadow-xl h-full">
                                     <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-note-sticky text-teal-500"></i> 記憶防洗腦戰術</h3>
                                     <p class="text-xl text-slate-600 leading-relaxed font-bold mb-6">工作記憶是 ADHD 最脆弱的短板。遇到干擾彈時，指令很容易在 1 秒內消失。</p>
                                     <div class="bg-teal-50 border-2 border-teal-100 p-4 rounded-2xl mb-6">
@@ -708,10 +741,11 @@
                                 <button onclick="changeTask('initiation', 2)" class="shrink-0 whitespace-nowrap px-6 py-2.5 rounded-xl font-bold text-xl ${currentTaskIndex===2 ? 'bg-purple-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">專題報告</button>
                             </div>
                         </div>
-                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
-                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
-                                <div class="w-[50%] flex flex-col justify-center items-center bg-slate-200 border-8 border-stone-400 rounded-[3rem] p-10 pb-14 shadow-inner h-auto relative">
+                        <div class="flex-grow p-8 bg-slate-50 overflow-hidden flex flex-col relative min-h-0 pb-14">
+                            <div class="flex gap-10 flex-grow h-full min-h-0">
+                                <div class="w-[50%] flex flex-col justify-center items-center bg-slate-200 border-8 border-stone-400 rounded-[3rem] p-10 shadow-inner h-full relative">
                                     <h2 class="text-3xl font-black text-slate-600 mb-8 w-full text-center">恐懼牆 (Wall of Awful)</h2>
+                                    
                                     ${!taskChunked ? `
                                         <button onclick="clickBigRustyButton()" id="rustyBtn" class="w-80 h-80 bg-gradient-to-br from-stone-500 to-stone-700 rounded-full border-[16px] border-stone-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center text-white transition active:scale-95">
                                             <span class="text-4xl font-black opacity-80 mb-2">啟動任務：</span>
@@ -728,7 +762,7 @@
                                         </div>
                                     `}
                                 </div>
-                                <div class="w-[50%] bg-white border-[6px] border-purple-300 rounded-[3rem] p-10 pb-14 flex flex-col shadow-2xl h-auto">
+                                <div class="w-[50%] bg-white border-[6px] border-purple-300 rounded-[3rem] p-10 flex flex-col shadow-2xl h-full">
                                     <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-4 border-slate-100 pb-4 mb-8 shrink-0"><i class="fa-solid fa-scissors text-purple-500"></i> 任務切碎機</h3>
                                     <p class="text-2xl text-slate-600 leading-relaxed font-bold mb-10">ADHD 常被誤會懶惰，其實是「啟動困難」。大任務太可怕了，我們需要把它切碎！</p>
                                     ${!taskChunked ? `
@@ -748,15 +782,15 @@
                 `;
             }
             else if (roomId === "social") {
-                const spa = socialTasks[currentTaskIndex % socialTasks.length];
+                const spa = socialTasks[currentTaskIndex];
                 html = `
                     <div class="flex flex-col h-full bg-white overflow-hidden relative">
                         <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 py-6 shrink-0 bg-white z-10 shadow-sm">
                             <div class="shrink-0 mr-6">
                                 <span class="text-xl font-bold text-amber-600 uppercase tracking-widest">特工訓練房 6</span>
-                                <h1 class="text-4xl font-black text-slate-800 mt-1">🤝 社交雷達與情境問答</h1>
+                                <h1 class="text-4xl font-black text-slate-800 mt-1">🤝 社交雷達與情境問答 (8 關)</h1>
                             </div>
-                            <div class="flex gap-2 overflow-x-auto w-full max-w-[600px] hide-scrollbar pb-1 justify-start shrink-0">
+                            <div class="flex gap-2 overflow-x-auto w-full max-w-[500px] hide-scrollbar pb-1 justify-start shrink-0">
                                 <button onclick="scrollSpaTabs(-1)" class="px-2 text-slate-400 hover:text-amber-600 font-bold"><i class="fa-solid fa-chevron-left"></i></button>
                                 <div class="flex gap-2 overflow-x-auto hide-scrollbar scroll-smooth" id="spaTabsContainer">
                                     ${socialTasks.map((_, i) => `<button onclick="changeTask('social', ${i})" class="shrink-0 whitespace-nowrap px-4 py-1.5 rounded-xl font-bold text-base ${currentTaskIndex===i ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
@@ -764,29 +798,45 @@
                                 <button onclick="scrollSpaTabs(1)" class="px-2 text-slate-400 hover:text-amber-600 font-bold"><i class="fa-solid fa-chevron-right"></i></button>
                             </div>
                         </div>
-                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
-                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
-                                <div class="w-[60%] flex flex-col justify-center items-center bg-white rounded-[2.5rem] border-4 border-slate-200 shadow-inner p-10 pb-14 h-auto">
-                                    <div class="text-[140px] drop-shadow-lg mb-8">${spa.emoji}</div>
-                                    <h3 class="font-black text-slate-800 text-3xl text-center leading-relaxed mb-6">情境：<br>${spa.situation}</h3>
-                                    ${socialAnswered && socialIsCorrect ? `<div class="bg-emerald-100 text-emerald-700 text-2xl font-black px-8 py-4 rounded-3xl animate-pulse border-4 border-emerald-300">✅ 社交雷達啟動成功！</div>` : ''}
-                                    ${socialAnswered && !socialIsCorrect ? `<div class="bg-rose-100 text-rose-700 text-2xl font-black px-8 py-4 rounded-3xl animate-pulse border-4 border-rose-300">❌ 社交地雷爆炸！</div>` : ''}
-                                </div>
-                                <div class="w-[40%] bg-white border-[6px] border-amber-300 rounded-[2.5rem] p-8 pb-14 flex flex-col shadow-xl h-auto">
-                                    <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-4 border-slate-100 pb-4 mb-6 shrink-0"><i class="fa-solid fa-users text-amber-500"></i> 請選擇最佳應對</h3>
-                                    <div class="space-y-4 flex-grow flex flex-col justify-center">
-                                        ${spa.options.map((opt, idx) => `
-                                            <button onclick="checkSocialAnswer(${idx}, ${spa.correct})" 
-                                                class="w-full bg-slate-50 hover:bg-amber-50 border-4 ${socialAnswered ? (idx===spa.correct ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200 opacity-50') : 'border-slate-300'} text-slate-700 font-bold text-2xl py-5 rounded-2xl transition text-left px-6 shadow-sm">
-                                                ${opt}
-                                            </button>
-                                        `).join('')}
+                        <div class="flex-grow p-8 bg-slate-50 overflow-hidden flex flex-col relative min-h-0 pb-12">
+                            ${!isSocialFinished ? `
+                                <div class="flex gap-10 flex-grow h-full min-h-0">
+                                    <div class="w-[50%] flex flex-col justify-center items-center bg-white rounded-[2.5rem] border-4 border-slate-200 shadow-inner p-10 pb-14 h-full overflow-y-auto custom-scrollbar relative">
+                                        <div class="w-full flex justify-between items-center px-4 mb-4 border-b-2 border-slate-100 pb-2 shrink-0 absolute top-6">
+                                            <span class="text-xl text-slate-500 font-bold bg-slate-50 px-4 py-1 rounded-xl shadow-sm border border-slate-200">進度：${currentTaskIndex + 1} / 8</span>
+                                        </div>
+                                        <div class="text-[140px] drop-shadow-lg mb-8 mt-10">${spa.emoji}</div>
+                                        <h3 class="font-black text-slate-800 text-3xl text-center leading-relaxed mb-6">情境：<br>${spa.situation}</h3>
                                     </div>
-                                    ${socialAnswered ? `
-                                        <button onclick="nextSocialTask()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-black py-4 rounded-2xl text-2xl transition shadow-md mt-6 shrink-0">下一題 <i class="fa-solid fa-arrow-right ml-2"></i></button>
-                                    ` : ''}
+                                    <div class="w-[50%] bg-white border-[6px] border-amber-300 rounded-[2.5rem] p-8 pb-14 flex flex-col shadow-xl h-full overflow-y-auto custom-scrollbar">
+                                        <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-4 border-slate-100 pb-4 mb-6 shrink-0"><i class="fa-solid fa-users text-amber-500"></i> 請選擇最佳應對 (社交煞車)</h3>
+                                        <div class="space-y-4 flex-grow flex flex-col justify-center">
+                                            ${spa.options.map((opt, idx) => `
+                                                <button onclick="checkSocialAnswer(${idx}, ${spa.correct})" 
+                                                    class="w-full bg-slate-50 hover:bg-amber-50 border-4 ${socialAnswered ? (idx===spa.correct ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200 opacity-50') : 'border-slate-300'} text-slate-700 font-bold text-2xl py-5 rounded-2xl transition text-left px-6 shadow-sm">
+                                                    ${opt}
+                                                </button>
+                                            `).join('')}
+                                        </div>
+                                        ${socialAnswered ? `
+                                            <div class="mt-6 p-6 rounded-2xl border-4 ${socialIsCorrect ? 'bg-emerald-100 border-emerald-300 text-emerald-800' : 'bg-rose-100 border-rose-300 text-rose-800'} fade-in shadow-inner shrink-0">
+                                                <h4 class="font-black text-2xl mb-2">${socialIsCorrect ? '✅ 社交雷達啟動成功！' : '❌ 社交地雷爆炸！'}</h4>
+                                                <p class="text-xl font-bold">${socialIsCorrect ? spa.feedbackCorrect : spa.feedbackWrong}</p>
+                                            </div>
+                                            <button onclick="nextSocialTask()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-black py-4 rounded-2xl text-2xl transition shadow-md mt-6 shrink-0">下一題 <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                                        ` : ''}
+                                    </div>
                                 </div>
-                            </div>
+                            ` : `
+                                <div class="flex flex-col items-center justify-center h-full w-full fade-in py-10 text-center">
+                                    <div class="text-[140px] mb-6 drop-shadow-lg decoration-only">🏆</div>
+                                    <h2 class="text-5xl font-black text-amber-600 mb-6">社交雷達特訓完成！</h2>
+                                    <p class="text-2xl text-slate-600 font-bold mb-12 max-w-2xl leading-relaxed">你已經掌握了 8 個常見社交情境的應對技巧。記住，衝動前先「踩煞車」，你也能成為受歡迎的特工！</p>
+                                    <div class="flex gap-6 w-full max-w-md">
+                                        <button onclick="retrySocial()" class="flex-1 bg-white border-[6px] border-slate-300 hover:bg-slate-100 text-slate-600 font-black py-5 rounded-2xl text-2xl transition shadow-sm">重新挑戰</button>
+                                    </div>
+                                </div>
+                            `}
                         </div>
                     </div>
                 `;
@@ -800,9 +850,9 @@
                                 <h1 class="text-4xl font-black text-slate-800 mt-1">🛡️ 環境抗干擾戰術 (執枱大作戰)</h1>
                             </div>
                         </div>
-                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
-                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
-                                <div class="w-[60%] flex flex-col justify-between bg-slate-800 border-[6px] border-slate-700 rounded-[2.5rem] p-8 pb-14 shadow-2xl h-auto relative">
+                        <div class="flex-grow p-8 bg-slate-50 overflow-hidden flex flex-col relative min-h-0 pb-10">
+                            <div class="flex gap-10 flex-grow h-full min-h-0">
+                                <div class="w-[60%] flex flex-col justify-between bg-slate-800 border-[6px] border-slate-700 rounded-[2.5rem] p-8 pb-14 shadow-2xl h-full overflow-hidden relative">
                                     <h2 class="text-3xl font-black text-white mb-4 z-10">凌亂的溫習桌面</h2>
                                     <p class="text-xl text-slate-300 font-bold mb-6 z-10">點擊移除所有 <span class="text-rose-400 font-black">干擾物 (剩餘 <span id="distractCount">4</span> 個)</span>，只留下書本和筆！時間：<span id="distractTimerTxt">10</span>秒</p>
                                     
@@ -817,7 +867,7 @@
                                     </div>
                                     <button onclick="startDistractionGame()" class="w-full mt-6 bg-cyan-500 hover:bg-cyan-600 text-white font-black py-4 rounded-2xl text-2xl transition shadow-lg z-10">開始遊戲</button>
                                 </div>
-                                <div class="w-[40%] bg-white border-4 border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col shadow-xl h-auto">
+                                <div class="w-[40%] bg-white border-4 border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col shadow-xl h-full overflow-y-auto custom-scrollbar">
                                     <div>
                                         <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-4 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-shield-halved text-cyan-500"></i> 極簡環境設定</h3>
                                         <p class="text-xl text-slate-600 leading-relaxed font-bold mb-6">ADHD 大腦極容易被周遭事物吸走注意力。要做到專心，第一步是<strong>物理隔離</strong>！</p>
@@ -887,9 +937,9 @@
                                 <h1 class="text-4xl font-black text-slate-800 mt-1">🎒 桌面與書包收納系統</h1>
                             </div>
                         </div>
-                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
-                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
-                                <div class="w-[45%] flex flex-col justify-between bg-white border-4 border-slate-200 rounded-[2.5rem] p-8 pb-14 text-center shadow-sm h-auto">
+                        <div class="flex-grow p-8 bg-slate-50 overflow-hidden flex flex-col relative min-h-0 pb-12">
+                            <div class="flex gap-10 flex-grow h-full min-h-0">
+                                <div class="w-[45%] flex flex-col justify-between bg-white border-4 border-slate-200 rounded-[2.5rem] p-8 pb-14 text-center shadow-sm h-full overflow-y-auto custom-scrollbar">
                                     <h3 class="font-black text-slate-800 text-2xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-4 text-left shrink-0"><i class="fa-solid fa-boxes-stacked text-indigo-500"></i> 待整理物品</h3>
                                     <div id="sortingItemArea" class="py-10 bg-slate-50 rounded-[2rem] border-4 border-slate-200 flex flex-col justify-center items-center gap-6 my-2 flex-grow shadow-inner transition-transform">
                                         <div id="currentItemIcon" class="text-[100px] drop-shadow-md">📘</div>
@@ -897,7 +947,7 @@
                                     </div>
                                     <span class="text-xl text-slate-400 font-bold mt-4 shrink-0">請判斷：它是需要的，還是干擾物？</span>
                                 </div>
-                                <div class="w-[55%] bg-white border-[6px] border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col justify-between shadow-2xl h-auto">
+                                <div class="w-[55%] bg-white border-[6px] border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col justify-between shadow-2xl h-full overflow-y-auto custom-scrollbar">
                                     <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-6 mb-8 shrink-0"><i class="fa-solid fa-folder-open text-indigo-500"></i> 收納區</h3>
                                     <div class="grid grid-cols-2 gap-8 flex-grow">
                                         <button onclick="sortItemToFolder('keep')" class="p-8 bg-blue-50 hover:bg-blue-100 border-4 border-blue-200 rounded-3xl text-center active:scale-95 transition flex flex-col justify-center items-center gap-4 shadow-sm">
@@ -932,9 +982,9 @@
                                 <button onclick="scrollExTabs(1)" class="px-2 text-slate-400 hover:text-fuchsia-600 font-bold"><i class="fa-solid fa-chevron-right"></i></button>
                             </div>
                         </div>
-                        <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-12">
-                            <div class="flex gap-10 flex-grow h-auto min-h-full pb-6">
-                                <div class="w-[65%] flex flex-col justify-between bg-white border-4 border-slate-200 rounded-[2.5rem] p-8 pb-14 shadow-sm h-auto overflow-hidden">
+                        <div class="flex-grow p-8 bg-slate-50 overflow-hidden flex flex-col relative min-h-0 pb-12">
+                            <div class="flex gap-10 flex-grow h-full min-h-0">
+                                <div class="w-[65%] flex flex-col justify-between bg-white border-4 border-slate-200 rounded-[2.5rem] p-8 pb-14 shadow-sm h-full overflow-hidden">
                                     <div class="flex justify-between items-center shrink-0 border-b-4 border-slate-100 pb-4 mb-4">
                                         <span class="text-2xl text-rose-500 font-black bg-rose-50 px-4 py-2 rounded-xl border-2 border-rose-200"><i class="fa-solid fa-stopwatch animate-pulse mr-2"></i> ADHD 容易大意漏看重點</span>
                                         <span id="examScore" class="text-fuchsia-600 font-bold text-2xl bg-fuchsia-50 px-4 py-1 rounded-lg border border-fuchsia-200">狙擊點：0/2</span>
@@ -946,7 +996,7 @@
                                         🚨 題目：${exm.question}
                                     </div>
                                 </div>
-                                <div class="w-[35%] bg-white border-[6px] border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col justify-between shadow-2xl h-auto">
+                                <div class="w-[35%] bg-white border-[6px] border-slate-200 rounded-[2.5rem] p-8 pb-14 flex flex-col justify-between shadow-2xl h-full overflow-y-auto custom-scrollbar">
                                     <div>
                                         <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-2 border-slate-100 pb-4 mb-6"><i class="fa-solid fa-highlighter text-pink-500"></i> ${exm.title} 審題技巧</h3>
                                         <p class="text-xl text-slate-600 leading-relaxed font-bold mb-6">教導 ADHD 學生：看題前提早<strong>拿螢光筆間低關鍵字</strong>！</p>
@@ -962,11 +1012,49 @@
             }
 
             canvas.innerHTML = html;
+            
+            // 綁定動態生成的按鈕 (如 Stroop Timer)
+            if (roomId === "impulse" && !isStroopFinished) {
+                setTimeout(startStroopTimer, 50);
+            }
         }
 
         // ==========================================
         // 互動函數掛載區
         // ==========================================
+
+        function startStroopTimer() {
+            clearInterval(stroopTimerInterval);
+            stroopTimeRemaining = STROOP_MAX_TIME;
+            const bar = document.getElementById('stroopProgressBar');
+            if (bar) bar.style.width = '100%';
+
+            stroopTimerInterval = setInterval(() => {
+                stroopTimeRemaining -= 50;
+                const percentage = (stroopTimeRemaining / STROOP_MAX_TIME) * 100;
+                const bar = document.getElementById('stroopProgressBar');
+                if (bar) {
+                    bar.style.width = `${Math.max(0, percentage)}%`;
+                }
+
+                if (stroopTimeRemaining <= 0) {
+                    clearInterval(stroopTimerInterval);
+                    handleStroopTimeout();
+                }
+            }, 50);
+        }
+
+        function handleStroopTimeout() {
+            updateHUD(-2);
+            showToast("⏰ 嗶嗶！超時！注意力被分散了。", "error");
+            
+            currentStroopQIndex++;
+            if (currentStroopQIndex >= 10) {
+                isStroopFinished = true;
+                fireConfetti();
+            }
+            renderRoom('impulse');
+        }
 
         function toggleWMTool(tool) {
             const btnNote = document.getElementById('btnWmNote');
@@ -1034,6 +1122,7 @@
             } else if (room === 'social') {
                 socialAnswered = false;
                 socialIsCorrect = false;
+                isSocialFinished = false;
             }
             renderRoom(room);
         }
@@ -1065,6 +1154,8 @@
 
         // Room 2: Stroop Test
         function checkStroop(clickedVal, correctVal) {
+            clearInterval(stroopTimerInterval); // Stop timer immediately
+            
             if (clickedVal === correctVal) {
                 currentStroopScore++;
                 updateHUD(5);
@@ -1318,17 +1409,19 @@
             }
         }
 
-        // Room 6: Social Q&A
+        // Room 6: Social Q&A Game (New)
         function checkSocialAnswer(selectedIdx, correctIdx) {
+            if (socialAnswered) return; // Prevent double click
             socialAnswered = true;
             socialIsCorrect = (selectedIdx === correctIdx);
+            
             if (socialIsCorrect) {
                 updateHUD(10);
                 showToast("🏆 答對了！你的社交煞車踩得非常好！", "success");
                 fireConfetti();
             } else {
                 updateHUD(-10);
-                showToast("❌ 這樣做可能會讓別人不舒服喔，請再想想！", "error");
+                showToast("❌ 衝動了！請看看戰術指導！", "error");
             }
             renderRoom('social');
         }
@@ -1336,9 +1429,22 @@
         function nextSocialTask() {
             socialAnswered = false;
             socialIsCorrect = false;
-            currentTaskIndex = (currentTaskIndex + 1) % socialTasks.length;
+            currentTaskIndex++;
+            if (currentTaskIndex >= socialTasks.length) {
+                isSocialFinished = true;
+                fireConfetti();
+            }
             renderRoom('social');
             scrollSpaTabs(1);
+        }
+
+        function retrySocial() {
+            currentTaskIndex = 0;
+            isSocialFinished = false;
+            socialAnswered = false;
+            socialIsCorrect = false;
+            renderRoom('social');
+            scrollSpaTabs(-10); // scroll back to start
         }
 
         // Room 7: Distraction Game
@@ -1481,17 +1587,17 @@
         Object.assign(window, {
             toggleSidebar, resizeCanvas, updateHUD, showToast, fireConfetti,
             selectRoom, renderRoom, changeTask, scrollImpTabs, scrollBufTabs, scrollSpaTabs, scrollExTabs,
-            toggleTimeBlindness, checkStroop, retryStroop, nextStroopLevel,
+            toggleTimeBlindness, checkStroop, retryStroop, nextStroopLevel, startStroopTimer, handleStroopTimeout,
             startPomodoro, resetPomodoro, changeWMLevel, startWMMission, highlightNextWMItem, triggerWMDistraction, pushWMRecall, resetWMTrial, verifyWMMission, toggleWMTool,
             clickBigRustyButton, shredTask, clickMicroStep,
-            checkSocialAnswer, nextSocialTask,
+            checkSocialAnswer, nextSocialTask, retrySocial,
             startDistractionGame, removeDistractor,
             popBubble, checkRsdChoice,
             initSortingItem, showNextSortingItem, sortItemToFolder, verifySortingResult,
             scanExamQuestion, shootExamTarget
         });
 
-        window.onload = function() { selectRoom('ef'); }
+        window.onload = function() { selectRoom('social'); } // Set default room to social for testing
     </script>
 </body>
 </html>
