@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ASD 專注力特工訓練基地 | SEN Care Professional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans HK', sans-serif; background-color: #f1f5f9; color: #334155; }
+        
+        /* ==========================================
+           🎨 1. 全域排版修復 (文字防裁切/自動換行)
+           ========================================== */
+        h1, h2, h3, h4, h5, h6, p, .subtitle {
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            white-space: normal !important;
+            max-width: 100% !important;
+        }
+        .whitespace-nowrap { white-space: nowrap !important; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .room-card { transition: all 0.3s ease; cursor: pointer; background-color: #ffffff; border: 1px solid #e2e8f0; }
+        .room-card:hover { border-color: #0d9488; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .room-card.active { border-color: #0d9488; background-color: #f0fdfa; box-shadow: inset 4px 0 0 #0d9488, 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+
+        #canvasContainer { position: relative; width: 100%; height: 100%; overflow: hidden; background-color: #e2e8f0; }
+        #posterPrintArea {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1122px;
+            min-height: 793px;
+            height: auto;
+            transform-origin: center center;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 錯誤震動彈回動畫 (Shake-bounce) */
+        .shake-bounce { animation: shakeBounce 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shakeBounce {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        /* 正確放大彈跳動畫 (Scale-bounce) */
+        .scale-bounce { animation: scaleBounce 0.4s cubic-bezier(.175, .885, .32, 1.275) both; }
+        @keyframes scaleBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pop-anim { animation: popOut 0.3s forwards; }
+        @keyframes popOut {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        #confetti-container { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
+
+        /* 可拖曳排序物件樣式 */
+        .sortable-item { cursor: grab; transition: transform 0.2s, background-color 0.2s, border-color 0.2s; }
+        .sortable-item:active { cursor: grabbing; }
+        .sortable-item.dragging { opacity: 0.4; transform: scale(0.98); }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col">
+
+    <!-- 頂部導航 (修復 Flex-Wrap 與按鈕擠壓、遮擋主標題問題) -->
+    <nav class="bg-white border-b border-slate-200 z-50 shadow-sm flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2 min-h-[4rem] flex-wrap gap-2">
+        <div class="flex items-center gap-4 flex-grow sm:flex-grow-0">
+            <a href="professional_dashboard.html" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 font-bold shrink-0">
+                <i class="fa-solid fa-house"></i>
+                <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回協作平台</span>
+            </a>
+            <div class="flex flex-col justify-center border-l border-slate-200 pl-4">
+                <h1 class="text-sm sm:text-base font-black tracking-tight leading-none text-teal-700">ASD 特工 10 大訓練房</h1>
+                <span class="text-[10px] text-slate-500 font-bold block mt-1 uppercase tracking-widest">Adolescent Spectrum Tactical Camp</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <button onclick="window.toggleSidebar()" class="bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold px-4 py-2 rounded-xl transition shadow-sm flex items-center gap-2 whitespace-nowrap shrink-0">
+                <i class="fa-solid fa-bars-staggered"></i> <span class="hidden sm:inline">目錄</span>
+            </button>
+            
+            <!-- 全局 EXP -->
+            <div class="flex items-center gap-2 text-sm font-bold bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-inner shrink-0">
+                <span class="text-amber-500"><i class="fa-solid fa-star"></i> Lv.<span id="globalLevelTxt">1</span></span>
+                <div class="w-16 sm:w-24 bg-slate-200 h-3 rounded-full overflow-hidden border border-slate-300 relative">
+                    <div id="globalExpBar" class="bg-gradient-to-r from-amber-400 to-amber-500 h-full transition-all duration-500" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex flex-col md:flex-row overflow-hidden relative bg-slate-50 w-full h-full">
+        <!-- 左側選單 -->
+        <aside id="sidebarMenu" class="flex-none w-full md:w-[320px] lg:w-[380px] h-[30%] md:h-full bg-white border-r border-slate-200 flex flex-col z-20 shadow-lg transition-all duration-300">
+            <div class="p-4 border-b border-slate-100 bg-slate-50 shrink-0">
+                <h2 class="text-sm font-black uppercase text-teal-700 tracking-wider mb-1"><i class="fa-solid fa-list-check text-teal-600 mr-2"></i> 青少年進階訓練庫</h2>
+                <p class="text-xs text-slate-500 font-bold">專為中學情境與高階心智解讀設計</p>
+            </div>
+            <div class="flex-grow overflow-y-auto p-3 space-y-2 custom-scrollbar pb-6" id="sidebarBtnContainer">
+                <!-- 按鈕由 JS 動態生成 -->
+            </div>
+        </aside>
+
+        <!-- 右側畫布 -->
+        <section class="flex-grow h-[70%] md:h-full relative overflow-hidden" id="canvasContainer">
+            <div id="posterScaleWrapper" style="transform-origin: center center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                <div id="posterPrintArea" class="a4-canvas bg-white">
+                    <!-- 內容由 JS 動態注入 -->
+                    <div id="confetti-container"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="fixed bottom-8 right-8 bg-white border border-slate-200 rounded-2xl shadow-2xl py-4 px-6 flex items-center gap-4 opacity-0 translate-y-10 transition-all duration-300 pointer-events-none z-[300]">
+        <i class="fa-solid fa-circle-check text-emerald-500 text-2xl" id="toastIcon"></i>
+        <span id="toastMsg" class="text-lg font-black text-slate-800"></span>
+    </div>
+
+    <script>
+        // ==========================================
+        // 全局狀態變數
+        // ==========================================
+        let stamina = 100;
+        let isSidebarOpen = true;
+
+        let globalExp = 0;
+        let globalLevel = 1;
+        let currentCombo = 0;
+        
+        let currentRoomId = 'r1';
+        let roomProgress = {}; 
+        let roomAnswered = {}; 
+        let roomResults = {};  
+        let lastAnswerResult = null; 
+
+        // 拖曳排序專用狀態
+        let currentSortableItems = [];
+        let draggedSortItem = null;
+
+        // ==========================================
+        // 🧩 進階青少年版 10大場景資料庫
+        // ==========================================
+        const roomsConfig = [
+            { id: 'r1', type: 'quiz', title: '1. 表情解碼分析室', icon: '🎭', desc: '辨識複雜與微表情。請觀察文字描述，選出對方內心真正的想法：' },
+            { id: 'r2', type: 'quiz', title: '2. 感官過載調節艙', icon: '🌪️', desc: '中學校園情境：面對突如其來的強烈感官刺激，請選擇最佳的自我調節戰術。' },
+            { id: 'r3', type: 'quiz', title: '3. 突發狀況演習區', icon: '🔀', desc: '打破固執性：當原本的計畫或常規被打亂時，請選擇最具彈性的 Plan B。' },
+            { id: 'r4', type: 'quiz', title: '4. 隱喻翻譯機', icon: '🗣️', desc: '青少年次文化與諷刺語氣解碼：這句流行語或隱喻，真正的意思是甚麼？' },
+            { id: 'r5', type: 'quiz', title: '5. 對話接球訓練場', icon: '💬', desc: '同儕對話技巧：避免單向話題轟炸，請選出最好的『接球與傳球』回應。' },
+            { id: 'r6', type: 'quiz', title: '6. 社交距離雷達', icon: '📏', desc: '青春期人際界線：面對以下這個人，你應該保持哪一種安全與禮貌的距離？' },
+            { id: 'r7', type: 'chunking', title: '7. 步驟邏輯排序台', icon: '🧩', desc: '高階執行功能：請拖曳排序下方步驟，將大型任務切碎並粉碎它！' },
+            { id: 'r8', type: 'chunking', title: '8. 切換頻道準備室', icon: '🧘', desc: '對抗高誘惑與拖延：要切換到無聊的事，請「拖曳」正確執行中斷步驟！' },
+            { id: 'r9', type: 'quiz', title: '9. 讀心透視鏡', icon: '🕵️', desc: '青少年複雜心智解讀 (Theory of Mind)：觀察這個情境，猜猜對方現在真正的感受是甚麼？' },
+            { id: 'r10', type: 'quiz', title: '10. 肢體語言解碼器', icon: '👐', desc: '青春期微動作：這個細微的肢體動作，其實傳達了甚麼隱藏的社交訊息？' }
+        ];
+
+        // 🧠 Quiz 資料庫
+        const quizDb = {
+            "r1": [
+                { q: "翻白眼，嘴角微撇", c: "不耐煩 / 覺得無聊", w1: "眼睛痛在做眼球運動", w2: "非常開心期待" },
+                { q: "假笑，嘴角上揚但眼睛沒有笑意", c: "敷衍 / 尷尬", w1: "發自內心的快樂", w2: "準備要生氣打人" },
+                { q: "眼神閃躲，不敢直視對方，咬下唇", c: "緊張 / 隱瞞事情", w1: "覺得你很無聊", w2: "充滿自信" },
+                { q: "眉毛單邊挑起，一臉不可置信", c: "懷疑 / 覺得你在開玩笑", w1: "眼睛抽筋", w2: "完全同意你的話" },
+                { q: "咬緊牙關，鼻孔微張，拳頭緊握", c: "極度憤怒 / 壓抑情緒", w1: "覺得天氣很冷", w2: "正在努力憋笑" },
+                { q: "眼睛看著地板，肩膀下垂", c: "沮喪 / 失去動力", w1: "在找掉在地上的東西", w2: "準備要起跑" },
+                { q: "雙眼睜大，嘴巴微張，看著手機螢幕", c: "震驚 / 看到大八卦", w1: "手機螢幕太亮了", w2: "覺得很無聊想睡覺" },
+                { q: "微微皺眉，眼神專注盯著黑板", c: "專心思考 / 遇到難題", w1: "黑板很髒", w2: "在生老師的氣" }
+            ],
+            "r2": [
+                { q: "午餐時間飯堂（Canteen）人聲鼎沸非常吵雜", c: "戴上降噪耳機 / 尋找角落座位", w1: "摀住耳朵大聲尖叫抗議", w2: "勉強忍耐直到頭痛崩潰" },
+                { q: "科學實驗室飄出刺鼻的化學藥劑味道", c: "戴上口罩 / 請求坐在通風處", w1: "把化學藥劑打翻", w2: "屏住呼吸直到頭暈" },
+                { q: "體育課後更衣室充滿汗味與回音", c: "快速換好衣服離開 / 深呼吸", w1: "拒絕換衣服，不去上下一堂課", w2: "大聲罵同學很臭" },
+                { q: "換堂時走廊擠滿衝來衝去的同學", c: "靠牆邊走 / 等鐘聲響完人少再走", w1: "用力推開同學衝過去", w2: "站在路中間發呆" },
+                { q: "學校廣播系統突然發出尖銳的雜音", c: "雙手摀耳 / 閉上眼睛調節", w1: "衝去廣播室破壞大聲公", w2: "立刻逃出學校" },
+                { q: "電腦室螢幕太亮，看久了頭暈", c: "調暗螢幕亮度 / 閉眼休息 10 秒", w1: "生氣地把電腦螢幕砸壞", w2: "繼續盯著直到流眼淚" },
+                { q: "新買的冬季校服毛衣非常刺癢", c: "裡面多穿一件純棉內搭衣", w1: "上課時直接脫掉毛衣違反校規", w2: "不斷抓癢抓到破皮流血" },
+                { q: "同學一直在旁邊按原子筆發出「喀喀」聲", c: "禮貌請同學停止 / 戴耳塞", w1: "搶過他的筆直接丟掉", w2: "大聲罵他吵死了" }
+            ],
+            "r3": [
+                { q: "分組報告時，同組最聰明的同學突然請病假", c: "冷靜下來，重新分配他的工作給其他人", w1: "崩潰大哭說報告毀了", w2: "全組罷工不做了" },
+                { q: "原本說好要去電腦室上課，老師突然改在原班上", c: "默默把筆電收起來，拿出課本", w1: "堅持抱著筆電去電腦室抗議", w2: "對老師大發脾氣" },
+                { q: "每天搭的巴士突然壞在半路", c: "保持冷靜，打電話給家人或查其他路線", w1: "在巴士上大吼大叫", w2: "直接走回家不去上學了" },
+                { q: "班主任宣布明天有數學隨堂測驗", c: "今晚少打一場遊戲，花時間複習", w1: " DSE 考試會延期", w2: "生氣地撕掉數學課本" },
+                { q: "一直坐在一起的好朋友，這學期被老師調換座位", c: "下課再找他聊天，試著認識新同桌", w1: "上課一直轉頭跟他講話", w2: "拒絕跟新同桌說任何一句話" },
+                { q: "期待很久的校外教學因為颱風取消", c: "覺得可惜，但接受事實並安排其他居家活動", w1: "堅持冒著颱風出門去玩", w2: "摔東西發洩一整天" },
+                { q: "去小賣部想買最愛的檸檬茶，結果賣光了", c: "買另一種飲料，或喝水就好", w1: "躺在小賣部地上抗議", w2: "搶同學手上的檸檬茶" },
+                { q: "自己辛苦做的簡報檔忘記帶去學校", c: "承認錯誤向老師道歉，詢問能否明天補交", w1: "說謊是被同學偷走的", w2: "直接逃學回家拿" }
+            ],
+            "r4": [
+                { q: "同學故意說：「哇，你『真聰明』喔！」(諷刺)", c: "他在笑我做了一件笨事", w1: "他真心稱讚我智商很高", w2: "他想要請教我數學問題" },
+                { q: "「他在群組裡『潛水』很久了」", c: "他有看訊息但一直不回覆", w1: "他去學游泳了", w2: "他的手機掉進水裡壞了" },
+                { q: "「這件事真的讓我『玻璃心』碎滿地」", c: "覺得非常受傷、委屈", w1: "不小心打破了真實的玻璃杯", w2: "他的心臟生病了需要看醫生" },
+                { q: "「老師剛剛是在『殺雞儆猴』」", c: "藉由處罰一個人，來警告全班", w1: "老師要去市場買雞肉", w2: "老師非常喜歡猴子" },
+                { q: "「這傢伙整天『帶風向』」", c: "故意發表言論來引導大家的想法", w1: "在教室裡開大電風扇", w2: "他在預報明天的天氣" },
+                { q: "「這份功課簡直是『攞命』」", c: "功課非常多、難度極高", w1: "功課會拿走別人的生命", w2: "這是一份很容易的功課" },
+                { q: "「你不要再『賣關子』了！」", c: "叫對方趕快把秘密說出來，不要吊胃口", w1: "叫對方不要在網路上賣東西", w2: "他要把一個叫關子的人賣掉" },
+                { q: "「他被那個人『放飛機』了」", c: "對方沒有遵守約定出現 (爽約)", w1: "他去公園玩射紙飛機了", w2: "他搭飛機出國去旅行了" }
+            ],
+            "r5": [
+                { q: "「我昨天抽卡抽到最稀有的角色！」", c: "「哇太幸運了吧！借我看一下截圖！」", w1: "「我上次抽到更好的。」", w2: "「喔。」(句號)" },
+                { q: "「這次歷史考試我考得超爛...」", c: "「沒關係啦，這次題目真的偏難，下次一起複習？」", w1: "「誰叫你不讀書。」", w2: "「我考了 98 分耶！」" },
+                { q: "「你知道隔壁班的某某某在一起了嗎？」(八卦)", c: "「真假？我不知道耶，聽誰說的？」", w1: "「關我甚麼事？」", w2: "(不理他，直接走開)" },
+                { q: "(你正在講火車歷史，同學看手錶說)「喔...對啊，那個我先去洗手間喔」", c: "(對方想結束話題) 「好喔，你去吧！」", w1: "「等等！我還沒講完火車的歷史！」", w2: "「你是不是不想聽我講話？」" },
+                { q: "「我週末要去聽那團的演唱會！」(你不喜歡的團)", c: "「讚喔！你買到搖滾區的票嗎？」(不要批評)", w1: "「那個團超難聽的，你怎麼會喜歡？」", w2: "「我週末要留在家打電動。」" },
+                { q: "「我超討厭今天的體育課要跑 800 公尺」", c: "「我也是，跑完一定會滿身大汗。」", w1: "「跑步有益身體健康，你太懶了。」", w2: "「數學老師今天穿紅衣服。」" },
+                { q: "「你覺得我剪這個新髮型好看嗎？」", c: "「看起來很清爽耶，很適合你！」", w1: "「很醜，像狗啃的。」", w2: "「我昨天也去剪頭髮了。」" },
+                { q: "(同學在群組抱怨老師功課出太多)", c: "「真的多到寫不完 +1 😭」", w1: "「老師出功課是為我們好。」", w2: "「我已經寫完了，很簡單啊。」" }
+            ],
+            "r6": [
+                { q: "感情很好的異性同學", c: "個人距離 (保持尊重，不隨便觸碰身體)", w1: "親密距離 (隨便抱來抱去)", w2: "網路距離 (完全不講話)" },
+                { q: "網路上認識、一起打遊戲的網友", c: "網路距離 (絕不透露住址與私人隱私)", w1: "個人距離 (約出來單獨去暗巷)", w2: "親密距離 (告訴他銀行密碼)" },
+                { q: "嚴格的訓導主任", c: "社交距離 (保持立正與禮貌距離)", w1: "親密距離 (勾肩搭背)", w2: "個人距離 (開玩笑打鬧)" },
+                { q: "補習班剛認識的同學", c: "社交距離 (點頭微笑的距離)", w1: "親密距離 (牽手走路)", w2: "網路距離 (肉搜他全家資料)" },
+                { q: "自己的親生兄弟姊妹", c: "親密距離 (可以打鬧或擁抱)", w1: "公共距離 (離得遠遠的)", w2: "社交距離 (用敬語說話)" },
+                { q: "學校的社工或輔導老師", c: "個人距離 (可以放鬆對談的距離)", w1: "親密距離 (坐在他大腿上)", w2: "公共距離 (隔著操場大聲喊話)" },
+                { q: "在 IG 上互相追蹤但沒講過話的校友", c: "社交/網路距離 (不用硬去裝熟)", w1: "親密距離 (一見面就熊抱他)", w2: "個人距離 (一直逼問他隱私)" },
+                { q: "搭地鐵時站在旁邊的陌生乘客", c: "公共距離 (包包收好，手不要碰到對方)", w1: "親密距離 (靠在他肩膀上睡覺)", w2: "個人距離 (貼著他看他的手機)" }
+            ],
+            "r9": [
+                { q: "好友突然退出小組的 Line 群組", c: "他可能生氣或壓力大 / 私訊關心他怎麼了", w1: "他討厭我們所有人 / 立刻封鎖他", w2: "他按錯了 / 繼續在群組講笑話" },
+                { q: "同學剪了一個很奇怪的髮型，進教室時低著頭", c: "他覺得很丟臉 / 不要盯著他看，也不要嘲笑", w1: "他想引起注意 / 大聲嘲笑他", w2: "他脖子痛 / 過去拍他的頭" },
+                { q: "你講了一個笑話，但全班一陣安靜沒人笑", c: "這個笑話可能不好笑或不合適 / 轉換話題或安靜下來", w1: "大家太蠢聽不懂 / 堅持再講一次", w2: "他們故意排擠我 / 摔桌子抗議" },
+                { q: "老師說：「沒關係，你們繼續吵，我不上課了」", c: "老師非常生氣 / 立刻安靜閉嘴坐好", w1: "老師想休息了 / 繼續大聲聊天", w2: "老師在開玩笑 / 大笑出聲" },
+                { q: "看到平常最開朗的同學，今天趴在桌上一整天", c: "他可能生病或心情很糟 / 輕輕問他需要去保健室嗎", w1: "他在睡覺 / 大聲叫醒他", w2: "他變懶了 / 去跟老師告狀" },
+                { q: "分組時，有同學一直沒被選到，一個人站在旁邊", c: "他覺得孤單尷尬 / 主動邀請他加入你們這組", w1: "他不想分組 / 讓他一個人站著", w2: "他人緣不好 / 跟著大家排擠他" },
+                { q: "你正在講話，但同學一直偷看手機跟時鐘", c: "他趕時間或不想聽了 / 趕快把重點講完，讓他離開", w1: "他眼睛太乾 / 講得更大聲", w2: "他在查資料 / 繼續慢慢講一小時" },
+                { q: "別人在台前報告結巴出錯，全班都在看他", c: "他現在一定超級緊張 / 對他微笑，不要跟著對方嘲笑", w1: "他沒準備好 / 跟著大家噓他", w2: "他在搞笑 / 大笑出聲指著他" }
+            ],
+            "r10": [
+                { q: "身體癱軟在椅子上，眼神空洞", c: "極度疲憊、覺得無聊、不想上課", w1: "非常專注認真", w2: "充滿活力與熱情" },
+                { q: "跟你講話時，身體跟腳尖朝向門口", c: "想要結束對話、準備離開了", w1: "覺得你的話很有趣", w2: "想邀請你一起去門外玩" },
+                { q: "一直頻繁撥弄頭髮、整理衣服下擺", c: "在意形象、緊張、覺得不自在", w1: "頭皮很癢", w2: "覺得天氣很熱" },
+                { q: "雙手插在口袋裡，肩膀高聳", c: "防備心重、不想被打擾、冷漠", w1: "覺得天氣很冷", w2: "準備要跳舞" },
+                { q: "跟你對話時，眼神一直游移看旁邊的人", c: "不專心、對話題沒興趣、在找其他人", w1: "你的臉上有東西", w2: "他在練習眼球運動" },
+                { q: "用手撐著下巴，頻繁打哈欠", c: "睡眠不足、對現在的事情感到乏味", w1: "牙齒痛", w2: "覺得非常驚訝" },
+                { q: "雙手用力拍了一下桌子，站了起來", c: "極度憤怒、準備要吵架或抗議", w1: "準備要拍手鼓勵", w2: "腳麻了想站起來" },
+                { q: "走路時低著頭，盡量靠著牆壁走", c: "缺乏自信、不想引起別人注意", w1: "在找掉在地上的硬幣", w2: "在練習走直線" }
+            ]
+        };
+
+        // 🧩 Chunking 資料庫 (R7, R8)
+        const chunkingDb = {
+            "r7": [
+                { name: "用 Google Classroom 交作業", steps: ["1. 登入帳號", "2. 點開班級", "3. 拍照/上傳檔案", "4. 點擊繳交", "5. 確認顯示已繳交"] },
+                { name: "煮泡麵加蛋", steps: ["1. 燒開水", "2. 放入麵條", "3. 打一顆蛋進去", "4. 加調味料", "5. 關火倒進碗裡"] },
+                { name: "整理明天書包", steps: ["1. 看學校時間表", "2. 把不需要的課本拿出來", "3. 裝入明天的課本", "4. 檢查文具盒與水壺", "5. 放到書桌旁"] },
+                { name: "小組專題報告", steps: ["1. 分配每人工作", "2. 上網找資料", "3. 整理成 PPT", "4. 上台演練", "5. 正式報告"] },
+                { name: "洗自己的衣服", steps: ["1. 把衣服丟進洗衣機", "2. 倒入洗衣精", "3. 按下啟動鍵", "4. 聽見嗶聲拿出來", "5. 晾在陽台"] },
+                { name: "借圖書館的書", steps: ["1. 用電腦查書本索書號", "2. 走到對應的書架找書", "3. 拿到櫃檯給館員刷條碼", "4. 看清楚還書日期", "5. 放進書包"] },
+                { name: "出門搭地鐵", steps: ["1. 帶好八達通/悠遊卡", "2. 走到捷運站", "3. 逼卡進站", "4. 看清楚方向上車", "5. 聽到站名下車"] },
+                { name: "處理受傷傷口", steps: ["1. 用清水沖洗傷口", "2. 用生理食鹽水消毒", "3. 塗上優碘/藥膏", "4. 貼上 OK 繃", "5. 觀察有沒有發炎"] }
+            ],
+            "r8": [
+                { name: "正在滑 IG ➔ 寫超難數學題", steps: ["1. 關閉 APP", "2. 手機放另一個房間", "3. 拿出課本深呼吸"] },
+                { name: "週末睡到中午 ➔ 星期一早起上學", steps: ["1. 設三個鬧鐘", "2. 離開床鋪", "3. 用冷水洗臉"] },
+                { name: "上完超嗨的體育課 ➔ 無聊的國文課", steps: ["1. 喝口水散熱", "2. 擦汗", "3. 翻開課本收心"] },
+                { name: "打遊戲打到一半 ➔ 媽媽叫去洗碗", steps: ["1. 跟隊友說抱歉要先閃", "2. 登出遊戲", "3. 走到廚房"] },
+                { name: "放學看喜歡的小說 ➔ 出門補習", steps: ["1. 夾好書籤", "2. 整理書包", "3. 穿鞋出門"] },
+                { name: "寒假整天都在玩 ➔ 明天要開學了", steps: ["1. 調整睡眠時間", "2. 檢查寒假作業", "3. 準備制服"] },
+                { name: "畫最喜歡的動漫角色 ➔ 準備明天默書", steps: ["1. 收拾畫筆", "2. 把畫紙收進抽屜", "3. 拿出默書範圍"] },
+                { name: "在 YouTube 看搞笑影片 ➔ 上床睡覺", steps: ["1. 關掉網頁", "2. 關電腦", "3. 刷牙睡覺"] }
+            ]
+        };
+
+        // 初始化狀態
+        roomsConfig.forEach(r => {
+            roomProgress[r.id] = 0;
+            roomAnswered[r.id] = false;
+            roomResults[r.id] = [];
+        });
+
+        // ==========================================
+        // UI 渲染與互動系統
+        // ==========================================
+        function initSidebar() {
+            const container = document.getElementById('sidebarBtnContainer');
+            if (!container) return;
+            let html = '';
+            roomsConfig.forEach(r => {
+                html += `
+                    <div onclick="window.selectRoom('${r.id}')" id="btn_${r.id}" class="room-card p-3 rounded-2xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center text-lg shrink-0">${r.icon}</div>
+                        <div class="flex-grow"><h3 class="text-sm font-bold text-slate-800">${r.title}</h3></div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebarMenu');
+            if (!sidebar) return;
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('flex');
+            } else {
+                sidebar.classList.remove('flex');
+                sidebar.classList.add('hidden');
+            }
+            setTimeout(resizeCanvas, 50);
+        }
+
+        function resizeCanvas() {
+            const container = document.getElementById('canvasContainer');
+            const wrapper = document.getElementById('posterScaleWrapper');
+            const canvas = document.getElementById('posterPrintArea');
+            if(!container || !canvas || !wrapper) return;
+
+            canvas.style.transform = `translate(-50%, -50%) scale(1)`;
+            const baseWidth = 1122;
+            canvas.style.height = 'auto'; 
+            const baseHeight = Math.max(793, canvas.offsetHeight);
+            const paddingX = window.innerWidth < 768 ? 20 : 40; 
+            const paddingY = 130; 
+
+            const availableWidth = container.clientWidth - paddingX;
+            const availableHeight = container.clientHeight - paddingY;
+
+            if (availableWidth <= 0 || availableHeight <= 0) return;
+
+            const scale = Math.min(availableWidth / baseWidth, availableHeight / baseHeight);
+            canvas.style.height = `${baseHeight}px`;
+            canvas.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function updateHUD(staminaDiff) {
+            stamina = Math.max(0, Math.min(100, stamina + staminaDiff));
+            const bar = document.getElementById('hudStamina');
+            const text = document.getElementById('hudStaminaText');
+            if (bar && text) {
+                bar.style.width = `${stamina}%`;
+                text.innerText = `${stamina}%`;
+                if(stamina <= 30) {
+                    bar.className = "bg-rose-500 h-full transition-all duration-300";
+                    text.className = "text-rose-600 min-w-[40px] text-right font-black animate-pulse";
+                } else if(stamina <= 60) {
+                    bar.className = "bg-amber-400 h-full transition-all duration-300";
+                    text.className = "text-amber-600 min-w-[40px] text-right font-black";
+                } else {
+                    bar.className = "bg-emerald-500 h-full transition-all duration-300";
+                    text.className = "text-emerald-600 min-w-[40px] text-right font-black";
+                }
+            }
+        }
+
+        function updateGlobalExp(amount) {
+            globalExp += amount;
+            let expNeeded = globalLevel * 50; 
+            if (globalExp >= expNeeded) {
+                globalExp -= expNeeded;
+                globalLevel++;
+                showToast(`🎉 升級！特工等級提升至 Lv.${globalLevel}`, "success");
+                fireConfetti();
+            }
+            
+            const levelTxt = document.getElementById('globalLevelTxt');
+            const expBar = document.getElementById('globalExpBar');
+            if (levelTxt) levelTxt.innerText = globalLevel;
+            if (expBar) expBar.style.width = `${(globalExp / expNeeded) * 100}%`;
+        }
+
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+            if (!toast || !toastMsg || !toastIcon) return;
+            
+            toastMsg.innerText = msg;
+            toastIcon.className = type === 'error' ? "fa-solid fa-circle-exclamation text-rose-500 text-3xl" : "fa-solid fa-circle-check text-emerald-500 text-3xl";
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 2500);
+        }
+
+        function fireConfetti() {
+            const container = document.getElementById('confetti-container');
+            if (!container) return;
+            container.innerHTML = ''; 
+            const emojis = ['🎉', '✨', '🏆', '⭐', '🎈'];
+            for(let i=0; i<40; i++) {
+                let conf = document.createElement('div');
+                conf.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                conf.style.position = 'absolute';
+                conf.style.left = Math.random() * 100 + '%';
+                conf.style.top = '-10%';
+                conf.style.fontSize = (Math.random() * 30 + 30) + 'px';
+                conf.style.transition = 'top 2s ease-in, opacity 2s ease-out';
+                container.appendChild(conf);
+                setTimeout(() => { conf.style.top = '110%'; conf.style.opacity = '0'; }, 50);
+            }
+        }
+
+        // ==========================================
+        // 核心遊戲邏輯
+        // ==========================================
+        function selectRoom(roomId) {
+            currentRoomId = roomId;
+            currentCombo = 0; 
+            lastAnswerResult = null;
+            currentSortableItems = [];
+            document.querySelectorAll('.room-card').forEach(c => c.classList.remove('active'));
+            const activeBtn = document.getElementById(`btn_${roomId}`);
+            if(activeBtn) activeBtn.classList.add('active');
+            renderRoom();
+            setTimeout(resizeCanvas, 30);
+        }
+
+        function changeTask(index) {
+            roomProgress[currentRoomId] = index;
+            roomAnswered[currentRoomId] = false;
+            lastAnswerResult = null;
+            currentSortableItems = []; // 徹底大掃除重置，促使重新隨機打亂
+            renderRoom();
+        }
+
+        function checkQuizAnswer(selectedIdx, correctIdx) {
+            if (roomAnswered[currentRoomId]) return;
+            const isCorrect = (selectedIdx === correctIdx);
+            roomAnswered[currentRoomId] = true;
+            
+            if(!roomResults[currentRoomId]) roomResults[currentRoomId] = [];
+            roomResults[currentRoomId][roomProgress[currentRoomId]] = isCorrect;
+
+            if (isCorrect) {
+                currentCombo++;
+                let comboMultiplier = currentCombo >= 3 ? 1.5 : 1;
+                let expGained = Math.floor(10 * comboMultiplier);
+                updateGlobalExp(expGained);
+                updateHUD(10);
+                showToast(`🏆 判斷正確！+${expGained} EXP`, "success");
+            } else {
+                currentCombo = 0; 
+                updateHUD(-10);
+                showToast("❌ 衝動誤判！請看解析！", "error");
+            }
+            
+            lastAnswerResult = { isCorrect, selectedIdx };
+            renderRoom();
+        }
+
+        function nextQuizQuestion() {
+            if (roomProgress[currentRoomId] >= 7) {
+                roomProgress[currentRoomId] = 8; 
+                fireConfetti();
+            } else {
+                roomProgress[currentRoomId]++;
+            }
+            roomAnswered[currentRoomId] = false;
+            lastAnswerResult = null;
+            currentSortableItems = []; // 徹底大掃除重置
+            renderRoom();
+            scrollTabs(1);
+        }
+
+        function retryRoom() {
+            roomProgress[currentRoomId] = 0;
+            roomResults[currentRoomId] = [];
+            roomAnswered[currentRoomId] = false;
+            currentCombo = 0;
+            lastAnswerResult = null;
+            currentSortableItems = [];
+            renderRoom();
+        }
+
+        function scrollTabs(dir) {
+            const container = document.getElementById('roomTabsContainer');
+            if(container) container.scrollBy({ left: dir * 150, behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // 拖曳排序 (Drag & Drop) 引擎 (R7, R8 專用)
+        // ==========================================
+        function sortDragStart(e) {
+            if (!e || !e.currentTarget) return;
+            draggedSortItem = e.currentTarget;
+            const item = e.currentTarget;
+            setTimeout(() => {
+                if (item) item.classList.add('opacity-50', 'scale-95');
+            }, 0);
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function sortDragEnd(e) {
+            if (!e || !e.currentTarget) return;
+            e.currentTarget.classList.remove('opacity-50', 'scale-95');
+            document.querySelectorAll('.sortable-item').forEach(item => {
+                item.style.borderTop = "";
+                item.style.borderBottom = "";
+            });
+            draggedSortItem = null;
+        }
+
+        function sortDragEnter(e) {
+            if (e) e.preventDefault();
+        }
+
+        function sortDragOver(e) {
+            if (!e) return;
+            e.preventDefault();
+            const target = e.currentTarget;
+            if (target && draggedSortItem && target !== draggedSortItem && target.classList.contains('sortable-item')) {
+                const bounding = target.getBoundingClientRect();
+                const offset = bounding.y + (bounding.height / 2);
+                if (e.clientY - offset > 0) {
+                    target.style.borderBottom = "6px solid #a855f7";
+                    target.style.borderTop = "";
+                } else {
+                    target.style.borderTop = "6px solid #a855f7";
+                    target.style.borderBottom = "";
+                }
+            }
+        }
+
+        function sortDragLeave(e) {
+            if (!e || !e.currentTarget) return;
+            e.currentTarget.style.borderTop = "";
+            e.currentTarget.style.borderBottom = "";
+        }
+
+        function sortDrop(e) {
+            if (!e || !e.currentTarget) return;
+            e.preventDefault();
+            const target = e.currentTarget;
+            target.style.borderTop = "";
+            target.style.borderBottom = "";
+            
+            if (target && draggedSortItem && target !== draggedSortItem && target.classList.contains('sortable-item')) {
+                const bounding = target.getBoundingClientRect();
+                const offset = bounding.y + (bounding.height / 2);
+                const container = document.getElementById('sortableContainer');
+                if (container) {
+                    if (e.clientY - offset > 0) {
+                        container.insertBefore(draggedSortItem, target.nextSibling);
+                    } else {
+                        container.insertBefore(draggedSortItem, target);
+                    }
+                }
+            }
+        }
+
+        function verifySortableTask() {
+            const container = document.getElementById('sortableContainer');
+            if (!container) return;
+            const items = container.querySelectorAll('.sortable-item');
+            let isCorrect = true;
+            
+            items.forEach((item, index) => {
+                if (parseInt(item.getAttribute('data-id')) !== index) {
+                    isCorrect = false;
+                }
+            });
+
+            const btn = document.getElementById('chkSortBtn');
+
+            if (isCorrect) {
+                // 答對邏輯
+                items.forEach(item => {
+                    item.className = item.className.replace(/border-slate-200|border-rose-400|hover:border-purple-300/g, 'border-emerald-400')
+                                                    .replace(/bg-white|bg-rose-50/g, 'bg-emerald-50') + ' text-emerald-800 scale-bounce';
+                    const icon = item.querySelector('.fa-grip-vertical');
+                    if (icon) {
+                        icon.className = "fa-solid fa-check text-emerald-500 text-3xl mr-4 px-2 pointer-events-none";
+                    }
+                });
+
+                if (btn) {
+                    btn.className = btn.className.replace(/bg-purple-600|bg-rose-600/g, 'bg-emerald-600') + ' scale-bounce';
+                    btn.innerHTML = `<i class="fa-solid fa-check-double"></i> 驗證正確！即將自動跳轉...`;
+                }
+                
+                if(!roomResults[currentRoomId]) roomResults[currentRoomId] = [];
+                roomResults[currentRoomId][roomProgress[currentRoomId]] = true;
+
+                updateHUD(20);
+                updateGlobalExp(15);
+                showToast("🏆 排序完全正確！大腦切換成功！", "success");
+                fireConfetti();
+                
+                // 延遲 1000ms 自動跳轉下一題
+                setTimeout(() => {
+                    nextQuizQuestion();
+                }, 1000);
+            } else {
+                // 答錯邏輯
+                container.classList.remove('shake-bounce');
+                void container.offsetWidth; // trigger reflow
+                container.classList.add('shake-bounce');
+                
+                items.forEach(item => {
+                    item.classList.replace('border-slate-200', 'border-rose-400');
+                    item.classList.replace('bg-white', 'bg-rose-50');
+                    setTimeout(() => {
+                        item.classList.replace('border-rose-400', 'border-slate-200');
+                        item.classList.replace('bg-rose-50', 'bg-white');
+                    }, 800);
+                });
+                
+                if (btn) {
+                    const origClass = btn.className;
+                    const origText = btn.innerHTML;
+                    btn.className = btn.className.replace(/bg-purple-600|bg-indigo-600/g, 'bg-rose-600');
+                    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 順序錯誤！請重新調整`;
+                    
+                    setTimeout(() => {
+                        btn.className = origClass;
+                        btn.innerHTML = origText;
+                    }, 1200);
+                }
+
+                updateHUD(-5);
+                showToast("❌ 順序不正確！大腦出現混亂，請再試一次。", "error");
+            }
+        }
+
+        // ==========================================
+        // 歷史相容空函數預防 (ASD特有)
+        // ==========================================
+        function toggleTimeBlindness() {}
+        function handleEnergyAction() {}
+
+        // ==========================================
+        // 渲染主畫面
+        // ==========================================
+        function renderRoom() {
+            const canvas = document.getElementById('posterPrintArea');
+            if (!canvas) return;
+
+            // 🛠️ 安全防護 1：確保 config 存在，避免崩潰
+            let config = roomsConfig.find(r => r.id === currentRoomId);
+            if (!config) {
+                currentRoomId = 'r1';
+                config = roomsConfig.find(r => r.id === 'r1');
+            }
+
+            // 🛠️ 安全防護 2：確保 currentIndex 是有效的數字
+            let currentIndex = roomProgress[currentRoomId];
+            if (currentIndex === undefined || currentIndex === null || isNaN(currentIndex)) {
+                roomProgress[currentRoomId] = 0;
+                currentIndex = 0;
+            }
+            
+            let totalTasks = 8;
+            let nodesHtml = `
+                <div class="w-full overflow-x-auto hide-scrollbar pb-4 mb-2">
+                    <div class="relative flex items-center justify-between min-w-[600px] max-w-3xl mx-auto px-6 mt-4">
+                        <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-2 bg-slate-200 z-0 rounded-full"></div>
+                        <div class="absolute left-6 top-1/2 -translate-y-1/2 h-2 bg-teal-500 z-0 rounded-full transition-all duration-500" style="width: ${(Math.min(currentIndex, totalTasks-1) / (totalTasks - 1)) * 100}%"></div>
+            `;
+            
+            for(let i=0; i<totalTasks; i++) {
+                let stateClass, icon;
+                if (i < currentIndex || (currentIndex === 8 && i <= 7)) { 
+                    stateClass = "bg-teal-500 text-white border-teal-600 shadow-md"; 
+                    icon = "✓"; 
+                } else if (i === currentIndex) { 
+                    stateClass = "bg-white border-teal-500 text-teal-600 shadow-[0_0_15px_rgba(20,184,166,0.5)] ring-4 ring-teal-100 transform scale-110"; 
+                    icon = i + 1; 
+                } else { 
+                    stateClass = "bg-slate-100 border-slate-300 text-slate-400"; 
+                    icon = "🔒"; 
+                }
+                nodesHtml += `<button onclick="window.changeTask(${i})" class="w-12 h-12 rounded-full border-[4px] flex items-center justify-center font-black text-xl z-10 transition-all duration-300 ${stateClass} shrink-0 cursor-pointer hover:scale-110">${icon}</button>`;
+            }
+            nodesHtml += `</div></div>`;
+
+            let contentHtml = "";
+
+            // 結算畫面
+            if (currentIndex >= totalTasks) {
+                const results = roomResults[currentRoomId] || [];
+                const correctCount = results.filter(Boolean).length;
+                let stars = 1;
+                let titleMsg = "特工，再接再厲！";
+                let descMsg = "失敗是學習的一部分，成長心態會幫助你越來越強！";
+                
+                if (correctCount >= 8) { 
+                    stars = 3; titleMsg = "完美潛入！神級特工！"; 
+                    descMsg = "你的大腦煞車與社交雷達無可挑剔，完美破關！";
+                }
+                else if (correctCount >= 5) { 
+                    stars = 2; titleMsg = "表現優異！"; 
+                    descMsg = "你已經掌握了大部分的特工技巧，再稍微留意陷阱就完美了！";
+                }
+
+                let starsHtml = "";
+                for(let i=0; i<3; i++) {
+                    if (i < stars) starsHtml += `<i class="fa-solid fa-star text-yellow-400 text-[100px] drop-shadow-md transform hover:scale-110 transition animate-bounce" style="animation-delay: ${i*0.1}s"></i>`;
+                    else starsHtml += `<i class="fa-solid fa-star text-slate-200 text-[100px] drop-shadow-sm"></i>`;
+                }
+
+                contentHtml = `
+                    <div class="flex flex-col items-center justify-center h-full w-full fade-in py-10 text-center pb-[120px]">
+                        <div class="flex gap-6 mb-10">
+                            ${starsHtml}
+                        </div>
+                        <h2 class="text-6xl font-black text-teal-600 mb-6 drop-shadow-sm">${titleMsg}</h2>
+                        <div class="bg-white px-8 py-4 rounded-3xl border-4 border-slate-200 shadow-sm mb-6">
+                            <p class="text-3xl text-slate-700 font-black">答對率：<span class="text-teal-600">${correctCount} / ${totalTasks}</span></p>
+                        </div>
+                        <p class="text-2xl text-slate-500 font-bold mb-12 max-w-2xl leading-relaxed">${descMsg}</p>
+                        <div class="flex gap-6 w-full max-w-lg">
+                            <button onclick="window.retryRoom()" class="flex-1 bg-white border-[6px] border-slate-300 hover:bg-slate-100 text-slate-600 font-black py-5 rounded-2xl text-2xl transition shadow-sm">重新挑戰</button>
+                            <button onclick="window.toggleSidebar()" class="flex-1 bg-teal-500 hover:bg-teal-600 border-[6px] border-teal-600 text-white font-black py-5 rounded-2xl text-2xl transition shadow-md">選擇其他訓練</button>
+                        </div>
+                    </div>
+                `;
+            } 
+            else if (config.type === 'quiz') {
+                const db = quizDb[currentRoomId];
+                if (!db || !db[currentIndex]) {
+                    roomProgress[currentRoomId] = 0;
+                    currentIndex = 0;
+                }
+                const data = (db && db[currentIndex]) ? db[currentIndex] : { q: "無資料", c: "無", w1: "無", w2: "無", emoji: "❓" };
+
+                let opts = [
+                    { text: data.c, correct: true, originalIdx: 0 },
+                    { text: data.w1, correct: false, originalIdx: 1 },
+                    { text: data.w2, correct: false, originalIdx: 2 }
+                ];
+                const seed = data.q.length % 3;
+                if(seed === 1) opts = [opts[1], opts[0], opts[2]];
+                if(seed === 2) opts = [opts[2], opts[1], opts[0]];
+
+                const isAnswered = roomAnswered[currentRoomId];
+                let cardAnimClass = "";
+
+                let optionsHtml = opts.map((opt, idx) => {
+                    let btnClass = "bg-slate-50 hover:bg-teal-50 border-slate-300 text-slate-700 cursor-pointer";
+                    let animClass = "";
+                    
+                    if (isAnswered) {
+                        if (opt.correct) {
+                            btnClass = "bg-emerald-50 border-emerald-400 text-emerald-800";
+                            if (lastAnswerResult && lastAnswerResult.isCorrect && lastAnswerResult.selectedIdx === idx) {
+                                animClass = "scale-bounce"; 
+                            }
+                        } else if (lastAnswerResult && !lastAnswerResult.isCorrect && lastAnswerResult.selectedIdx === idx) {
+                            btnClass = "bg-rose-50 border-rose-400 text-rose-800";
+                            cardAnimClass = "shake-bounce"; 
+                        } else {
+                            btnClass = "bg-slate-50 border-slate-200 text-slate-400 opacity-50 cursor-not-allowed";
+                        }
+                    }
+                    return `<button onclick="window.checkQuizAnswer(${idx}, ${opts.findIndex(o => o.correct)})" class="w-full border-[4px] ${btnClass} ${animClass} font-bold text-2xl py-6 rounded-2xl transition-all text-left px-8 shadow-sm relative overflow-hidden">${opt.text}</button>`;
+                }).join('');
+
+                let feedbackHtml = "";
+                if (isAnswered) {
+                    const isCorrect = lastAnswerResult && lastAnswerResult.isCorrect;
+                    feedbackHtml = `
+                        <div class="mt-8 p-6 rounded-2xl border-[4px] ${isCorrect ? 'bg-emerald-100 border-emerald-300 text-emerald-800' : 'bg-rose-100 border-rose-300 text-rose-800'} fade-in shadow-inner shrink-0 relative overflow-hidden">
+                            <h4 class="font-black text-3xl mb-2">${isCorrect ? '✅ 判斷正確！' : '❌ 發生誤判！'}</h4>
+                            <p class="text-xl font-bold leading-relaxed">${isCorrect ? data.feedbackCorrect || '幹得好！你成功看穿了隱藏的社交線索，沒有被表面的事物騙倒。' : data.feedbackWrong || '注意！自閉症特工容易因為「字面解讀」或「衝動」而誤解別人的意思，請再仔細看看正確答案的解析！'}</p>
+                        </div>
+                        <button onclick="window.nextQuizQuestion()" class="w-full bg-teal-500 hover:bg-teal-600 border-[6px] border-teal-600 text-white font-black py-5 rounded-2xl text-2xl transition shadow-md mt-6 shrink-0 flex items-center justify-center gap-2">前往下一關 <i class="fa-solid fa-arrow-right"></i></button>
+                    `;
+                }
+
+                let comboUI = currentCombo >= 3 ? `<div class="absolute -top-6 -right-6 bg-gradient-to-r from-orange-500 to-red-600 text-white font-black px-6 py-2 rounded-full shadow-2xl transform rotate-12 animate-pulse text-2xl border-4 border-white z-50">🔥 Combo x${currentCombo}!</div>` : '';
+
+                contentHtml = `
+                    <div class="flex gap-10 flex-grow h-auto min-h-full pb-[120px]">
+                        <div id="quizMainCard" class="w-[50%] flex flex-col justify-center items-center bg-white rounded-[2.5rem] border-[6px] border-slate-200 shadow-inner p-10 pb-14 h-auto min-h-[500px] relative ${cardAnimClass}">
+                            ${comboUI}
+                            <div class="text-[140px] drop-shadow-lg mb-8 mt-10 decoration-only">${data.emoji || config.icon}</div>
+                            <h3 class="font-black text-slate-800 text-4xl text-center leading-relaxed mb-6 w-full px-4">${data.q || data.situation}</h3>
+                        </div>
+                        <div class="w-[50%] bg-white border-[6px] border-teal-300 rounded-[2.5rem] p-8 pb-14 flex flex-col shadow-xl h-auto">
+                            <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-4 border-slate-100 pb-4 mb-8 shrink-0"><i class="fa-solid fa-crosshairs text-teal-500"></i> 請選出正確的解讀或回應：</h3>
+                            <div class="space-y-5 flex-grow flex flex-col justify-center">
+                                ${optionsHtml}
+                            </div>
+                            ${feedbackHtml}
+                        </div>
+                    </div>
+                `;
+            } 
+            else if (config.type === 'chunking') {
+                const db = chunkingDb[currentRoomId];
+                if (!db || !db[currentIndex]) {
+                    roomProgress[currentRoomId] = 0;
+                    currentIndex = 0;
+                }
+                const data = (db && db[currentIndex]) ? db[currentIndex] : { name: "無資料", steps: [] };
+                
+                // 初次載入或切換題目時，初始化並打亂順序
+                if (currentSortableItems.length === 0 && data.steps) {
+                    currentSortableItems = data.steps.map((step, idx) => ({
+                        id: idx,
+                        text: step.replace(/^\d+\.\s*/, '') // 移除數字前綴
+                    })).sort(() => Math.random() - 0.5);
+                }
+
+                let stepsHtml = currentSortableItems.map((item) => {
+                    return `
+                        <div draggable="true" data-id="${item.id}"
+                             ondragstart="window.sortDragStart(event)"
+                             ondragover="window.sortDragOver(event)"
+                             ondrop="window.sortDrop(event)"
+                             ondragenter="window.sortDragEnter(event)"
+                             ondragleave="window.sortDragLeave(event)"
+                             ondragend="window.sortDragEnd(event)"
+                             class="sortable-item w-full bg-white hover:bg-purple-50 text-slate-700 border-[4px] border-slate-200 shadow-sm hover:border-purple-300 transition-all font-black text-xl sm:text-2xl py-4 rounded-2xl flex items-center px-4 cursor-grab text-left">
+                            <i class="fa-solid fa-grip-vertical text-slate-400 text-3xl mr-4 px-2 pointer-events-none"></i>
+                            <span class="flex-grow leading-snug pointer-events-none">${item.text}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                contentHtml = `
+                    <div class="flex gap-10 flex-grow h-auto min-h-full pb-[120px]">
+                        <div class="w-[45%] flex flex-col justify-center items-center bg-slate-200 border-8 border-slate-400 rounded-[3rem] p-10 shadow-inner h-auto min-h-[500px] relative text-center">
+                            <h2 class="text-3xl font-black text-slate-600 mb-8 w-full">恐懼牆 (Wall of Awful)</h2>
+                            <div class="text-[140px] mb-6 drop-shadow-xl decoration-only">👹</div>
+                            <h3 class="text-4xl font-black text-slate-800 leading-tight mb-4">${data.name}</h3>
+                            <p class="text-xl font-bold text-slate-500 mt-2">打亂順序的任務，大腦最討厭了！</p>
+                        </div>
+                        <div class="w-[55%] bg-white border-[6px] border-purple-300 rounded-[2.5rem] p-10 pb-14 flex flex-col shadow-xl h-auto">
+                            <h3 class="font-black text-slate-800 text-3xl flex items-center gap-3 border-b-4 border-slate-100 pb-4 mb-8 shrink-0"><i class="fa-solid fa-scissors text-purple-500"></i> 任務切碎與邏輯排序</h3>
+                            <p class="text-lg text-slate-500 font-bold mb-4">請「拖曳」下方步驟，排成正確的執行順序：</p>
+                            
+                            <div id="sortableContainer" class="w-full flex flex-col gap-4 flex-grow justify-center transition-all duration-300">
+                                ${stepsHtml}
+                            </div>
+                            
+                            <button id="chkSortBtn" onclick="window.verifySortableTask()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-5 rounded-2xl text-2xl transition shadow-md mt-8 shrink-0 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-check-double"></i> 確認完成 / 檢查答案
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html = `
+                <div class="flex flex-col flex-grow bg-white relative rounded-[24px] h-auto min-h-full">
+                    <div class="flex justify-between items-center border-b-2 border-slate-200 px-10 pt-10 pb-6 shrink-0 bg-white z-10 shadow-sm overflow-visible">
+                        <div class="shrink-0 mr-6">
+                            <span class="text-teal-600 font-black text-xl leading-relaxed block">${config.title}</span>
+                            <h1 class="text-3xl font-black text-slate-800 mt-2 leading-tight">${config.desc}</h1>
+                        </div>
+                    </div>
+                    ${nodesHtml}
+                    <!-- 🛠️ 修復：配置 pb-[140px] 呼吸空間，確保內容溢出時向下滑動不被切除 -->
+                    <div class="flex-grow p-8 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-[140px] !important min-h-0">
+                        ${contentHtml}
+                    </div>
+                </div>
+            `;
+
+            canvas.innerHTML = html;
+        }
+
+        // ==========================================
+        // 初始化與安全掛載
+        // ==========================================
+        Object.assign(window, {
+            toggleSidebar, resizeCanvas, updateHUD, showToast, fireConfetti, selectRoom, renderRoom, changeTask,
+            checkQuizAnswer, nextQuizQuestion, retryRoom,
+            sortDragStart, sortDragEnd, sortDragEnter, sortDragOver, sortDragLeave, sortDrop, verifySortableTask
+        });
+
+        window.onload = function() { 
+            initSidebar();
+            selectRoom('r1'); 
+        } 
+    </script>
+</body>
+</html>
