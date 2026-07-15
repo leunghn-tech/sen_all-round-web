@@ -111,7 +111,7 @@
             z-index: 20 !important;
         }
 
-        /* ✨ 安全屋呼吸冷卻動畫 */
+        /* 安全屋呼吸動畫 */
         @keyframes safeHouseBreathe {
             0% { transform: scale(1); opacity: 0.6; box-shadow: 0 0 20px rgba(45, 212, 191, 0.3); }
             50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 60px rgba(45, 212, 191, 0.8); }
@@ -119,7 +119,7 @@
         }
         .breathe-pulse { animation: safeHouseBreathe 1.5s infinite ease-in-out; } 
 
-        /* 🚨 突發事件閃爍動畫 */
+        /* 突發事件閃爍動畫 */
         @keyframes emergencyFlash {
             0%, 100% { border-color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); }
             50% { border-color: #fca5a5; box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
@@ -170,7 +170,6 @@
         .sortable-item:active { cursor: grabbing; }
         .sortable-item.dragging { opacity: 0.4; transform: scale(0.98); }
         
-        /* 藍圖與步驟插槽樣式 */
         .blueprint-slot { min-height: 50px; border: 2px dashed #cbd5e1; border-radius: 0.5rem; transition: all 0.3s; }
         .blueprint-slot.drag-over { border-color: #8b5cf6; background-color: #f3e8ff; }
     </style>
@@ -211,7 +210,7 @@
         <div class="flex items-center gap-2 sm:gap-4 shrink-0">
             <a href="professional_dashboard.html" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-900 font-bold">
                 <i class="fa-solid fa-house text-sm"></i>
-                <span class="text-xs hidden sm:inline">返回協作平台</span>
+                <span class="text-xs hidden sm:inline">返回首頁</span>
             </a>
             <div class="border-l border-slate-200 pl-2 sm:pl-3">
                 <h1 class="text-sm sm:text-base font-black tracking-tight leading-none text-teal-700 m-0">ASD 特工 12 大訓練房</h1>
@@ -295,9 +294,10 @@
         
         let firedEvents = new Set();
         let emergencyTimer = null;
+        let activeEmergencyKey = null; // 🚨 防護鎖：確保緊急任務不會被重複計算或取消
 
         // ==========================================
-        // 🧩 進階青少年版 12 大場景資料庫 
+        // 🧩 進階青少年版 12 大場景資料庫 (完整 8 題版)
         // ==========================================
         const roomsConfig = [
             { id: 'r1', type: 'quiz', title: '1. 表情解碼分析室', icon: '🎭', desc: '辨識複雜與微表情。觀察文字描述，選出對方真正的想法。' },
@@ -306,77 +306,195 @@
             { id: 'r4', type: 'quiz', title: '4. 隱喻翻譯機', icon: '🗣️', desc: '青少年次文化與諷刺語氣解碼：這句隱喻真正的意思是甚麼？' },
             { id: 'r5', type: 'quiz', title: '5. 對話接球訓練場', icon: '💬', desc: '避免單向話題轟炸，選出最好的『接球與傳球』回應。' },
             { id: 'r6', type: 'quiz', title: '6. 社交距離雷達', icon: '📏', desc: '青春期人際界線：面對此人，應保持哪種安全距離？' },
-            { id: 'r7', type: 'chunking', title: '7. 步驟邏輯排序台', icon: '🧩', desc: '拖曳積木至「步驟插槽」，將大型任務切碎並順序粉碎它！' },
-            { id: 'r8', type: 'chunking', title: '8. 切換頻道準備室', icon: '🧘', desc: '要切換到無聊的事，請拖曳積木到「步驟插槽」完成中斷步驟！' },
+            { id: 'r7', type: 'chunking', title: '7. 步驟邏輯排序台', icon: '🧩', desc: '請拖曳排序下方步驟，將大型任務切碎並粉碎它！' },
+            { id: 'r8', type: 'chunking', title: '8. 切換頻道準備室', icon: '🧘', desc: '要切換到無聊的事，請「拖曳」正確執行中斷步驟！' },
             { id: 'r9', type: 'quiz', title: '9. 讀心透視鏡', icon: '🕵️', desc: '複雜心智解讀 (Theory of Mind)：猜猜對方現在真正的感受？' },
             { id: 'r10', type: 'quiz', title: '10. 肢體語言解碼器', icon: '👐', desc: '青春期微動作：這細微的肢體動作傳達了甚麼隱藏訊息？' },
             { id: 'r11', type: 'quiz', title: '11. 情報解碼室', icon: '📡', desc: '隱含語意訓練：看穿反諷與非語言線索，揪出真實意圖！' },
             { id: 'r12', type: 'blueprint', title: '12. 戰術藍圖室', icon: '🗺️', desc: '邏輯結構訓練：拖曳積木至正確的插槽，重組完整報告！' }
         ];
 
+        // 🧠 Quiz 資料庫 (已修復：確保每關擁有 8 道獨立題目，不再重複)
         const quizDb = {
-            "r1": [ { q: "翻白眼，嘴角微撇", c: "不耐煩 / 覺得無聊", w1: "眼睛痛在做眼球運動", w2: "非常開心期待" } ],
-            "r2": [ { q: "午餐時間飯堂人聲鼎沸非常吵雜", c: "戴上降噪耳機 / 尋找角落座位", w1: "摀住耳朵大聲尖叫抗議", w2: "勉強忍耐直到頭痛崩潰" } ],
-            "r3": [ { q: "原本說好要去電腦室，老師突然改在原班", c: "默默把筆電收起來，拿出課本", w1: "堅持抱著筆電去電腦室抗議", w2: "對老師大發脾氣" } ],
-            "r4": [ { q: "同學故意說：「哇，你『真聰明』喔！」(諷刺)", c: "他在笑我做了一件笨事", w1: "他真心稱讚我智商很高", w2: "他想要請教我數學問題" } ],
-            "r5": [ { q: "「我昨天抽卡抽到最稀有的角色！」", c: "「哇太幸運了吧！借我看一下截圖！」", w1: "「我上次抽到更好的。」", w2: "「喔。」(句號)" } ],
-            "r6": [ { q: "網路上認識、一起打遊戲的網友", c: "網路距離 (絕不透露住址與隱私)", w1: "個人距離 (約出來單獨去暗巷)", w2: "親密距離 (告訴他銀行密碼)" } ],
-            "r9": [ { q: "你講了一個笑話，但全班一陣安靜沒人笑", c: "這個笑話可能不好笑或不合適", w1: "大家太蠢聽不懂", w2: "他們故意排擠我" } ],
-            "r10": [ { q: "雙手插在口袋裡，肩膀高聳", c: "防備心重、不想被打擾、冷漠", w1: "覺得天氣很冷", w2: "準備要跳舞" } ],
+            "r1": [
+                { q: "翻白眼，嘴角微撇", c: "不耐煩 / 覺得無聊", w1: "眼睛痛在做眼球運動", w2: "非常開心期待", hint: "💡 提示：翻白眼通常表示對當前情況感到無奈或不屑。" },
+                { q: "假笑，嘴角上揚但眼睛沒有笑意", c: "敷衍 / 尷尬", w1: "發自內心的快樂", w2: "準備要生氣打人", hint: "💡 提示：真實的笑容會牽動眼角的肌肉（產生魚尾紋），沒有笑意代表只是禮貌應付。" },
+                { q: "眼神閃躲，不敢直視對方，咬下唇", c: "緊張 / 隱瞞事情", w1: "覺得你很無聊", w2: "充滿自信", hint: "💡 提示：不敢直視和咬嘴唇是典型的不安和心虛表現。" },
+                { q: "眉毛單邊挑起，一臉不可置信", c: "懷疑 / 覺得你在開玩笑", w1: "眼睛抽筋", w2: "完全同意你的話", hint: "💡 提示：單邊挑眉通常是質疑對方所說的話的真實性。" },
+                { q: "咬緊牙關，鼻孔微張，拳頭緊握", c: "極度憤怒 / 壓抑情緒", w1: "覺得天氣很冷", w2: "正在努力憋笑", hint: "💡 提示：緊握拳頭和咬牙是身體準備應對威脅（戰鬥）的物理反應。" },
+                { q: "眼睛看著地板，肩膀下垂", c: "沮喪 / 失去動力", w1: "在找掉在地上的東西", w2: "準備要起跑", hint: "💡 提示：低頭和垂肩顯示能量低下，通常代表挫敗感。" },
+                { q: "雙眼睜大，嘴巴微張，看著手機螢幕", c: "震驚 / 看到大八卦", w1: "手機螢幕太亮了", w2: "覺得很無聊想睡覺", hint: "💡 提示：睜大眼睛和微張嘴巴是典型的驚訝反應。" },
+                { q: "微微皺眉，眼神專注盯著黑板", c: "專心思考 / 遇到難題", w1: "覺得黑板很髒", w2: "在生老師的氣", hint: "💡 提示：專注時眉頭自然會微微皺起，代表大腦正在努力運作。" }
+            ],
+            "r2": [
+                { q: "午餐時間飯堂（Canteen）人聲鼎沸非常吵雜", c: "戴上降噪耳機 / 尋找角落座位", w1: "摀住耳朵大聲尖叫抗議", w2: "勉強忍耐直到頭痛崩潰", hint: "💡 提示：遇到聲音過載時，應使用輔具或尋找安靜區，而非製造更多噪音。" },
+                { q: "科學實驗室飄出刺鼻的化學藥劑味道", c: "戴上口罩 / 請求坐在通風處", w1: "把化學藥劑打翻", w2: "屏住呼吸直到頭暈", hint: "💡 提示：嗅覺過敏可以透過口罩阻隔，或遠離氣味源頭來解決。" },
+                { q: "體育課後更衣室充滿汗味與回音", c: "快速換好衣服離開 / 深呼吸", w1: "拒絕換衣服，不去上下一堂課", w2: "大聲罵同學很臭", hint: "💡 提示：在無法改變環境的情況下，縮短停留時間是最佳策略。" },
+                { q: "換堂時走廊擠滿衝來衝去的同學", c: "靠牆邊走 / 等鐘聲響完人少再走", w1: "用力推開同學衝過去", w2: "站在路中間發呆", hint: "💡 提示：害怕擁擠時，可以退到邊緣或稍等片刻，避免物理碰撞引發的焦慮。" },
+                { q: "學校廣播系統突然發出尖銳的雜音", c: "雙手摀耳 / 閉上眼睛調節", w1: "衝去廣播室破壞大聲公", w2: "立刻逃出學校", hint: "💡 提示：面對突發噪音，先保護耳朵並閉眼減少視覺刺激，等待噪音過去。" },
+                { q: "電腦室螢幕太亮，看久了頭暈", c: "調暗螢幕亮度 / 閉眼休息 10 秒", w1: "生氣地把電腦螢幕砸壞", w2: "繼續盯著直到流眼淚", hint: "💡 提示：視覺疲勞需要主動調整光源，並定時給眼睛休息。" },
+                { q: "新買的冬季校服毛衣非常刺癢", c: "裡面多穿一件純棉內搭衣", w1: "上課時直接脫掉毛衣違反校規", w2: "不斷抓癢抓到破皮流血", hint: "💡 提示：觸覺敏感可以透過在內層增加舒適的隔層來解決。" },
+                { q: "同學一直在旁邊按原子筆發出「喀喀」聲", c: "禮貌請同學停止 / 戴耳塞", w1: "搶過他的筆直接丟掉", w2: "大聲罵他吵死了", hint: "💡 提示：面對人為的聽覺干擾，應先嘗試有禮貌的溝通，或自我保護。" }
+            ],
+            "r3": [
+                { q: "分組報告時，同組最聰明的同學突然請病假", c: "冷靜下來，重新分配他的工作給其他人", w1: "崩潰大哭說報告毀了", w2: "全組罷工不做了", hint: "💡 提示：雖然缺少了主力，但任務依然可以透過團隊分擔來完成。" },
+                { q: "原本說好要去電腦室上課，老師突然改在原班上", c: "默默把筆電收起來，拿出課本", w1: "堅持抱著筆電去電腦室抗議", w2: "對老師大發脾氣", hint: "💡 提示：地點改變並不影響學習本身，接受現實並切換準備動作最快。" },
+                { q: "每天搭的巴士突然壞在半路", c: "保持冷靜，打電話給家人或查其他路線", w1: "在巴士上大吼大叫", w2: "直接走回家不去上學了", hint: "💡 提示：交通工具故障是常見意外，尋求替代方案才是解決之道。" },
+                { q: "班主任突然宣布明天有數學隨堂測驗", c: "今晚少打一場遊戲，花時間複習", w1: "覺得不公平，拒絕參加測驗", w2: "生氣地撕掉數學課本", hint: "💡 提示：面對突如其來的任務，調整今晚的行程表是最理性的做法。" },
+                { q: "一直坐在一起的好朋友，這學期被老師調換座位", c: "下課再找他聊天，試著認識新同桌", w1: "上課一直轉頭跟他講話", w2: "拒絕跟新同桌說任何一句話", hint: "💡 提示：距離變遠不代表失去朋友，這同時是結交新朋友的機會。" },
+                { q: "期待很久的校外教學因為颱風取消", c: "覺得可惜，但接受事實並安排其他居家活動", w1: "堅持冒著颱風出門去玩", w2: "摔東西發洩一整天", hint: "💡 提示：天氣是無法控制的因素，為自己找個 Plan B 活動能減輕失落感。" },
+                { q: "去小賣部想買最愛的檸檬茶，結果賣光了", c: "買另一種飲料，或喝水就好", w1: "躺在小賣部地上抗議", w2: "搶同學手上的檸檬茶", hint: "💡 提示：首選沒有了，可以嘗試次選，或者放棄一次也不會怎樣。" },
+                { q: "自己辛苦做的簡報檔忘記帶去學校", c: "承認錯誤向老師道歉，詢問能否明天補交", w1: "說謊是被同學偷走的", w2: "直接逃學回家拿", hint: "💡 提示：每個人都會犯錯，誠實面對並尋求補救方法遠比逃避好。" }
+            ],
+            "r4": [
+                { q: "同學故意說：「哇，你『真聰明』喔！」(諷刺)", c: "他在笑我做了一件笨事", w1: "他真心稱讚我智商很高", w2: "他想要請教我數學問題", hint: "💡 提示：當語氣和字面意思不符時，通常是反話。" },
+                { q: "「他在群組裡『潛水』很久了」", c: "他有看訊息但一直不回覆", w1: "他去學游泳了", w2: "他的手機掉進水裡壞了", hint: "💡 提示：『潛水』在網路用語中指隱藏自己不出聲。" },
+                { q: "「這件事真的讓我『玻璃心』碎滿地」", c: "覺得非常受傷、委屈", w1: "不小心打破了真實的玻璃杯", w2: "他的心臟生病了需要看醫生", hint: "💡 提示：『玻璃心』比喻人的內心很脆弱，容易受傷。" },
+                { q: "「老師剛剛是在『殺雞儆猴』」", c: "藉由處罰一個人，來警告全班", w1: "老師要去市場買雞肉", w2: "老師非常喜歡猴子", hint: "💡 提示：這是一個成語，意思是懲罰一個以警告其他人。" },
+                { q: "「這傢伙整天『帶風向』」", c: "故意發表言論來引導大家的想法", w1: "在教室裡開大電風扇", w2: "他在預報明天的天氣", hint: "💡 提示：『帶風向』指在網路上或群體中操控輿論的走向。" },
+                { q: "「這份功課簡直是『攞命』」", c: "功課非常多、難度極高", w1: "功課會拿走別人的生命", w2: "這是一份很容易的功課", hint: "💡 提示：『攞命』在廣東話中常指事情極度辛苦或麻煩。" },
+                { q: "「你不要再『賣關子』了！」", c: "叫對方趕快把秘密說出來，不要吊胃口", w1: "叫對方不要在網路上賣東西", w2: "他要把一個叫關子的人賣掉", hint: "💡 提示：『賣關子』指說話說一半，故意引人好奇。" },
+                { q: "「他被那個人『放飛機』了」", c: "對方沒有遵守約定出現 (爽約)", w1: "他去公園玩射紙飛機了", w2: "他搭飛機出國去旅行了", hint: "💡 提示：『放飛機』在廣東話中是爽約的意思。" }
+            ],
+            "r5": [
+                { q: "「我昨天抽卡抽到最稀有的角色！」", c: "「哇太幸運了吧！借我看一下截圖！」", w1: "「我上次抽到更好的。」", w2: "「喔。」(句號)", hint: "💡 提示：對方分享開心的事，給予肯定和好奇能讓對話延續。" },
+                { q: "「這次歷史考試我考得超爛...」", c: "「沒關係啦，這次題目真的偏難，下次一起複習？」", w1: "「誰叫你不讀書。」", w2: "「我考了 98 分耶！」", hint: "💡 提示：對方失落時，需要的是安慰和支持，而不是比較或批評。" },
+                { q: "「你知道隔壁班的某某某在一起了嗎？」(八卦)", c: "「真假？我不知道耶，聽誰說的？」", w1: "「關我甚麼事？」", w2: "(不理他，直接走開)", hint: "💡 提示：對方想分享八卦，適當的驚訝和反問是最好的『接球』。" },
+                { q: "(你正在講火車歷史，同學看手錶說)「喔...對啊，那個我先去洗手間喔」", c: "(對方想結束話題) 「好喔，你去吧！」", w1: "「等等！我還沒講完火車的歷史！」", w2: "「你是不是不想聽我講話？」", hint: "💡 提示：看手錶和找藉口離開，代表對方已經不想聽了，應順勢結束。" },
+                { q: "「我週末要去聽那團的演唱會！」(你不喜歡的團)", c: "「讚喔！你買到搖滾區的票嗎？」", w1: "「那個團超難聽的，你怎麼會喜歡？」", w2: "「我週末要留在家打電動。」", hint: "💡 提示：即使不喜歡對方的喜好，也不要批評，可以將重點放在他的期待上。" },
+                { q: "「我超討厭今天的體育課要跑 800 公尺」", c: "「我也是，跑完一定會滿身大汗。」", w1: "「跑步有益身體健康，你太懶了。」", w2: "「數學老師今天穿紅衣服。」", hint: "💡 提示：共鳴對方的不滿情緒，能迅速拉近彼此的距離。" },
+                { q: "「你覺得我剪這個新髮型好看嗎？」", c: "「看起來很清爽耶，很適合你！」", w1: "「很醜，像狗啃的。」", w2: "「我昨天也去剪頭髮了。」", hint: "💡 提示：別人問外表意見通常是希望得到讚美，給予正面的評價就對了。" },
+                { q: "(同學在群組抱怨老師功課出太多)", c: "「真的多到寫不完 +1 😭」", w1: "「老師出功課是為我們好。」", w2: "「我已經寫完了，很簡單啊。」", hint: "💡 提示：在群體抱怨中，『+1』表達認同是最好最安全的接話方式。" }
+            ],
+            "r6": [
+                { q: "感情很好的異性同學", c: "個人距離 (保持尊重，不隨便觸碰身體)", w1: "親密距離 (隨便抱來抱去)", w2: "網路距離 (完全不講話)", hint: "💡 提示：青春期對異性應保持適當的個人距離，以示尊重。" },
+                { q: "網路上認識、一起打遊戲的網友", c: "網路距離 (絕不透露住址與私人隱私)", w1: "個人距離 (約出來單獨去暗巷)", w2: "親密距離 (告訴他銀行密碼)", hint: "💡 提示：網路世界有風險，切勿將虛擬關係等同於現實親密朋友。" },
+                { q: "嚴格的訓導主任", c: "社交距離 (保持立正與禮貌距離)", w1: "親密距離 (勾肩搭背)", w2: "個人距離 (開玩笑打鬧)", hint: "💡 提示：對師長應保持禮貌的社交距離，不可過度隨便。" },
+                { q: "補習班剛認識的同學", c: "社交距離 (點頭微笑的距離)", w1: "親密距離 (牽手走路)", w2: "網路距離 (肉搜他全家資料)", hint: "💡 提示：剛認識的人還不熟，保持一臂的社交距離最適當。" },
+                { q: "自己的親生兄弟姊妹", c: "親密距離 (可以打鬧或擁抱)", w1: "公共距離 (離得遠遠的)", w2: "社交距離 (用敬語說話)", hint: "💡 提示：家人是我們最親近的人，可以有較多的身體接觸。" },
+                { q: "學校的社工或輔導老師", c: "個人距離 (可以放鬆對談的距離)", w1: "親密距離 (坐在他大腿上)", w2: "公共距離 (隔著操場大聲喊話)", hint: "💡 提示：社工是輔導我們的人，保持半臂的個人距離能輕鬆談話。" },
+                { q: "在 IG 上互相追蹤但沒講過話的校友", c: "社交/網路距離 (不用硬去裝熟)", w1: "親密距離 (一見面就熊抱他)", w2: "個人距離 (一直逼問他隱私)", hint: "💡 提示：點讚之交並不等於密友，現實中見面點頭即可。" },
+                { q: "搭地鐵時站在旁邊的陌生乘客", c: "公共距離 (包包收好，手不要碰到對方)", w1: "親密距離 (靠在他肩膀上睡覺)", w2: "個人距離 (貼著他看他的手機)", hint: "💡 提示：在公共場合應尊重陌生人的空間，避免任何身體接觸。" }
+            ],
+            "r9": [
+                { q: "好友突然退出小組的 Line 群組", c: "他可能生氣或壓力大 / 私訊關心他怎麼了", w1: "他討厭我們所有人 / 立刻封鎖他", w2: "他按錯了 / 繼續在群組講笑話", hint: "💡 提示：退群通常代表強烈的情緒波動，私下關心是最好的處理方式。" },
+                { q: "同學剪了一個很奇怪的髮型，進教室時低著頭", c: "他覺得很丟臉 / 不要盯著他看，也不要嘲笑", w1: "他想引起注意 / 大聲嘲笑他", w2: "他脖子痛 / 過去拍他的頭", hint: "💡 提示：低頭代表缺乏自信和羞怯，不去注視就是對他最好的體貼。" },
+                { q: "你講了一個笑話，但全班一陣安靜沒人笑", c: "這個笑話可能不好笑或不合適 / 轉換話題或安靜下來", w1: "大家太蠢聽不懂 / 堅持再講一次", w2: "他們故意排擠我 / 摔桌子抗議", hint: "💡 提示：沒人笑代表沒有產生共鳴，優雅地結束這個話題就好。" },
+                { q: "老師說：「沒關係，你們繼續吵，我不上課了」", c: "老師非常生氣 / 立刻安靜閉嘴坐好", w1: "老師想休息了 / 繼續大聲聊天", w2: "老師在開玩笑 / 大笑出聲", hint: "💡 提示：這是一句常見的「反語」，表示老師已經忍無可忍。" },
+                { q: "看到平常最開朗的同學，今天趴在桌上一整天", c: "他可能生病或心情很糟 / 輕輕問他需要去保健室嗎", w1: "他在睡覺 / 大聲叫醒他", w2: "他變懶了 / 去跟老師告狀", hint: "💡 提示：反常的行為通常意味著有不尋常的事情發生（身體或心理）。" },
+                { q: "分組時，有同學一直沒被選到，一個人站在旁邊", c: "他覺得孤單尷尬 / 主動邀請他加入你們這組", w1: "他不想分組 / 讓他一個人站著", w2: "他人緣不好 / 跟著大家排擠他", hint: "💡 提示：沒有人喜歡被落單，你的主動邀請能拯救他的尷尬。" },
+                { q: "你正在講話，但同學一直偷看手機跟時鐘", c: "他趕時間或不想聽了 / 趕快把重點講完，讓他離開", w1: "他眼睛太乾 / 講得更大聲", w2: "他在查資料 / 繼續慢慢講一小時", hint: "💡 提示：看時鐘是想要結束當前狀態的強烈非語言信號。" },
+                { q: "別人在台前報告結巴出錯，全班都在看他", c: "他現在一定超級緊張 / 對他微笑，不要跟著別人嘲笑他", w1: "他沒準備好 / 跟著大家噓他", w2: "他在搞笑 / 大笑出聲指著他", hint: "💡 提示：出醜時每個人都會覺得難堪，將心比心，給予善意的眼神。" }
+            ],
+            "r10": [
+                { q: "身體癱軟在椅子上，眼神空洞", c: "極度疲憊、覺得無聊、不想上課", w1: "非常專注認真", w2: "充滿活力與熱情", hint: "💡 提示：身體失去支撐力通常代表能量耗盡或對事物缺乏興趣。" },
+                { q: "跟你講話時，身體跟腳尖朝向門口", c: "想要結束對話、準備離開了", w1: "覺得你的話很有趣", w2: "想邀請你一起去門外玩", hint: "💡 提示：人的腳尖方向通常指向他們潛意識想去的地方。" },
+                { q: "一直頻繁撥弄頭髮、整理衣服下擺", c: "在意形象、緊張、覺得不自在", w1: "頭皮很癢", w2: "覺得天氣很熱", hint: "💡 提示：多餘的小動作通常是為了掩飾內心的不安或尷尬。" },
+                { q: "雙手插在口袋裡，肩膀高聳", c: "防備心重、不想被打擾、冷漠", w1: "覺得天氣很冷", w2: "準備要跳舞", hint: "💡 提示：隱藏雙手和縮起身體是人類防衛和封閉自己的本能姿勢。" },
+                { q: "跟你對話時，眼神一直游移看旁邊的人", c: "不專心、對話題沒興趣、在找其他人", w1: "你的臉上有東西", w2: "他在練習眼球運動", hint: "💡 提示：無法保持眼神接觸代表他的注意力已經不在你身上。" },
+                { q: "用手撐著下巴，頻繁打哈欠", c: "睡眠不足、對現在的事情感到乏味", w1: "牙齒痛", w2: "覺得非常驚訝", hint: "💡 提示：這是最典型的無聊和疲勞信號。" },
+                { q: "雙手用力拍了一下桌子，站了起來", c: "極度憤怒、準備要吵架或抗議", w1: "準備要拍手鼓勵", w2: "腳麻了想站起來", hint: "💡 提示：突然放大體積（站起）並製造巨響，是具攻擊性的威嚇行為。" },
+                { q: "走路時低著頭，盡量靠著牆壁走", c: "缺乏自信、不想引起別人注意", w1: "在找掉在地上的硬幣", w2: "在練習走直線", hint: "💡 提示：縮小自身存在感，通常是因為害怕被看見或缺乏安全感。" }
+            ],
             "r11": [
-                { 
-                    q: "同學看著你剛畫完的圖，嘴角抽搐了一下，然後用極為平淡的語氣說：『哇，畫得真...特別啊。』", 
-                    c: "他其實覺得畫得很奇怪或不好看。", 
-                    w1: "他覺得這幅畫非常有創意和特別。", 
-                    w2: "他想要買下這幅畫。", 
-                    hint: "💡 提示：注意他的「嘴角抽搐」和「語氣平淡」，加上「特別」這個詞在這裡是用來婉轉地表達不欣賞。" 
-                }
+                { q: "同學看著你畫的圖，嘴角抽搐，用平淡的語氣說：『哇，畫得真...特別啊。』", c: "他其實覺得畫得很奇怪或不好看。", w1: "他覺得這幅畫非常有創意。", w2: "他想要買下這幅畫。", hint: "💡 提示：「嘴角抽搐」和「特別」通常是婉轉地表達不欣賞。" },
+                { q: "小明嘆了一大口氣，轉頭看了其他組員一眼：『隨便啦，你喜歡就坐低囉。』", c: "他其實不太想你加入，但不好意思拒絕。", w1: "他非常歡迎你加入。", w2: "他覺得你坐哪裡都可以。", hint: "💡 提示：「嘆大氣」和「看其他人」代表猶豫不滿。「隨便啦」只是敷衍。" },
+                { q: "你講了10分鐘火車遊戲。對面的同學開始頻繁看手錶，身體轉向門口。", c: "他已經覺得無聊，想要離開了。", w1: "他想確認我們還可以聊多久。", w2: "他站累了想運動。", hint: "💡 提示：身體朝向門口加上看手錶，是標準的「我想離開」信號。" },
+                { q: "老師皺著眉頭，雙手交叉在胸前說：『你覺得這份功課做得很好嗎？』", c: "老師對這份功課不滿意，希望你反省。", w1: "老師真的想知道我的看法。", w2: "老師覺得我做得很好。", hint: "💡 提示：「皺眉」和「雙手交叉」是不滿的姿勢。這是一個反諷的反問句。" },
+                { q: "同學把重物搬進教室，滿頭大汗地說：『嘩，這個箱子真是一點都不重呢！』", c: "箱子非常重，他在說反諷的話。", w1: "箱子真的很輕。", w2: "他覺得自己力氣很大。", hint: "💡 提示：「滿頭大汗」是真實的身體反應，說明他在用反語抱怨很重。" },
+                { q: "在圖書館，同學把食指放在嘴唇上，瞪了你一眼：『你的聲音真是美妙動人。』", c: "他覺得你太吵，用反語要求你安靜。", w1: "他真心稱讚你的聲音。", w2: "他想邀請你唱歌。", hint: "💡 提示：「食指放嘴唇」是安靜手勢，「瞪眼」代表不滿，所以是反諷。" },
+                { q: "朋友收到你的禮物，只看了一眼就放到旁邊，淡淡地說：『哦，多謝。』", c: "他對禮物不感興趣或不喜歡。", w1: "他非常喜歡，想小心收藏。", w2: "他感動得說不出話。", hint: "💡 提示：「只看一眼放到旁邊」和「淡淡的語氣」顯示缺乏熱情。" },
+                { q: "你問同學要不要一起吃飯，對方抓抓頭，眼神看地板說：『我...好像有點事做。』", c: "他不想一起吃飯，在找藉口婉拒。", w1: "他真的有很多事情要做。", w2: "他忘記帶錢包。", hint: "💡 提示：「抓頭」和「看地板」是尷尬的逃避信號，支吾其詞通常是婉拒。" }
             ]
         };
 
-        ['r1','r2','r3','r4','r5','r6','r9','r10','r11'].forEach(id => {
-            while(quizDb[id].length < 8) quizDb[id].push(quizDb[id][0]); 
-        });
-
+        // 🧩 Chunking 資料庫 (R7, R8)
         const chunkingDb = {
             "r7": [
-                { name: "用 Google Classroom 交作業", steps: ["1. 登入帳號", "2. 點開班級", "3. 拍照/上傳檔案", "4. 點擊繳交", "5. 確認顯示已繳交"] }
+                { name: "用 Google Classroom 交作業", steps: ["1. 登入帳號", "2. 點開班級", "3. 拍照/上傳檔案", "4. 點擊繳交", "5. 確認顯示已繳交"] },
+                { name: "煮泡麵加蛋", steps: ["1. 燒開水", "2. 放入麵條", "3. 打一顆蛋進去", "4. 加調味料", "5. 關火倒進碗裡"] },
+                { name: "整理明天書包", steps: ["1. 看學校時間表", "2. 把不需要的課本拿出來", "3. 裝入明天的課本", "4. 檢查文具盒與水壺", "5. 放到書桌旁"] },
+                { name: "小組專題報告", steps: ["1. 分配每人工作", "2. 上網找資料", "3. 整理成 PPT", "4. 上台演練", "5. 正式報告"] },
+                { name: "洗自己的衣服", steps: ["1. 把衣服丟進洗衣機", "2. 倒入洗衣精", "3. 按下啟動鍵", "4. 聽見嗶聲拿出來", "5. 晾在陽台"] },
+                { name: "借圖書館的書", steps: ["1. 用電腦查書本索書號", "2. 走到對應的書架找書", "3. 拿到櫃檯給館員刷條碼", "4. 看清楚還書日期", "5. 放進書包"] },
+                { name: "出門搭地鐵", steps: ["1. 帶好八達通/悠遊卡", "2. 走到捷運站", "3. 逼卡進站", "4. 看清楚方向上車", "5. 聽到站名下車"] },
+                { name: "處理受傷傷口", steps: ["1. 用清水沖洗傷口", "2. 用生理食鹽水消毒", "3. 塗上優碘/藥膏", "4. 貼上 OK 繃", "5. 觀察有沒有發炎"] }
             ],
             "r8": [
-                { name: "正在滑 IG ➔ 寫超難數學題", steps: ["1. 關閉 APP", "2. 手機放另一個房間", "3. 拿出課本深呼吸"] }
+                { name: "正在滑 IG ➔ 寫超難數學題", steps: ["1. 關閉 APP", "2. 手機放另一個房間", "3. 拿出課本深呼吸"] },
+                { name: "週末睡到中午 ➔ 星期一早起上學", steps: ["1. 設三個鬧鐘", "2. 離開床鋪", "3. 用冷水洗臉"] },
+                { name: "上完超嗨的體育課 ➔ 無聊的國文課", steps: ["1. 喝口水散熱", "2. 擦汗", "3. 翻開課本收心"] },
+                { name: "打遊戲打到一半 ➔ 媽媽叫去洗碗", steps: ["1. 跟隊友說抱歉要先閃", "2. 登出遊戲", "3. 走到廚房"] },
+                { name: "放學看喜歡的小說 ➔ 出門補習", steps: ["1. 夾好書籤", "2. 整理書包", "3. 穿鞋出門"] },
+                { name: "寒假整天都在玩 ➔ 明天要開學了", steps: ["1. 調整睡眠時間", "2. 檢查寒假作業", "3. 準備制服"] },
+                { name: "畫最喜歡的動漫角色 ➔ 準備明天默書", steps: ["1. 收拾畫筆", "2. 把畫紙收進抽屜", "3. 拿出默書範圍"] },
+                { name: "在 YouTube 看搞笑影片 ➔ 上床睡覺", steps: ["1. 關掉網頁", "2. 關電腦", "3. 刷牙睡覺"] }
             ]
         };
-        ['r7','r8'].forEach(id => {
-            while(chunkingDb[id].length < 8) chunkingDb[id].push(chunkingDb[id][0]);
-        });
 
+        // 🗺️ Blueprint 資料庫 (R12)
         const blueprintDb = {
             "r12": [
                 {
-                    title: "意外事件報告 (5W1H 結構)",
+                    title: "意外事件報告 (5W1H)",
                     desc: "請將下方凌亂的線索，拖曳到正確的 5W1H 插槽中，重組事件報告。",
-                    slots: [
-                        { id: "when", label: "時間 (When)" },
-                        { id: "where", label: "地點 (Where)" },
-                        { id: "who", label: "人物 (Who)" },
-                        { id: "what", label: "事件 (What)" },
-                        { id: "why", label: "原因 (Why)" },
-                        { id: "how", label: "結果 (How)" }
-                    ],
-                    fragments: [
-                        { id: "when", text: "昨天下午三點小息時" },
-                        { id: "where", text: "在學校三樓的男洗手間內" },
-                        { id: "who", text: "中二級的陳大文和李小明" },
-                        { id: "what", text: "發生了激烈的肢體推撞衝突" },
-                        { id: "why", text: "因為排隊洗手時產生了誤會" },
-                        { id: "how", text: "最終由訓導主任將兩人分開並調解" }
-                    ],
+                    slots: [ { id: "when", label: "時間 (When)" }, { id: "where", label: "地點 (Where)" }, { id: "who", label: "人物 (Who)" }, { id: "what", label: "事件 (What)" }, { id: "why", label: "原因 (Why)" }, { id: "how", label: "結果 (How)" } ],
+                    fragments: [ { id: "when", text: "昨天下午三點小息時" }, { id: "where", text: "在學校三樓的男洗手間內" }, { id: "who", text: "中二級的陳大文和李小明" }, { id: "what", text: "發生了激烈的肢體推撞衝突" }, { id: "why", text: "因為排隊洗手時產生了誤會" }, { id: "how", text: "最終由訓導主任將兩人分開並調解" } ],
                     hint: "💡 提示：報告通常以「時間、地點、人物」為開頭，接著描述「發生甚麼事、為何發生」，最後是「結果如何」。"
+                },
+                {
+                    title: "議論文寫作 (起承轉合)",
+                    desc: "請將句子碎片拖曳到正確的寫作結構插槽中。",
+                    slots: [ { id: "intro", label: "起 (引入主題)" }, { id: "body1", label: "承 (正面論述)" }, { id: "body2", label: "轉 (反面或轉折)" }, { id: "conclusion", label: "合 (總結立場)" } ],
+                    fragments: [ { id: "intro", text: "近年來，中學生應否帶手機回校引起了廣泛的爭議。" }, { id: "body1", text: "贊成者認為，手機方便學生隨時與家長保持聯繫，確保安全。" }, { id: "body2", text: "然而，反對者指出手機容易令學生上課分心，甚至沉迷遊戲。" }, { id: "conclusion", text: "總括而言，學校應容許帶手機，但必須設立嚴格的課堂寄存制度。" } ],
+                    hint: "💡 提示：「起」是背景介紹；「承」是支持論點；「轉」是『然而』開頭的反方意見；「合」是結論。"
+                },
+                {
+                    title: "科學實驗報告",
+                    desc: "請重組科學實驗報告的基本結構。",
+                    slots: [ { id: "purpose", label: "實驗目的" }, { id: "hypothesis", label: "實驗假設" }, { id: "steps", label: "執行步驟" }, { id: "results", label: "觀察結果" }, { id: "conclusion", label: "最終結論" } ],
+                    fragments: [ { id: "purpose", text: "探討不同溫度的水對糖溶解速度的影響" }, { id: "hypothesis", text: "預期熱水中的糖會比冷水中的糖溶解得更快" }, { id: "steps", text: "將相同份量的糖分別放入熱水和冷水中攪拌並計時" }, { id: "results", text: "熱水中的糖在10秒內溶解，冷水中的糖需時30秒" }, { id: "conclusion", text: "實驗證明溫度越高，物質的溶解速度越快" } ],
+                    hint: "💡 提示：實驗報告先寫「目的」和「假設」，然後是執行的「步驟」，記錄觀察到的「結果」，最後得出「結論」。"
+                },
+                {
+                    title: "正式請假信結構",
+                    desc: "請將句子拖入正確的書信格式中。",
+                    slots: [ { id: "salutation", label: "稱呼語" }, { id: "reason", label: "請假原因" }, { id: "date", label: "請假日期" }, { id: "promise", label: "補交承諾" }, { id: "closing", label: "下款及署名" } ],
+                    fragments: [ { id: "salutation", text: "敬愛的陳老師：" }, { id: "reason", text: "因為我昨晚突然發高燒並伴隨咳嗽，醫生建議我留家休息" }, { id: "date", text: "所以我需要請假兩天（3月1日及2日）" }, { id: "promise", text: "康復回校後，我會主動找同學補抄筆記及補交功課" }, { id: "closing", text: "學生李小明敬上" } ],
+                    hint: "💡 提示：書信先寫「稱呼」，然後說明「原因」和「日期」，接著給予「承諾」，最後是「下款」。"
+                },
+                {
+                    title: "投訴信結構",
+                    desc: "請重組投訴信的邏輯順序。",
+                    slots: [ { id: "background", label: "身分與背景" }, { id: "issue", label: "投訴事項" }, { id: "impact", label: "造成的影響" }, { id: "demand", label: "具體訴求" }, { id: "closing", label: "下款" } ],
+                    fragments: [ { id: "background", text: "我是住在學校對面大廈的居民" }, { id: "issue", text: "貴校每天早上七點半的廣播喇叭音量過大" }, { id: "impact", text: "這嚴重影響了周邊居民的日常作息和睡眠質量" }, { id: "demand", text: "希望校方能將早會廣播音量調低或更改廣播方向" }, { id: "closing", text: "關注社區安寧的市民敬上" } ],
+                    hint: "💡 提示：投訴信先表明「身分/背景」，指出「投訴事項」，說明造成的「影響」，提出具體「訴求」，最後「下款」。"
+                },
+                {
+                    title: "讀書報告結構",
+                    desc: "請將碎片排入讀書報告的框架。",
+                    slots: [ { id: "book_info", label: "書名與作者" }, { id: "summary", label: "內容大要" }, { id: "plot", label: "深刻情節" }, { id: "reflection", label: "個人反思" }, { id: "conclusion", label: "總結與推薦" } ],
+                    fragments: [ { id: "book_info", text: "我閱讀的書是《小王子》，作者是安東尼·聖修伯里" }, { id: "summary", text: "講述一位來自外星的小王子在各個星球遊歷的故事" }, { id: "plot", text: "令我最深刻的是他與狐狸之間關於「馴服」與建立關係的對話" }, { id: "reflection", text: "這讓我反思到人與人之間需要花時間相處才能建立深厚的感情" }, { id: "conclusion", text: "這是一本值得每個人細細品味的哲理童話，強烈推薦給大家" } ],
+                    hint: "💡 提示：讀書報告先介紹「書名作者」，然後是「內容大要」，挑選一個「深刻情節」，寫出「個人反思」，最後「總結」。"
+                },
+                {
+                    title: "新聞報導結構",
+                    desc: "請按照新聞寫作的『倒金字塔』原則排序。",
+                    slots: [ { id: "title", label: "新聞標題" }, { id: "lead", label: "導語 (重點)" }, { id: "body", label: "主體細節" }, { id: "impact", label: "深遠影響" }, { id: "ending", label: "結語與展望" } ],
+                    fragments: [ { id: "title", text: "本校機械人隊勇奪全港科技大賽總冠軍" }, { id: "lead", text: "昨天在會展中心舉行的科技大賽中，本校隊伍以「智能環保回收車」擊敗百間中學奪冠" }, { id: "body", text: "隊員們花了大半年時間編寫程式，並多次改良機械臂的抓取精準度" }, { id: "impact", text: "這次勝利大大鼓舞了全校同學對 STEM 學科的熱情與信心" }, { id: "ending", text: "隊長表示未來將代表香港前往海外參加國際賽事" } ],
+                    hint: "💡 提示：新聞通常先有「標題」，接著是包含 5W1H 的「導語」，然後是詳細「主體」，描述「影響」，最後是「結語」。"
+                },
+                {
+                    title: "面試自我介紹",
+                    desc: "準備面試的自我介紹邏輯。",
+                    slots: [ { id: "name_bg", label: "姓名與背景" }, { id: "hobbies", label: "興趣與專長" }, { id: "experience", label: "過往經驗" }, { id: "goals", label: "未來目標" }, { id: "closing", label: "致謝結語" } ],
+                    fragments: [ { id: "name_bg", text: "大家好，我是就讀中三級的張小華" }, { id: "hobbies", text: "平時我最喜歡看科幻小說和參加學校的童軍活動" }, { id: "experience", text: "去年我曾在校運會中擔任義工，學習到很多團隊合作的技巧" }, { id: "goals", text: "我未來的目標是考入大學的工程學系，成為一名工程師" }, { id: "closing", text: "謝謝大家的聆聽，希望能與大家成為好朋友" } ],
+                    hint: "💡 提示：自我介紹先說「姓名背景」，分享「興趣專長」，講述「過往經驗」，展望「未來目標」，最後「結語」。"
                 }
             ]
         };
-        while(blueprintDb["r12"].length < 8) blueprintDb["r12"].push(blueprintDb["r12"][0]);
 
+        // 初始化狀態
         roomsConfig.forEach(r => {
             roomProgress[r.id] = 0;
             roomAnswered[r.id] = false;
@@ -496,7 +614,7 @@
         }
 
         // ==========================================
-        // ✨ 新功能：突發任務系統 (訓練認知彈性)
+        // ✨ 核心功能：安全屋冷卻機制
         // ==========================================
         function triggerRandomEvent(msg) {
             const overlay = document.getElementById('emergencyEventOverlay');
@@ -507,7 +625,6 @@
             if (overlay && card) {
                 overlay.classList.remove('hidden');
                 overlay.classList.add('flex');
-                // Trigger reflow
                 void overlay.offsetWidth;
                 overlay.classList.remove('opacity-0');
                 card.classList.remove('scale-95');
@@ -521,12 +638,10 @@
         function dismissEmergencyEvent() {
             const overlay = document.getElementById('emergencyEventOverlay');
             const card = document.getElementById('emergencyCard');
-            
             if (overlay && card) {
                 overlay.classList.add('opacity-0');
                 card.classList.remove('scale-100');
                 card.classList.add('scale-95');
-                
                 setTimeout(() => {
                     overlay.classList.add('hidden');
                     overlay.classList.remove('flex');
@@ -534,13 +649,9 @@
             }
         }
 
-        // ==========================================
-        // ✨ 安全屋冷卻機制
-        // ==========================================
         function triggerSafeHouse() {
             const overlay = document.getElementById('safeHouseOverlay');
             const progress = document.getElementById('safeHouseProgress');
-            
             if(!overlay || !progress) return;
 
             overlay.classList.remove('hidden');
@@ -581,6 +692,7 @@
         // ==========================================
         function selectRoom(roomId) {
             clearTimeout(emergencyTimer);
+            activeEmergencyKey = null; // 換房重置鎖
             currentRoomId = roomId;
             currentCombo = 0; 
             consecutiveErrors = 0;
@@ -595,6 +707,7 @@
 
         function changeTask(index) {
             clearTimeout(emergencyTimer);
+            activeEmergencyKey = null; // 換題重置鎖
             roomProgress[currentRoomId] = index;
             roomAnswered[currentRoomId] = false;
             lastAnswerResult = null;
@@ -1106,6 +1219,10 @@
             } 
             else if (config.type === 'chunking') {
                 const db = chunkingDb[currentRoomId];
+                if (!db || !db[currentIndex]) {
+                    roomProgress[currentRoomId] = 0;
+                    currentIndex = 0;
+                }
                 const data = (db && db[currentIndex]) ? db[currentIndex] : { name: "無資料", steps: [] };
                 
                 if (currentSortableItems.length === 0 && data.steps && data.steps.length > 0) {
@@ -1121,8 +1238,8 @@
                         <div draggable="true" data-id="${item.id}" data-index="${item.index}"
                              ondragstart="window.sortDragStart(event)"
                              ondragend="window.sortDragEnd(event)"
-                             class="sortable-item w-full bg-white hover:bg-purple-50 text-slate-700 border-[3px] border-slate-200 shadow-sm hover:border-purple-300 transition-all font-bold rounded-xl flex items-center px-4 py-2 cursor-grab text-left mb-2">
-                            <i class="fa-solid fa-grip-vertical text-slate-400 text-xl mr-3 px-1 pointer-events-none"></i>
+                             class="sortable-item w-full bg-white hover:bg-purple-50 text-slate-700 border-[3px] border-slate-200 shadow-sm hover:border-purple-300 transition-all font-bold rounded-xl flex items-center px-3 py-2 cursor-grab text-left mb-2">
+                            <i class="fa-solid fa-grip-vertical text-slate-400 mr-2 px-1 pointer-events-none"></i>
                             <span class="desc-text flex-grow pointer-events-none">${item.text}</span>
                         </div>
                     `;
@@ -1154,22 +1271,19 @@
 
                 contentHtml = `
                     <div class="flex flex-col md:flex-row gap-6 flex-grow h-auto min-h-full pb-[80px]">
-                        <div class="main-card w-full md:w-[40%] flex flex-col bg-slate-100 border-slate-300 shadow-inner relative text-center">
-                            <h2 class="subtitle font-black text-slate-600 w-full mb-2">恐懼牆 (Wall of Awful)</h2>
-                            <div class="decoration-only drop-shadow-xl text-[60px] mb-2">👹</div>
-                            <h3 class="font-black text-slate-800 text-lg mb-4">${data.name || "無名稱"}</h3>
+                        <div class="main-card w-full md:w-[40%] flex flex-col bg-slate-100 border-slate-300 shadow-inner relative">
+                            <h2 class="subtitle font-black text-slate-600 w-full mb-2"><i class="fa-solid fa-cubes text-purple-500"></i> 任務碎片區</h2>
+                            <p class="desc-text font-bold text-slate-500 mb-4">請將下列步驟積木拖曳到右側對應的插槽中：</p>
                             
-                            <div class="border-t-2 border-slate-200 pt-4 w-full flex-grow flex flex-col">
-                                <p class="desc-text font-bold text-slate-500 mb-3 text-left">請將下方步驟拖入右側插槽：</p>
-                                <div id="sortableContainer" class="w-full flex-grow overflow-y-auto custom-scrollbar pr-2 pb-2 text-left"
-                                     ondragover="window.sortDragOver(event)" ondrop="window.sortDrop(event)" ondragenter="window.sortDragEnter(event)" ondragleave="window.sortDragLeave(event)">
-                                    ${sourceBlocksHtml}
-                                </div>
+                            <div id="sortableContainer" class="w-full flex-grow overflow-y-auto custom-scrollbar pr-2 pb-2"
+                                 ondragover="window.sortDragOver(event)" ondrop="window.sortDrop(event)" ondragenter="window.sortDragEnter(event)" ondragleave="window.sortDragLeave(event)">
+                                ${sourceBlocksHtml}
                             </div>
                         </div>
+
                         <div class="sub-card w-full md:w-[60%] bg-white border-purple-300 flex flex-col shadow-xl h-auto">
                             <div class="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-xl font-bold flex items-center gap-2 mb-4 w-full shrink-0 shadow-sm">
-                                <i class="fa-solid fa-lightbulb text-lg text-amber-500 shrink-0"></i> 任務目標：請依正確執行順序排列步驟
+                                <i class="fa-solid fa-lightbulb text-lg text-amber-500 shrink-0"></i> 任務目標：${data.name}
                             </div>
                             
                             ${hintUI}
@@ -1178,7 +1292,7 @@
                                 ${slotsHtml}
                             </div>
                             
-                            <div class="flex gap-3 mt-2 shrink-0 border-t border-slate-100 pt-4">
+                            <div class="flex gap-3 mt-4 shrink-0 border-t border-slate-100 pt-4">
                                 <button id="chkSortBtn" onclick="window.verifyChunkingTask()" class="flex-grow bg-purple-600 hover:bg-purple-700 text-white font-black py-3 rounded-xl transition shadow-md flex items-center justify-center gap-2">
                                     <i class="fa-solid fa-check-double"></i> 確認完成
                                 </button>
@@ -1280,7 +1394,7 @@
                         </div>
                     </div>
                     ${nodesHtml}
-                    <!-- 🛠️ 安全保護：確保包含緊急事件觸發偵測 -->
+                    <!-- 🚨 確保觸發機制被正確初始化 -->
                     <div class="flex-grow p-6 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-[140px] !important min-h-0">
                         ${contentHtml}
                     </div>
@@ -1292,11 +1406,14 @@
             // 🚨 觸發隨機緊急事件 (特定關卡)
             clearTimeout(emergencyTimer);
             const eventKey = `${currentRoomId}_${currentIndex}`;
-            if (currentIndex === 4 && !firedEvents.has(eventKey)) { // 第 5 關 (index 4)
-                firedEvents.add(eventKey);
-                emergencyTimer = setTimeout(() => {
-                    triggerRandomEvent("計畫有變！請將原本的規則反過來執行。");
-                }, 3000);
+            if (currentIndex === 4 && !firedEvents.has(eventKey)) { 
+                if (activeEmergencyKey !== eventKey) {
+                    activeEmergencyKey = eventKey;
+                    emergencyTimer = setTimeout(() => {
+                        triggerRandomEvent("計畫有變！請將原本的規則反過來執行。");
+                        firedEvents.add(eventKey);
+                    }, 3000);
+                }
             }
         }
 
