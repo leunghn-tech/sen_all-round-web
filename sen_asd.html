@@ -119,6 +119,13 @@
         }
         .breathe-pulse { animation: safeHouseBreathe 1.5s infinite ease-in-out; } 
 
+        /* 🚨 突發事件閃爍動畫 */
+        @keyframes emergencyFlash {
+            0%, 100% { border-color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.6); }
+            50% { border-color: #fca5a5; box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+        }
+        .emergency-flash { animation: emergencyFlash 1.5s infinite ease-in-out; }
+
         #posterPrintArea h1, #posterPrintArea .main-title {
             font-size: 1.25rem !important; 
             line-height: 1.4 !important;
@@ -179,6 +186,23 @@
         <p class="mt-16 text-slate-300 font-bold text-lg text-center">正在為您重置任務，請稍候...</p>
         <div class="w-64 bg-slate-800 h-2 rounded-full overflow-hidden mt-6">
             <div id="safeHouseProgress" class="bg-teal-500 h-full w-0 transition-all duration-1000"></div>
+        </div>
+    </div>
+
+    <!-- 🚨 突發任務系統 Overlay -->
+    <div id="emergencyEventOverlay" class="fixed inset-0 z-[250] hidden bg-slate-900/80 backdrop-blur-md flex-col items-center justify-center transition-opacity duration-300 opacity-0">
+        <div class="bg-white rounded-[2rem] p-8 max-w-lg w-11/12 border-[8px] emergency-flash shadow-2xl transform scale-95 transition-transform duration-300" id="emergencyCard">
+            <h2 class="text-3xl font-black text-rose-600 mb-6 flex items-center justify-center gap-3">
+                <i class="fa-solid fa-triangle-exclamation animate-pulse"></i> 總部緊急通訊
+            </h2>
+            <div class="bg-rose-50 border-2 border-rose-200 p-8 rounded-2xl mb-8 shadow-inner">
+                <p class="text-2xl font-bold text-slate-800 text-center leading-relaxed" id="emergencyText">
+                    計畫有變！請將原本的規則反過來執行。
+                </p>
+            </div>
+            <button onclick="window.dismissEmergencyEvent()" class="w-full bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-black py-4 rounded-2xl text-2xl transition shadow-lg transform hover:-translate-y-1">
+                收到指示！
+            </button>
         </div>
     </div>
 
@@ -260,7 +284,7 @@
         let consecutiveErrors = 0; 
         let showHint = false;      
         
-        let currentRoomId = 'r7';
+        let currentRoomId = 'r1';
         let roomProgress = {}; 
         let roomAnswered = {}; 
         let roomResults = {};  
@@ -268,6 +292,9 @@
 
         let currentSortableItems = [];
         let draggedSortItem = null;
+        
+        let firedEvents = new Set();
+        let emergencyTimer = null;
 
         // ==========================================
         // 🧩 進階青少年版 12 大場景資料庫 
@@ -311,7 +338,6 @@
             while(quizDb[id].length < 8) quizDb[id].push(quizDb[id][0]); 
         });
 
-        // 🧩 Chunking 資料庫 (R7, R8) - 配合插槽驗證機制
         const chunkingDb = {
             "r7": [
                 { name: "用 Google Classroom 交作業", steps: ["1. 登入帳號", "2. 點開班級", "3. 拍照/上傳檔案", "4. 點擊繳交", "5. 確認顯示已繳交"] }
@@ -324,7 +350,6 @@
             while(chunkingDb[id].length < 8) chunkingDb[id].push(chunkingDb[id][0]);
         });
 
-        // 🗺️ Blueprint 資料庫 (R12)
         const blueprintDb = {
             "r12": [
                 {
@@ -347,23 +372,6 @@
                         { id: "how", text: "最終由訓導主任將兩人分開並調解" }
                     ],
                     hint: "💡 提示：報告通常以「時間、地點、人物」為開頭，接著描述「發生甚麼事、為何發生」，最後是「結果如何」。"
-                },
-                {
-                    title: "議論文寫作 (起承轉合 結構)",
-                    desc: "請將句子碎片拖曳到正確的寫作結構插槽中。",
-                    slots: [
-                        { id: "intro", label: "起 (引入主題)" },
-                        { id: "body1", label: "承 (正面論述)" },
-                        { id: "body2", label: "轉 (反面或轉折)" },
-                        { id: "conclusion", label: "合 (總結立場)" }
-                    ],
-                    fragments: [
-                        { id: "intro", text: "近年來，中學生應否帶手機回校引起了廣泛的爭議。" },
-                        { id: "body1", text: "贊成者認為，手機方便學生隨時與家長保持聯繫，確保安全。" },
-                        { id: "body2", text: "然而，反對者指出手機容易令學生上課分心，甚至沉迷遊戲。" },
-                        { id: "conclusion", text: "總括而言，學校應容許帶手機，但必須設立嚴格的課堂寄存制度。" }
-                    ],
-                    hint: "💡 提示：「起」是背景介紹；「承」是支持論點；「轉」是『然而』開頭的反方意見；「合」是『總括而言』的結論。"
                 }
             ]
         };
@@ -488,12 +496,53 @@
         }
 
         // ==========================================
-        // ✨ 核心功能：安全屋冷卻機制
+        // ✨ 新功能：突發任務系統 (訓練認知彈性)
+        // ==========================================
+        function triggerRandomEvent(msg) {
+            const overlay = document.getElementById('emergencyEventOverlay');
+            const card = document.getElementById('emergencyCard');
+            const textEl = document.getElementById('emergencyText');
+            if (msg && textEl) textEl.innerText = msg;
+            
+            if (overlay && card) {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                // Trigger reflow
+                void overlay.offsetWidth;
+                overlay.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+                
+                showToast("⚠️ 總部傳來緊急指示！", "error");
+                updateHUD(-5);
+            }
+        }
+
+        function dismissEmergencyEvent() {
+            const overlay = document.getElementById('emergencyEventOverlay');
+            const card = document.getElementById('emergencyCard');
+            
+            if (overlay && card) {
+                overlay.classList.add('opacity-0');
+                card.classList.remove('scale-100');
+                card.classList.add('scale-95');
+                
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                }, 300);
+            }
+        }
+
+        // ==========================================
+        // ✨ 安全屋冷卻機制
         // ==========================================
         function triggerSafeHouse() {
             const overlay = document.getElementById('safeHouseOverlay');
             const progress = document.getElementById('safeHouseProgress');
             
+            if(!overlay || !progress) return;
+
             overlay.classList.remove('hidden');
             overlay.classList.add('flex'); 
             setTimeout(() => { overlay.classList.remove('opacity-0'); }, 10);
@@ -531,6 +580,7 @@
         // 核心遊戲邏輯
         // ==========================================
         function selectRoom(roomId) {
+            clearTimeout(emergencyTimer);
             currentRoomId = roomId;
             currentCombo = 0; 
             consecutiveErrors = 0;
@@ -544,6 +594,7 @@
         }
 
         function changeTask(index) {
+            clearTimeout(emergencyTimer);
             roomProgress[currentRoomId] = index;
             roomAnswered[currentRoomId] = false;
             lastAnswerResult = null;
@@ -618,7 +669,7 @@
         }
 
         // ==========================================
-        // 拖曳排序 (Drag & Drop) 引擎 (支援 Blueprint-Slot)
+        // 拖曳排序 (Drag & Drop) 引擎
         // ==========================================
         function sortDragStart(e) {
             if (!e || !e.currentTarget || e.currentTarget.getAttribute('draggable') === 'false') {
@@ -658,13 +709,11 @@
             if (e.preventDefault) e.preventDefault();
             const target = e.currentTarget;
             
-            // 處理進入插槽 (Blueprint & Chunking)
             if (target && target.classList.contains('blueprint-slot')) {
                 target.classList.add('drag-over');
                 return;
             }
 
-            // 處理回到源容器中的同層排序
             if (target && draggedSortItem && target !== draggedSortItem && target.classList && target.classList.contains('sortable-item') && target.getAttribute('draggable') !== 'false') {
                 const bounding = target.getBoundingClientRect();
                 const offset = bounding.y + (bounding.height / 2);
@@ -695,11 +744,9 @@
             target.style.borderTop = "";
             target.style.borderBottom = "";
             
-            // 如果目標是插槽 (R7, R8, R12 都使用插槽)
             if (target.classList.contains('blueprint-slot')) {
                 target.classList.remove('drag-over');
                 if (draggedSortItem) {
-                    // 如果插槽內已經有積木，將它退回源容器
                     if (target.children.length > 0) {
                         const existingItem = target.children[0];
                         document.getElementById('sortableContainer').appendChild(existingItem);
@@ -709,13 +756,11 @@
                 return;
             }
 
-            // 返回庫存區
             if (target.id === 'sortableContainer' && draggedSortItem) {
                 target.appendChild(draggedSortItem);
                 return;
             }
             
-            // 一般同層排序
             if (target && draggedSortItem && target !== draggedSortItem && target.classList && target.classList.contains('sortable-item') && target.getAttribute('draggable') !== 'false') {
                 const bounding = target.getBoundingClientRect();
                 const offset = bounding.y + (bounding.height / 2);
@@ -730,7 +775,6 @@
             }
         }
 
-        // ✨ 驗證 Chunking (R7, R8 改版：使用插槽)
         function verifyChunkingTask() {
             const slots = document.querySelectorAll('.blueprint-slot');
             const sourceContainer = document.getElementById('sortableContainer');
@@ -739,11 +783,11 @@
             let hasErrors = false;
 
             slots.forEach(slot => {
-                const expectedId = slot.getAttribute('data-slot-id'); // 0, 1, 2...
+                const expectedId = slot.getAttribute('data-slot-id'); 
                 if (slot.children.length > 0) {
                     filledSlots++;
                     const child = slot.children[0];
-                    const childId = child.getAttribute('data-id'); // matches idx
+                    const childId = child.getAttribute('data-id'); 
                     if (childId === expectedId) {
                         child.className = child.className.replace(/border-slate-200|border-rose-400|hover:border-purple-300|cursor-grab/g, 'border-emerald-400')
                                                         .replace(/bg-white|bg-rose-50/g, 'bg-emerald-50') + ' text-emerald-800 cursor-default';
@@ -755,7 +799,7 @@
                     } else {
                         isAllCorrect = false;
                         hasErrors = true;
-                        sourceContainer.appendChild(child); // 退回源容器
+                        sourceContainer.appendChild(child); 
 
                         child.classList.remove('shake-bounce');
                         void child.offsetWidth; 
@@ -809,7 +853,6 @@
             }
         }
 
-        // ✨ 驗證 Blueprint 任務 (R12)
         function verifyBlueprintTask() {
             const slots = document.querySelectorAll('.blueprint-slot');
             const sourceContainer = document.getElementById('sortableContainer');
@@ -884,16 +927,19 @@
                 
                 setTimeout(() => { nextQuizQuestion(); }, 2500);
             } else {
-                if (hasErrors) {
-                    if (btn) {
-                        const origClass = btn.className;
-                        const origText = btn.innerHTML;
-                        btn.className = btn.className.replace(/bg-indigo-600|bg-purple-600/g, 'bg-rose-600');
-                        btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 邏輯錯誤！已退回錯誤選項`;
-                        setTimeout(() => { btn.className = origClass; btn.innerHTML = origText; }, 1500);
-                    }
-                    handleTaskError();
+                const bpArea = document.getElementById('blueprintArea');
+                bpArea.classList.remove('shake-bounce');
+                void bpArea.offsetWidth; 
+                bpArea.classList.add('shake-bounce');
+                
+                if (btn) {
+                    const origClass = btn.className;
+                    const origText = btn.innerHTML;
+                    btn.className = btn.className.replace(/bg-indigo-600|bg-purple-600/g, 'bg-rose-600');
+                    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 邏輯錯誤！已退回錯誤選項`;
+                    setTimeout(() => { btn.className = origClass; btn.innerHTML = origText; }, 1500);
                 }
+                handleTaskError();
             }
         }
 
@@ -1065,17 +1111,18 @@
                 if (currentSortableItems.length === 0 && data.steps && data.steps.length > 0) {
                     currentSortableItems = data.steps.map((step, idx) => ({
                         id: idx,
+                        index: idx,
                         text: step.replace(/^\d+\.\s*/, '') 
                     })).sort(() => Math.random() - 0.5);
                 }
 
                 let sourceBlocksHtml = currentSortableItems.map((item) => {
                     return `
-                        <div draggable="true" data-id="${item.id}"
+                        <div draggable="true" data-id="${item.id}" data-index="${item.index}"
                              ondragstart="window.sortDragStart(event)"
                              ondragend="window.sortDragEnd(event)"
-                             class="sortable-item w-full bg-white hover:bg-purple-50 text-slate-700 border-[3px] border-slate-200 shadow-sm hover:border-purple-300 transition-all font-bold rounded-xl flex items-center px-3 py-2 cursor-grab text-left mb-2">
-                            <i class="fa-solid fa-grip-vertical text-slate-400 mr-2 px-1 pointer-events-none"></i>
+                             class="sortable-item w-full bg-white hover:bg-purple-50 text-slate-700 border-[3px] border-slate-200 shadow-sm hover:border-purple-300 transition-all font-bold rounded-xl flex items-center px-4 py-2 cursor-grab text-left mb-2">
+                            <i class="fa-solid fa-grip-vertical text-slate-400 text-xl mr-3 px-1 pointer-events-none"></i>
                             <span class="desc-text flex-grow pointer-events-none">${item.text}</span>
                         </div>
                     `;
@@ -1233,7 +1280,7 @@
                         </div>
                     </div>
                     ${nodesHtml}
-                    <!-- 配置 pb-[140px] 呼吸空間，確保內容溢出時向下滑動不被切除 -->
+                    <!-- 🛠️ 安全保護：確保包含緊急事件觸發偵測 -->
                     <div class="flex-grow p-6 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-[140px] !important min-h-0">
                         ${contentHtml}
                     </div>
@@ -1241,6 +1288,16 @@
             `;
 
             canvas.innerHTML = html;
+
+            // 🚨 觸發隨機緊急事件 (特定關卡)
+            clearTimeout(emergencyTimer);
+            const eventKey = `${currentRoomId}_${currentIndex}`;
+            if (currentIndex === 4 && !firedEvents.has(eventKey)) { // 第 5 關 (index 4)
+                firedEvents.add(eventKey);
+                emergencyTimer = setTimeout(() => {
+                    triggerRandomEvent("計畫有變！請將原本的規則反過來執行。");
+                }, 3000);
+            }
         }
 
         // ==========================================
@@ -1249,12 +1306,13 @@
         Object.assign(window, {
             toggleSidebar, resizeCanvas, updateHUD, updateGlobalExp, showToast, fireConfetti, selectRoom, renderRoom, changeTask,
             checkQuizAnswer, nextQuizQuestion, retryRoom, resetCurrentTask,
-            sortDragStart, sortDragEnd, sortDragEnter, sortDragOver, sortDragLeave, sortDrop, verifyChunkingTask, verifyBlueprintTask, scrollTabs
+            sortDragStart, sortDragEnd, sortDragEnter, sortDragOver, sortDragLeave, sortDrop, verifyChunkingTask, verifyBlueprintTask, scrollTabs,
+            triggerRandomEvent, dismissEmergencyEvent
         });
 
         window.onload = function() { 
             initSidebar();
-            selectRoom('r7'); 
+            selectRoom('r1'); 
         } 
     </script>
 </body>
