@@ -33,7 +33,7 @@
         .room-card.active { border-color: #0d9488; background-color: #f0fdfa; box-shadow: inset 4px 0 0 #0d9488, 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
 
         /* ==========================================
-           🚀 2. 拓寬主容器與自適應黃金高度 (Golden Ratio Width)
+           🚀 2. 拓寬主容器與自適應黃金高度
            ========================================== */
         #canvasContainer { 
             position: relative; 
@@ -54,10 +54,9 @@
             transform: none !important; 
         }
 
-        /* 📐 主容器縮減為黃金寬度 */
         #posterPrintArea {
             width: 92% !important;
-            max-width: 780px !important;  /* 🛠️ 縮小至最舒適的 Web App 寬度，維持視覺緊湊 */
+            max-width: 780px !important;  
             margin: 20px auto !important;
             min-height: 80vh !important;
             height: auto !important;
@@ -74,7 +73,6 @@
             overflow: visible !important;
         }
 
-        /* 📐 主容器與內邊距微調 (減少垂直留白) */
         .room-content-wrapper {
             padding: 15px 20px !important;
             padding-bottom: 60px !important; 
@@ -85,7 +83,6 @@
             border-width: 3px !important;
         }
 
-        /* 🔵 關卡節點精細排版 */
         .level-nodes-container {
             display: flex !important;
             justify-content: space-around !important; 
@@ -96,7 +93,6 @@
             box-sizing: border-box !important;
         }
 
-        /* 🔵 節點尺寸微調縮小 */
         .level-node-btn {
             width: 36px !important;
             height: 36px !important;
@@ -109,26 +105,38 @@
             border-radius: 9999px !important;
         }
 
+        /* ✨ 節點脈衝發光動畫 (Active Level Glow) */
+        @keyframes nodePulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7); transform: scale(1.1); }
+            50% { box-shadow: 0 0 0 10px rgba(20, 184, 166, 0); transform: scale(1.15); }
+            100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); transform: scale(1.1); }
+        }
+        .node-glow { 
+            animation: nodePulseGlow 1.5s infinite ease-out !important; 
+            border-color: #0d9488 !important;
+            color: #0d9488 !important;
+            z-index: 20 !important;
+        }
+
         /* 🔤 全域字體微調縮小 (Typography Scaling) */
         #posterPrintArea h1, #posterPrintArea .main-title {
-            font-size: 1.55rem !important;
+            font-size: 1.25rem !important; /* 約 20px */
             line-height: 1.4 !important;
             margin-bottom: 0.5rem !important;
         }
         #posterPrintArea h2, #posterPrintArea h3, #posterPrintArea .subtitle {
-            font-size: 1.15rem !important;
+            font-size: 1rem !important; /* 約 16px */
             line-height: 1.4 !important;
             margin-bottom: 0.5rem !important;
         }
         #posterPrintArea p:not(.decoration-only), 
         #posterPrintArea button:not(.level-node-btn), 
         #posterPrintArea .desc-text {
-            font-size: 0.95rem !important;
+            font-size: 0.95rem !important; /* 約 15px */
             line-height: 1.5 !important;
         }
-        /* 防止 Emoji 被過度縮小 */
         #posterPrintArea .decoration-only {
-            font-size: 4.5rem !important;
+            font-size: 4rem !important;
             margin-bottom: 0.5rem !important;
             line-height: 1 !important;
         }
@@ -136,7 +144,6 @@
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 錯誤震動彈回動畫 (Shake-bounce) */
         .shake-bounce { animation: shakeBounce 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shakeBounce {
             0%, 100% { transform: translateX(0); }
@@ -144,7 +151,6 @@
             20%, 40%, 60%, 80% { transform: translateX(10px); }
         }
 
-        /* 正確放大彈跳動畫 (Scale-bounce) */
         .scale-bounce { animation: scaleBounce 0.4s cubic-bezier(.175, .885, .32, 1.275) both; }
         @keyframes scaleBounce {
             0%, 100% { transform: scale(1); }
@@ -160,7 +166,6 @@
 
         #confetti-container { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
 
-        /* 可拖曳排序物件樣式 */
         .sortable-item { cursor: grab; transition: transform 0.2s, background-color 0.2s, border-color 0.2s; }
         .sortable-item:active { cursor: grabbing; }
         .sortable-item.dragging { opacity: 0.4; transform: scale(0.98); }
@@ -168,30 +173,39 @@
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col">
 
-    <!-- 頂部導航 -->
-    <nav class="bg-white border-b border-slate-200 z-50 shadow-sm flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2 min-h-[4rem] flex-wrap gap-2">
-        <div class="flex items-center gap-4 flex-grow sm:flex-grow-0">
-            <a href="professional_dashboard.html" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-3 py-2 rounded-xl transition text-slate-600 hover:text-slate-900 font-bold shrink-0">
-                <i class="fa-solid fa-house"></i>
-                <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回協作平台</span>
+    <!-- 頂部導航 (緊湊版：同一欄並排顯示) -->
+    <nav class="bg-white border-b border-slate-200 z-50 shadow-sm flex items-center justify-between px-3 sm:px-6 h-14 overflow-x-auto hide-scrollbar whitespace-nowrap">
+        <!-- 左側：返回 + 標題 -->
+        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+            <a href="professional_dashboard.html" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-900 font-bold">
+                <i class="fa-solid fa-house text-sm"></i>
+                <span class="text-xs hidden sm:inline">返回協作平台</span>
             </a>
-            <div class="flex flex-col justify-center border-l border-slate-200 pl-4">
-                <h1 class="text-sm sm:text-base font-black tracking-tight leading-none text-teal-700">ASD 特工 10 大訓練房</h1>
-                <span class="text-[10px] text-slate-500 font-bold block mt-1 uppercase tracking-widest">Adolescent Spectrum Tactical Camp</span>
+            <div class="border-l border-slate-200 pl-2 sm:pl-3">
+                <h1 class="text-sm sm:text-base font-black tracking-tight leading-none text-teal-700 m-0">ASD 特工 10 大訓練房</h1>
             </div>
         </div>
         
-        <div class="flex items-center gap-3">
-            <button onclick="window.toggleSidebar()" class="bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold px-4 py-2 rounded-xl transition shadow-sm flex items-center gap-2 whitespace-nowrap shrink-0">
+        <!-- 右側：目錄 + 等級 + 體力 -->
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-4">
+            <button onclick="window.toggleSidebar()" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1.5">
                 <i class="fa-solid fa-bars-staggered"></i> <span class="hidden sm:inline">目錄</span>
             </button>
             
-            <!-- 全局 EXP -->
-            <div class="flex items-center gap-2 text-sm font-bold bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-inner shrink-0">
-                <span class="text-amber-500"><i class="fa-solid fa-star"></i> Lv.<span id="globalLevelTxt">1</span></span>
-                <div class="w-16 sm:w-24 bg-slate-200 h-3 rounded-full overflow-hidden border border-slate-300 relative">
+            <div class="flex items-center gap-1.5 text-xs font-bold bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200 shadow-inner">
+                <span class="text-amber-500 flex items-center gap-1"><i class="fa-solid fa-star"></i> Lv.<span id="globalLevelTxt">1</span></span>
+                <div class="w-12 sm:w-20 bg-slate-200 h-2.5 rounded-full overflow-hidden border border-slate-300 relative ml-1">
                     <div id="globalExpBar" class="bg-gradient-to-r from-amber-400 to-amber-500 h-full transition-all duration-500" style="width: 0%;"></div>
                 </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 text-xs font-bold bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200 shadow-inner">
+                <span class="text-slate-600 hidden sm:inline">能量：</span>
+                <i class="fa-solid fa-bolt text-teal-500 sm:hidden"></i>
+                <div class="w-12 sm:w-20 bg-slate-200 h-2.5 rounded-full overflow-hidden border border-slate-300 ml-1">
+                    <div id="hudStamina" class="bg-emerald-500 h-full transition-all duration-300" style="width: 100%;"></div>
+                </div>
+                <span id="hudStaminaText" class="text-emerald-600 min-w-[30px] text-right font-black">100%</span>
             </div>
         </div>
     </nav>
@@ -229,6 +243,7 @@
         // ==========================================
         // 全局狀態變數
         // ==========================================
+        let stamina = 100;
         let isSidebarOpen = true;
 
         let globalExp = 0;
@@ -345,7 +360,7 @@
             ]
         };
 
-        // 🧩 Chunking 資料庫 (R7, R8) 
+        // 🧩 Chunking 資料庫 (R7, R8)
         const chunkingDb = {
             "r7": [
                 { name: "用 Google Classroom 交作業", steps: ["1. 登入帳號", "2. 點開班級", "3. 拍照/上傳檔案", "4. 點擊繳交", "5. 確認顯示已繳交"] },
@@ -407,7 +422,6 @@
             setTimeout(resizeCanvas, 50);
         }
 
-        // 🚀 自適應縮放引擎 
         function resizeCanvas() {
             const wrapper = document.getElementById('posterScaleWrapper');
             const canvas = document.getElementById('posterPrintArea');
@@ -415,11 +429,31 @@
             if (canvas) {
                 canvas.style.transform = 'none';
                 canvas.style.height = 'auto';
-                canvas.style.width = '92%'; // 套用黃金比例 92%
+                canvas.style.width = '92%'; 
             }
         }
 
         window.addEventListener('resize', resizeCanvas);
+
+        function updateHUD(staminaDiff) {
+            stamina = Math.max(0, Math.min(100, stamina + staminaDiff));
+            const bar = document.getElementById('hudStamina');
+            const text = document.getElementById('hudStaminaText');
+            if (bar && text) {
+                bar.style.width = `${stamina}%`;
+                text.innerText = `${stamina}%`;
+                if(stamina <= 30) {
+                    bar.className = "bg-rose-500 h-full transition-all duration-300";
+                    text.className = "text-rose-600 min-w-[40px] text-right font-black animate-pulse";
+                } else if(stamina <= 60) {
+                    bar.className = "bg-amber-400 h-full transition-all duration-300";
+                    text.className = "text-amber-600 min-w-[40px] text-right font-black";
+                } else {
+                    bar.className = "bg-emerald-500 h-full transition-all duration-300";
+                    text.className = "text-emerald-600 min-w-[40px] text-right font-black";
+                }
+            }
+        }
 
         function updateGlobalExp(amount) {
             globalExp += amount;
@@ -506,9 +540,11 @@
                 let comboMultiplier = currentCombo >= 3 ? 1.5 : 1;
                 let expGained = Math.floor(10 * comboMultiplier);
                 updateGlobalExp(expGained);
+                updateHUD(10);
                 showToast(`🏆 判斷正確！+${expGained} EXP`, "success");
             } else {
                 currentCombo = 0; 
+                updateHUD(-10);
                 showToast("❌ 衝動誤判！請看解析！", "error");
             }
             
@@ -543,6 +579,13 @@
         function scrollTabs(dir) {
             const container = document.getElementById('roomTabsContainer');
             if(container) container.scrollBy({ left: dir * 150, behavior: 'smooth' });
+        }
+
+        // 🔄 一鍵重置目前任務 (僅限排序房)
+        function resetCurrentTask() {
+            currentSortableItems = []; 
+            renderRoom();
+            showToast("🔄 已為您重新準備任務，請再試一次！");
         }
 
         // ==========================================
@@ -649,6 +692,7 @@
                 if(!roomResults[currentRoomId]) roomResults[currentRoomId] = [];
                 roomResults[currentRoomId][roomProgress[currentRoomId]] = true;
 
+                updateHUD(20);
                 updateGlobalExp(15);
                 showToast("🏆 排序完全正確！大腦切換成功！", "success");
                 fireConfetti();
@@ -684,15 +728,10 @@
                     }, 1200);
                 }
 
+                updateHUD(-5);
                 showToast("❌ 順序不正確！大腦出現混亂，請再試一次。", "error");
             }
         }
-
-        // ==========================================
-        // 歷史相容空函數預防 (ASD特有)
-        // ==========================================
-        function toggleTimeBlindness() {}
-        function handleEnergyAction() {}
 
         // ==========================================
         // 渲染主畫面
@@ -701,7 +740,7 @@
             const canvas = document.getElementById('posterPrintArea');
             if (!canvas) return;
 
-            // 🛠️ 安全防護 1：確保 config 存在，避免崩潰
+            // 🛠️ 安全防護 1：確保 config 存在
             let config = roomsConfig.find(r => r.id === currentRoomId);
             if (!config) {
                 currentRoomId = 'r1';
@@ -717,7 +756,7 @@
             
             let totalTasks = 8;
             
-            // 🛠️ 關卡節點排版微調
+            // 🛠️ 關卡節點排版微調，加入 ✨ 脈衝發光 (node-glow)
             let nodesHtml = `
                 <div class="w-full overflow-x-auto hide-scrollbar pb-2">
                     <div class="level-nodes-container relative min-w-[500px] max-w-[800px] mx-auto px-4 mt-2">
@@ -731,7 +770,7 @@
                     stateClass = "bg-teal-500 text-white border-teal-600 shadow-md"; 
                     icon = "✓"; 
                 } else if (i === currentIndex) { 
-                    stateClass = "bg-white border-teal-500 text-teal-600 shadow-[0_0_15px_rgba(20,184,166,0.5)] ring-4 ring-teal-100 transform scale-110"; 
+                    stateClass = "bg-white border-teal-500 text-teal-600 shadow-md ring-4 ring-teal-100 transform scale-110 node-glow"; 
                     icon = i + 1; 
                 } else { 
                     stateClass = "bg-slate-100 border-slate-300 text-slate-400"; 
@@ -791,7 +830,6 @@
                 }
                 const data = (db && db[currentIndex]) ? db[currentIndex] : { q: "無資料", c: "無", w1: "無", w2: "無", emoji: "❓" };
 
-                // 🛠️ 安全防護 3：檢查 data.c 是否存在，防止 TypeError
                 let optC = data.c !== undefined ? data.c : "正確選項";
                 let optW1 = data.w1 !== undefined ? data.w1 : "錯誤選項 1";
                 let optW2 = data.w2 !== undefined ? data.w2 : "錯誤選項 2";
@@ -851,10 +889,17 @@
                             <h3 class="subtitle font-black text-slate-800 text-center w-full px-2">${data.q || data.situation || "無情境"}</h3>
                         </div>
                         <div class="sub-card w-full md:w-[52%] bg-white border-teal-300 flex flex-col shadow-xl h-auto">
-                            <h3 class="subtitle font-black text-slate-800 flex items-center gap-2 border-b-2 border-slate-100 pb-2 shrink-0"><i class="fa-solid fa-crosshairs text-teal-500"></i> 請選出正確的解讀或回應：</h3>
-                            <div class="space-y-3 flex-grow flex flex-col justify-center mt-2">
+                            <!-- ✨ 視覺化任務目標提示框 -->
+                            <div class="bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-xl font-bold flex items-center gap-2 mb-4 w-full shrink-0 shadow-sm">
+                                <i class="fa-solid fa-bullseye text-lg shrink-0 text-blue-500"></i> 任務目標：請點擊選出正確的解讀或回應
+                            </div>
+
+                            <div class="space-y-3 flex-grow flex flex-col justify-center">
                                 ${optionsHtml}
                             </div>
+                            
+                            <!-- 移除了 Quiz 關卡的 Reset 按鈕以防干擾 -->
+
                             ${feedbackHtml}
                         </div>
                     </div>
@@ -901,16 +946,24 @@
                             <p class="desc-text font-bold text-slate-500 mt-2">打亂順序的任務，大腦最討厭了！</p>
                         </div>
                         <div class="sub-card w-full md:w-[55%] bg-white border-purple-300 flex flex-col shadow-xl h-auto">
-                            <h3 class="subtitle font-black text-slate-800 flex items-center gap-2 border-b-2 border-slate-100 pb-2 shrink-0"><i class="fa-solid fa-scissors text-purple-500"></i> 任務切碎與邏輯排序</h3>
-                            <p class="desc-text text-slate-500 font-bold mb-2">請「拖曳」下方步驟，排成正確的執行順序：</p>
+                            <!-- ✨ 視覺化任務目標提示框 -->
+                            <div class="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-xl font-bold flex items-center gap-2 mb-4 w-full shrink-0 shadow-sm">
+                                <i class="fa-solid fa-lightbulb text-lg text-amber-500 shrink-0"></i> 任務提示：請「拖曳」下方步驟，排成正確的執行順序
+                            </div>
                             
                             <div id="sortableContainer" class="w-full flex flex-col gap-2 flex-grow justify-center transition-all duration-300">
                                 ${stepsHtml}
                             </div>
                             
-                            <button id="chkSortBtn" onclick="window.verifySortableTask()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-3 rounded-xl transition shadow-md mt-4 shrink-0 flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-check-double"></i> 確認完成 / 檢查答案
-                            </button>
+                            <div class="flex gap-3 mt-4 shrink-0">
+                                <button id="chkSortBtn" onclick="window.verifySortableTask()" class="flex-grow bg-purple-600 hover:bg-purple-700 text-white font-black py-3 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-check-double"></i> 確認完成 / 檢查答案
+                                </button>
+                                <!-- 🔄 一鍵重置排序按鈕 (保留在 Chunking 關卡) -->
+                                <button onclick="window.resetCurrentTask()" class="w-14 sm:w-auto px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition shadow-sm border-2 border-slate-200 flex items-center justify-center gap-2" title="重新排列">
+                                    <i class="fa-solid fa-arrows-rotate"></i> <span class="hidden sm:inline text-sm">重排</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -925,7 +978,7 @@
                         </div>
                     </div>
                     ${nodesHtml}
-                    <!-- 🛠️ 修復：配置 pb-[140px] 呼吸空間，確保內容溢出時向下滑動不被切除 -->
+                    <!-- 配置 pb-[140px] 呼吸空間，確保內容溢出時向下滑動不被切除 -->
                     <div class="flex-grow p-6 bg-slate-50 overflow-y-auto custom-scrollbar flex flex-col relative pb-[140px] !important min-h-0">
                         ${contentHtml}
                     </div>
@@ -939,8 +992,8 @@
         // 初始化與安全掛載
         // ==========================================
         Object.assign(window, {
-            toggleSidebar, resizeCanvas, showToast, fireConfetti, selectRoom, renderRoom, changeTask,
-            checkQuizAnswer, nextQuizQuestion, retryRoom,
+            toggleSidebar, resizeCanvas, updateHUD, updateGlobalExp, showToast, fireConfetti, selectRoom, renderRoom, changeTask,
+            checkQuizAnswer, nextQuizQuestion, retryRoom, resetCurrentTask,
             sortDragStart, sortDragEnd, sortDragEnter, sortDragOver, sortDragLeave, sortDrop, verifySortableTask, scrollTabs
         });
 
