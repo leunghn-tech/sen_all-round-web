@@ -891,74 +891,53 @@
         function verifyChunkingTask() {
             const slots = document.querySelectorAll('.blueprint-slot');
             const sourceContainer = document.getElementById('sortableContainer');
-            let allCorrect = true;
-            let filledCount = 0;
+            let isAllCorrect = true;
+            let filledSlots = 0;
             let hasErrors = false;
 
             slots.forEach(slot => {
-                const expectedIndex = parseInt(slot.getAttribute('data-slot-id'));
-                const item = slot.querySelector('.sortable-item');
-
-                if (item) {
-                    filledCount++;
-                    const actualIndex = parseInt(item.getAttribute('data-index'));
-
-                    if (actualIndex === expectedIndex) {
-                        // 【答對的處理邏輯：鎖定與變色】
-                        item.classList.remove('border-slate-200', 'cursor-grab', 'hover:border-purple-300', 'hover:bg-purple-50');
-                        item.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-800', 'cursor-default');
-                        
-                        const icon = item.querySelector('i');
+                const expectedId = slot.getAttribute('data-slot-id'); 
+                if (slot.children.length > 0) {
+                    filledSlots++;
+                    const child = slot.children[0];
+                    const childId = child.getAttribute('data-id'); 
+                    if (childId === expectedId) {
+                        child.className = child.className.replace(/border-slate-200|border-rose-400|hover:border-purple-300|cursor-grab/g, 'border-emerald-400')
+                                                        .replace(/bg-white|bg-rose-50/g, 'bg-emerald-50') + ' text-emerald-800 cursor-default';
+                        child.setAttribute('draggable', 'false');
+                        const icon = child.querySelector('.fa-grip-vertical');
                         if (icon) {
-                            icon.className = 'fa-solid fa-check text-emerald-600 mr-2 px-1 pointer-events-none';
+                            icon.className = "fa-solid fa-check text-emerald-500 mr-2 px-1 pointer-events-none";
                         }
-
-                        // 徹底禁止拖曳與點擊，固定在插槽內
-                        item.setAttribute('draggable', 'false');
-                        item.style.pointerEvents = 'none';
-                        item.removeAttribute('onclick'); 
                     } else {
-                        // 【答錯的處理邏輯：震動並退回】
-                        allCorrect = false;
+                        isAllCorrect = false;
                         hasErrors = true;
-                        
-                        // 加入震動特效與錯誤顏色
-                        item.classList.remove('shake-bounce');
-                        void item.offsetWidth; 
-                        item.classList.add('shake-bounce', 'border-rose-500', 'bg-rose-50', 'text-rose-800');
-                        
-                        const icon = item.querySelector('i');
-                        if(icon) {
-                            icon.className = 'fa-solid fa-xmark text-rose-600 mr-2 px-1 pointer-events-none';
-                        }
+                        sourceContainer.appendChild(child); 
 
-                        // 延遲一段時間讓玩家看到震動，然後退回左側碎片區
+                        child.classList.remove('shake-bounce');
+                        void child.offsetWidth; 
+                        child.classList.add('shake-bounce');
+                        
+                        child.classList.replace('border-slate-200', 'border-rose-400');
+                        child.classList.replace('bg-white', 'bg-rose-50');
                         setTimeout(() => {
-                            item.classList.remove('shake-bounce', 'border-rose-500', 'bg-rose-50', 'text-rose-800');
-                            item.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
-                            if(icon) {
-                                icon.className = 'fa-solid fa-grip-vertical text-slate-400 mr-2 px-1 pointer-events-none';
-                            }
-                            if (sourceContainer) {
-                                sourceContainer.appendChild(item);
-                            }
-                        }, 800); 
+                            child.classList.replace('border-rose-400', 'border-slate-200');
+                            child.classList.replace('bg-rose-50', 'bg-white');
+                        }, 800);
                     }
                 } else {
-                    allCorrect = false;
+                    isAllCorrect = false; 
                 }
             });
 
             const btn = document.getElementById('chkSortBtn');
 
-            // 檢查是否所有插槽都已填寫（且沒有錯誤正在退回中）
-            if (filledCount < slots.length && !hasErrors) {
+            if (filledSlots < slots.length && !hasErrors) {
                 showToast("⚠️ 請將所有步驟積木拖曳到插槽中！", "error");
                 return;
             }
 
-            // 檢查是否全部插槽都填滿，且全部正確
-            if (allCorrect && filledCount === slots.length) {
+            if (isAllCorrect && filledSlots === slots.length) {
                 consecutiveErrors = 0;
                 if (btn) {
                     btn.className = btn.className.replace(/bg-purple-600|bg-rose-600/g, 'bg-emerald-600') + ' scale-bounce';
@@ -969,18 +948,21 @@
                 roomResults[currentRoomId][roomProgress[currentRoomId]] = true;
 
                 updateGlobalExp(15);
+                showToast("🏆 任務切割順序完全正確！", "success");
                 fireConfetti();
                 
                 setTimeout(() => { nextQuizQuestion(); }, 1500);
-            } else if (hasErrors) {
-                if (btn) {
-                    const origClass = btn.className;
-                    const origText = btn.innerHTML;
-                    btn.className = btn.className.replace(/bg-purple-600|bg-indigo-600/g, 'bg-rose-600');
-                    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 順序錯誤！已退回錯誤步驟`;
-                    setTimeout(() => { btn.className = origClass; btn.innerHTML = origText; }, 1500);
+            } else {
+                if (hasErrors) {
+                    if (btn) {
+                        const origClass = btn.className;
+                        const origText = btn.innerHTML;
+                        btn.className = btn.className.replace(/bg-purple-600|bg-indigo-600/g, 'bg-rose-600');
+                        btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 順序錯誤！已退回錯誤步驟`;
+                        setTimeout(() => { btn.className = origClass; btn.innerHTML = origText; }, 1500);
+                    }
+                    handleTaskError();
                 }
-                handleTaskError();
             }
         }
 
@@ -1450,5 +1432,80 @@
             selectRoom('r1'); 
         } 
     </script>
+    <script>
+    window.verifyChunkingTask = function() {
+    const slots = document.querySelectorAll('.blueprint-slot');
+    let allCorrect = true;
+    let checkedCount = 0;
+
+    slots.forEach(slot => {
+        const expectedIndex = parseInt(slot.getAttribute('data-slot-id'));
+        const item = slot.querySelector('.sortable-item');
+
+        if (item) {
+            checkedCount++;
+            const actualIndex = parseInt(item.getAttribute('data-index'));
+
+            if (actualIndex === expectedIndex) {
+                // 【答對邏輯】：變更為綠色成功樣式
+                item.classList.remove('border-slate-200', 'cursor-grab', 'hover:border-purple-300', 'hover:bg-purple-50');
+                item.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-800');
+                
+                const icon = item.querySelector('i');
+                if (icon) {
+                    icon.className = 'fa-solid fa-check text-emerald-600 mr-2 px-1 pointer-events-none';
+                }
+
+                // 【關鍵修復：徹底鎖定】
+                // 1. 禁止拖曳
+                item.setAttribute('draggable', 'false'); 
+                // 2. 讓滑鼠點擊事件穿透（無法點選返回）
+                item.style.pointerEvents = 'none'; 
+                // 3. 移除積木上的 onClick 事件
+                item.removeAttribute('onclick');
+                // 4. 同時關閉該「插槽」的接收功能，防止其他積木又被硬塞進來
+                slot.removeAttribute('ondragover');
+                slot.removeAttribute('ondrop');
+                slot.removeAttribute('ondragenter');
+                slot.removeAttribute('ondragleave');
+                
+            } else {
+                // 【答錯邏輯】：震動並退回左側庫存區
+                allCorrect = false;
+                
+                item.classList.add('animate-shake', 'border-red-500', 'bg-red-50', 'text-red-800');
+                const icon = item.querySelector('i');
+                if(icon) {
+                    icon.className = 'fa-solid fa-xmark text-red-600 mr-2 px-1 pointer-events-none';
+                }
+
+                setTimeout(() => {
+                    item.classList.remove('animate-shake', 'border-red-500', 'bg-red-50', 'text-red-800');
+                    item.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+                    if(icon) {
+                        icon.className = 'fa-solid fa-grip-vertical text-slate-400 mr-2 px-1 pointer-events-none';
+                    }
+                    const container = document.getElementById('sortableContainer');
+                    if (container) {
+                        container.appendChild(item);
+                    }
+                }, 800);
+            }
+        }
+    });
+
+    // 檢查是否全對並過關
+    if (checkedCount === slots.length && allCorrect) {
+        const db = chunkingDb[currentRoomId];
+        if (db && db[currentIndex]) {
+            roomProgress[currentRoomId] = Math.max(roomProgress[currentRoomId] || 0, currentIndex + 1);
+            if(window.showReward) window.showReward(10, '成功粉碎任務！');
+            setTimeout(() => {
+                if(window.unlockNextRoom) window.unlockNextRoom(currentRoomId);
+            }, 1000);
+        }
+    }
+};
+</script>
 </body>
 </html>
