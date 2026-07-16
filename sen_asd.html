@@ -891,53 +891,74 @@
         function verifyChunkingTask() {
             const slots = document.querySelectorAll('.blueprint-slot');
             const sourceContainer = document.getElementById('sortableContainer');
-            let isAllCorrect = true;
-            let filledSlots = 0;
+            let allCorrect = true;
+            let filledCount = 0;
             let hasErrors = false;
 
             slots.forEach(slot => {
-                const expectedId = slot.getAttribute('data-slot-id'); 
-                if (slot.children.length > 0) {
-                    filledSlots++;
-                    const child = slot.children[0];
-                    const childId = child.getAttribute('data-id'); 
-                    if (childId === expectedId) {
-                        child.className = child.className.replace(/border-slate-200|border-rose-400|hover:border-purple-300|cursor-grab/g, 'border-emerald-400')
-                                                        .replace(/bg-white|bg-rose-50/g, 'bg-emerald-50') + ' text-emerald-800 cursor-default';
-                        child.setAttribute('draggable', 'false');
-                        const icon = child.querySelector('.fa-grip-vertical');
-                        if (icon) {
-                            icon.className = "fa-solid fa-check text-emerald-500 mr-2 px-1 pointer-events-none";
-                        }
-                    } else {
-                        isAllCorrect = false;
-                        hasErrors = true;
-                        sourceContainer.appendChild(child); 
+                const expectedIndex = parseInt(slot.getAttribute('data-slot-id'));
+                const item = slot.querySelector('.sortable-item');
 
-                        child.classList.remove('shake-bounce');
-                        void child.offsetWidth; 
-                        child.classList.add('shake-bounce');
+                if (item) {
+                    filledCount++;
+                    const actualIndex = parseInt(item.getAttribute('data-index'));
+
+                    if (actualIndex === expectedIndex) {
+                        // 【答對的處理邏輯：鎖定與變色】
+                        item.classList.remove('border-slate-200', 'cursor-grab', 'hover:border-purple-300', 'hover:bg-purple-50');
+                        item.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-800', 'cursor-default');
                         
-                        child.classList.replace('border-slate-200', 'border-rose-400');
-                        child.classList.replace('bg-white', 'bg-rose-50');
+                        const icon = item.querySelector('i');
+                        if (icon) {
+                            icon.className = 'fa-solid fa-check text-emerald-600 mr-2 px-1 pointer-events-none';
+                        }
+
+                        // 徹底禁止拖曳與點擊，固定在插槽內
+                        item.setAttribute('draggable', 'false');
+                        item.style.pointerEvents = 'none';
+                        item.removeAttribute('onclick'); 
+                    } else {
+                        // 【答錯的處理邏輯：震動並退回】
+                        allCorrect = false;
+                        hasErrors = true;
+                        
+                        // 加入震動特效與錯誤顏色
+                        item.classList.remove('shake-bounce');
+                        void item.offsetWidth; 
+                        item.classList.add('shake-bounce', 'border-rose-500', 'bg-rose-50', 'text-rose-800');
+                        
+                        const icon = item.querySelector('i');
+                        if(icon) {
+                            icon.className = 'fa-solid fa-xmark text-rose-600 mr-2 px-1 pointer-events-none';
+                        }
+
+                        // 延遲一段時間讓玩家看到震動，然後退回左側碎片區
                         setTimeout(() => {
-                            child.classList.replace('border-rose-400', 'border-slate-200');
-                            child.classList.replace('bg-rose-50', 'bg-white');
-                        }, 800);
+                            item.classList.remove('shake-bounce', 'border-rose-500', 'bg-rose-50', 'text-rose-800');
+                            item.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+                            if(icon) {
+                                icon.className = 'fa-solid fa-grip-vertical text-slate-400 mr-2 px-1 pointer-events-none';
+                            }
+                            if (sourceContainer) {
+                                sourceContainer.appendChild(item);
+                            }
+                        }, 800); 
                     }
                 } else {
-                    isAllCorrect = false; 
+                    allCorrect = false;
                 }
             });
 
             const btn = document.getElementById('chkSortBtn');
 
-            if (filledSlots < slots.length && !hasErrors) {
+            // 檢查是否所有插槽都已填寫（且沒有錯誤正在退回中）
+            if (filledCount < slots.length && !hasErrors) {
                 showToast("⚠️ 請將所有步驟積木拖曳到插槽中！", "error");
                 return;
             }
 
-            if (isAllCorrect && filledSlots === slots.length) {
+            // 檢查是否全部插槽都填滿，且全部正確
+            if (allCorrect && filledCount === slots.length) {
                 consecutiveErrors = 0;
                 if (btn) {
                     btn.className = btn.className.replace(/bg-purple-600|bg-rose-600/g, 'bg-emerald-600') + ' scale-bounce';
@@ -948,21 +969,18 @@
                 roomResults[currentRoomId][roomProgress[currentRoomId]] = true;
 
                 updateGlobalExp(15);
-                showToast("🏆 任務切割順序完全正確！", "success");
                 fireConfetti();
                 
                 setTimeout(() => { nextQuizQuestion(); }, 1500);
-            } else {
-                if (hasErrors) {
-                    if (btn) {
-                        const origClass = btn.className;
-                        const origText = btn.innerHTML;
-                        btn.className = btn.className.replace(/bg-purple-600|bg-indigo-600/g, 'bg-rose-600');
-                        btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 順序錯誤！已退回錯誤步驟`;
-                        setTimeout(() => { btn.className = origClass; btn.innerHTML = origText; }, 1500);
-                    }
-                    handleTaskError();
+            } else if (hasErrors) {
+                if (btn) {
+                    const origClass = btn.className;
+                    const origText = btn.innerHTML;
+                    btn.className = btn.className.replace(/bg-purple-600|bg-indigo-600/g, 'bg-rose-600');
+                    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 順序錯誤！已退回錯誤步驟`;
+                    setTimeout(() => { btn.className = origClass; btn.innerHTML = origText; }, 1500);
                 }
+                handleTaskError();
             }
         }
 
