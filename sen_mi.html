@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心靈晴天：精神健康與情緒實修 (有限智能適用)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 拖曳與選取互動樣式 - 療癒的薰衣草/靛藍色系 */
+        .drop-zone { transition: all 0.2s ease; border-width: 4px; }
+        .drop-zone.dragover { background-color: #e0e7ff; border-color: #6366f1; transform: scale(1.05); }
+        .draggable-item { cursor: grab; transition: transform 0.1s, box-shadow 0.1s; touch-action: none; border: 2px solid transparent; }
+        .draggable-item:active { cursor: grabbing; transform: scale(0.95); }
+        .draggable-item.selected { border-color: #818cf8; background-color: #e0e7ff; transform: translateY(-3px); box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2); color: #4338ca; }
+        
+        /* 特殊互動特效 */
+        .memory-flash { animation: flash 0.5s ease-in-out; }
+        @keyframes flash { 0%, 100% { opacity: 1; filter: brightness(1); } 50% { opacity: 0.8; filter: brightness(1.2); box-shadow: 0 0 20px #a5b4fc;} }
+
+        /* 煙火特效粒子 */
+        .confetti { position: fixed; width: 10px; height: 10px; z-index: 9999; pointer-events: none; animation: fall linear forwards; border-radius: 2px; }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+        }
+        
+        /* 錯誤震動特效 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+        .pointer-events-none { pointer-events: none; }
+        
+        /* 心靈濾鏡淨化動畫 */
+        @keyframes purify {
+            0% { transform: scale(1); filter: grayscale(100%); opacity: 0.7; }
+            50% { transform: scale(1.08); filter: grayscale(0%); box-shadow: 0 0 25px rgba(52, 211, 153, 0.6); }
+            100% { transform: scale(1); filter: grayscale(0%); }
+        }
+        .animate-purify { animation: purify 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* 呼吸/充填呼吸燈 */
+        @keyframes pulse-energy {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.03); opacity: 1; box-shadow: 0 0 15px rgba(99, 102, 241, 0.3); }
+        }
+        .battery-fill-active { animation: pulse-energy 2s infinite ease-in-out; }
+
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15%); }
+        }
+        .animate-bounce-short { animation: bounce-short 0.5s ease-in-out; }
+    </style>
+</head>
+
+<body class="bg-indigo-50/50 flex flex-col h-screen overflow-hidden text-gray-800 font-sans">
+
+    <nav class="bg-indigo-600 text-white shadow-md no-print z-20 shrink-0">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html#sen_types" class="flex items-center gap-2 bg-indigo-700 hover:bg-indigo-800 px-3 py-2 rounded-xl transition text-indigo-50 hover:text-white shadow-inner">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回10大類別首頁</span>
+                </a>
+                <div class="flex flex-col justify-center border-l border-indigo-400 pl-4">
+                    <h1 class="text-sm sm:text-lg font-black tracking-tight leading-none flex items-center gap-2">
+                        <i class="fa-solid fa-brain text-indigo-200"></i> 心靈晴天實踐家
+                    </h1>
+                    <span class="text-[10px] text-indigo-200 font-bold block mt-1 tracking-widest">情緒與精神健康練習 (有限智能適用)</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button onclick="triggerResetModal()" class="text-xs bg-rose-500 hover:bg-rose-600 px-3 py-1.5 rounded-lg font-bold transition shadow">
+                    <i class="fa-solid fa-rotate-right"></i> 重置
+                </button>
+                <button id="toggle-sidebar" class="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white px-4 py-2 rounded-full text-sm font-bold transition shadow">
+                    <i class="fa-solid fa-list-ul"></i>
+                    <span class="hidden sm:inline">任務目錄</span>
+                </button>
+                <div class="flex items-center gap-2 bg-white/20 px-3 sm:px-4 py-1.5 rounded-full shadow-inner">
+                    <i class="fa-solid fa-heart text-pink-300"></i>
+                    <span class="text-xs font-bold hidden sm:inline">心靈抗逆力 :</span>
+                    <div class="w-20 sm:w-28 h-3 bg-indigo-900/30 rounded-full overflow-hidden">
+                        <div id="energy-bar" class="h-full bg-emerald-400 transition-all duration-500 ease-out" style="width: 0%;"></div>
+                    </div>
+                    <span id="energy-text" class="text-xs font-bold text-indigo-100">0%</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <!-- 左側邊欄 -->
+        <aside id="sidebar" class="w-72 bg-white shadow-xl flex flex-col shrink-0 transition-transform duration-300 z-10 border-r border-indigo-100 absolute h-full md:relative md:translate-x-0 -translate-x-full">
+            <div class="p-4 border-b border-indigo-100 bg-indigo-50/60 flex justify-between items-center">
+                <div>
+                    <h2 class="text-indigo-900 font-black text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-route"></i> 心靈探索地圖
+                    </h2>
+                    <p class="text-xs text-indigo-600 mt-1">一步一步，學會照顧自己的心！</p>
+                </div>
+                <button id="close-sidebar" class="md:hidden text-indigo-700 hover:text-indigo-950 p-2">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div id="level-list" class="flex-1 overflow-y-auto p-3 space-y-3 no-scrollbar pb-20">
+                <!-- 動態生成關卡選單 -->
+            </div>
+        </aside>
+
+        <!-- 右側主內容區 -->
+        <main class="flex-1 p-4 sm:p-6 overflow-y-auto flex flex-col bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-gray-50/50">
+            <div class="max-w-5xl mx-auto w-full bg-white/95 backdrop-blur rounded-3xl shadow-xl p-5 sm:p-8 flex flex-col border-4 border-indigo-100 flex-1 relative">
+                
+                <!-- 標題與進度 -->
+                <div class="mb-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                        <div>
+                            <span id="current-stage-tag" class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block shadow-sm">階段</span>
+                            <h2 id="current-level-title" class="text-2xl sm:text-3xl font-black text-indigo-700 mb-2">載入中...</h2>
+                            <p id="current-level-desc" class="text-gray-600 text-sm sm:text-base font-medium bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 inline-block">任務準備中...</p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap bg-gray-50 p-2 rounded-2xl border border-gray-100" id="progress-nodes"></div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-6 flex-1">
+                    <!-- 左半部：互動區 -->
+                    <div class="flex-1 border-4 border-dashed border-indigo-200 rounded-3xl p-4 sm:p-8 flex flex-col bg-white relative shadow-sm min-h-[400px]">
+                        <div class="absolute top-4 right-4 z-10 flex gap-3">
+                            <button onclick="checkCurrentAnswer()" id="submit-btn" class="hidden bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-5 py-2 text-base font-black shadow-lg transition transform hover:scale-105">
+                                <i class="fa-solid fa-check-circle"></i> 提交答案
+                            </button>
+                            <!-- 全局播放題目按鈕 -->
+                            <button onclick="playTTS(document.getElementById('current-level-desc').innerText)" class="text-white bg-indigo-400 hover:bg-indigo-300 rounded-full w-12 h-12 flex items-center justify-center transition shadow-lg hover:animate-bounce" title="聽聽任務內容">
+                                <i class="fa-solid fa-volume-high text-xl"></i>
+                            </button>
+                        </div>
+                        <h3 class="text-xl font-black text-indigo-600 mb-6 flex items-center gap-2">
+                            <i class="fa-solid fa-puzzle-piece"></i> 實戰演練
+                        </h3>
+                        <!-- 動態生成題目內容 -->
+                        <div id="interactive-area" class="flex-1 flex flex-col justify-center items-center gap-6 w-full"></div>
+                    </div>
+
+                    <!-- 右半部：提示與回饋板 -->
+                    <div class="w-full lg:w-1/3 bg-indigo-50/60 border-4 border-indigo-100 rounded-3xl p-5 flex flex-col">
+                        <h3 class="text-lg font-black text-indigo-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-yellow-500 text-xl"></i> 實用提示
+                        </h3>
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-indigo-100 flex-1 flex flex-col">
+                            <p id="hint-content" class="text-gray-700 text-base sm:text-lg font-bold leading-relaxed mb-4">任務提示將顯示於此...</p>
+                            
+                            <div class="mt-auto flex flex-col gap-3">
+                                <div id="feedback-area" class="hidden p-4 rounded-xl text-lg font-black text-center transition-all shadow-sm"></div>
+                                <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 rounded-2xl shadow-md transition text-lg flex items-center justify-center gap-2">
+                                    下一題 <i class="fa-solid fa-circle-arrow-right"></i>
+                                </button>
+                                <button id="retry-btn" onclick="retryQuestion()" class="hidden w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-black py-4 rounded-2xl shadow-md transition text-lg flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-rotate-right"></i> 重新嘗試
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- 自定義重置確認彈窗 -->
+    <div id="reset-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full border-4 border-indigo-100 text-center animate-bounce-short">
+            <i class="fa-solid fa-circle-exclamation text-6xl text-rose-500 mb-4"></i>
+            <h3 class="text-xl font-black text-indigo-900 mb-2">確定要重新開始嗎？</h3>
+            <p class="text-gray-600 text-sm mb-6">這將會清除您所有的心靈成長紀錄與關卡進度喔！</p>
+            <div class="flex gap-4">
+                <button onclick="confirmReset()" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 rounded-2xl transition shadow-md">
+                    重置進度
+                </button>
+                <button onclick="closeResetModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-2xl transition">
+                    取消
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const blLevels = [
+            // --- 第一階段：認識情緒與身體訊號 ---
+            {
+                id: 1, stage: "第一階段：認識情緒", title: "1. 情緒大分類", type: "drag-category",
+                desc: "任務：每個人都有各種情緒，它們沒有對錯。請將以下的情緒，正確分類到它們所代表的心理狀態。",
+                questions: [
+                    { 
+                        categories: ["☀️ 舒適/放鬆的情緒", "🌧️ 沉重/需要照顧的情緒"], 
+                        words: [
+                            { text: "平靜安心", cat: "☀️ 舒適/放鬆的情緒" },
+                            { text: "焦慮緊張", cat: "🌧️ 沉重/需要照顧的情緒" },
+                            { text: "快樂興奮", cat: "☀️ 舒適/放鬆的情緒" },
+                            { text: "傷心難過", cat: "🌧️ 沉重/需要照顧的情緒" },
+                            { text: "憤怒生氣", cat: "🌧️ 沉重/需要照顧的情緒" },
+                            { text: "充滿期待", cat: "☀️ 舒適/放鬆的情緒" }
+                        ],
+                        hint: "「舒適」的情緒讓我們身體放鬆；「沉重」的情緒讓我們繃緊。不論哪種情緒，都是正常且重要的一部分。" 
+                    }
+                ]
+            },
+            {
+                id: 2, stage: "第一階段：認識情緒", title: "2. 壓力下的身體訊號", type: "choice",
+                desc: "任務：當我們感到極度緊張或壓力很大時，身體會主動發出訊號來提醒我們。請找出合適的判斷。",
+                questions: [
+                    { q: "當你即將要上台演講或者面對大考試時，身體【最常出現】的緊張訊號是？", options: ["身體感覺輕飄飄、很想唱歌", "心跳加速、呼吸變得急促或手心出汗", "肚子咕嚕叫，很想吃大餐"], answer: 1, hint: "緊張時，我們體內的警報系統會開起，心臟會大力跳動以運送血液，這是正常的保護機制。" },
+                    { q: "如果連續好幾天，你一想到某件事就覺得【胃痛、睡不著】，這代表身體在向你發出什麼暗示？", options: ["只是剛好著涼了", "我的身體在提醒我：『最近累積太多壓力了，需要放鬆！』", "代表我應該吃更多辣的食物來發洩"], answer: 1, hint: "長期的心理不適（如焦慮）會直接轉化為胃痛或失眠，提醒我們要關心自己。" }
+                ]
+            },
+            // --- 第二階段：消除精神健康誤解與認知重建 ---
+            {
+                id: 3, stage: "第二階段：消除誤解與認知重建", title: "3. 消除精神病污名", type: "choice",
+                desc: "任務：學習正確認識精神健康，不給別人貼標籤。",
+                questions: [
+                    { q: "有人說：「患有憂鬱症（抑鬱症）的人只是因為不夠堅強、太懶惰了。」這個說法正確嗎？", options: ["完全正確，他們要想開一點", "不正確。憂鬱症是一種常見的腦部與心理狀況，需要關懷、治療與時間康復，並非懶惰", "沒嫌，他們多運動就會馬上好起來"], answer: 1, hint: "憂鬱症就像感冒一樣是一種疾病，會讓人提不起勁，這不是患者自願的，需要專業醫療協助。" },
+                    { q: "如果一位患有過精神病（如思覺失調）的同學已經康復，並且重返校園，我們應該怎麼對待他？", options: ["刻意遠離他，或對他指指點點", "像對待普通同學一樣，用尊重和平常心與他相處", "一直不停地詢問他的病情細節"], answer: 1, hint: "尊重、接納和給予平等的機會，是幫助精神康復者完全重返校園最關鍵的良藥。" }
+                ]
+            },
+            {
+                id: 4, stage: "第二階段：消除誤解與認知重建", title: "4. 🔍 思想放大鏡", type: "lens-purify",
+                desc: "任務：當我們陷入情緒低潮時，容易產生極端思想。請戴上「健康鏡片」，點擊選出最客觀、健康的替代想法，將「思想垃圾」資源回收並淨化！",
+                questions: [
+                    { 
+                        negText: "😭「我這次考試考砸了，我就是個徹頭徹尾的廢物，什麼都做不好！」", 
+                        options: [
+                            "「我果然甚麼都做不好，下次也不用努力了。」", 
+                            "「我這次沒考好，但我可以找出原因，下次好好改進，這不代表我是廢物。」", 
+                            "「只要我不看分數，這件事就沒有發生過。」"
+                        ], 
+                        answer: 1, 
+                        hint: "思想陷阱就像「哈哈鏡」，會把局部的不完美放大成一文不值。用「客觀濾鏡」能讓我們看清事实，給自己重來的力量。" 
+                    },
+                    { 
+                        negText: "😠「朋友今天走過沒主動跟我打招呼，他一定是討厭我、想跟我絕交了！」", 
+                        options: [
+                            "「我也要故意不理他，看誰先認輸。」", 
+                            "「他也許只是今天很累，或者沒看見我，我不急著下定論，明天再找他問問。」", 
+                            "「我做人真的很失敗，大家都討厭我。」"
+                        ], 
+                        answer: 1, 
+                        hint: "這叫「讀心術」與「災難化」陷阱。在沒有證據前，給對方和自己保留一個更友善、客觀的解釋吧。" 
+                    }
+                ]
+            },
+            // --- 第三階段：心靈急救、充電與危機應變 ---
+            {
+                id: 5, stage: "第三階段：心靈急救與應變", title: "5. 深呼吸放鬆步驟", type: "sequence",
+                desc: "任務：當你感到呼吸急促、大腦一片混亂或極度生氣時，請排列「深呼吸放鬆法」的正確步驟。",
+                questions: [
+                    { 
+                        orig: "深呼吸放鬆步驟", 
+                        words: ["尋找一個安全、舒服的地方坐好", "用鼻子慢慢吸氣，感覺肚子像氣球鼓起", "屏住呼吸一小會（停頓一秒）", "用嘴巴慢慢將氣呼出來，帶走壓力"], 
+                        answer: ["尋找一個安全、舒服的地方坐好", "用鼻子慢慢吸氣，感覺肚子像氣球鼓起", "屏住呼吸一小會（停頓一秒）", "用嘴巴慢慢將氣呼出來，帶走壓力"], 
+                        hint: "放鬆是需要程序的：先安頓身體，然後徐徐吸氣、短暫停留、最後將廢氣慢慢呼出。" 
+                    }
+                ]
+            },
+            {
+                id: 6, stage: "第三階段：心靈急救與應變", title: "6. 🔋 健康電量充填站", type: "drag-battery",
+                desc: "任務：壓力來臨時，每個人都需要為自己的「心靈電池」充電。請將健康的紓壓方式拖曳到「特工電量電池」中，把不健康的破壞性行為丟進「毒素垃圾桶」！",
+                questions: [
+                    { 
+                        categories: ["🔋 特工電量電池 (健康充電)", "🗑️ 毒素垃圾桶 (不健康發洩)"], 
+                        words: [
+                            { text: "🎵 聽喜歡的音樂", cat: "🔋 特工電量電池 (健康充電)" },
+                            { text: "🔨 摔東西和打牆壁出氣", cat: "🗑️ 毒素垃圾桶 (不健康發洩)" },
+                            { text: "🗣️ 找信任的朋友或社工聊聊", cat: "🔋 特工電量電池 (健康充電)" },
+                            { text: "🩸 傷害自己的身體", cat: "🗑️ 毒素垃圾桶 (不健康發洩)" },
+                            { text: "🎨 用彩色筆在紙上亂畫發洩", cat: "🔋 特工電量電池 (健康充電)" },
+                            { text: "🍽️ 絕食、整天不吃飯折磨自己", cat: "🗑️ 毒素垃圾桶 (不健康發洩)" },
+                            { text: "🍵 喝一杯溫水並緩慢呼吸", cat: "🔋 特工電量電池 (健康充電)" }
+                        ],
+                        hint: "「健康充電」能舒緩內心且不留後遺症；「不健康發洩」雖然有一時的快感，卻會對身體或人際關係造成二次傷害。" 
+                    }
+                ]
+            },
+            {
+                id: 7, stage: "第三階段：心靈急救與應變", title: "7. 情緒發洩管道", type: "choice",
+                desc: "任務：感到生氣、憤怒或受挫折時，如何選擇安全不傷人的方法？",
+                questions: [
+                    { q: "當你極度生氣、很想動手打人或摔東西時，以下哪一個是【最安全且健康】的宣洩方法？", options: ["把桌上的東西全部推倒並用力踢牆壁", "先離開現場去洗手間洗臉，並用筆紙把生氣的原因寫下來或撕碎", "用力打旁邊的同學一下"], answer: 1, hint: "生氣時需要冷卻時間，可以透過寫字、撕紙等不傷害自己和別人的動作來轉移衝動。" },
+                    { q: "如果一整天心情都很悶、想哭，以下哪一種事情【比較能夠幫你恢復平衡】？", options: ["把自己關在房間不吃不喝", "去操場散散步、聽喜歡的放鬆音樂，或者向信任的人傾訴", "去通宵打機不睡覺"], answer: 1, hint: "動態的放鬆（如散步）、聲學療癒（音樂）與情緒傾訴，都像陽光一樣可以帶走心中的烏雲。" }
+                ]
+            },
+            {
+                id: 8, stage: "第三階段：心靈急救與應變", title: "8. 💣 拆解焦慮炸彈", type: "sequence",
+                desc: "任務：當我們極度焦慮或恐慌發作、大腦一片混亂時，請依照最安全、有邏輯的標準處理步驟，將以下 4 個危機拆解積木排好順序。",
+                questions: [
+                    { 
+                        orig: "焦慮恐慌發作時的標準步驟", 
+                        words: [
+                            "1️⃣ 停下正在做的事情，找個安全的地方坐下", 
+                            "2️⃣ 緩慢深呼吸 5 次，感覺氣流進入身體", 
+                            "3️⃣ 喝一口溫水，用溫暖的感覺讓身體冷靜", 
+                            "4️⃣ 告訴身邊信任的人：『我現在需要休息。』"
+                        ], 
+                        answer: [
+                            "1️⃣ 停下正在做的事情，找個安全的地方坐下", 
+                            "2️⃣ 緩慢深呼吸 5 次，感覺氣流進入身體", 
+                            "3️⃣ 喝一口溫水，用溫暖的感覺讓身體冷靜", 
+                            "4️⃣ 告訴身邊信任的人：『我現在需要休息。』"
+                        ], 
+                        hint: "危機發生時要採取「停、息、水、訴」原則：先停下、後深呼吸、喝水安撫、最後主動告知尋求安全環境。" 
+                    }
+                ]
+            },
+            // --- 第四階段：同理心與人際支持 (含邊界與拒絕) ---
+            {
+                id: 9, stage: "第四階段：人際支持與保護", title: "9. 同理心陪伴", type: "choice",
+                desc: "任務：身邊的同學或同事正因精神壓力或情緒而痛苦，學習合適的相處對話。",
+                questions: [
+                    { q: "你的好朋友因為家裡的事非常難過，在走廊哭泣。這時你說哪一句話【最能溫暖他的心】？", options: ["「這點小事有什麼好哭的？走啦，去買零食。」", "「我看著你哭也很難過，如果你想聊聊，我隨時在這裡陪你。」", "「別哭了，你這樣哭很難看耶。」"], answer: 1, hint: "同理心是不要急著給建議，也不要否定別人的痛苦，而是傳遞「我會陪著你」的感覺。" },
+                    { q: "當一位患有憂鬱症的同學正向你訴說他覺得生活很累時，我們應該避免說什麼？", options: ["傾聽並握握他的手", "避免說：「你只是不知足，看看別人多辛苦！」這類指責的話", "告訴他你會陪伴他"], answer: 1, hint: "「你只是不知足」是不負責任的道德綁架，這會關閉對方的求救通道，加深孤獨感。" }
+                ]
+            },
+            {
+                id: 10, stage: "第四階段：人際支持與保護", title: "10. 🛡️ 人際邊界防護罩", type: "choice",
+                desc: "任務：不懂得拒絕會累積巨大壓力，但粗暴的拒絕又會引發衝突。請選出「既能保護自己心靈、又不會傷害他人關係」的溫和防護罩台詞！",
+                questions: [
+                    { 
+                        q: "「同學一直跑來找你倒垃圾、吐苦水，但他所講的話已經讓你覺得非常煩躁和心力交瘁了...」你該怎麼說？", 
+                        options: [
+                            "「你煩不煩啊？我自己的問題都一堆了，不要再拿你的破事來煩我！」", 
+                            "「我現在有點累，可能沒辦法很專心地聽你訴苦。我們明天再找時間聊聊，好嗎？」", 
+                            "（什麼都不說，直接轉身冷漠走開，並在心裡對他生悶氣）"
+                        ], 
+                        answer: 1, 
+                        hint: "保護邊界並不是攻擊別人。用「我」出發（I-message），說明自己的狀態，並提供一個替代方案，最溫和有效。" 
+                    },
+                    { 
+                        q: "「小組報告分工時，組員要求你一個人負責全部的搜集、打字和排版工作，你覺得壓力過大無法負荷...」你該怎麼說？", 
+                        options: [
+                            "「好啦好啦，我做就是了...（內心委屈、一邊哭一邊做）」", 
+                            "「憑什麼要我一個人做？你們都是寄生蟲，我不要跟你們一組了！」", 
+                            "「這份報告是大家共同的責任。我一個人做不完，但我可以負責打字，其餘部分大家分工，好嗎？」"
+                        ], 
+                        answer: 2, 
+                        hint: "委屈自己會損害心理健康，暴怒則會破壞關係。清楚說明自己的負荷底線，並提出合理解決方案才是王道。" 
+                    }
+                ]
+            },
+            // --- 第五階段：尋求專業求助 ---
+            {
+                id: 11, stage: "第五階段：尋求專業協助", title: "11. 呼叫心靈救護車", type: "fill-blank",
+                desc: "任務：如果自己或同學長期情緒崩潰，有時需要找尋「心靈救護車」——專業的心理求助管道。請填入對應的詞。",
+                questions: [
+                    { 
+                      text: "如果我覺得心裡真的很痛苦、甚至有想傷害自己的念頭，在學校我可以找 [__1__] 幫忙；在社會上我可以撥打 [__2__] 熱線，或是直接去 [__3__] 尋求精神科醫生或臨床心理學家的專業診斷，這樣做代表我很勇敢、懂得保護自己。", 
+                      blanks: ["社工或輔導老師", "撒瑪利亞防止自殺會", "醫院或心理諮詢中心"], 
+                      options: ["社工或輔導老師", "撒瑪利亞防止自殺會", "網吧老闆", "警察", "醫院或心理諮詢中心"],
+                      hint: "尋求專業幫忙是保護生命的最高表現。學校有社工，社區有熱線與醫院。" 
+                    }
+                ]
+            }
+        ];
+
+        let state = { currentLevelIndex: 0, energyAnswered: 0 };
+        const totalQuestions = blLevels.reduce((sum, level) => sum + level.questions.length, 0);
+
+        let currentQIndex = 0;
+        let userSequence = []; 
+        let globalSelectedObj = null;
+        let checkCurrentAnswer = () => {}; 
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadProgress();
+            initSidebar();
+            loadLevel(state.currentLevelIndex);
+            
+            // 任務目錄開關按鈕
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggle-sidebar');
+            const closeBtn = document.getElementById('close-sidebar');
+
+            toggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.toggle('md:translate-x-0');
+                    sidebar.classList.toggle('md:-translate-x-full');
+                    sidebar.classList.toggle('md:absolute');
+                } else {
+                    sidebar.classList.toggle('-translate-x-full');
+                }
+            });
+
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.add('md:-translate-x-full');
+                }
+            });
+        });
+
+        function saveProgress() {
+            try {
+                localStorage.setItem('senMiState', JSON.stringify(state));
+            } catch(e) {
+                console.warn("無法儲存進度：", e);
+            }
+            updateEnergy();
+        }
+
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('senMiState');
+                if(saved) {
+                    const parsedState = JSON.parse(saved);
+                    if (parsedState && typeof parsedState.currentLevelIndex === 'number') {
+                        state.currentLevelIndex = parsedState.currentLevelIndex;
+                    }
+                    if (parsedState && typeof parsedState.energyAnswered === 'number') {
+                        state.energyAnswered = parsedState.energyAnswered;
+                    }
+                    if(state.currentLevelIndex >= blLevels.length || state.currentLevelIndex < 0) {
+                        state.currentLevelIndex = 0;
+                    }
+                }
+            } catch(e) {
+                console.warn("無法讀取進度，以初始狀態載入：", e);
+                state = { currentLevelIndex: 0, energyAnswered: 0 };
+            }
+            updateEnergy();
+        }
+
+        function triggerResetModal() {
+            document.getElementById('reset-modal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('reset-modal').classList.add('hidden');
+        }
+
+        function confirmReset() {
+            closeResetModal();
+            state = { currentLevelIndex: 0, energyAnswered: 0 };
+            saveProgress();
+            initSidebar();
+            loadLevel(0);
+        }
+
+        function updateEnergy() {
+            const bar = document.getElementById('energy-bar');
+            const text = document.getElementById('energy-text');
+            let percent = Math.min(Math.round((state.energyAnswered / totalQuestions) * 100), 100);
+            bar.style.width = percent + '%';
+            text.innerText = percent + '%';
+        }
+
+        function initSidebar() {
+            const list = document.getElementById('level-list');
+            list.innerHTML = '';
+            let currentStage = "";
+            
+            blLevels.forEach((level, index) => {
+                if (level.stage !== currentStage) {
+                    currentStage = level.stage;
+                    const stageDiv = document.createElement('div');
+                    stageDiv.className = 'text-xs font-black text-indigo-500 mt-5 mb-2 px-2 border-l-4 border-indigo-500';
+                    stageDiv.innerText = currentStage;
+                    list.appendChild(stageDiv);
+                }
+
+                const btn = document.createElement('button');
+                const isActive = index === state.currentLevelIndex;
+                btn.className = `w-full text-left px-3 py-3 rounded-2xl border-2 transition font-bold text-sm flex items-center gap-2 ${isActive ? 'border-indigo-500 bg-indigo-50 text-indigo-800 shadow-md transform scale-[1.02]' : 'border-indigo-100 bg-white hover:border-indigo-400 text-gray-600'}`;
+                btn.innerHTML = `<i class="fa-solid fa-heart-pulse ${isActive ? 'text-indigo-500 animate-pulse' : 'text-gray-300'} w-5 text-center"></i> <span class="truncate">${level.title}</span>`;
+                
+                btn.onclick = () => {
+                    state.currentLevelIndex = index;
+                    saveProgress();
+                    initSidebar(); 
+                    loadLevel(state.currentLevelIndex);
+                    if (window.innerWidth < 768) {
+                        document.getElementById('sidebar').classList.add('-translate-x-full');
+                    }
+                };
+                list.appendChild(btn);
+            });
+        }
+
+        function loadLevel(levelIndex) {
+            currentQIndex = 0;
+            const level = blLevels[levelIndex];
+            
+            document.getElementById('current-stage-tag').innerText = level.stage;
+            document.getElementById('current-level-title').innerText = level.title;
+            document.getElementById('current-level-desc').innerText = level.desc;
+            
+            renderProgressNodes(level);
+            renderQuestion();
+        }
+
+        function renderProgressNodes(level) {
+            const container = document.getElementById('progress-nodes');
+            container.innerHTML = '';
+            const qCount = level.questions.length;
+            
+            for(let i=0; i<qCount; i++) {
+                const node = document.createElement('div');
+                node.className = 'flex items-center gap-1';
+                const circle = document.createElement('div');
+                circle.className = `w-8 h-8 rounded-full flex items-center justify-center font-black text-sm border-2 transition-all duration-300 ${i < currentQIndex ? 'bg-indigo-500 border-indigo-500 text-white shadow-md' : (i === currentQIndex ? 'bg-yellow-300 border-yellow-400 text-yellow-800 shadow-md scale-110' : 'bg-gray-100 border-gray-200 text-gray-400')}`;
+                circle.innerHTML = i < currentQIndex ? '<i class="fa-solid fa-check"></i>' : (i + 1);
+                node.appendChild(circle);
+                container.appendChild(node);
+            }
+        }
+
+        function renderQuestion() {
+            const level = blLevels[state.currentLevelIndex];
+            if(currentQIndex >= level.questions.length) {
+                showLevelComplete();
+                return;
+            }
+
+            const qData = level.questions[currentQIndex];
+            const area = document.getElementById('interactive-area');
+            const hintArea = document.getElementById('hint-content');
+            const feedback = document.getElementById('feedback-area');
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const retryBtn = document.getElementById('retry-btn');
+            
+            area.innerHTML = ''; 
+            feedback.className = 'hidden'; 
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            if(retryBtn) retryBtn.classList.add('hidden');
+            userSequence = [];
+            globalSelectedObj = null;
+            checkCurrentAnswer = () => {}; 
+            
+            renderProgressNodes(level);
+            hintArea.innerHTML = `<span class="text-indigo-600 block mb-2"><i class="fa-solid fa-comment-dots"></i> 暖心小提示：</span>${qData.hint || "請仔細閱讀並選擇最合適的答案。"}`;
+            
+            setTimeout(() => playTTS(qData.q || qData.text || qData.audioText || qData.negText || level.desc), 500);
+            
+            if (level.type === 'drag-category') {
+                renderCategory(qData, area, submitBtn);
+            } else if (level.type === 'choice') {
+                renderChoice(qData, area, submitBtn);
+            } else if (level.type === 'sequence') {
+                renderSequence(qData, area, submitBtn);
+            } else if (level.type === 'fill-blank') {
+                renderFillBlank(qData, area, submitBtn);
+            } else if (level.type === 'lens-purify') {
+                renderLensPurify(qData, area, submitBtn);
+            } else if (level.type === 'drag-battery') {
+                renderDragBattery(qData, area, submitBtn);
+            }
+        }
+
+        function clearSelection() {
+            document.querySelectorAll('.draggable-item').forEach(el => el.classList.remove('selected', 'ring-4', 'ring-indigo-400'));
+            globalSelectedObj = null;
+        }
+
+        function dismissWarning() {
+            const feedbackArea = document.getElementById('feedback-area');
+            if (feedbackArea.classList.contains('bg-amber-50')) {
+                feedbackArea.classList.add('hidden');
+            }
+        }
+
+        function renderCategory(qData, container, submitBtn) {
+            const boxesContainer = document.createElement('div');
+            boxesContainer.className = 'flex flex-col md:flex-row gap-6 w-full justify-center mb-8';
+
+            qData.categories.forEach(cat => {
+                const boxWrapper = document.createElement('div');
+                boxWrapper.className = 'flex flex-col items-center flex-1 w-full min-w-[200px]';
+                
+                const box = document.createElement('div');
+                box.className = 'drop-zone w-full min-h-[160px] border-4 border-dashed border-indigo-300 rounded-3xl flex flex-col items-center p-3 bg-indigo-50/50 shadow-sm transition relative overflow-hidden';
+                box.innerHTML = `
+                    <div class="bg-white rounded-full w-14 h-14 flex items-center justify-center mb-2 shadow-sm pointer-events-none">
+                        <i class="fa-solid fa-box-open text-3xl text-indigo-500"></i>
+                    </div>
+                    <span class="font-black text-sm sm:text-base bg-indigo-200 text-indigo-900 px-4 py-1 rounded-full pointer-events-none whitespace-nowrap">${cat}</span>
+                `;
+                
+                const itemContainer = document.createElement('div');
+                itemContainer.className = 'w-full flex flex-wrap justify-center gap-2 mt-4 pointer-events-none';
+                box.appendChild(itemContainer);
+
+                box.addEventListener('dragover', (e) => { e.preventDefault(); box.classList.add('dragover'); });
+                box.addEventListener('dragleave', () => { box.classList.remove('dragover'); });
+                box.addEventListener('drop', (e) => {
+                    e.preventDefault(); box.classList.remove('dragover');
+                    const wordText = e.dataTransfer.getData('text/plain');
+                    if(wordText) processCategoryDrop(wordText, itemContainer);
+                });
+                
+                box.addEventListener('click', () => {
+                    if(globalSelectedObj) processCategoryDrop(globalSelectedObj.dataset.text, itemContainer, globalSelectedObj);
+                });
+
+                boxWrapper.appendChild(box);
+                boxesContainer.appendChild(boxWrapper);
+            });
+
+            const wordsContainer = document.createElement('div');
+            wordsContainer.className = 'flex flex-wrap gap-4 w-full justify-center min-h-[100px] bg-gray-100 p-6 rounded-3xl shadow-inner border-2 border-gray-200';
+            
+            let shuffledWords = [...qData.words].sort(() => Math.random() - 0.5);
+
+            shuffledWords.forEach(w => {
+                const wordBlock = document.createElement('div');
+                wordBlock.className = 'draggable-item bg-white text-gray-800 border-2 border-indigo-200 font-black text-base sm:text-lg py-2 sm:py-3 px-4 sm:px-5 rounded-2xl shadow-md select-none transition flex items-center gap-3 cursor-pointer';
+                wordBlock.draggable = true;
+                wordBlock.dataset.text = w.text;
+                
+                wordBlock.innerHTML = `
+                    <span>${w.text}</span>
+                    <button class="tts-btn bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-full w-8 h-8 flex items-center justify-center transition shrink-0" onclick="event.stopPropagation(); playTTS('${w.text}')" title="聆聽">
+                        <i class="fa-solid fa-volume-low text-sm"></i>
+                    </button>
+                `;
+
+                wordBlock.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', w.text);
+                    e.dataTransfer.effectAllowed = 'move';
+                    setTimeout(() => wordBlock.classList.add('opacity-50'), 0);
+                    clearSelection();
+                    dismissWarning();
+                });
+                wordBlock.addEventListener('dragend', () => wordBlock.classList.remove('opacity-50'));
+                
+                wordBlock.addEventListener('click', (e) => {
+                    if (e.target.closest('.tts-btn')) return;
+                    dismissWarning();
+                    if (wordBlock.classList.contains('selected')) {
+                        clearSelection();
+                        return;
+                    }
+                    clearSelection();
+                    wordBlock.classList.add('selected');
+                    globalSelectedObj = wordBlock;
+                });
+                
+                wordsContainer.appendChild(wordBlock);
+            });
+
+            container.appendChild(boxesContainer);
+            container.appendChild(wordsContainer);
+            
+            submitBtn.classList.remove('hidden');
+            
+            function processCategoryDrop(wordText, itemContainer, originalEl = null) {
+                let elToMove = originalEl || document.querySelector(`.draggable-item[data-text="${wordText}"]`);
+                if (elToMove) {
+                    itemContainer.appendChild(elToMove);
+                    clearSelection();
+                    dismissWarning();
+                }
+            }
+
+            checkCurrentAnswer = () => {
+                let allCorrect = true;
+                let sortedItems = 0;
+                
+                qData.categories.forEach((cat, index) => {
+                    const boxWrapper = boxesContainer.children[index];
+                    const itemContainer = boxWrapper.querySelector('div:last-child');
+                    const items = itemContainer.querySelectorAll('.draggable-item');
+                    sortedItems += items.length;
+                    
+                    items.forEach(item => {
+                        const wordText = item.dataset.text;
+                        const correctCat = qData.words.find(w => w.text === wordText).cat;
+                        if (correctCat !== cat) {
+                            allCorrect = false;
+                        }
+                    });
+                });
+                
+                /* 強制提交檢查與即時拒絕邏輯 */
+                if (sortedItems < qData.words.length) {
+                    showFeedback("warning", "請將所有情緒都分類完畢，我們再一起對答案喔！");
+                    return;
+                }
+                
+                showFeedback(allCorrect, allCorrect ? "太棒了！您對情緒分類掌握得非常好！" : "有些情緒需要重新安放，再次確認喔。");
+            };
+        }
+
+        function renderLensPurify(qData, container, submitBtn) {
+            const negBubble = document.createElement('div');
+            negBubble.className = 'w-full bg-slate-100 border-4 border-slate-300 p-6 rounded-3xl text-center shadow-inner relative transition duration-500 overflow-hidden';
+            negBubble.id = 'trash-thought-bubble';
+            negBubble.innerHTML = `
+                <div class="absolute -top-1 -right-1 bg-slate-400 text-white text-xs font-black px-3 py-1 rounded-bl-2xl">
+                    <i class="fa-solid fa-cloud-showers-heavy mr-1"></i> 負面思想灰塵
+                </div>
+                <p class="text-xl sm:text-2xl font-black text-slate-600 tracking-wide line-through decoration-slate-400/50" id="neg-thought-text">${qData.negText}</p>
+            `;
+            container.appendChild(negBubble);
+
+            const actionText = document.createElement('p');
+            actionText.className = 'text-indigo-600 font-black text-sm text-center -my-2 flex items-center gap-2 justify-center';
+            actionText.innerHTML = '<i class="fa-solid fa-magnifying-glass animate-bounce"></i> 請點擊下方一個健康的「客觀鏡片」來淨化這段想法：';
+            container.appendChild(actionText);
+
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'flex flex-col gap-4 w-full max-w-2xl';
+
+            qData.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white border-2 border-indigo-100 hover:border-indigo-400 hover:bg-indigo-50 text-gray-700 font-bold text-base sm:text-lg p-4 sm:p-5 rounded-2xl text-left transition shadow-sm flex items-center justify-between group';
+                btn.innerHTML = `
+                    <span class="flex-1 pr-4 text-left"><i class="fa-solid fa-circle-nodes text-indigo-400 mr-2"></i> ${opt}</span>
+                    <i class="fa-solid fa-wand-magic-sparkles text-2xl text-gray-200 group-hover:text-indigo-300 transition shrink-0"></i>
+                `;
+                btn.onclick = () => {
+                    const buttons = optionsContainer.querySelectorAll('button');
+                    buttons.forEach(b => {
+                        b.classList.remove('border-indigo-500', 'bg-indigo-50', 'ring-2', 'ring-indigo-300');
+                        b.querySelector('i').classList.replace('text-indigo-500', 'text-gray-200');
+                    });
+                    btn.classList.add('border-indigo-500', 'bg-indigo-50', 'ring-2', 'ring-indigo-300');
+                    btn.querySelector('i').classList.replace('text-gray-200', 'text-indigo-500');
+                    
+                    userSequence = [index]; 
+                    submitBtn.classList.remove('hidden');
+                };
+                optionsContainer.appendChild(btn);
+            });
+            container.appendChild(optionsContainer);
+            
+            checkCurrentAnswer = () => {
+                if (userSequence.length === 0) return showFeedback(false, "請先點擊選擇一個淨化鏡片！");
+                const isCorrect = userSequence[0] === qData.answer;
+                
+                if (isCorrect) {
+                    negBubble.classList.remove('bg-slate-100', 'border-slate-300');
+                    negBubble.classList.add('bg-emerald-50', 'border-emerald-400', 'animate-purify');
+                    
+                    const trashTag = negBubble.querySelector('div');
+                    trashTag.className = 'absolute -top-1 -right-1 bg-emerald-500 text-white text-xs font-black px-3 py-1 rounded-bl-2xl';
+                    trashTag.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> 已成功淨化思想！';
+
+                    const negTextEl = document.getElementById('neg-thought-text');
+                    negTextEl.classList.remove('text-slate-600', 'line-through');
+                    negTextEl.classList.add('text-emerald-800', 'font-black');
+                    negTextEl.innerText = "✨「" + qData.options[qData.answer] + "」";
+                }
+                
+                showFeedback(isCorrect, isCorrect ? "淨化大成功！這就是健康的『客觀思想濾鏡』，能消除災難化思考！" : "這個濾鏡好像沒有成功過濾，再換一個試試看。");
+            };
+        }
+
+        function renderDragBattery(qData, container, submitBtn) {
+            const boxesContainer = document.createElement('div');
+            boxesContainer.className = 'flex flex-col md:flex-row gap-6 w-full justify-center mb-8';
+
+            qData.categories.forEach((cat, index) => {
+                const boxWrapper = document.createElement('div');
+                boxWrapper.className = 'flex flex-col items-center flex-1 w-full min-w-[200px]';
+                
+                const box = document.createElement('div');
+                const isBattery = cat.includes("電池");
+                
+                if (isBattery) {
+                    box.className = 'drop-zone w-full min-h-[180px] border-4 border-dashed border-indigo-400 rounded-3xl flex flex-col items-center p-4 bg-indigo-50/50 shadow-sm transition relative overflow-hidden';
+                    box.id = 'battery-charging-zone';
+                    box.innerHTML = `
+                        <div class="w-8 h-2 bg-indigo-400 rounded-t-full -mt-4 mb-2"></div>
+                        <div class="bg-white rounded-full w-14 h-14 flex items-center justify-center mb-2 shadow-inner pointer-events-none">
+                            <i class="fa-solid fa-battery-half text-3xl text-emerald-500 animate-pulse"></i>
+                        </div>
+                        <span class="font-black text-sm bg-indigo-200 text-indigo-900 px-4 py-1 rounded-full pointer-events-none">${cat}</span>
+                    `;
+                } else {
+                    box.className = 'drop-zone w-full min-h-[180px] border-4 border-dashed border-rose-300 rounded-3xl flex flex-col items-center p-4 bg-rose-50/40 shadow-sm transition relative overflow-hidden';
+                    box.innerHTML = `
+                        <div class="bg-white rounded-full w-14 h-14 flex items-center justify-center mb-2 shadow-inner pointer-events-none">
+                            <i class="fa-solid fa-trash-can text-3xl text-rose-500"></i>
+                        </div>
+                        <span class="font-black text-sm bg-rose-200 text-rose-900 px-4 py-1 rounded-full pointer-events-none">${cat}</span>
+                    `;
+                }
+                
+                const itemContainer = document.createElement('div');
+                itemContainer.className = 'w-full flex flex-wrap justify-center gap-2 mt-4 pointer-events-none z-10';
+                box.appendChild(itemContainer);
+
+                box.addEventListener('dragover', (e) => { e.preventDefault(); box.classList.add('dragover'); });
+                box.addEventListener('dragleave', () => { box.classList.remove('dragover'); });
+                box.addEventListener('drop', (e) => {
+                    e.preventDefault(); box.classList.remove('dragover');
+                    const wordText = e.dataTransfer.getData('text/plain');
+                    if(wordText) processBatteryDrop(wordText, itemContainer);
+                });
+                
+                box.addEventListener('click', () => {
+                    if(globalSelectedObj) processBatteryDrop(globalSelectedObj.dataset.text, itemContainer, globalSelectedObj);
+                });
+
+                boxWrapper.appendChild(box);
+                boxesContainer.appendChild(boxWrapper);
+            });
+
+            const wordsContainer = document.createElement('div');
+            wordsContainer.className = 'flex flex-wrap gap-4 w-full justify-center min-h-[100px] bg-slate-100 p-6 rounded-3xl shadow-inner border-2 border-slate-200';
+            
+            let shuffledWords = [...qData.words].sort(() => Math.random() - 0.5);
+
+            shuffledWords.forEach(w => {
+                const wordBlock = document.createElement('div');
+                wordBlock.className = 'draggable-item bg-white text-gray-800 border-2 border-indigo-200 font-black text-sm sm:text-base py-2.5 px-4 rounded-2xl shadow-md select-none transition flex items-center gap-2 cursor-pointer';
+                wordBlock.draggable = true;
+                wordBlock.dataset.text = w.text;
+                
+                wordBlock.innerHTML = `
+                    <span>${w.text}</span>
+                    <button class="tts-btn bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-full w-7 h-7 flex items-center justify-center transition shrink-0" onclick="event.stopPropagation(); playTTS('${w.text}')">
+                        <i class="fa-solid fa-volume-low text-xs"></i>
+                    </button>
+                `;
+
+                wordBlock.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', w.text);
+                    setTimeout(() => wordBlock.classList.add('opacity-50'), 0);
+                    clearSelection();
+                    dismissWarning();
+                });
+                wordBlock.addEventListener('dragend', () => wordBlock.classList.remove('opacity-50'));
+                
+                wordBlock.addEventListener('click', (e) => {
+                    if (e.target.closest('.tts-btn')) return;
+                    dismissWarning();
+                    if (wordBlock.classList.contains('selected')) {
+                        clearSelection();
+                        return;
+                    }
+                    clearSelection();
+                    wordBlock.classList.add('selected');
+                    globalSelectedObj = wordBlock;
+                });
+                
+                wordsContainer.appendChild(wordBlock);
+            });
+
+            container.appendChild(boxesContainer);
+            container.appendChild(wordsContainer);
+            
+            submitBtn.classList.remove('hidden');
+            
+            function processBatteryDrop(wordText, itemContainer, originalEl = null) {
+                let elToMove = originalEl || document.querySelector(`.draggable-item[data-text="${wordText}"]`);
+                if (elToMove) {
+                    itemContainer.appendChild(elToMove);
+                    clearSelection();
+                    dismissWarning();
+                }
+            }
+
+            checkCurrentAnswer = () => {
+                let allCorrect = true;
+                let sortedItems = 0;
+                
+                qData.categories.forEach((cat, index) => {
+                    const boxWrapper = boxesContainer.children[index];
+                    const itemContainer = boxWrapper.querySelector('div:last-child');
+                    const items = itemContainer.querySelectorAll('.draggable-item');
+                    sortedItems += items.length;
+                    
+                    items.forEach(item => {
+                        const wordText = item.dataset.text;
+                        const correctCat = qData.words.find(w => w.text === wordText).cat;
+                        if (correctCat !== cat) {
+                            allCorrect = false;
+                        }
+                    });
+                });
+                
+                /* 強制提交檢查與即時拒絕邏輯 */
+                if (sortedItems < qData.words.length) {
+                    showFeedback("warning", "請將所有行為積木都分類放好，我們再一起對答案喔！");
+                    return;
+                }
+                
+                if (allCorrect) {
+                    const bZone = document.getElementById('battery-charging-zone');
+                    bZone.classList.add('battery-fill-active', 'bg-emerald-50', 'border-emerald-500');
+                    bZone.querySelector('i').className = 'fa-solid fa-battery-full text-4xl text-emerald-500';
+                }
+                
+                showFeedback(allCorrect, allCorrect ? "充填完畢！太棒了，您成功避開了毒素，為內心灌注了滿滿的健康正能量！" : "發現有些不健康的發洩放進了電池，或者健康的充電被扔掉了，再確認一下！");
+            };
+        }
+
+        function renderChoice(qData, container, submitBtn) {
+            const isBorder = qData.q && qData.q.includes("防護罩");
+            
+            const qText = document.createElement('h4');
+            qText.className = 'text-xl sm:text-2xl font-black text-gray-800 mb-8 text-center bg-gray-50 p-6 rounded-2xl w-full border border-gray-200 shadow-sm leading-relaxed';
+            qText.innerHTML = qData.q;
+            container.appendChild(qText);
+
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'flex flex-col gap-4 w-full max-w-2xl';
+
+            qData.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white border-2 border-indigo-100 hover:border-indigo-400 hover:bg-indigo-50 text-gray-700 font-bold text-base sm:text-lg p-4 sm:p-5 rounded-2xl text-left transition shadow-sm flex items-center justify-between group';
+                
+                const icon = isBorder ? 'fa-shield-halved' : 'fa-comment-dots';
+                btn.innerHTML = `
+                    <span class="flex-1 pr-4"><i class="fa-solid ${icon} text-indigo-400 mr-2"></i> ${opt}</span>
+                    <i class="fa-solid fa-circle-check text-2xl text-gray-200 group-hover:text-indigo-200 transition shrink-0"></i>
+                `;
+                btn.onclick = () => {
+                    const buttons = optionsContainer.querySelectorAll('button');
+                    buttons.forEach(b => {
+                        b.classList.remove('border-indigo-500', 'bg-indigo-50', 'ring-2', 'ring-indigo-300');
+                        b.querySelector('i:last-child').classList.replace('text-indigo-500', 'text-gray-200');
+                    });
+                    btn.classList.add('border-indigo-500', 'bg-indigo-50', 'ring-2', 'ring-indigo-300');
+                    btn.querySelector('i:last-child').classList.replace('text-gray-200', 'text-indigo-500');
+                    
+                    userSequence = [index]; 
+                    submitBtn.classList.remove('hidden');
+                };
+                optionsContainer.appendChild(btn);
+            });
+            container.appendChild(optionsContainer);
+            
+            checkCurrentAnswer = () => {
+                if (userSequence.length === 0) return showFeedback(false, "請先選擇一個答案！");
+                const isCorrect = userSequence[0] === qData.answer;
+                showFeedback(isCorrect, isCorrect ? "非常正確！您懂得用溫和且堅定的方式保護自己、陪伴他人！" : "再想想看，這個對話台詞會不會激怒對方，或者委屈了自己？");
+            };
+        }
+
+        function renderSequence(qData, container, submitBtn) {
+            const isBomb = qData.orig.includes("炸彈") || qData.orig.includes("焦慮");
+            
+            const desc = document.createElement('div');
+            desc.className = 'w-full max-w-xl text-center mb-6';
+            
+            if (isBomb) {
+                desc.innerHTML = `
+                    <div class="inline-flex items-center gap-3 bg-rose-50 border-2 border-rose-200 px-6 py-3 rounded-2xl shadow-sm">
+                        <i class="fa-solid fa-bomb text-3xl text-rose-500 animate-bounce"></i>
+                        <span class="text-rose-800 font-black text-lg">⚠️ 焦慮炸彈即將爆發！請排好冷靜積木以拆除：</span>
+                    </div>
+                `;
+            } else {
+                desc.innerHTML = `
+                    <div class="inline-flex items-center gap-3 bg-indigo-50 border-2 border-indigo-200 px-6 py-3 rounded-2xl shadow-sm">
+                        <i class="fa-solid fa-wind text-3xl text-indigo-500 animate-pulse"></i>
+                        <span class="text-indigo-800 font-black text-lg">請拖曳或點擊積木，按正確順序排列：</span>
+                    </div>
+                `;
+            }
+            container.appendChild(desc);
+
+            const listContainer = document.createElement('div');
+            listContainer.className = 'flex flex-col gap-3 w-full max-w-xl';
+            
+            let shuffled = [...qData.words].sort(() => Math.random() - 0.5);
+            let seqSelected = null;
+            
+            shuffled.forEach((word, index) => {
+                const item = document.createElement('div');
+                item.className = 'draggable-item bg-white border-2 border-indigo-200 p-4 rounded-2xl shadow-sm text-base sm:text-lg font-bold flex items-center justify-between cursor-move';
+                item.draggable = true;
+                item.dataset.index = index;
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-black order-num shrink-0">?</div>
+                        <span>${word}</span>
+                    </div>
+                    <i class="fa-solid fa-grip-lines text-gray-400 shrink-0 ml-2"></i>
+                `;
+                
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', item.dataset.index);
+                    setTimeout(() => item.classList.add('opacity-50'), 0);
+                });
+                item.addEventListener('dragend', () => item.classList.remove('opacity-50'));
+                item.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    item.classList.add('border-dashed', 'border-indigo-400', 'bg-indigo-50');
+                });
+                item.addEventListener('dragleave', () => item.classList.remove('border-dashed', 'border-indigo-400', 'bg-indigo-50'));
+                item.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    item.classList.remove('border-dashed', 'border-indigo-400', 'bg-indigo-50');
+                    const draggedIdx = e.dataTransfer.getData('text/plain');
+                    if (draggedIdx !== '' && draggedIdx != item.dataset.index) {
+                        const draggedEl = Array.from(listContainer.children).find(el => el.dataset.index == draggedIdx);
+                        if(draggedEl) {
+                            const allItems = Array.from(listContainer.children);
+                            const fromIdx = allItems.indexOf(draggedEl);
+                            const toIdx = allItems.indexOf(item);
+                            if (fromIdx < toIdx) {
+                                item.after(draggedEl);
+                            } else {
+                                item.before(draggedEl);
+                            }
+                            updateSequenceIndices();
+                        }
+                    }
+                });
+                
+                item.addEventListener('click', () => {
+                    if (seqSelected === null) {
+                        seqSelected = item;
+                        item.classList.add('ring-4', 'ring-indigo-400');
+                    } else if (seqSelected === item) {
+                        seqSelected = null;
+                        item.classList.remove('ring-4', 'ring-indigo-400');
+                    } else {
+                        const parent = item.parentNode;
+                        const p1 = seqSelected.nextSibling === item ? seqSelected : seqSelected.nextSibling;
+                        parent.insertBefore(seqSelected, item.nextSibling);
+                        parent.insertBefore(item, p1);
+                        
+                        seqSelected.classList.remove('ring-4', 'ring-indigo-400');
+                        seqSelected = null;
+                        updateSequenceIndices();
+                    }
+                });
+                
+                listContainer.appendChild(item);
+            });
+            
+            function updateSequenceIndices() {
+                Array.from(listContainer.children).forEach((child, i) => {
+                    child.dataset.index = i;
+                    child.querySelector('.order-num').innerText = i + 1;
+                });
+            }
+            
+            updateSequenceIndices(); 
+            container.appendChild(listContainer);
+            submitBtn.classList.remove('hidden');
+
+            checkCurrentAnswer = () => {
+                const currentOrder = Array.from(listContainer.children).map(el => el.querySelector('span').innerText);
+                const isCorrect = JSON.stringify(currentOrder) === JSON.stringify(qData.answer);
+                
+                if (isCorrect && isBomb) {
+                    desc.innerHTML = `
+                        <div class="inline-flex items-center gap-3 bg-emerald-50 border-2 border-emerald-200 px-6 py-3 rounded-2xl shadow-sm">
+                            <i class="fa-solid fa-heart-circle-check text-3xl text-emerald-500"></i>
+                            <span class="text-emerald-800 font-black text-lg">🎉 拆彈成功！危機安全解除！</span>
+                        </div>
+                    `;
+                }
+                
+                showFeedback(isCorrect, isCorrect ? "排序完全正確！這套危機處理步驟能迅速穩住大腦！" : "步驟好像有一點錯亂，請參照提示，再次重新排列吧！");
+            };
+        }
+
+        function renderFillBlank(qData, container, submitBtn) {
+            const textContainer = document.createElement('div');
+            textContainer.className = 'bg-white p-6 md:p-10 rounded-3xl shadow-sm border-2 border-indigo-100 text-lg sm:text-xl leading-loose font-bold text-gray-700 w-full max-w-3xl mb-8';
+            
+            let htmlText = qData.text;
+            qData.blanks.forEach((blank, i) => {
+                htmlText = htmlText.replace(`[__${i+1}__]`, `<span class="inline-flex items-center justify-center min-w-[120px] h-[40px] border-b-4 border-dashed border-indigo-400 mx-2 text-center text-indigo-600 px-2 drop-zone empty-blank align-middle bg-gray-50 rounded-t-lg transition-colors cursor-pointer" data-index="${i}">?</span>`);
+            });
+            textContainer.innerHTML = htmlText;
+            container.appendChild(textContainer);
+
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'flex flex-wrap gap-3 justify-center w-full bg-gray-100 p-5 rounded-2xl min-h-[80px]';
+            
+            let shuffledOptions = [...qData.options].sort(() => Math.random() - 0.5);
+            
+            shuffledOptions.forEach(opt => {
+                const wordBlock = document.createElement('div');
+                wordBlock.className = 'draggable-item bg-indigo-50 border-2 border-indigo-200 text-indigo-800 font-black py-2 px-4 rounded-xl shadow-sm cursor-grab select-none inline-block';
+                wordBlock.draggable = true;
+                wordBlock.innerText = opt;
+                
+                wordBlock.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', opt);
+                    e.dataTransfer.effectAllowed = 'move';
+                    setTimeout(() => wordBlock.classList.add('opacity-50'), 0);
+                    globalSelectedObj = wordBlock;
+                });
+                wordBlock.addEventListener('dragend', () => {
+                    wordBlock.classList.remove('opacity-50');
+                    globalSelectedObj = null;
+                });
+                
+                wordBlock.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (wordBlock.parentElement.classList.contains('empty-blank')) {
+                        const parentBlank = wordBlock.parentElement;
+                        optionsContainer.appendChild(wordBlock);
+                        parentBlank.innerText = '?';
+                        parentBlank.dataset.filled = "false";
+                        checkFillBlankReady();
+                        return;
+                    }
+                    
+                    if (wordBlock.classList.contains('selected')) {
+                        clearSelection();
+                    } else {
+                        clearSelection();
+                        wordBlock.classList.add('selected');
+                        globalSelectedObj = wordBlock;
+                    }
+                });
+                
+                optionsContainer.appendChild(wordBlock);
+            });
+            container.appendChild(optionsContainer);
+
+            const blanks = textContainer.querySelectorAll('.empty-blank');
+            blanks.forEach(blank => {
+                blank.addEventListener('dragover', e => { e.preventDefault(); blank.classList.add('bg-indigo-100'); });
+                blank.addEventListener('dragleave', () => blank.classList.remove('bg-indigo-100'));
+                blank.addEventListener('drop', e => {
+                    e.preventDefault();
+                    blank.classList.remove('bg-indigo-100');
+                    const text = e.dataTransfer.getData('text/plain');
+                    handleBlankFill(blank, text);
+                });
+                
+                blank.addEventListener('click', () => {
+                    if(globalSelectedObj && !blank.dataset.filled) {
+                        handleBlankFill(blank, globalSelectedObj.innerText);
+                        clearSelection();
+                    }
+                });
+            });
+
+            function handleBlankFill(blank, text) {
+                const wordEl = Array.from(optionsContainer.children).find(el => el.innerText === text) || 
+                               Array.from(textContainer.querySelectorAll('.draggable-item')).find(el => el.innerText === text);
+                
+                if (wordEl) {
+                    if (blank.dataset.filled === "true") {
+                        const existingWord = blank.querySelector('.draggable-item');
+                        if (existingWord) optionsContainer.appendChild(existingWord);
+                    }
+                    blank.innerText = '';
+                    blank.appendChild(wordEl);
+                    blank.dataset.filled = "true";
+                    checkFillBlankReady();
+                }
+            }
+
+            function checkFillBlankReady() {
+                let allFilled = true;
+                blanks.forEach(b => { if(b.dataset.filled !== "true") allFilled = false; });
+                if(allFilled) submitBtn.classList.remove('hidden');
+                else submitBtn.classList.add('hidden');
+            }
+
+            checkCurrentAnswer = () => {
+                let allCorrect = true;
+                blanks.forEach((blank, i) => {
+                    const filledItem = blank.querySelector('.draggable-item');
+                    if(filledItem && filledItem.innerText !== qData.blanks[i]) {
+                        allCorrect = false;
+                    } else if (!filledItem) {
+                        allCorrect = false;
+                    }
+                });
+                showFeedback(allCorrect, allCorrect ? "完全正確！當需要幫助時，主動跨出這步是非常令人自豪的！" : "有些詞語填錯了，請對照著情境再讀一次。");
+            };
+        }
+
+        function showFeedback(status, msg, isCategory = false) {
+            const feedbackArea = document.getElementById('feedback-area');
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const retryBtn = document.getElementById('retry-btn');
+            
+            feedbackArea.classList.remove('hidden');
+            
+            // 處理溫柔警告狀態 ( status === "warning" )
+            if (status === "warning") {
+                feedbackArea.className = `p-4 rounded-xl text-base sm:text-lg font-black text-center transition-all shadow-sm bg-amber-50 text-amber-800 border-2 border-amber-200`;
+                feedbackArea.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-2 text-amber-500 animate-pulse"></i> ${msg}`;
+                playTTS(msg);
+                
+                // 保留提交按鈕，不顯示下一步或重試，也不觸發錯誤動態
+                submitBtn.classList.remove('hidden');
+                nextBtn.classList.add('hidden');
+                if (retryBtn) retryBtn.classList.add('hidden');
+                return;
+            }
+
+            const isCorrect = status === true;
+            feedbackArea.className = `p-4 rounded-xl text-lg font-black text-center transition-all shadow-sm ${isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`;
+            feedbackArea.innerHTML = `<i class="fa-solid ${isCorrect ? 'fa-check-circle' : 'fa-circle-xmark'} mr-2"></i> ${msg}`;
+            
+            submitBtn.classList.add('hidden');
+            
+            if (isCorrect) {
+                createConfetti();
+                playTTS(msg);
+                nextBtn.classList.remove('hidden');
+                if(retryBtn) retryBtn.classList.add('hidden');
+                
+                if(!isCategory) state.energyAnswered++;
+                else if (currentQIndex === 0 && !window.catAnswered) {
+                    state.energyAnswered++;
+                    window.catAnswered = true;
+                }
+                saveProgress();
+                
+                document.getElementById('interactive-area').style.pointerEvents = 'none';
+            } else {
+                playTTS(msg);
+                const area = document.getElementById('interactive-area');
+                area.classList.add('animate-shake');
+                setTimeout(() => area.classList.remove('animate-shake'), 400);
+                if(retryBtn) retryBtn.classList.remove('hidden');
+                nextBtn.classList.add('hidden');
+            }
+        }
+
+        function retryQuestion() {
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            window.catAnswered = false;
+            document.getElementById('interactive-area').style.pointerEvents = 'auto'; 
+            renderQuestion();
+        }
+
+        function showLevelComplete() {
+            const area = document.getElementById('interactive-area');
+            const hintArea = document.getElementById('hint-content');
+            document.getElementById('submit-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('retry-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+            
+            hintArea.innerHTML = "<span class='text-indigo-600 block mb-2'><i class='fa-solid fa-bullhorn'></i> 系統廣播：</span>任務完成！您的心靈韌性又增強了。";
+            
+            area.innerHTML = `
+                <div class="text-center flex flex-col items-center justify-center h-full p-8 w-full animate-bounce-short">
+                    <i class="fa-solid fa-cloud-sun text-7xl sm:text-8xl text-yellow-400 mb-6 drop-shadow-lg"></i>
+                    <h3 class="text-2xl sm:text-3xl font-black text-indigo-800 mb-4">心靈探索大成功！</h3>
+                    <p class="text-gray-600 mb-8 text-base sm:text-lg">你已經完成了「${blLevels[state.currentLevelIndex].title}」的探索任務。</p>
+                    ${state.currentLevelIndex < blLevels.length - 1 ? 
+                    `<button onclick="startNextLevel()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-lg sm:text-xl font-black shadow-lg transition transform hover:scale-105 flex items-center gap-2 animate-pulse">
+                        挑戰下一關 <i class="fa-solid fa-arrow-right"></i>
+                    </button>` : 
+                    `<div class="bg-indigo-100 text-indigo-800 p-6 rounded-2xl font-black text-lg sm:text-xl border-4 border-indigo-300 w-full max-w-md shadow-lg">
+                        🎉 恭喜您完成所有心靈晴天練習！你是優秀的心靈護理大師！ 🎉
+                    </div>`}
+                </div>
+            `;
+            createConfetti(80);
+            playTTS("心靈探索大成功！");
+        }
+
+        function startNextLevel() {
+            if(state.currentLevelIndex < blLevels.length - 1) {
+                state.currentLevelIndex++;
+                saveProgress();
+                initSidebar();
+                loadLevel(state.currentLevelIndex);
+            }
+        }
+
+        function playTTS(text) {
+            if (!text) return;
+            const cleanText = text.replace(/<[^>]*>?/gm, '').replace(/\[__[0-9]+__\]/g, '空格');
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'zh-HK';
+                utterance.rate = 0.85; 
+                window.speechSynthesis.speak(utterance);
+            } else {
+                console.warn("瀏覽器不支援語音合成。");
+            }
+        }
+
+        function createConfetti(amount = 50) {
+            const colors = ['#818cf8', '#a78bfa', '#fbbf24', '#f472b6', '#34d399'];
+            for (let i = 0; i < amount; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000); 
+            }
+        }
+    </script>
+</body>
+</html>
