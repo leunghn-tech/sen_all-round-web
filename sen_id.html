@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -42,16 +43,17 @@
         .pointer-events-none { pointer-events: none; }
     </style>
 </head>
+
 <body class="bg-orange-50 flex flex-col h-screen overflow-hidden text-gray-800 font-sans">
 
     <!-- 頂部導航列 (暖色調) -->
     <nav class="bg-orange-500 text-white shadow-md no-print z-20 shrink-0">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <!-- 返回同工專區首頁按鈕 --> 
-                <a href="index.html#professional" class="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded-xl transition text-orange-50 hover:text-white shadow-inner">
+                <!-- 返回10大類別首頁按鈕 --> 
+                <a href="index.html#sen_type" class="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded-xl transition text-orange-50 hover:text-white shadow-inner">
                     <i class="fa-solid fa-house"></i>
-                    <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回同工專區</span>
+                    <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回10大類別首頁</span>
                 </a>
                 <div class="flex flex-col justify-center border-l border-orange-400 pl-4">
                     <h1 class="text-sm sm:text-lg font-black tracking-tight leading-none flex items-center gap-2">
@@ -83,6 +85,7 @@
 
     <!-- 主體雙欄架構 -->
     <div class="flex flex-1 overflow-hidden relative">
+        
         <!-- 左側邊欄 -->
         <aside id="sidebar" class="w-72 bg-white shadow-xl flex flex-col shrink-0 transition-transform duration-300 z-10 border-r border-orange-100">
             <div class="p-4 border-b border-orange-100 bg-orange-50">
@@ -160,7 +163,7 @@
     <!-- JavaScript 邏輯 -->
     <script>
         // ==========================================
-        // 1. 12 大關卡題庫資料 (專為輕度智障設計：具體、實用、視覺化)
+        // 1. 關卡題庫資料整合 (專為輕度智障設計：具體、實用、視覺化)
         // ==========================================
         const idLevels = [
             // --- 第一階段：基礎認知與分類 ---
@@ -217,7 +220,7 @@
                       text: "我想身體健康，每天都要多吃 [__1__]，並且喝足夠的 [__2__]。", 
                       blanks: ["🥦 蔬菜", "💧 清水"], 
                       options: ["🍬 糖果", "🥦 蔬菜", "🥤 汽水", "💧 清水"],
-                      hint: "多吃菜，多喝水，少吃零食身體好！(可拖曳或點擊放入空格)" 
+                      hint: "多吃菜，多喝水，少吃零食身體好！(請點擊下方選項填入空格)" 
                     }
                 ]
             },
@@ -265,12 +268,12 @@
                 questions: [
                     { 
                         audioText: "請幫我買：牛奶、然後買麵包", 
-                        answer: ["milk", "bread"], 
+                        answer: ["🥛 牛奶", "🍞 麵包"], 
                         hint: "先買牛奶，再買麵包。" 
                     },
                     { 
                         audioText: "請幫我買：蘋果、香蕉、最後買果汁", 
-                        answer: ["apple", "banana", "juice"], 
+                        answer: ["🍎 蘋果", "🍌 香蕉", "🧃 果汁"], 
                         hint: "記住三樣東西：蘋果 -> 香蕉 -> 果汁。" 
                     }
                 ]
@@ -289,93 +292,44 @@
                 desc: "任務：在不同的社交場合，說出正確的禮貌用語。",
                 questions: [
                     { 
-                      text: "收到別人送的禮物，我會笑著說：「[__1__]」。如果不小心撞到同學，我會立刻說：「[__2__]」。", 
+                      text: "收到別人送的禮物，我會笑著說：「[__1__]」。\n如果不小心撞到同學，我會立刻說：「[__2__]」。", 
                       blanks: ["多謝", "對唔住"], 
                       options: ["早晨", "多謝", "對唔住", "再見"],
                       hint: "獲得好處要感謝；做錯事要道歉。" 
                     }
                 ]
+            },
+            // --- 第六階段：進階生活應用 (整合新題庫) ---
+            {
+                id: 13, stage: "第六階段：進階生活應用", title: "13. 超市收銀台", type: "choice",
+                desc: "任務：學習在超市購物時的簡單金錢計算。",
+                questions: [
+                    { q: "你買了一個 15 元的麵包，拿 20 元給老闆，老闆要找你多少錢？", options: ["5元", "10元", "15元", "2元"], answer: 0, hint: "20 減去 15 等於幾多？" },
+                    { q: "一支雪糕要 8 元，一包薯片要 10 元，兩樣一起買總共要付多少錢？", options: ["18元", "12元", "20元", "10元"], answer: 0, hint: "8 加 10 等於幾多？" },
+                    { q: "你手上有 50 元紙幣，買了一盒 30 元的草莓，你還剩下多少錢？", options: ["10元", "20元", "30元", "40元"], answer: 1, hint: "50 減去 30 等於幾多？" },
+                    { q: "你想買兩瓶售價都是 6 元的汽水，總共需要支付多少錢？", options: ["12元", "8元", "10元", "6元"], answer: 0, hint: "6 加 6 等於幾多？" }
+                ]
+            },
+            {
+                id: 14, stage: "第六階段：進階生活應用", title: "14. 交通導航站", type: "choice",
+                desc: "任務：了解乘搭交通工具和過馬路的安全守則。",
+                questions: [
+                    { q: "當你準備過馬路，看到行人紅綠燈是「紅色小人」在閃爍，你應該怎麼做？", options: ["立刻停下等候綠燈", "快步跑過馬路", "繼續一邊玩手機一邊走過馬路"], answer: 0, hint: "紅燈閃爍代表不能過馬路。" },
+                    { q: "搭乘港鐵時，如果車門正在關閉並發出「嘟嘟嘟」的警報聲，你應該？", options: ["快步衝進車廂", "用身體或手擋住車門", "停下腳步，安全地等下一班車"], answer: 2, hint: "不要衝門，安全最重要。" },
+                    { q: "登上巴士付了車費之後，為了自身安全，我們應該最先做好什麼事？", options: ["在走廊上跑來跑去", "找空座位坐好並扶穩扶手", "把頭和手伸出窗外看風景"], answer: 1, hint: "巴士開動會搖晃，要立刻扶穩或坐下。" },
+                    { q: "你想走到馬路對面，但附近沒有交通燈，你應該選擇哪裡過馬路才安全？", options: ["行人天橋、隧道或斑馬線", "直接從馬路中間快速跑過去", "跨越路邊的鐵欄杆過去"], answer: 0, hint: "使用合法的過路設施才安全。" }
+                ]
+            },
+            {
+                id: 15, stage: "第六階段：進階生活應用", title: "15. 快餐店點餐機", type: "choice",
+                desc: "任務：學習使用快餐店的自助點餐機和預算控制。",
+                questions: [
+                    { q: "你今天只有 30 元的預算，以下哪一個套餐是你足夠錢買得起的？", options: ["28元的魚柳包套餐", "35元的牛肉皇套餐", "42元的炸雞分享桶"], answer: 0, hint: "找一個價錢少於 30 元的套餐。" },
+                    { q: "你在點餐機點了一個 25 元的漢堡包和一杯 7 元的汽水，你總共需要付多少錢？", options: ["32元", "30元", "28元", "35元"], answer: 0, hint: "25 加 7 等於幾多？" },
+                    { q: "你有 40 元，買了 22 元的芝士漢堡後，還想加配一款小食，以下哪一款小食在你的剩餘預算內？", options: ["25元的雞翼(4隻)", "15元的細薯條", "20元的蘋果批"], answer: 1, hint: "40 減去 22 剩下 18 元，只能買便宜過 18 元的小食。" },
+                    { q: "自助點餐機螢幕上顯示「請選擇取餐方式」，你想在店內坐下慢慢吃，應該點擊哪一個按鈕？", options: ["外賣自取 / 帶走", "堂食 / 店內食用", "取消交易"], answer: 1, hint: "在餐廳裡面吃叫做「堂食」。" }
+                ]
             }
-            const newIDLevels = [
-  {
-    roomTitle: "超市收銀台",
-    targetAge: "9-15",
-    questions: [
-      {
-        text: "你買了一個 15 元的麵包，拿 20 元給老闆，老闆要找你多少錢？",
-        options: ["5元", "10元", "15元", "2元"],
-        correctAnswer: "5元"
-      },
-      {
-        text: "一支雪糕要 8 元，一包薯片要 10 元，兩樣一起買總共要付多少錢？",
-        options: ["18元", "12元", "20元", "10元"],
-        correctAnswer: "18元"
-      },
-      {
-        text: "你手上有 50 元紙幣，買了一盒 30 元的草莓，你還剩下多少錢？",
-        options: ["10元", "20元", "30元", "40元"],
-        correctAnswer: "20元"
-      },
-      {
-        text: "你想買兩瓶售價都是 6 元的汽水，總共需要支付多少錢？",
-        options: ["12元", "8元", "10元", "6元"],
-        correctAnswer: "12元"
-      }
-    ]
-  },
-  {
-    roomTitle: "交通導航站",
-    targetAge: "9-15",
-    questions: [
-      {
-        text: "當你準備過馬路，看到行人紅綠燈是「紅色小人」在閃爍，你應該怎麼做？",
-        options: ["立刻停下等候綠燈", "快步跑過馬路", "繼續一邊玩手機一邊走過馬路", "大聲唱歌衝過去"],
-        correctAnswer: "立刻停下等候綠燈"
-      },
-      {
-        text: "搭乘地鐵（港鐵）時，如果車門正在關閉並發出「嘟嘟嘟」的警報聲，你應該？",
-        options: ["快步衝進車廂", "用身體或手擋住車門", "停下腳步，安全地等下一班車", "大喊叫司機等一下"],
-        correctAnswer: "停下腳步，安全地等下一班車"
-      },
-      {
-        text: "登上巴士（公車）並付了車費之後，為了自身安全，我們應該最先做好什麼事？",
-        options: ["在走廊上跑來跑去", "找空座位坐好並扶穩扶手", "把頭和手伸出窗外看風景", "和司機大聲聊天"],
-        correctAnswer: "找空座位坐好並扶穩扶手"
-      },
-      {
-        text: "你想走到馬路對面，但附近沒有交通燈，你應該選擇哪裡過馬路才安全？",
-        options: ["行人天橋、隧道或斑馬線", "直接從馬路中間快速跑過去", "跨越路邊的鐵欄杆過去", "跟在大卡車或大巴士後面過馬路"],
-        correctAnswer: "行人天橋、隧道或斑馬線"
-      }
-    ]
-  },
-  {
-    roomTitle: "快餐店點餐機",
-    targetAge: "9-15",
-    questions: [
-      {
-        text: "你今天只有 30 元的預算，以下哪一個套餐是你足夠錢買得起的？",
-        options: ["28元的魚柳包套餐", "35元的牛肉皇套餐", "42元的炸雞分享桶", "50元的特大豪華餐"],
-        correctAnswer: "28元的魚柳包套餐"
-      },
-      {
-        text: "你在點餐機點了一個 25 元的漢堡包和一杯 7 元的汽水，你總共需要付多少錢？",
-        options: ["32元", "30元", "28元", "35元"],
-        correctAnswer: "32元"
-      },
-      {
-        text: "你有 40 元，買了 22 元的芝士漢堡後，還想加配一款小食，以下哪一款小食在你的剩餘預算內？",
-        options: ["25元的雞翼(4隻)", "15元的細薯條", "20元的蘋果批", "30元的朱古力新地冰淇淋"],
-        correctAnswer: "15元的細薯條"
-      },
-      {
-        text: "自助點餐機螢幕上顯示「請選擇取餐方式」，你想在店內坐下慢慢吃，應該點擊哪一個按鈕？",
-        options: ["外賣自取 / 帶走", "堂食 / 店內食用", "送貨上門", "取消交易"],
-        correctAnswer: "堂食 / 店內食用"
-      }
-    ]
-  }
-];
         ];
 
         // ==========================================
@@ -486,7 +440,6 @@
                 node.className = 'flex items-center gap-1';
                 const circle = document.createElement('div');
                 circle.className = `w-8 h-8 rounded-full flex items-center justify-center font-black text-sm border-2 transition-all duration-300 ${i < currentQIndex ? 'bg-green-500 border-green-500 text-white shadow-md' : (i === currentQIndex ? 'bg-yellow-300 border-yellow-400 text-yellow-800 shadow-md scale-110' : 'bg-gray-100 border-gray-200 text-gray-400')}`;
-                // 已完成顯示打勾
                 circle.innerHTML = i < currentQIndex ? '<i class="fa-solid fa-check"></i>' : (i + 1);
                 node.appendChild(circle);
                 container.appendChild(node);
@@ -519,8 +472,7 @@
             renderProgressNodes(level);
             hintArea.innerText = qData.hint || "請仔細看看，動手試試看！";
             
-            // 自動播放題目提示音 (延遲一點讓畫面先渲染)
-            setTimeout(() => playTTS(), 500);
+            setTimeout(() => playTTS(qData.q || qData.text || qData.audioText || level.desc), 500);
             
             if (level.type === 'drag-category') renderCategory(qData, area, submitBtn);
             else if (level.type === 'choice') renderChoice(qData, area);
@@ -529,11 +481,16 @@
             else if (level.type === 'fill-blank') renderFillBlank(qData, area, submitBtn);
         }
 
+        function clearSelection() {
+            document.querySelectorAll('.draggable-item').forEach(el => el.classList.remove('selected'));
+            globalSelectedObj = null;
+        }
+
         // ==========================================
         // 4. 題型引擎區
         // ==========================================
         
-        // 引擎 A: 拖曳分類 (專為SEN優化，卡片更大，視覺回饋更強)
+        // 引擎 A: 拖曳分類 
         function renderCategory(qData, container, submitBtn) {
             const boxesContainer = document.createElement('div');
             boxesContainer.className = 'flex flex-col sm:flex-row gap-6 w-full justify-center mb-8';
@@ -545,7 +502,6 @@
                 const boxWrapper = document.createElement('div');
                 boxWrapper.className = 'flex flex-col items-center flex-1 w-full sm:max-w-[250px]';
                 
-                // 籃子樣式
                 const box = document.createElement('div');
                 box.className = 'drop-zone w-full min-h-[160px] border-4 border-dashed border-orange-300 rounded-3xl flex flex-col items-center p-3 bg-orange-50 shadow-sm transition relative overflow-hidden';
                 box.innerHTML = `
@@ -574,13 +530,12 @@
                 boxesContainer.appendChild(boxWrapper);
             });
 
-            // 下方物品區
             const wordsContainer = document.createElement('div');
             wordsContainer.className = 'flex flex-wrap gap-4 w-full justify-center min-h-[80px] bg-gray-100 p-6 rounded-3xl shadow-inner border-2 border-gray-200';
             
             qData.words.forEach(w => {
                 const wordBlock = document.createElement('div');
-                wordBlock.className = 'draggable-item bg-white text-gray-800 border-2 border-orange-200 font-black text-xl py-3 px-5 rounded-2xl shadow-md select-none transition flex items-center gap-3';
+                wordBlock.className = 'draggable-item bg-white text-gray-800 border-2 border-orange-200 font-black text-xl py-3 px-5 rounded-2xl shadow-md select-none transition flex items-center gap-3 cursor-pointer';
                 wordBlock.draggable = true;
                 wordBlock.dataset.text = w.text;
                 
@@ -608,7 +563,6 @@
                     clearSelection();
                     wordBlock.classList.add('selected'); 
                     globalSelectedObj = wordBlock;
-                    // 點擊也給予語音回饋
                     playTTS("你選了：" + w.text + "。請點擊對應的籃子。");
                 });
 
@@ -631,7 +585,6 @@
                 if (!sourceEl) return;
 
                 if (wordData.cat === targetCat) {
-                    // 答對了
                     sourceEl.className = 'bg-green-100 text-green-800 border-2 border-green-400 font-black text-base py-2 px-3 rounded-xl shadow-sm m-1 flex items-center justify-center';
                     sourceEl.draggable = false;
                     sourceEl.onclick = null; 
@@ -645,478 +598,372 @@
                         setTimeout(() => handleResult(true), 500);
                     }
                 } else {
-                    // 答錯
-                    playTTS("唔啱喎，再試下！");
-                    sourceEl.classList.add('animate-shake', 'bg-red-100', 'border-red-500');
-                    setTimeout(() => {
-                        sourceEl.classList.remove('animate-shake', 'bg-red-100', 'border-red-500', 'selected');
-                    }, 500);
+                    sourceEl.classList.add('animate-shake');
+                    sourceEl.classList.remove('selected');
+                    globalSelectedObj = null;
+                    playTTS("唔啱喎，再試下啦！");
+                    setTimeout(() => sourceEl.classList.remove('animate-shake'), 400);
                 }
-                clearSelection();
-            }
-
-            function clearSelection() {
-                document.querySelectorAll('.draggable-item').forEach(el => {
-                    el.classList.remove('selected');
-                });
-                globalSelectedObj = null;
             }
         }
 
-        // 引擎 B: 選擇題 (選項字體加大，加入Emoji，視覺清晰)
+        // 引擎 B: 選擇題
         function renderChoice(qData, container) {
-            const qText = document.createElement('div');
-            qText.className = 'bg-orange-50 border-l-8 border-orange-400 p-5 rounded-2xl shadow-sm w-full mb-6 relative whitespace-pre-wrap';
-            qText.innerHTML = `<p class="text-xl sm:text-2xl font-black text-gray-800 leading-normal">${qData.q}</p>`;
-
-            const optsDiv = document.createElement('div');
-            optsDiv.className = 'flex flex-col gap-4 w-full';
-
-            qData.options.forEach((optText, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'text-left w-full p-4 sm:p-6 border-4 border-gray-200 rounded-2xl hover:border-orange-400 hover:bg-orange-50 transition text-gray-700 font-black text-lg sm:text-xl flex gap-4 items-center bg-white relative shadow-sm';
-                
-                btn.innerHTML = `
-                    <div class="indicator-icon w-8 h-8 rounded-full border-4 border-gray-300 flex items-center justify-center shrink-0 transition-colors bg-gray-50"></div> 
-                    <span class="flex-1">${optText}</span>
-                    <div class="tts-btn bg-sky-100 text-sky-600 hover:bg-sky-200 rounded-full w-12 h-12 flex items-center justify-center transition shrink-0 shadow-sm z-10" title="讀出來">
-                        <i class="fa-solid fa-volume-high text-lg pointer-events-none"></i>
-                    </div>
-                `;
-                
-                btn.querySelector('.tts-btn').addEventListener('click', (e) => {
-                    e.stopPropagation(); 
-                    playTTS(optText);
-                });
-
-                btn.onclick = (e) => {
-                    if (e.target.closest('.tts-btn')) return;
-
-                    // 鎖定所有按鈕
-                    const allBtns = optsDiv.querySelectorAll('button');
-                    allBtns.forEach(b => b.style.pointerEvents = 'none');
-                    
-                    const iconDiv = btn.querySelector('.indicator-icon');
-                    
-                    if (idx === qData.answer) {
-                        btn.classList.replace('border-gray-200', 'border-green-500');
-                        btn.classList.add('bg-green-50', 'text-green-800');
-                        iconDiv.classList.replace('border-gray-300', 'border-green-500');
-                        iconDiv.classList.replace('bg-gray-50', 'bg-green-500');
-                        iconDiv.innerHTML = '<i class="fa-solid fa-check text-white text-base"></i>';
-                        handleResult(true);
-                    } else {
-                        btn.classList.replace('border-gray-200', 'border-red-500');
-                        btn.classList.add('bg-red-50', 'text-red-800');
-                        iconDiv.classList.replace('border-gray-300', 'border-red-500');
-                        iconDiv.classList.replace('bg-gray-50', 'bg-red-500');
-                        iconDiv.innerHTML = '<i class="fa-solid fa-xmark text-white text-base"></i>';
-                        handleResult(false);
-                    }
-                };
-                optsDiv.appendChild(btn);
-            });
+            const qText = document.createElement('h4');
+            qText.className = 'text-2xl font-black text-gray-800 mb-8 text-center leading-relaxed whitespace-pre-line';
+            qText.innerText = qData.q;
             container.appendChild(qText);
-            container.appendChild(optsDiv);
-        }
 
-        // 引擎 C: 排序題 (使用數字與大圖塊)
-        function renderSequence(qData, container, submitBtn) {
-            container.innerHTML = `<p class="text-lg font-black text-orange-600 mb-4 bg-orange-100 p-3 rounded-xl w-full text-center">任務主題：${qData.orig || ''}</p>`;
-            
-            const targetArea = document.createElement('div');
-            targetArea.className = 'w-full min-h-[100px] bg-white border-4 border-dashed border-orange-300 rounded-2xl p-4 flex flex-col gap-3 mb-6 items-center shadow-inner transition-all';
-            
-            const sourceArea = document.createElement('div');
-            sourceArea.className = 'flex flex-wrap gap-3 justify-center bg-gray-100 p-5 rounded-2xl border-2 border-gray-200 w-full';
-            
-            // 打亂順序
-            let availableWords = [...qData.words].sort(() => Math.random() - 0.5);
-            let isChecking = false;
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'flex flex-col gap-4 w-full max-w-md';
 
-            function updateView() {
-                if(isChecking) return;
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white border-4 border-orange-200 hover:border-orange-500 hover:bg-orange-50 text-gray-800 font-black text-xl py-4 px-6 rounded-2xl shadow-sm transition transform hover:-translate-y-1 w-full text-left flex items-center justify-between';
+                btn.innerHTML = `<span>${opt}</span> <i class="fa-solid fa-circle-chevron-right text-orange-300"></i>`;
                 
-                targetArea.innerHTML = '';
-                sourceArea.innerHTML = '';
-                
-                // 顯示已選區域
-                userSequence.forEach((word, index) => {
-                    const el = document.createElement('div');
-                    el.className = 'w-full max-w-md bg-green-500 text-white px-4 py-3 rounded-xl font-black text-lg shadow-md cursor-pointer hover:bg-green-600 transition flex items-center justify-between';
-                    el.innerHTML = `
-                        <div class="flex items-center gap-3">
-                            <span class="bg-white text-green-600 w-8 h-8 rounded-full flex items-center justify-center shadow-inner">${index + 1}</span>
-                            <span>${word}</span>
-                        </div>
-                        <div class="tts-btn bg-black/20 hover:bg-black/40 text-white rounded-full w-8 h-8 flex items-center justify-center transition shrink-0" title="讀出來">
-                            <i class="fa-solid fa-volume-high text-xs pointer-events-none"></i>
-                        </div>
-                    `;
-                    
-                    el.querySelector('.tts-btn').addEventListener('click', (e) => { e.stopPropagation(); playTTS(word); });
-                    // 點擊退回
-                    el.onclick = () => { 
-                        playTTS("拿走");
-                        userSequence.splice(index, 1); availableWords.push(word); updateView(); 
-                    };
-                    targetArea.appendChild(el);
-                });
-
-                // 顯示未選區域
-                availableWords.forEach((word, index) => {
-                    const el = document.createElement('div');
-                    el.className = 'bg-white border-4 border-orange-200 text-gray-800 px-4 py-3 rounded-xl font-black text-lg shadow-sm cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition flex items-center gap-3';
-                    el.innerHTML = `
-                        <span>${word}</span>
-                        <div class="tts-btn bg-sky-100 text-sky-600 hover:bg-sky-200 rounded-full w-8 h-8 flex items-center justify-center transition shrink-0" title="讀出來">
-                            <i class="fa-solid fa-volume-high text-xs pointer-events-none"></i>
-                        </div>
-                    `;
-                    
-                    el.querySelector('.tts-btn').addEventListener('click', (e) => { e.stopPropagation(); playTTS(word); });
-                    el.onclick = () => { 
-                        playTTS("排入");
-                        availableWords.splice(index, 1); userSequence.push(word); updateView(); 
-                    };
-                    sourceArea.appendChild(el);
-                });
-
-                if (userSequence.length === 0) {
-                    targetArea.innerHTML = '<span class="text-gray-400 font-bold mt-4">請按順序點擊下方的方塊，把它們排進來</span>';
-                }
-
-                // 自動檢查機制
-                if(availableWords.length === 0) {
-                    isChecking = true;
-                    const isCorrect = JSON.stringify(userSequence) === JSON.stringify(qData.answer);
-                    
+                btn.onclick = () => {
+                    const isCorrect = (idx === qData.answer);
                     if(isCorrect) {
-                        targetArea.classList.replace('border-orange-300', 'border-green-500');
-                        targetArea.classList.add('bg-green-50');
-                        targetArea.style.pointerEvents = 'none';
-                        handleResult(true);
+                        btn.classList.replace('border-orange-200', 'border-green-500');
+                        btn.classList.replace('hover:border-orange-500', 'border-green-500');
+                        btn.classList.add('bg-green-50', 'text-green-800');
                     } else {
-                        targetArea.classList.replace('border-orange-300', 'border-red-500');
-                        targetArea.classList.add('bg-red-50', 'animate-shake');
-                        targetArea.style.pointerEvents = 'none';
-                        handleResult(false);
+                        btn.classList.replace('border-orange-200', 'border-red-500');
+                        btn.classList.add('bg-red-50', 'text-red-800', 'animate-shake');
                     }
-                }
-            }
-            
-            container.appendChild(targetArea);
-            container.appendChild(sourceArea);
-            
-            updateView();
-            window.checkCurrentAnswer = undefined;
-            submitBtn.classList.add('hidden');
+                    setTimeout(() => handleResult(isCorrect), 300);
+                };
+                optionsDiv.appendChild(btn);
+            });
+            container.appendChild(optionsDiv);
         }
 
-        // 引擎 D: 超市購物記憶 (聽覺記憶結合圖像)
-        function renderShoppingMemory(qData, container, submitBtn) {
-            const controls = document.createElement('div');
-            controls.className = 'mb-6 w-full flex flex-col items-center gap-4 bg-blue-50 p-6 rounded-3xl border-4 border-blue-200';
-            controls.innerHTML = `
-                <img src="https://placehold.co/100x100/FFD700/000000?text=🛒" alt="購物車" class="w-20 h-20 rounded-full shadow-md bg-white p-2">
-                <button onclick="playTTS()" class="bg-blue-500 hover:bg-blue-600 text-white font-black py-4 px-8 rounded-full shadow-lg flex items-center gap-3 text-xl animate-bounce">
-                    <i class="fa-solid fa-ear-listen text-2xl"></i> 點擊聽媽媽的購物清單
-                </button>
-            `;
+        // 引擎 C: 排序題 (點擊依序放入)
+        function renderSequence(qData, container, submitBtn) {
+            const slotDiv = document.createElement('div');
+            slotDiv.className = 'flex flex-wrap gap-2 w-full justify-center mb-8 min-h-[100px] p-4 bg-orange-100 rounded-2xl border-2 border-orange-200';
             
-            const grid = document.createElement('div');
-            grid.className = 'grid grid-cols-2 sm:grid-cols-3 gap-4 p-6 bg-gray-100 rounded-3xl w-full mx-auto shadow-inner border-2 border-gray-200';
-            
-            // 購物項目圖庫 (Emoji)
-            const storeItems = [
-                {id: 'milk', text: '牛奶', icon: '🥛'},
-                {id: 'apple', text: '蘋果', icon: '🍎'},
-                {id: 'bread', text: '麵包', icon: '🍞'},
-                {id: 'banana', text: '香蕉', icon: '🍌'},
-                {id: 'juice', text: '果汁', icon: '🧃'},
-                {id: 'egg', text: '雞蛋', icon: '🥚'}
-            ];
+            const words = [...qData.words].sort(() => Math.random() - 0.5); // 打亂順序
+            userSequence = [];
 
-            const answerDisplay = document.createElement('div');
-            answerDisplay.className = 'mt-6 min-h-[80px] p-4 bg-white border-4 border-dashed border-orange-400 rounded-2xl flex flex-wrap gap-4 justify-center w-full items-center shadow-inner relative';
-            answerDisplay.innerHTML = '<span class="absolute top-[-15px] left-4 bg-orange-400 text-white px-3 py-1 rounded-full text-xs font-bold">我的購物籃</span>';
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'flex flex-wrap justify-center gap-4 w-full';
 
-            storeItems.forEach(item => {
-                const btnContainer = document.createElement('div');
-                btnContainer.className = 'flex flex-col justify-center items-center h-28 bg-white border-4 border-gray-200 rounded-2xl shadow-sm cursor-pointer shopping-btn hover:border-orange-400';
+            words.forEach(w => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white border-2 border-orange-300 text-gray-800 font-black text-lg py-3 px-5 rounded-xl shadow transition hover:bg-orange-50';
+                btn.innerText = w;
                 
-                btnContainer.innerHTML = `
-                    <span class="text-4xl mb-2">${item.icon}</span>
-                    <span class="font-black text-gray-700">${item.text}</span>
-                `;
-                
-                btnContainer.onclick = () => {
-                    if (userSequence.length >= qData.answer.length) return;
-
-                    // 點擊特效與發音
-                    btnContainer.classList.add('memory-flash', 'bg-yellow-50', 'border-yellow-400');
-                    setTimeout(() => btnContainer.classList.remove('memory-flash', 'bg-yellow-50', 'border-yellow-400'), 500);
-                    playTTS("放入 " + item.text);
-                    
-                    userSequence.push(item.id);
-                    
-                    // 顯示在購物籃
-                    const cartItem = document.createElement('div');
-                    cartItem.className = 'w-16 h-16 flex flex-col justify-center items-center bg-gray-50 border-2 border-gray-300 rounded-xl shadow-sm animate-pulse';
-                    cartItem.innerHTML = `<span class="text-2xl">${item.icon}</span><span class="text-[10px] font-bold text-gray-500">${item.text}</span>`;
-                    answerDisplay.appendChild(cartItem);
-                    
-                    if (userSequence.length === qData.answer.length) {
-                        submitBtn.classList.remove('hidden');
-                        // 提示提交
-                        setTimeout(() => playTTS("選好啦，請按提交答案！"), 1000);
+                btn.onclick = () => {
+                    if(btn.parentElement === optionsDiv) {
+                        slotDiv.appendChild(btn);
+                        userSequence.push(w);
+                        btn.classList.replace('bg-white', 'bg-yellow-100');
+                    } else {
+                        optionsDiv.appendChild(btn);
+                        userSequence = userSequence.filter(item => item !== w);
+                        btn.classList.replace('bg-yellow-100', 'bg-white');
                     }
+                    submitBtn.classList.toggle('hidden', userSequence.length !== words.length);
                 };
-                grid.appendChild(btnContainer);
+                optionsDiv.appendChild(btn);
             });
 
-            container.appendChild(controls);
-            container.appendChild(grid);
-            container.appendChild(answerDisplay);
+            container.appendChild(slotDiv);
+            container.appendChild(optionsDiv);
+            
+            const hintNode = document.createElement('p');
+            hintNode.className = 'text-sm font-bold text-orange-600 mt-4 text-center w-full';
+            hintNode.innerHTML = '👉 順序點擊選項，把它們排好！';
+            container.appendChild(hintNode);
 
-            window.checkCurrentAnswer = () => {
-                const isCorrect = JSON.stringify(userSequence) === JSON.stringify(qData.answer);
+            submitBtn.onclick = () => {
+                const isCorrect = userSequence.join(',') === qData.answer.join(',');
                 handleResult(isCorrect);
-                if(!isCorrect) {
-                    // 答錯清空購物籃
-                    answerDisplay.innerHTML = '<span class="absolute top-[-15px] left-4 bg-orange-400 text-white px-3 py-1 rounded-full text-xs font-bold">我的購物籃</span>'; 
-                }
             };
         }
 
-        // 引擎 E: 填空題 (支援點擊與拖曳，加入視覺化卡片)
+        // 引擎 D: 填空題
         function renderFillBlank(qData, container, submitBtn) {
+            const sentenceDiv = document.createElement('div');
+            sentenceDiv.className = 'text-2xl font-black text-gray-800 mb-8 leading-loose text-center bg-white p-6 rounded-2xl shadow-sm border-2 border-gray-100 w-full';
+            
             let htmlText = qData.text;
-            qData.blanks.forEach((ans, idx) => {
-                // 加大空格，讓SEN學生容易點擊
-                htmlText = htmlText.replace(`[__${idx+1}__]`, `<span class="drop-zone inline-block min-w-[120px] h-12 align-middle border-b-4 border-dashed border-orange-500 mx-2 px-3 text-center text-orange-700 font-black bg-orange-100 cursor-pointer blank-slot rounded-t-xl transition-colors shadow-inner text-xl" data-idx="${idx}"></span>`);
+            qData.blanks.forEach((b, i) => {
+                htmlText = htmlText.replace(`[__${i+1}__]`, `<span class="inline-block w-24 h-12 bg-gray-100 border-b-4 border-dashed border-orange-400 mx-2 align-middle text-center text-orange-600 cursor-pointer transition hover:bg-orange-50" data-index="${i}" id="blank-${i}"></span>`);
+            });
+            sentenceDiv.innerHTML = htmlText;
+            container.appendChild(sentenceDiv);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'flex flex-wrap justify-center gap-4 w-full bg-orange-50 p-6 rounded-2xl border-2 border-orange-200';
+            
+            let userAnswers = new Array(qData.blanks.length).fill(null);
+            let activeBlankIndex = 0; // 預設選中第一個空格
+
+            function updateBlankHighlight() {
+                qData.blanks.forEach((_, i) => {
+                    const el = document.getElementById(`blank-${i}`);
+                    if(i === activeBlankIndex) {
+                        el.classList.add('bg-yellow-100', 'border-orange-500');
+                    } else {
+                        el.classList.remove('bg-yellow-100', 'border-orange-500');
+                    }
+                });
+            }
+
+            sentenceDiv.querySelectorAll('span[data-index]').forEach(span => {
+                span.onclick = () => {
+                    activeBlankIndex = parseInt(span.dataset.index);
+                    updateBlankHighlight();
+                    // 如果空格內已有東西，退回選項區
+                    if(userAnswers[activeBlankIndex]) {
+                        const optBtn = optionsDiv.querySelector(`[data-val="${userAnswers[activeBlankIndex]}"]`);
+                        if(optBtn) optBtn.classList.remove('hidden');
+                        span.innerText = '';
+                        userAnswers[activeBlankIndex] = null;
+                        submitBtn.classList.add('hidden');
+                    }
+                };
             });
 
-            const textBlock = document.createElement('div');
-            textBlock.className = 'text-xl sm:text-2xl leading-loose font-bold text-gray-800 bg-white p-6 sm:p-8 rounded-3xl shadow-sm w-full border-4 border-orange-100';
-            textBlock.innerHTML = htmlText;
-
-            const optionsArea = document.createElement('div');
-            optionsArea.className = 'flex flex-wrap gap-4 justify-center mt-8 p-6 bg-gray-100 rounded-3xl w-full shadow-inner min-h-[100px] border-2 border-gray-200';
-
-            let userAnswers = new Array(qData.blanks.length).fill(null);
-            
-            function clearSelection() {
-                optionsArea.querySelectorAll('.draggable-item').forEach(el => el.classList.remove('selected'));
-                globalSelectedObj = null;
-            }
-
-            function renderOptions() {
-                optionsArea.innerHTML = '';
-                qData.options.forEach(opt => {
-                    if(!userAnswers.includes(opt)) {
-                        const btn = document.createElement('div');
-                        btn.className = 'draggable-item bg-white border-4 border-sky-200 text-sky-800 px-5 py-3 rounded-2xl font-black text-xl shadow-md cursor-grab select-none flex items-center gap-3';
-                        btn.draggable = true;
-                        
-                        btn.innerHTML = `
-                            <span>${opt}</span>
-                            <button class="tts-btn bg-sky-100 hover:bg-sky-200 text-sky-600 rounded-full w-8 h-8 flex items-center justify-center transition shrink-0" title="讀出來">
-                                <i class="fa-solid fa-volume-high text-xs pointer-events-none"></i>
-                            </button>
-                        `;
-
-                        btn.querySelector('.tts-btn').addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            playTTS(opt);
-                        });
-                        
-                        btn.addEventListener('dragstart', (e) => {
-                            e.dataTransfer.setData('text/plain', opt);
-                            btn.style.opacity = '0.5';
-                            clearSelection();
-                        });
-                        btn.addEventListener('dragend', (e) => { e.target.style.opacity = '1'; });
-                        
-                        btn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            clearSelection();
-                            btn.classList.add('selected');
-                            globalSelectedObj = btn;
-                            playTTS("選了 " + opt + "，請點上面的空格。");
-                        });
-
-                        optionsArea.appendChild(btn);
-                    }
-                });
-            }
-
-            function setupDropZones() {
-                const slots = textBlock.querySelectorAll('.blank-slot');
-                slots.forEach((slot, idx) => {
-                    slot.innerText = userAnswers[idx] || '';
-                    if(userAnswers[idx]) {
-                        slot.classList.add('bg-green-100', 'border-green-600', 'text-green-800');
-                        slot.classList.remove('bg-orange-100', 'border-orange-500', 'text-orange-700');
-                    } else {
-                        slot.classList.remove('bg-green-100', 'border-green-600', 'text-green-800');
-                        slot.classList.add('bg-orange-100', 'border-orange-500', 'text-orange-700');
-                    }
-
-                    slot.onclick = (e) => {
-                        e.stopPropagation();
-                        if (globalSelectedObj && !userAnswers[idx]) {
-                            userAnswers[idx] = globalSelectedObj.innerText.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim().split('\n')[0]; // 提取文字部分
-                            clearSelection();
-                            updateState();
-                        } 
-                        else if (userAnswers[idx]) {
-                            playTTS("拿走");
-                            userAnswers[idx] = null;
-                            updateState();
+            qData.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white border-2 border-gray-300 text-gray-800 font-black text-xl py-3 px-5 rounded-xl shadow-sm transition hover:bg-orange-100 hover:border-orange-400';
+                btn.innerText = opt;
+                btn.dataset.val = opt;
+                
+                btn.onclick = () => {
+                    if(activeBlankIndex !== null) {
+                        const blankSpan = document.getElementById(`blank-${activeBlankIndex}`);
+                        // 如果該格已有答案，先恢復
+                        if(userAnswers[activeBlankIndex]) {
+                             const oldBtn = optionsDiv.querySelector(`[data-val="${userAnswers[activeBlankIndex]}"]`);
+                             if(oldBtn) oldBtn.classList.remove('hidden');
                         }
+                        blankSpan.innerText = opt;
+                        userAnswers[activeBlankIndex] = opt;
+                        btn.classList.add('hidden'); // 在選項區隱藏
+                        
+                        // 自動跳下一個未填的空格
+                        let nextBlank = userAnswers.indexOf(null);
+                        activeBlankIndex = nextBlank !== -1 ? nextBlank : null;
+                        updateBlankHighlight();
+
+                        if(!userAnswers.includes(null)) {
+                            submitBtn.classList.remove('hidden');
+                        }
+                    } else {
+                        playTTS("請先點擊你想填寫的橫線！");
+                    }
+                };
+                optionsDiv.appendChild(btn);
+            });
+
+            container.appendChild(optionsDiv);
+            updateBlankHighlight();
+
+            submitBtn.onclick = () => {
+                const isCorrect = userAnswers.every((ans, idx) => ans === qData.blanks[idx]);
+                handleResult(isCorrect);
+            };
+        }
+
+        // 引擎 E: 記憶題 (聽聲音後順序點擊)
+        function renderShoppingMemory(qData, container, submitBtn) {
+            const controlDiv = document.createElement('div');
+            controlDiv.className = 'flex flex-col items-center gap-4 mb-8 w-full';
+            
+            const playAudioBtn = document.createElement('button');
+            playAudioBtn.className = 'bg-blue-500 hover:bg-blue-400 text-white font-black text-xl py-4 px-8 rounded-full shadow-lg transition flex items-center gap-3 animate-bounce';
+            playAudioBtn.innerHTML = '<i class="fa-solid fa-ear-listen text-2xl"></i> 聽聽媽媽要買什麼？';
+            
+            playAudioBtn.onclick = () => {
+                playAudioBtn.classList.remove('animate-bounce');
+                playAudioBtn.classList.add('memory-flash');
+                setTimeout(() => playAudioBtn.classList.remove('memory-flash'), 500);
+                playTTS(qData.audioText);
+            };
+            controlDiv.appendChild(playAudioBtn);
+            container.appendChild(controlDiv);
+
+            const cartDiv = document.createElement('div');
+            cartDiv.className = 'w-full min-h-[120px] bg-gray-100 rounded-2xl border-4 border-dashed border-gray-300 p-4 flex gap-2 justify-center items-center flex-wrap mb-6';
+            cartDiv.innerHTML = '<span class="text-gray-400 font-bold"><i class="fa-solid fa-cart-shopping"></i> 購物車 (還空空的)</span>';
+            container.appendChild(cartDiv);
+
+            const itemsPool = ["🍎 蘋果", "🍌 香蕉", "🍓 士多啤梨", "🥛 牛奶", "🍞 麵包", "🧃 果汁", "🥚 雞蛋"];
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'flex flex-wrap justify-center gap-4 w-full';
+
+            userSequence = [];
+
+            itemsPool.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'shopping-btn bg-white border-2 border-orange-200 text-gray-800 font-black text-xl py-3 px-4 rounded-2xl shadow transition hover:bg-orange-50';
+                btn.innerText = item;
+                
+                btn.onclick = () => {
+                    if (cartDiv.querySelector('span.text-gray-400')) cartDiv.innerHTML = '';
+                    
+                    const clonedBtn = btn.cloneNode(true);
+                    clonedBtn.className = 'bg-yellow-100 border-2 border-yellow-400 text-yellow-800 font-black text-lg py-2 px-3 rounded-xl m-1';
+                    
+                    // 點擊購物車內的物品可取消
+                    clonedBtn.onclick = () => {
+                        cartDiv.removeChild(clonedBtn);
+                        userSequence = userSequence.filter(i => i !== item);
+                        if (userSequence.length === 0) cartDiv.innerHTML = '<span class="text-gray-400 font-bold"><i class="fa-solid fa-cart-shopping"></i> 購物車 (還空空的)</span>';
+                        submitBtn.classList.toggle('hidden', userSequence.length === 0);
                     };
 
-                    slot.addEventListener('dragover', (e) => { e.preventDefault(); slot.classList.add('dragover'); });
-                    slot.addEventListener('dragleave', () => { slot.classList.remove('dragover'); });
-                    slot.addEventListener('drop', (e) => {
-                        e.preventDefault(); 
-                        slot.classList.remove('dragover');
-                        const text = e.dataTransfer.getData('text/plain');
-                        if(!userAnswers[idx]) {
-                            userAnswers[idx] = text;
-                            updateState();
-                        }
-                    });
-                });
-            }
+                    cartDiv.appendChild(clonedBtn);
+                    userSequence.push(item);
+                    submitBtn.classList.remove('hidden');
+                    playTTS("放入 " + item);
+                };
+                optionsDiv.appendChild(btn);
+            });
+            container.appendChild(optionsDiv);
 
-            function updateState() {
-                setupDropZones();
-                renderOptions();
-                if(!userAnswers.includes(null)) submitBtn.classList.remove('hidden');
-                else submitBtn.classList.add('hidden');
-            }
-
-            container.appendChild(textBlock);
-            container.appendChild(optionsArea);
-            
-            const hintNode = document.createElement('p');
-            hintNode.className = 'text-sm font-bold text-orange-600 mt-2 text-center w-full bg-yellow-100/50 p-3 rounded-xl border border-yellow-200';
-            hintNode.innerHTML = '👉 玩法：把詞語「拉」到空格中，或者「先點詞語，再點空格」。';
-            container.appendChild(hintNode);
-            
-            updateState();
-
-            window.checkCurrentAnswer = () => {
-                const isCorrect = JSON.stringify(userAnswers) === JSON.stringify(qData.blanks);
-                if(isCorrect) {
-                    fireConfetti();
-                    const fullText = qData.text.replace(/\[__\d+__\]/g, () => userAnswers.shift());
-                    playTTS("叻仔！完整句子是：" + fullText);
-                }
+            submitBtn.onclick = () => {
+                const isCorrect = userSequence.join(',') === qData.answer.join(',');
                 handleResult(isCorrect);
             };
         }
 
         // ==========================================
-        // 5. 結果判定與過場邏輯
+        // 5. 邏輯判定與回饋處理
         // ==========================================
         function handleResult(isCorrect) {
             const feedback = document.getElementById('feedback-area');
-            const nextBtn = document.getElementById('next-btn');
             const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
             const retryBtn = document.getElementById('retry-btn');
-            
-            feedback.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-300', 'bg-green-50', 'text-green-700', 'border-green-300');
-            submitBtn.classList.add('hidden');
-            nextBtn.classList.add('hidden');
-            if (retryBtn) retryBtn.classList.add('hidden');
+            const interactiveArea = document.getElementById('interactive-area');
 
+            submitBtn.classList.add('hidden');
+            feedback.classList.remove('hidden');
+            
             if(isCorrect) {
-                playTTS("答對了！你好叻啊！");
-                fireConfetti();
-                feedback.classList.add('bg-green-50', 'text-green-700', 'border-4', 'border-green-300');
-                feedback.innerHTML = '<i class="fa-solid fa-face-laugh-beam text-4xl mb-2 block text-green-500 animate-bounce"></i> 答對了！你好叻啊！';
+                state.energyAnswered++;
+                saveProgress();
+                
+                feedback.className = 'p-4 rounded-xl text-xl font-black text-center transition-all shadow-sm bg-green-100 text-green-700 border-2 border-green-400';
+                feedback.innerHTML = '<i class="fa-solid fa-face-smile-beam text-2xl"></i> 好叻呀！答啱咗啦！';
+                playTTS("好叻呀！答啱咗啦！");
+                
+                interactiveArea.classList.add('pointer-events-none', 'opacity-70');
                 nextBtn.classList.remove('hidden');
+                if(retryBtn) retryBtn.classList.add('hidden');
+                createConfetti();
             } else {
-                playTTS("哎呀，唔啱喎。看提示再試一次吧。");
-                feedback.classList.add('bg-red-50', 'text-red-700', 'border-4', 'border-red-300');
-                feedback.innerHTML = '<i class="fa-solid fa-face-frown text-4xl mb-2 block text-red-400"></i> 哎呀，唔啱喎。再試一次吧！';
-                userSequence = []; 
-                if (retryBtn) retryBtn.classList.remove('hidden');
+                feedback.className = 'p-4 rounded-xl text-xl font-black text-center transition-all shadow-sm bg-red-100 text-red-700 border-2 border-red-400 animate-shake';
+                feedback.innerHTML = '<i class="fa-solid fa-circle-exclamation text-2xl"></i> 差少少咋，再試下啦！';
+                playTTS("差少少咋，再試下啦！");
+                
+                if(retryBtn) retryBtn.classList.remove('hidden');
+                interactiveArea.classList.remove('pointer-events-none', 'opacity-70');
             }
         }
 
-        function retryQuestion() {
-            renderQuestion();
+        function checkCurrentAnswer() {
+            // 這個按鈕主要被綁定在對應引擎的 onclick 裡處理了。預防點擊報錯。
         }
 
         function nextQuestion() {
-            state.energyAnswered++;
-            saveProgress();
             currentQIndex++;
             renderQuestion();
         }
 
+        function retryQuestion() {
+            const level = idLevels[state.currentLevelIndex];
+            // 重新渲染當前題目
+            renderQuestion();
+        }
+
         function showLevelComplete() {
-            playTTS("太棒了！這個任務完成啦！請在左邊選另一個任務。");
-            document.getElementById('interactive-area').innerHTML = `
-                <div class="text-center animate-bounce mt-10 p-8 bg-yellow-50 rounded-full border-8 border-yellow-200">
-                    <i class="fa-solid fa-star text-8xl text-yellow-400 mb-4 drop-shadow-lg"></i>
-                    <h2 class="text-3xl font-black text-orange-600 mb-2">任務完成！</h2>
-                    <p class="text-orange-800 font-bold text-lg">你拿到了一顆星星！⭐</p>
+            const area = document.getElementById('interactive-area');
+            const hintArea = document.getElementById('hint-content');
+            const feedback = document.getElementById('feedback-area');
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const retryBtn = document.getElementById('retry-btn');
+            
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            if(retryBtn) retryBtn.classList.add('hidden');
+            feedback.classList.add('hidden');
+            hintArea.innerText = "完成整個任務啦！";
+
+            area.innerHTML = `
+                <div class="text-center flex flex-col items-center animate-bounce">
+                    <i class="fa-solid fa-medal text-6xl text-yellow-400 mb-4 drop-shadow-md"></i>
+                    <h3 class="text-3xl font-black text-orange-600 mb-2">恭喜完成階段任務！</h3>
+                    <p class="text-gray-600 font-bold mb-6">你做得好好呀！</p>
+                    <button onclick="goToNextLevel()" class="bg-orange-500 hover:bg-orange-400 text-white text-xl font-black px-8 py-4 rounded-full shadow-lg transition transform hover:scale-105">
+                        挑戰下一個任務 <i class="fa-solid fa-arrow-right"></i>
+                    </button>
                 </div>
             `;
-            document.getElementById('hint-content').innerText = "好叻仔！請在左邊的選單，揀下一個任務啦！";
-            document.getElementById('feedback-area').classList.add('hidden');
-            document.getElementById('next-btn').classList.add('hidden');
-            document.getElementById('submit-btn').classList.add('hidden');
-            fireConfetti();
+            playTTS("恭喜完成階段任務！你做得好好呀！");
+            createConfetti();
         }
 
-        // ==========================================
-        // 6. 煙火特效與純淨語音 (TTS)
-        // ==========================================
-        function fireConfetti() {
-            const colors = ['#fde047', '#f97316', '#38bdf8', '#4ade80'];
-            for(let i=0; i<60; i++) {
-                let confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 4000); 
+        function goToNextLevel() {
+            if (state.currentLevelIndex < idLevels.length - 1) {
+                state.currentLevelIndex++;
+                saveProgress();
+                initSidebar();
+                loadLevel(state.currentLevelIndex);
+            } else {
+                alert("太棒了！你已經完成了所有的樂活小鎮任務！");
             }
         }
 
-        function playTTS(customText = null) {
-            const level = idLevels[state.currentLevelIndex];
-            if(!level || !level.questions[currentQIndex]) return;
-            const qData = level.questions[currentQIndex];
+        // ==========================================
+        // 6. 輔助功能：語音 (TTS) 與 特效
+        // ==========================================
+        function playTTS(text) {
+            if (!text) {
+                // 如果沒有傳入文字，抓取當前題目的提示或文字
+                const level = idLevels[state.currentLevelIndex];
+                if(currentQIndex < level.questions.length) {
+                    const q = level.questions[currentQIndex];
+                    text = q.audioText || q.q || q.text || level.desc;
+                } else {
+                    return;
+                }
+            }
             
-            let textToRead = customText;
-            if(!textToRead) {
-                if (qData.audioText) textToRead = qData.audioText;
-                else if (level.type === 'drag-category') textToRead = qData.desc + " " + qData.hint;
-                else textToRead = (qData.q || "") + " " + (qData.orig || "");
-            }
-
-            // 過濾掉所有 Emoji 與括號內的內容，讓語音朗讀不會唸出奇怪的代碼
-            let cleanedText = typeof textToRead === 'string' 
-                ? textToRead.replace(/[\(（].*?[\)）]/g, '')
-                            .replace(/[\u{1F600}-\u{1F6FF}\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F200}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25B6}\u{23F8}-\u{23FA}]/gu, '')
-                            .replace(/[1-4]️⃣/g, '') // 處理特殊數字emoji
-                : textToRead;
+            // 過濾掉 Emoji 以免機器人讀出奇怪的聲音
+            const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}]/gu, '');
 
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(cleanedText);
-                utterance.lang = 'zh-HK'; // 廣東話
-                utterance.rate = 0.8; // 速度放慢，適合 SEN 學生
-                utterance.pitch = 1.1; // 稍微提高音調顯得親切
-                window.speechSynthesis.speak(utterance);
+                window.speechSynthesis.cancel(); // 停止先前的朗讀
+                const msg = new SpeechSynthesisUtterance(cleanText);
+                msg.lang = 'zh-HK'; 
+                msg.rate = 0.9; // 放慢一點適合SEN
+                window.speechSynthesis.speak(msg);
+            } else {
+                console.log("瀏覽器不支持語音朗讀:", cleanText);
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#fde047', '#fb923c', '#f87171', '#4ade80', '#60a5fa'];
+            for (let i = 0; i < 50; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                conf.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(conf);
+                
+                // 動畫結束後自動刪除節點
+                setTimeout(() => conf.remove(), 3000);
             }
         }
     </script>
