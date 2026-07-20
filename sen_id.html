@@ -50,8 +50,8 @@
     <nav class="bg-orange-500 text-white shadow-md no-print z-20 shrink-0">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <!-- 返回10大類別首頁按鈕 --> 
-                <a href="index.html#sen_type" class="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded-xl transition text-orange-50 hover:text-white shadow-inner">
+                <!-- 返回同工專區首頁按鈕 --> 
+                <a href="index.html#sen_types" class="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded-xl transition text-orange-50 hover:text-white shadow-inner">
                     <i class="fa-solid fa-house"></i>
                     <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回10大類別首頁</span>
                 </a>
@@ -356,15 +356,34 @@
         });
 
         function saveProgress() {
-            localStorage.setItem('senIdState', JSON.stringify(state));
+            try {
+                localStorage.setItem('senIdState', JSON.stringify(state));
+            } catch(e) {
+                console.warn("無法儲存進度 (可能在預覽模式或無痕模式)：", e);
+            }
             updateEnergy();
         }
 
         function loadProgress() {
-            const saved = localStorage.getItem('senIdState');
-            if(saved) {
-                state = JSON.parse(saved);
-                if(state.currentLevelIndex >= idLevels.length) state.currentLevelIndex = 0;
+            try {
+                const saved = localStorage.getItem('senIdState');
+                if(saved) {
+                    const parsedState = JSON.parse(saved);
+                    // 確保屬性存在，避免舊資料結構出錯
+                    if (parsedState && typeof parsedState.currentLevelIndex === 'number') {
+                        state.currentLevelIndex = parsedState.currentLevelIndex;
+                    }
+                    if (parsedState && typeof parsedState.energyAnswered === 'number') {
+                        state.energyAnswered = parsedState.energyAnswered;
+                    }
+                    if(state.currentLevelIndex >= idLevels.length || state.currentLevelIndex < 0) {
+                        state.currentLevelIndex = 0;
+                    }
+                }
+            } catch(e) {
+                console.warn("無法讀取進度 (可能在預覽模式或無痕模式)：", e);
+                // 讀取失敗時重置狀態
+                state = { currentLevelIndex: 0, energyAnswered: 0 };
             }
             updateEnergy();
         }
