@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID 樂活小鎮探索隊 (輕度智障生活技能訓練)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 拖曳與選取互動樣式 - 放大與圓潤化適合SEN學生 */
+        .drop-zone { transition: all 0.2s ease; border-width: 4px; }
+        .drop-zone.dragover { background-color: #fef08a; border-color: #eab308; transform: scale(1.05); }
+        .draggable-item { cursor: grab; transition: transform 0.1s, box-shadow 0.1s; touch-action: none; border: 2px solid transparent; }
+        .draggable-item:active { cursor: grabbing; transform: scale(0.95); }
+        .draggable-item.selected { border-color: #f97316; background-color: #fed7aa; transform: translateY(-3px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); color: #c2410c; }
+        
+        /* 購物清單按鈕特效 */
+        .shopping-btn { transition: transform 0.2s, box-shadow 0.2s; }
+        .shopping-btn:active { transform: scale(0.9); }
+        .memory-flash { animation: flash 0.5s ease-in-out; }
+        @keyframes flash { 0%, 100% { opacity: 1; filter: brightness(1); } 50% { opacity: 0.8; filter: brightness(1.2); box-shadow: 0 0 20px #fbbf24;} }
+
+        /* 煙火特效粒子 - 成功時的強烈正向回饋 */
+        .confetti { position: fixed; width: 12px; height: 12px; z-index: 9999; pointer-events: none; animation: fall linear forwards; border-radius: 50%; }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+        }
+        
+        /* 錯誤震動特效 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+        .pointer-events-none { pointer-events: none; }
+    </style>
+</head>
+<body class="bg-orange-50 flex flex-col h-screen overflow-hidden text-gray-800 font-sans">
+
+    <!-- 頂部導航列 (暖色調) -->
+    <nav class="bg-orange-500 text-white shadow-md no-print z-20 shrink-0">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <!-- 返回同工專區首頁按鈕 --> 
+                <a href="index.html#professional" class="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded-xl transition text-orange-50 hover:text-white shadow-inner">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回同工專區</span>
+                </a>
+                <div class="flex flex-col justify-center border-l border-orange-400 pl-4">
+                    <h1 class="text-sm sm:text-lg font-black tracking-tight leading-none flex items-center gap-2">
+                        <i class="fa-solid fa-sun text-yellow-300"></i> ID 樂活小鎮探索隊
+                    </h1>
+                    <span class="text-[10px] text-orange-200 font-bold block mt-1 tracking-widest">生活技能訓練營 (輕度智障適用)</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button onclick="resetProgress()" class="text-xs bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded-lg font-bold transition shadow">
+                    <i class="fa-solid fa-rotate-right"></i> 重置
+                </button>
+                <button id="toggle-sidebar" class="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-orange-900 px-4 py-2 rounded-full text-sm font-bold transition shadow">
+                    <i class="fa-solid fa-list-ul"></i>
+                    <span class="hidden sm:inline">任務目錄</span>
+                </button>
+                <div class="flex items-center gap-2 bg-white/20 px-3 sm:px-4 py-1.5 rounded-full shadow-inner">
+                    <i class="fa-solid fa-star text-yellow-300"></i>
+                    <span class="text-xs font-bold hidden sm:inline">開心指數 :</span>
+                    <div class="w-20 sm:w-28 h-3 bg-orange-900/30 rounded-full overflow-hidden">
+                        <div id="energy-bar" class="h-full bg-yellow-400 transition-all duration-500 ease-out" style="width: 0%;"></div>
+                    </div>
+                    <span id="energy-text" class="text-xs font-bold text-yellow-200">0%</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主體雙欄架構 -->
+    <div class="flex flex-1 overflow-hidden relative">
+        <!-- 左側邊欄 -->
+        <aside id="sidebar" class="w-72 bg-white shadow-xl flex flex-col shrink-0 transition-transform duration-300 z-10 border-r border-orange-100">
+            <div class="p-4 border-b border-orange-100 bg-orange-50">
+                <h2 class="text-orange-800 font-black text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-map-location-dot"></i> 小鎮任務地圖
+                </h2>
+                <p class="text-xs text-orange-600 mt-1">完成任務收集星星！</p>
+            </div>
+            <div id="level-list" class="flex-1 overflow-y-auto p-3 space-y-3 no-scrollbar pb-20">
+                <!-- 動態生成關卡選單 -->
+            </div>
+        </aside>
+
+        <!-- 右側主內容區 -->
+        <main class="flex-1 p-4 sm:p-6 overflow-y-auto flex flex-col bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+            <div class="max-w-5xl mx-auto w-full bg-white/95 backdrop-blur rounded-3xl shadow-xl p-5 sm:p-8 flex flex-col border-4 border-orange-100 flex-1 relative">
+                
+                <!-- 標題與進度 -->
+                <div class="mb-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                        <div>
+                            <span id="current-stage-tag" class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block shadow-sm">階段</span>
+                            <h2 id="current-level-title" class="text-2xl sm:text-3xl font-black text-orange-600 mb-2">載入中...</h2>
+                            <p id="current-level-desc" class="text-gray-600 text-sm sm:text-base font-medium bg-orange-50 p-3 rounded-xl border border-orange-100 inline-block">任務準備中...</p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap bg-gray-50 p-2 rounded-2xl border border-gray-100" id="progress-nodes"></div>
+                    </div>
+                </div>
+
+                <!-- 互動區 & 提示板 -->
+                <div class="flex flex-col lg:flex-row gap-6 flex-1">
+                    <!-- 左半部：互動區 -->
+                    <div class="flex-1 border-4 border-dashed border-orange-200 rounded-3xl p-4 sm:p-8 flex flex-col bg-white relative shadow-sm min-h-[400px]">
+                        <div class="absolute top-4 right-4 z-10 flex gap-3">
+                            <button onclick="checkCurrentAnswer()" id="submit-btn" class="hidden bg-green-500 hover:bg-green-400 text-white rounded-full px-5 py-2 text-base font-black shadow-lg transition transform hover:scale-105">
+                                <i class="fa-solid fa-check-circle"></i> 提交答案
+                            </button>
+                            <!-- 全局播放題目按鈕 -->
+                            <button onclick="playTTS()" class="text-white bg-sky-500 hover:bg-sky-400 rounded-full w-12 h-12 flex items-center justify-center transition shadow-lg animate-bounce" title="聽聽任務內容">
+                                <i class="fa-solid fa-volume-high text-xl"></i>
+                            </button>
+                        </div>
+                        <h3 class="text-xl font-black text-orange-500 mb-6 flex items-center gap-2">
+                            <i class="fa-solid fa-puzzle-piece"></i> 動手做做看
+                        </h3>
+                        <!-- 動態生成題目內容 -->
+                        <div id="interactive-area" class="flex-1 flex flex-col justify-center items-center gap-6 w-full"></div>
+                    </div>
+
+                    <!-- 右半部：提示與回饋板 -->
+                    <div class="w-full lg:w-1/3 bg-orange-50 border-4 border-orange-100 rounded-3xl p-5 flex flex-col">
+                        <h3 class="text-lg font-black text-orange-700 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-yellow-500 text-xl"></i> 小提示
+                        </h3>
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-orange-100 flex-1 flex flex-col">
+                            <p id="hint-content" class="text-gray-700 text-base sm:text-lg font-bold leading-relaxed mb-4">任務提示將顯示於此...</p>
+                            
+                            <div class="mt-auto flex flex-col gap-3">
+                                <div id="feedback-area" class="hidden p-4 rounded-xl text-lg font-black text-center transition-all shadow-sm"></div>
+                                <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-yellow-400 hover:bg-yellow-300 text-orange-900 font-black py-4 rounded-2xl shadow-md transition text-lg flex items-center justify-center gap-2">
+                                    下一題 <i class="fa-solid fa-circle-arrow-right"></i>
+                                </button>
+                                <button id="retry-btn" onclick="retryQuestion()" class="hidden w-full bg-red-100 hover:bg-red-200 text-red-700 font-black py-4 rounded-2xl shadow-md transition text-lg flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-rotate-right"></i> 再試一次
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript 邏輯 -->
+    <script>
+        // ==========================================
+        // 1. 12 大關卡題庫資料 (專為輕度智障設計：具體、實用、視覺化)
+        // ==========================================
+        const idLevels = [
+            // --- 第一階段：基礎認知與分類 ---
+            {
+                id: 1, stage: "第一階段：基礎認知", title: "1. 顏色分類大師", type: "drag-category",
+                desc: "任務：幫忙整理生果！將紅色和黃色的生果放入對應顏色的籃子。",
+                questions: [
+                    { 
+                        categories: ["🔴 紅色", "🟡 黃色"], 
+                        words: [
+                            { text: "🍎 蘋果", cat: "🔴 紅色" },
+                            { text: "🍌 香蕉", cat: "🟡 黃色" },
+                            { text: "🍓 士多啤梨", cat: "🔴 紅色" },
+                            { text: "🍋 檸檬", cat: "🟡 黃色" }
+                        ],
+                        hint: "看清楚顏色！把紅色的放進紅籃子，黃色的放進黃籃子。" 
+                    }
+                ]
+            },
+            {
+                id: 2, stage: "第一階段：基礎認知", title: "2. 形狀尋寶記", type: "choice",
+                desc: "任務：觀察生活中的物品，找出指定的形狀。",
+                questions: [
+                    { q: "請找出【圓形】的物件：", options: ["⏱️ 時鐘", "🚪 木門", "📐 畫角尺"], answer: 0, hint: "圓形是圓咕嚕，沒有尖尖的角。" },
+                    { q: "請找出【正方形】的物件：", options: ["🥚 雞蛋", "🪟 窗戶", "🍕 披薩切片"], answer: 1, hint: "正方形有四個角，四邊一樣長。" }
+                ]
+            },
+            // --- 第二階段：個人自理與衛生 ---
+            {
+                id: 3, stage: "第二階段：個人自理", title: "3. 洗手好習慣", type: "sequence",
+                desc: "任務：吃東西前要洗手！請排出手正確的洗手步驟。",
+                questions: [
+                    { 
+                        orig: "洗手的正確步驟", 
+                        words: ["1️⃣ 開水喉濕手", "2️⃣ 搽番梘搓手", "3️⃣ 用清水沖乾淨", "4️⃣ 用毛巾抹乾"], 
+                        answer: ["1️⃣ 開水喉濕手", "2️⃣ 搽番梘搓手", "3️⃣ 用清水沖乾淨", "4️⃣ 用毛巾抹乾"], 
+                        hint: "先濕水，再用番梘，然後沖水，最後抹乾。" 
+                    }
+                ]
+            },
+            {
+                id: 4, stage: "第二階段：個人自理", title: "4. 天氣與穿著", type: "choice",
+                desc: "任務：出門前看看天氣，選出合適的物品。",
+                questions: [
+                    { q: "外面正在【落大雨】🌧️，出門要帶甚麼？", options: ["☔ 雨傘", "🕶️ 太陽眼鏡"], answer: 0, hint: "落雨會淋濕身，要用來擋雨的工具。" },
+                    { q: "天氣【好凍】❄️，應該著甚麼？", options: ["🩱 游水衣", "🧥 厚外套"], answer: 1, hint: "好凍容易感冒，要穿保暖的衣服。" }
+                ]
+            },
+            {
+                id: 5, stage: "第二階段：個人自理", title: "5. 健康好身體", type: "fill-blank",
+                desc: "任務：把正確的食物圖示放進句子中，完成健康口訣。",
+                questions: [
+                    { 
+                      text: "我想身體健康，每天都要多吃 [__1__]，並且喝足夠的 [__2__]。", 
+                      blanks: ["🥦 蔬菜", "💧 清水"], 
+                      options: ["🍬 糖果", "🥦 蔬菜", "🥤 汽水", "💧 清水"],
+                      hint: "多吃菜，多喝水，少吃零食身體好！(可拖曳或點擊放入空格)" 
+                    }
+                ]
+            },
+            // --- 第三階段：社區常識與安全 ---
+            {
+                id: 6, stage: "第三階段：社區安全", title: "6. 交通燈守則", type: "choice",
+                desc: "任務：過馬路要注意交通燈，保障安全。",
+                questions: [
+                    { q: "過馬路時，見到【紅燈】🛑，我們應該怎樣做？", options: ["🏃‍♂️ 跑過馬路", "🧍‍♂️ 停低等候"], answer: 1, hint: "紅燈停，綠燈行。" },
+                    { q: "過馬路時，見到【綠燈】燈號🚦，我們應該怎樣做？", options: ["🚶‍♂️ 小心過馬路", "📱 站在馬路玩手機"], answer: 0, hint: "綠燈亮起，看清楚左右沒有車就可以過。" }
+                ]
+            },
+            {
+                id: 7, stage: "第三階段：社區安全", title: "7. 認識公共標誌", type: "choice",
+                desc: "任務：在商場裡認路，找出正確的指示牌。",
+                questions: [
+                    { q: "人有三急，想去廁所，要找哪個標誌？", options: ["🚻 洗手間", "🍽️ 餐廳", "🛒 超市"], answer: 0, hint: "找有一男一女圖案的地方。" },
+                    { q: "遇到火警，要離開商場，要找哪個標誌？", options: ["🛗 升降機", "🏃‍♂️ EXIT 出口"], answer: 1, hint: "綠色的人形標誌，代表安全離開的出口。" }
+                ]
+            },
+            {
+                id: 8, stage: "第三階段：社區安全", title: "8. 迷路怎麼辦", type: "sequence",
+                desc: "任務：如果在街上走失了，請排好正確的處理步驟。",
+                questions: [
+                    { 
+                        orig: "走失時的處理方法", 
+                        words: ["1️⃣ 保持鎮定", "2️⃣ 留在原地", "3️⃣ 找警察或職員幫手"], 
+                        answer: ["1️⃣ 保持鎮定", "2️⃣ 留在原地", "3️⃣ 找警察或職員幫手"], 
+                        hint: "不要慌張，不要亂跑，找穿制服的叔叔阿姨幫忙。" 
+                    }
+                ]
+            },
+            // --- 第四階段：實用金錢與數字 ---
+            {
+                id: 9, stage: "第四階段：實用金錢", title: "9. 點算數量", type: "choice",
+                desc: "任務：幫忙點算物品的數量。",
+                questions: [
+                    { q: "這裡有幾多個蘋果？\n🍎 🍎 🍎", options: ["1 個", "2 個", "3 個"], answer: 2, hint: "用手指慢慢數：一、二、三。" },
+                    { q: "這裡有幾多輛巴士？\n🚌 🚌", options: ["2 輛", "4 輛", "5 輛"], answer: 0, hint: "用手指數一數有幾多架。" }
+                ]
+            },
+            {
+                id: 10, stage: "第四階段：實用金錢", title: "10. 超市購物清單", type: "memory",
+                desc: "任務：媽媽吩咐你去超市買東西。點擊喇叭聽清單，然後按順序把東西放進購物車！",
+                questions: [
+                    { 
+                        audioText: "請幫我買：牛奶、然後買麵包", 
+                        answer: ["milk", "bread"], 
+                        hint: "先買牛奶，再買麵包。" 
+                    },
+                    { 
+                        audioText: "請幫我買：蘋果、香蕉、最後買果汁", 
+                        answer: ["apple", "banana", "juice"], 
+                        hint: "記住三樣東西：蘋果 -> 香蕉 -> 果汁。" 
+                    }
+                ]
+            },
+            // --- 第五階段：社交禮儀與情緒 ---
+            {
+                id: 11, stage: "第五階段：社交與情緒", title: "11. 辨識情緒", type: "choice",
+                desc: "任務：觀察別人的表情，了解他們的感受。",
+                questions: [
+                    { q: "小明的雪糕跌在地上吃不到了，他覺得很...？", options: ["😭 傷心", "😂 開心", "😠 嬲怒"], answer: 0, hint: "失去了喜歡的東西，會流眼淚。" },
+                    { q: "今天是小麗的生日，朋友送禮物給她，她覺得很...？", options: ["😴 疲倦", "😄 開心", "😨 害怕"], answer: 1, hint: "收到禮物會笑逐顏開。" }
+                ]
+            },
+            {
+                id: 12, stage: "第五階段：社交與情緒", title: "12. 有禮貌的好孩子", type: "fill-blank",
+                desc: "任務：在不同的社交場合，說出正確的禮貌用語。",
+                questions: [
+                    { 
+                      text: "收到別人送的禮物，我會笑著說：「[__1__]」。如果不小心撞到同學，我會立刻說：「[__2__]」。", 
+                      blanks: ["多謝", "對唔住"], 
+                      options: ["早晨", "多謝", "對唔住", "再見"],
+                      hint: "獲得好處要感謝；做錯事要道歉。" 
+                    }
+                ]
+            }
+            const newIDLevels = [
+  {
+    roomTitle: "超市收銀台",
+    targetAge: "9-15",
+    questions: [
+      {
+        text: "你買了一個 15 元的麵包，拿 20 元給老闆，老闆要找你多少錢？",
+        options: ["5元", "10元", "15元", "2元"],
+        correctAnswer: "5元"
+      },
+      {
+        text: "一支雪糕要 8 元，一包薯片要 10 元，兩樣一起買總共要付多少錢？",
+        options: ["18元", "12元", "20元", "10元"],
+        correctAnswer: "18元"
+      },
+      {
+        text: "你手上有 50 元紙幣，買了一盒 30 元的草莓，你還剩下多少錢？",
+        options: ["10元", "20元", "30元", "40元"],
+        correctAnswer: "20元"
+      },
+      {
+        text: "你想買兩瓶售價都是 6 元的汽水，總共需要支付多少錢？",
+        options: ["12元", "8元", "10元", "6元"],
+        correctAnswer: "12元"
+      }
+    ]
+  },
+  {
+    roomTitle: "交通導航站",
+    targetAge: "9-15",
+    questions: [
+      {
+        text: "當你準備過馬路，看到行人紅綠燈是「紅色小人」在閃爍，你應該怎麼做？",
+        options: ["立刻停下等候綠燈", "快步跑過馬路", "繼續一邊玩手機一邊走過馬路", "大聲唱歌衝過去"],
+        correctAnswer: "立刻停下等候綠燈"
+      },
+      {
+        text: "搭乘地鐵（港鐵）時，如果車門正在關閉並發出「嘟嘟嘟」的警報聲，你應該？",
+        options: ["快步衝進車廂", "用身體或手擋住車門", "停下腳步，安全地等下一班車", "大喊叫司機等一下"],
+        correctAnswer: "停下腳步，安全地等下一班車"
+      },
+      {
+        text: "登上巴士（公車）並付了車費之後，為了自身安全，我們應該最先做好什麼事？",
+        options: ["在走廊上跑來跑去", "找空座位坐好並扶穩扶手", "把頭和手伸出窗外看風景", "和司機大聲聊天"],
+        correctAnswer: "找空座位坐好並扶穩扶手"
+      },
+      {
+        text: "你想走到馬路對面，但附近沒有交通燈，你應該選擇哪裡過馬路才安全？",
+        options: ["行人天橋、隧道或斑馬線", "直接從馬路中間快速跑過去", "跨越路邊的鐵欄杆過去", "跟在大卡車或大巴士後面過馬路"],
+        correctAnswer: "行人天橋、隧道或斑馬線"
+      }
+    ]
+  },
+  {
+    roomTitle: "快餐店點餐機",
+    targetAge: "9-15",
+    questions: [
+      {
+        text: "你今天只有 30 元的預算，以下哪一個套餐是你足夠錢買得起的？",
+        options: ["28元的魚柳包套餐", "35元的牛肉皇套餐", "42元的炸雞分享桶", "50元的特大豪華餐"],
+        correctAnswer: "28元的魚柳包套餐"
+      },
+      {
+        text: "你在點餐機點了一個 25 元的漢堡包和一杯 7 元的汽水，你總共需要付多少錢？",
+        options: ["32元", "30元", "28元", "35元"],
+        correctAnswer: "32元"
+      },
+      {
+        text: "你有 40 元，買了 22 元的芝士漢堡後，還想加配一款小食，以下哪一款小食在你的剩餘預算內？",
+        options: ["25元的雞翼(4隻)", "15元的細薯條", "20元的蘋果批", "30元的朱古力新地冰淇淋"],
+        correctAnswer: "15元的細薯條"
+      },
+      {
+        text: "自助點餐機螢幕上顯示「請選擇取餐方式」，你想在店內坐下慢慢吃，應該點擊哪一個按鈕？",
+        options: ["外賣自取 / 帶走", "堂食 / 店內食用", "送貨上門", "取消交易"],
+        correctAnswer: "堂食 / 店內食用"
+      }
+    ]
+  }
+];
+        ];
+
+        // ==========================================
+        // 2. 全局狀態與 Local Storage
+        // ==========================================
+        let state = { currentLevelIndex: 0, energyAnswered: 0 };
+        // 計算總題數
+        const totalQuestions = idLevels.reduce((sum, level) => sum + level.questions.length, 0);
+
+        let currentQIndex = 0;
+        let userSequence = []; 
+        let globalSelectedObj = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadProgress();
+            initSidebar();
+            loadLevel(state.currentLevelIndex);
+            
+            document.getElementById('toggle-sidebar').addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('-translate-x-full');
+                sidebar.classList.toggle('hidden');
+            });
+        });
+
+        function saveProgress() {
+            localStorage.setItem('senIdState', JSON.stringify(state));
+            updateEnergy();
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('senIdState');
+            if(saved) {
+                state = JSON.parse(saved);
+                if(state.currentLevelIndex >= idLevels.length) state.currentLevelIndex = 0;
+            }
+            updateEnergy();
+        }
+
+        function resetProgress() {
+            if(confirm("確定要重新開始所有訓練任務嗎？")) {
+                state = { currentLevelIndex: 0, energyAnswered: 0 };
+                saveProgress();
+                initSidebar();
+                loadLevel(0);
+            }
+        }
+
+        function updateEnergy() {
+            const bar = document.getElementById('energy-bar');
+            const text = document.getElementById('energy-text');
+            let percent = Math.min(Math.round((state.energyAnswered / totalQuestions) * 100), 100);
+            bar.style.width = percent + '%';
+            text.innerText = percent + '%';
+        }
+
+        function initSidebar() {
+            const list = document.getElementById('level-list');
+            list.innerHTML = '';
+            let currentStage = "";
+            
+            idLevels.forEach((level, index) => {
+                if (level.stage !== currentStage) {
+                    currentStage = level.stage;
+                    const stageDiv = document.createElement('div');
+                    stageDiv.className = 'text-xs font-black text-orange-400 mt-5 mb-2 px-2 border-l-4 border-orange-400';
+                    stageDiv.innerText = currentStage;
+                    list.appendChild(stageDiv);
+                }
+
+                const btn = document.createElement('button');
+                const isActive = index === state.currentLevelIndex;
+                btn.className = `w-full text-left px-3 py-3 rounded-2xl border-2 transition font-bold text-sm flex items-center gap-2 ${isActive ? 'border-orange-500 bg-orange-50 text-orange-700 shadow-md transform scale-[1.02]' : 'border-orange-100 bg-white hover:border-yellow-400 text-gray-600'}`;
+                btn.innerHTML = `<i class="fa-solid fa-star ${isActive ? 'text-yellow-400' : 'text-gray-300'} w-5 text-center"></i> <span class="truncate">${level.title}</span>`;
+                
+                btn.onclick = () => {
+                    state.currentLevelIndex = index;
+                    saveProgress();
+                    initSidebar(); 
+                    loadLevel(state.currentLevelIndex);
+                };
+                list.appendChild(btn);
+            });
+        }
+
+        // ==========================================
+        // 3. 關卡渲染控制器
+        // ==========================================
+        function loadLevel(levelIndex) {
+            currentQIndex = 0;
+            const level = idLevels[levelIndex];
+            
+            document.getElementById('current-stage-tag').innerText = level.stage;
+            document.getElementById('current-level-title').innerText = level.title;
+            document.getElementById('current-level-desc').innerText = level.desc;
+            
+            renderProgressNodes(level);
+            renderQuestion();
+        }
+
+        function renderProgressNodes(level) {
+            const container = document.getElementById('progress-nodes');
+            container.innerHTML = '';
+            const qCount = level.questions.length;
+            
+            for(let i=0; i<qCount; i++) {
+                const node = document.createElement('div');
+                node.className = 'flex items-center gap-1';
+                const circle = document.createElement('div');
+                circle.className = `w-8 h-8 rounded-full flex items-center justify-center font-black text-sm border-2 transition-all duration-300 ${i < currentQIndex ? 'bg-green-500 border-green-500 text-white shadow-md' : (i === currentQIndex ? 'bg-yellow-300 border-yellow-400 text-yellow-800 shadow-md scale-110' : 'bg-gray-100 border-gray-200 text-gray-400')}`;
+                // 已完成顯示打勾
+                circle.innerHTML = i < currentQIndex ? '<i class="fa-solid fa-check"></i>' : (i + 1);
+                node.appendChild(circle);
+                container.appendChild(node);
+            }
+        }
+
+        function renderQuestion() {
+            const level = idLevels[state.currentLevelIndex];
+            if(currentQIndex >= level.questions.length) {
+                showLevelComplete();
+                return;
+            }
+
+            const qData = level.questions[currentQIndex];
+            const area = document.getElementById('interactive-area');
+            const hintArea = document.getElementById('hint-content');
+            const feedback = document.getElementById('feedback-area');
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const retryBtn = document.getElementById('retry-btn');
+            
+            area.innerHTML = ''; 
+            feedback.className = 'hidden'; 
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            if(retryBtn) retryBtn.classList.add('hidden');
+            userSequence = [];
+            globalSelectedObj = null;
+            
+            renderProgressNodes(level);
+            hintArea.innerText = qData.hint || "請仔細看看，動手試試看！";
+            
+            // 自動播放題目提示音 (延遲一點讓畫面先渲染)
+            setTimeout(() => playTTS(), 500);
+            
+            if (level.type === 'drag-category') renderCategory(qData, area, submitBtn);
+            else if (level.type === 'choice') renderChoice(qData, area);
+            else if (level.type === 'sequence') renderSequence(qData, area, submitBtn);
+            else if (level.type === 'memory') renderShoppingMemory(qData, area, submitBtn);
+            else if (level.type === 'fill-blank') renderFillBlank(qData, area, submitBtn);
+        }
+
+        // ==========================================
+        // 4. 題型引擎區
+        // ==========================================
+        
+        // 引擎 A: 拖曳分類 (專為SEN優化，卡片更大，視覺回饋更強)
+        function renderCategory(qData, container, submitBtn) {
+            const boxesContainer = document.createElement('div');
+            boxesContainer.className = 'flex flex-col sm:flex-row gap-6 w-full justify-center mb-8';
+
+            let categoryMap = {}; 
+            
+            qData.categories.forEach(cat => {
+                categoryMap[cat] = [];
+                const boxWrapper = document.createElement('div');
+                boxWrapper.className = 'flex flex-col items-center flex-1 w-full sm:max-w-[250px]';
+                
+                // 籃子樣式
+                const box = document.createElement('div');
+                box.className = 'drop-zone w-full min-h-[160px] border-4 border-dashed border-orange-300 rounded-3xl flex flex-col items-center p-3 bg-orange-50 shadow-sm transition relative overflow-hidden';
+                box.innerHTML = `
+                    <div class="bg-white rounded-full w-14 h-14 flex items-center justify-center mb-2 shadow-sm pointer-events-none">
+                        <i class="fa-solid fa-basket-shopping text-3xl text-orange-400"></i>
+                    </div>
+                    <span class="font-black text-lg bg-orange-200 text-orange-800 px-4 py-1 rounded-full pointer-events-none">${cat}</span>
+                `;
+                
+                const itemContainer = document.createElement('div');
+                itemContainer.className = 'w-full flex flex-wrap justify-center gap-2 mt-4 pointer-events-none';
+                box.appendChild(itemContainer);
+
+                box.addEventListener('dragover', (e) => { e.preventDefault(); box.classList.add('dragover'); });
+                box.addEventListener('dragleave', () => { box.classList.remove('dragover'); });
+                box.addEventListener('drop', (e) => {
+                    e.preventDefault(); box.classList.remove('dragover');
+                    const wordText = e.dataTransfer.getData('text/plain');
+                    if(wordText) processCategoryDrop(wordText, cat, itemContainer);
+                });
+                box.addEventListener('click', () => {
+                    if(globalSelectedObj) processCategoryDrop(globalSelectedObj.dataset.text, cat, itemContainer, globalSelectedObj);
+                });
+
+                boxWrapper.appendChild(box);
+                boxesContainer.appendChild(boxWrapper);
+            });
+
+            // 下方物品區
+            const wordsContainer = document.createElement('div');
+            wordsContainer.className = 'flex flex-wrap gap-4 w-full justify-center min-h-[80px] bg-gray-100 p-6 rounded-3xl shadow-inner border-2 border-gray-200';
+            
+            qData.words.forEach(w => {
+                const wordBlock = document.createElement('div');
+                wordBlock.className = 'draggable-item bg-white text-gray-800 border-2 border-orange-200 font-black text-xl py-3 px-5 rounded-2xl shadow-md select-none transition flex items-center gap-3';
+                wordBlock.draggable = true;
+                wordBlock.dataset.text = w.text;
+                
+                wordBlock.innerHTML = `
+                    <span>${w.text}</span>
+                    <button class="tts-btn bg-sky-100 hover:bg-sky-200 text-sky-600 rounded-full w-8 h-8 flex items-center justify-center transition shrink-0" title="讀出來">
+                        <i class="fa-solid fa-volume-high text-sm pointer-events-none"></i>
+                    </button>
+                `;
+
+                wordBlock.querySelector('.tts-btn').addEventListener('click', (e) => {
+                    e.stopPropagation(); 
+                    playTTS(w.text);
+                });
+                
+                wordBlock.addEventListener('dragstart', (e) => { 
+                    e.dataTransfer.setData('text/plain', w.text); 
+                    wordBlock.style.opacity = '0.5'; 
+                    clearSelection();
+                });
+                wordBlock.addEventListener('dragend', (e) => { e.target.style.opacity = '1'; });
+                
+                wordBlock.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    clearSelection();
+                    wordBlock.classList.add('selected'); 
+                    globalSelectedObj = wordBlock;
+                    // 點擊也給予語音回饋
+                    playTTS("你選了：" + w.text + "。請點擊對應的籃子。");
+                });
+
+                wordsContainer.appendChild(wordBlock);
+            });
+
+            container.appendChild(boxesContainer);
+            container.appendChild(wordsContainer);
+            
+            const hintNode = document.createElement('p');
+            hintNode.className = 'text-sm font-bold text-orange-600 mt-2 text-center w-full bg-yellow-100/50 p-3 rounded-xl border border-yellow-200';
+            hintNode.innerHTML = '👉 玩法：可以用手指「拉」物品到籃子，或者「先點物品，再點籃子」。';
+            container.appendChild(hintNode);
+
+            function processCategoryDrop(wordText, targetCat, targetContainer, selectedObj = null) {
+                const wordData = qData.words.find(w => w.text === wordText);
+                if (!wordData) return;
+
+                const sourceEl = selectedObj || wordsContainer.querySelector(`[data-text="${wordText}"]`);
+                if (!sourceEl) return;
+
+                if (wordData.cat === targetCat) {
+                    // 答對了
+                    sourceEl.className = 'bg-green-100 text-green-800 border-2 border-green-400 font-black text-base py-2 px-3 rounded-xl shadow-sm m-1 flex items-center justify-center';
+                    sourceEl.draggable = false;
+                    sourceEl.onclick = null; 
+                    const btn = sourceEl.querySelector('.tts-btn');
+                    if (btn) btn.style.display = 'none';
+                    
+                    targetContainer.appendChild(sourceEl);
+                    playTTS("叻仔！放啱咗啦。");
+                    
+                    if (wordsContainer.children.length === 0) {
+                        setTimeout(() => handleResult(true), 500);
+                    }
+                } else {
+                    // 答錯
+                    playTTS("唔啱喎，再試下！");
+                    sourceEl.classList.add('animate-shake', 'bg-red-100', 'border-red-500');
+                    setTimeout(() => {
+                        sourceEl.classList.remove('animate-shake', 'bg-red-100', 'border-red-500', 'selected');
+                    }, 500);
+                }
+                clearSelection();
+            }
+
+            function clearSelection() {
+                document.querySelectorAll('.draggable-item').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                globalSelectedObj = null;
+            }
+        }
+
+        // 引擎 B: 選擇題 (選項字體加大，加入Emoji，視覺清晰)
+        function renderChoice(qData, container) {
+            const qText = document.createElement('div');
+            qText.className = 'bg-orange-50 border-l-8 border-orange-400 p-5 rounded-2xl shadow-sm w-full mb-6 relative whitespace-pre-wrap';
+            qText.innerHTML = `<p class="text-xl sm:text-2xl font-black text-gray-800 leading-normal">${qData.q}</p>`;
+
+            const optsDiv = document.createElement('div');
+            optsDiv.className = 'flex flex-col gap-4 w-full';
+
+            qData.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'text-left w-full p-4 sm:p-6 border-4 border-gray-200 rounded-2xl hover:border-orange-400 hover:bg-orange-50 transition text-gray-700 font-black text-lg sm:text-xl flex gap-4 items-center bg-white relative shadow-sm';
+                
+                btn.innerHTML = `
+                    <div class="indicator-icon w-8 h-8 rounded-full border-4 border-gray-300 flex items-center justify-center shrink-0 transition-colors bg-gray-50"></div> 
+                    <span class="flex-1">${optText}</span>
+                    <div class="tts-btn bg-sky-100 text-sky-600 hover:bg-sky-200 rounded-full w-12 h-12 flex items-center justify-center transition shrink-0 shadow-sm z-10" title="讀出來">
+                        <i class="fa-solid fa-volume-high text-lg pointer-events-none"></i>
+                    </div>
+                `;
+                
+                btn.querySelector('.tts-btn').addEventListener('click', (e) => {
+                    e.stopPropagation(); 
+                    playTTS(optText);
+                });
+
+                btn.onclick = (e) => {
+                    if (e.target.closest('.tts-btn')) return;
+
+                    // 鎖定所有按鈕
+                    const allBtns = optsDiv.querySelectorAll('button');
+                    allBtns.forEach(b => b.style.pointerEvents = 'none');
+                    
+                    const iconDiv = btn.querySelector('.indicator-icon');
+                    
+                    if (idx === qData.answer) {
+                        btn.classList.replace('border-gray-200', 'border-green-500');
+                        btn.classList.add('bg-green-50', 'text-green-800');
+                        iconDiv.classList.replace('border-gray-300', 'border-green-500');
+                        iconDiv.classList.replace('bg-gray-50', 'bg-green-500');
+                        iconDiv.innerHTML = '<i class="fa-solid fa-check text-white text-base"></i>';
+                        handleResult(true);
+                    } else {
+                        btn.classList.replace('border-gray-200', 'border-red-500');
+                        btn.classList.add('bg-red-50', 'text-red-800');
+                        iconDiv.classList.replace('border-gray-300', 'border-red-500');
+                        iconDiv.classList.replace('bg-gray-50', 'bg-red-500');
+                        iconDiv.innerHTML = '<i class="fa-solid fa-xmark text-white text-base"></i>';
+                        handleResult(false);
+                    }
+                };
+                optsDiv.appendChild(btn);
+            });
+            container.appendChild(qText);
+            container.appendChild(optsDiv);
+        }
+
+        // 引擎 C: 排序題 (使用數字與大圖塊)
+        function renderSequence(qData, container, submitBtn) {
+            container.innerHTML = `<p class="text-lg font-black text-orange-600 mb-4 bg-orange-100 p-3 rounded-xl w-full text-center">任務主題：${qData.orig || ''}</p>`;
+            
+            const targetArea = document.createElement('div');
+            targetArea.className = 'w-full min-h-[100px] bg-white border-4 border-dashed border-orange-300 rounded-2xl p-4 flex flex-col gap-3 mb-6 items-center shadow-inner transition-all';
+            
+            const sourceArea = document.createElement('div');
+            sourceArea.className = 'flex flex-wrap gap-3 justify-center bg-gray-100 p-5 rounded-2xl border-2 border-gray-200 w-full';
+            
+            // 打亂順序
+            let availableWords = [...qData.words].sort(() => Math.random() - 0.5);
+            let isChecking = false;
+
+            function updateView() {
+                if(isChecking) return;
+                
+                targetArea.innerHTML = '';
+                sourceArea.innerHTML = '';
+                
+                // 顯示已選區域
+                userSequence.forEach((word, index) => {
+                    const el = document.createElement('div');
+                    el.className = 'w-full max-w-md bg-green-500 text-white px-4 py-3 rounded-xl font-black text-lg shadow-md cursor-pointer hover:bg-green-600 transition flex items-center justify-between';
+                    el.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="bg-white text-green-600 w-8 h-8 rounded-full flex items-center justify-center shadow-inner">${index + 1}</span>
+                            <span>${word}</span>
+                        </div>
+                        <div class="tts-btn bg-black/20 hover:bg-black/40 text-white rounded-full w-8 h-8 flex items-center justify-center transition shrink-0" title="讀出來">
+                            <i class="fa-solid fa-volume-high text-xs pointer-events-none"></i>
+                        </div>
+                    `;
+                    
+                    el.querySelector('.tts-btn').addEventListener('click', (e) => { e.stopPropagation(); playTTS(word); });
+                    // 點擊退回
+                    el.onclick = () => { 
+                        playTTS("拿走");
+                        userSequence.splice(index, 1); availableWords.push(word); updateView(); 
+                    };
+                    targetArea.appendChild(el);
+                });
+
+                // 顯示未選區域
+                availableWords.forEach((word, index) => {
+                    const el = document.createElement('div');
+                    el.className = 'bg-white border-4 border-orange-200 text-gray-800 px-4 py-3 rounded-xl font-black text-lg shadow-sm cursor-pointer hover:border-orange-400 hover:bg-orange-50 transition flex items-center gap-3';
+                    el.innerHTML = `
+                        <span>${word}</span>
+                        <div class="tts-btn bg-sky-100 text-sky-600 hover:bg-sky-200 rounded-full w-8 h-8 flex items-center justify-center transition shrink-0" title="讀出來">
+                            <i class="fa-solid fa-volume-high text-xs pointer-events-none"></i>
+                        </div>
+                    `;
+                    
+                    el.querySelector('.tts-btn').addEventListener('click', (e) => { e.stopPropagation(); playTTS(word); });
+                    el.onclick = () => { 
+                        playTTS("排入");
+                        availableWords.splice(index, 1); userSequence.push(word); updateView(); 
+                    };
+                    sourceArea.appendChild(el);
+                });
+
+                if (userSequence.length === 0) {
+                    targetArea.innerHTML = '<span class="text-gray-400 font-bold mt-4">請按順序點擊下方的方塊，把它們排進來</span>';
+                }
+
+                // 自動檢查機制
+                if(availableWords.length === 0) {
+                    isChecking = true;
+                    const isCorrect = JSON.stringify(userSequence) === JSON.stringify(qData.answer);
+                    
+                    if(isCorrect) {
+                        targetArea.classList.replace('border-orange-300', 'border-green-500');
+                        targetArea.classList.add('bg-green-50');
+                        targetArea.style.pointerEvents = 'none';
+                        handleResult(true);
+                    } else {
+                        targetArea.classList.replace('border-orange-300', 'border-red-500');
+                        targetArea.classList.add('bg-red-50', 'animate-shake');
+                        targetArea.style.pointerEvents = 'none';
+                        handleResult(false);
+                    }
+                }
+            }
+            
+            container.appendChild(targetArea);
+            container.appendChild(sourceArea);
+            
+            updateView();
+            window.checkCurrentAnswer = undefined;
+            submitBtn.classList.add('hidden');
+        }
+
+        // 引擎 D: 超市購物記憶 (聽覺記憶結合圖像)
+        function renderShoppingMemory(qData, container, submitBtn) {
+            const controls = document.createElement('div');
+            controls.className = 'mb-6 w-full flex flex-col items-center gap-4 bg-blue-50 p-6 rounded-3xl border-4 border-blue-200';
+            controls.innerHTML = `
+                <img src="https://placehold.co/100x100/FFD700/000000?text=🛒" alt="購物車" class="w-20 h-20 rounded-full shadow-md bg-white p-2">
+                <button onclick="playTTS()" class="bg-blue-500 hover:bg-blue-600 text-white font-black py-4 px-8 rounded-full shadow-lg flex items-center gap-3 text-xl animate-bounce">
+                    <i class="fa-solid fa-ear-listen text-2xl"></i> 點擊聽媽媽的購物清單
+                </button>
+            `;
+            
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-2 sm:grid-cols-3 gap-4 p-6 bg-gray-100 rounded-3xl w-full mx-auto shadow-inner border-2 border-gray-200';
+            
+            // 購物項目圖庫 (Emoji)
+            const storeItems = [
+                {id: 'milk', text: '牛奶', icon: '🥛'},
+                {id: 'apple', text: '蘋果', icon: '🍎'},
+                {id: 'bread', text: '麵包', icon: '🍞'},
+                {id: 'banana', text: '香蕉', icon: '🍌'},
+                {id: 'juice', text: '果汁', icon: '🧃'},
+                {id: 'egg', text: '雞蛋', icon: '🥚'}
+            ];
+
+            const answerDisplay = document.createElement('div');
+            answerDisplay.className = 'mt-6 min-h-[80px] p-4 bg-white border-4 border-dashed border-orange-400 rounded-2xl flex flex-wrap gap-4 justify-center w-full items-center shadow-inner relative';
+            answerDisplay.innerHTML = '<span class="absolute top-[-15px] left-4 bg-orange-400 text-white px-3 py-1 rounded-full text-xs font-bold">我的購物籃</span>';
+
+            storeItems.forEach(item => {
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'flex flex-col justify-center items-center h-28 bg-white border-4 border-gray-200 rounded-2xl shadow-sm cursor-pointer shopping-btn hover:border-orange-400';
+                
+                btnContainer.innerHTML = `
+                    <span class="text-4xl mb-2">${item.icon}</span>
+                    <span class="font-black text-gray-700">${item.text}</span>
+                `;
+                
+                btnContainer.onclick = () => {
+                    if (userSequence.length >= qData.answer.length) return;
+
+                    // 點擊特效與發音
+                    btnContainer.classList.add('memory-flash', 'bg-yellow-50', 'border-yellow-400');
+                    setTimeout(() => btnContainer.classList.remove('memory-flash', 'bg-yellow-50', 'border-yellow-400'), 500);
+                    playTTS("放入 " + item.text);
+                    
+                    userSequence.push(item.id);
+                    
+                    // 顯示在購物籃
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'w-16 h-16 flex flex-col justify-center items-center bg-gray-50 border-2 border-gray-300 rounded-xl shadow-sm animate-pulse';
+                    cartItem.innerHTML = `<span class="text-2xl">${item.icon}</span><span class="text-[10px] font-bold text-gray-500">${item.text}</span>`;
+                    answerDisplay.appendChild(cartItem);
+                    
+                    if (userSequence.length === qData.answer.length) {
+                        submitBtn.classList.remove('hidden');
+                        // 提示提交
+                        setTimeout(() => playTTS("選好啦，請按提交答案！"), 1000);
+                    }
+                };
+                grid.appendChild(btnContainer);
+            });
+
+            container.appendChild(controls);
+            container.appendChild(grid);
+            container.appendChild(answerDisplay);
+
+            window.checkCurrentAnswer = () => {
+                const isCorrect = JSON.stringify(userSequence) === JSON.stringify(qData.answer);
+                handleResult(isCorrect);
+                if(!isCorrect) {
+                    // 答錯清空購物籃
+                    answerDisplay.innerHTML = '<span class="absolute top-[-15px] left-4 bg-orange-400 text-white px-3 py-1 rounded-full text-xs font-bold">我的購物籃</span>'; 
+                }
+            };
+        }
+
+        // 引擎 E: 填空題 (支援點擊與拖曳，加入視覺化卡片)
+        function renderFillBlank(qData, container, submitBtn) {
+            let htmlText = qData.text;
+            qData.blanks.forEach((ans, idx) => {
+                // 加大空格，讓SEN學生容易點擊
+                htmlText = htmlText.replace(`[__${idx+1}__]`, `<span class="drop-zone inline-block min-w-[120px] h-12 align-middle border-b-4 border-dashed border-orange-500 mx-2 px-3 text-center text-orange-700 font-black bg-orange-100 cursor-pointer blank-slot rounded-t-xl transition-colors shadow-inner text-xl" data-idx="${idx}"></span>`);
+            });
+
+            const textBlock = document.createElement('div');
+            textBlock.className = 'text-xl sm:text-2xl leading-loose font-bold text-gray-800 bg-white p-6 sm:p-8 rounded-3xl shadow-sm w-full border-4 border-orange-100';
+            textBlock.innerHTML = htmlText;
+
+            const optionsArea = document.createElement('div');
+            optionsArea.className = 'flex flex-wrap gap-4 justify-center mt-8 p-6 bg-gray-100 rounded-3xl w-full shadow-inner min-h-[100px] border-2 border-gray-200';
+
+            let userAnswers = new Array(qData.blanks.length).fill(null);
+            
+            function clearSelection() {
+                optionsArea.querySelectorAll('.draggable-item').forEach(el => el.classList.remove('selected'));
+                globalSelectedObj = null;
+            }
+
+            function renderOptions() {
+                optionsArea.innerHTML = '';
+                qData.options.forEach(opt => {
+                    if(!userAnswers.includes(opt)) {
+                        const btn = document.createElement('div');
+                        btn.className = 'draggable-item bg-white border-4 border-sky-200 text-sky-800 px-5 py-3 rounded-2xl font-black text-xl shadow-md cursor-grab select-none flex items-center gap-3';
+                        btn.draggable = true;
+                        
+                        btn.innerHTML = `
+                            <span>${opt}</span>
+                            <button class="tts-btn bg-sky-100 hover:bg-sky-200 text-sky-600 rounded-full w-8 h-8 flex items-center justify-center transition shrink-0" title="讀出來">
+                                <i class="fa-solid fa-volume-high text-xs pointer-events-none"></i>
+                            </button>
+                        `;
+
+                        btn.querySelector('.tts-btn').addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            playTTS(opt);
+                        });
+                        
+                        btn.addEventListener('dragstart', (e) => {
+                            e.dataTransfer.setData('text/plain', opt);
+                            btn.style.opacity = '0.5';
+                            clearSelection();
+                        });
+                        btn.addEventListener('dragend', (e) => { e.target.style.opacity = '1'; });
+                        
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            clearSelection();
+                            btn.classList.add('selected');
+                            globalSelectedObj = btn;
+                            playTTS("選了 " + opt + "，請點上面的空格。");
+                        });
+
+                        optionsArea.appendChild(btn);
+                    }
+                });
+            }
+
+            function setupDropZones() {
+                const slots = textBlock.querySelectorAll('.blank-slot');
+                slots.forEach((slot, idx) => {
+                    slot.innerText = userAnswers[idx] || '';
+                    if(userAnswers[idx]) {
+                        slot.classList.add('bg-green-100', 'border-green-600', 'text-green-800');
+                        slot.classList.remove('bg-orange-100', 'border-orange-500', 'text-orange-700');
+                    } else {
+                        slot.classList.remove('bg-green-100', 'border-green-600', 'text-green-800');
+                        slot.classList.add('bg-orange-100', 'border-orange-500', 'text-orange-700');
+                    }
+
+                    slot.onclick = (e) => {
+                        e.stopPropagation();
+                        if (globalSelectedObj && !userAnswers[idx]) {
+                            userAnswers[idx] = globalSelectedObj.innerText.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim().split('\n')[0]; // 提取文字部分
+                            clearSelection();
+                            updateState();
+                        } 
+                        else if (userAnswers[idx]) {
+                            playTTS("拿走");
+                            userAnswers[idx] = null;
+                            updateState();
+                        }
+                    };
+
+                    slot.addEventListener('dragover', (e) => { e.preventDefault(); slot.classList.add('dragover'); });
+                    slot.addEventListener('dragleave', () => { slot.classList.remove('dragover'); });
+                    slot.addEventListener('drop', (e) => {
+                        e.preventDefault(); 
+                        slot.classList.remove('dragover');
+                        const text = e.dataTransfer.getData('text/plain');
+                        if(!userAnswers[idx]) {
+                            userAnswers[idx] = text;
+                            updateState();
+                        }
+                    });
+                });
+            }
+
+            function updateState() {
+                setupDropZones();
+                renderOptions();
+                if(!userAnswers.includes(null)) submitBtn.classList.remove('hidden');
+                else submitBtn.classList.add('hidden');
+            }
+
+            container.appendChild(textBlock);
+            container.appendChild(optionsArea);
+            
+            const hintNode = document.createElement('p');
+            hintNode.className = 'text-sm font-bold text-orange-600 mt-2 text-center w-full bg-yellow-100/50 p-3 rounded-xl border border-yellow-200';
+            hintNode.innerHTML = '👉 玩法：把詞語「拉」到空格中，或者「先點詞語，再點空格」。';
+            container.appendChild(hintNode);
+            
+            updateState();
+
+            window.checkCurrentAnswer = () => {
+                const isCorrect = JSON.stringify(userAnswers) === JSON.stringify(qData.blanks);
+                if(isCorrect) {
+                    fireConfetti();
+                    const fullText = qData.text.replace(/\[__\d+__\]/g, () => userAnswers.shift());
+                    playTTS("叻仔！完整句子是：" + fullText);
+                }
+                handleResult(isCorrect);
+            };
+        }
+
+        // ==========================================
+        // 5. 結果判定與過場邏輯
+        // ==========================================
+        function handleResult(isCorrect) {
+            const feedback = document.getElementById('feedback-area');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            const retryBtn = document.getElementById('retry-btn');
+            
+            feedback.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-300', 'bg-green-50', 'text-green-700', 'border-green-300');
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            if (retryBtn) retryBtn.classList.add('hidden');
+
+            if(isCorrect) {
+                playTTS("答對了！你好叻啊！");
+                fireConfetti();
+                feedback.classList.add('bg-green-50', 'text-green-700', 'border-4', 'border-green-300');
+                feedback.innerHTML = '<i class="fa-solid fa-face-laugh-beam text-4xl mb-2 block text-green-500 animate-bounce"></i> 答對了！你好叻啊！';
+                nextBtn.classList.remove('hidden');
+            } else {
+                playTTS("哎呀，唔啱喎。看提示再試一次吧。");
+                feedback.classList.add('bg-red-50', 'text-red-700', 'border-4', 'border-red-300');
+                feedback.innerHTML = '<i class="fa-solid fa-face-frown text-4xl mb-2 block text-red-400"></i> 哎呀，唔啱喎。再試一次吧！';
+                userSequence = []; 
+                if (retryBtn) retryBtn.classList.remove('hidden');
+            }
+        }
+
+        function retryQuestion() {
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            state.energyAnswered++;
+            saveProgress();
+            currentQIndex++;
+            renderQuestion();
+        }
+
+        function showLevelComplete() {
+            playTTS("太棒了！這個任務完成啦！請在左邊選另一個任務。");
+            document.getElementById('interactive-area').innerHTML = `
+                <div class="text-center animate-bounce mt-10 p-8 bg-yellow-50 rounded-full border-8 border-yellow-200">
+                    <i class="fa-solid fa-star text-8xl text-yellow-400 mb-4 drop-shadow-lg"></i>
+                    <h2 class="text-3xl font-black text-orange-600 mb-2">任務完成！</h2>
+                    <p class="text-orange-800 font-bold text-lg">你拿到了一顆星星！⭐</p>
+                </div>
+            `;
+            document.getElementById('hint-content').innerText = "好叻仔！請在左邊的選單，揀下一個任務啦！";
+            document.getElementById('feedback-area').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('submit-btn').classList.add('hidden');
+            fireConfetti();
+        }
+
+        // ==========================================
+        // 6. 煙火特效與純淨語音 (TTS)
+        // ==========================================
+        function fireConfetti() {
+            const colors = ['#fde047', '#f97316', '#38bdf8', '#4ade80'];
+            for(let i=0; i<60; i++) {
+                let confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 4000); 
+            }
+        }
+
+        function playTTS(customText = null) {
+            const level = idLevels[state.currentLevelIndex];
+            if(!level || !level.questions[currentQIndex]) return;
+            const qData = level.questions[currentQIndex];
+            
+            let textToRead = customText;
+            if(!textToRead) {
+                if (qData.audioText) textToRead = qData.audioText;
+                else if (level.type === 'drag-category') textToRead = qData.desc + " " + qData.hint;
+                else textToRead = (qData.q || "") + " " + (qData.orig || "");
+            }
+
+            // 過濾掉所有 Emoji 與括號內的內容，讓語音朗讀不會唸出奇怪的代碼
+            let cleanedText = typeof textToRead === 'string' 
+                ? textToRead.replace(/[\(（].*?[\)）]/g, '')
+                            .replace(/[\u{1F600}-\u{1F6FF}\u{1F300}-\u{1F5FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F1E6}-\u{1F1FF}\u{1F200}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B55}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{3297}\u{3299}\u{303D}\u{00A9}\u{00AE}\u{2122}\u{23F3}\u{24C2}\u{23E9}-\u{23EF}\u{25B6}\u{23F8}-\u{23FA}]/gu, '')
+                            .replace(/[1-4]️⃣/g, '') // 處理特殊數字emoji
+                : textToRead;
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(cleanedText);
+                utterance.lang = 'zh-HK'; // 廣東話
+                utterance.rate = 0.8; // 速度放慢，適合 SEN 學生
+                utterance.pitch = 1.1; // 稍微提高音調顯得親切
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+</body>
+</html>
