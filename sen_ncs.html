@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCS SEN Support Platform / 非華語 SEN 學生支援平台</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Interactive styles matching the dashboard theme */
+        .drop-zone { transition: all 0.2s ease; border-width: 4px; }
+        .drop-zone.dragover { background-color: #e0f2fe; border-color: #0ea5e9; transform: scale(1.05); }
+        .draggable-item { cursor: grab; transition: transform 0.1s, box-shadow 0.1s; touch-action: none; border: 2px solid transparent; }
+        .draggable-item:active { cursor: grabbing; transform: scale(0.95); }
+        .draggable-item.selected { border-color: #38bdf8; background-color: #e0f2fe; transform: translateY(-3px); box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.2); color: #0284c7; }
+        
+        /* Effects */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+        .pointer-events-none { pointer-events: none; }
+        
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15%); }
+        }
+        .animate-bounce-short { animation: bounce-short 0.5s ease-in-out; }
+    </style>
+</head>
+
+<body class="bg-sky-50/50 flex flex-col h-screen overflow-hidden text-gray-800 font-sans">
+
+    <nav class="bg-sky-600 text-white shadow-md no-print z-20 shrink-0">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html#sen_types" class="flex items-center gap-2 bg-sky-700 hover:bg-sky-800 px-3 py-2 rounded-xl transition text-sky-50 hover:text-white shadow-inner">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="text-[11px] sm:text-xs font-bold hidden sm:flex sm:flex-col">
+                        <span>返回10大類別首頁</span>
+                        <span class="text-[9px] font-normal opacity-80">Back to Home</span>
+                    </span>
+                </a>
+                <div class="flex flex-col justify-center border-l border-sky-400 pl-4">
+                    <h1 class="text-sm sm:text-lg font-black tracking-tight leading-none flex items-center gap-2">
+                        <i class="fa-solid fa-globe text-sky-200"></i> NCS SEN Support
+                    </h1>
+                    <span class="text-[10px] text-sky-200 font-bold block mt-1 tracking-widest">非華語學生生活適應平台</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 sm:gap-4">
+                <button onclick="triggerResetModal()" class="text-xs bg-rose-500 hover:bg-rose-600 px-3 py-1.5 rounded-lg font-bold transition shadow flex flex-col items-center">
+                    <span><i class="fa-solid fa-rotate-right"></i> 重置</span>
+                    <span class="text-[9px] font-normal opacity-80">Reset</span>
+                </button>
+                <button id="toggle-sidebar" class="flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white px-4 py-2 rounded-full text-sm font-bold transition shadow">
+                    <i class="fa-solid fa-list-ul"></i>
+                    <span class="hidden sm:flex flex-col items-start leading-tight">
+                        <span>目錄</span>
+                        <span class="text-[9px] font-normal opacity-80">Menu</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-80 bg-white shadow-xl flex flex-col shrink-0 transition-all duration-300 z-20 border-r border-sky-100 absolute h-full -translate-x-full md:relative md:translate-x-0">
+            <div class="p-4 border-b border-sky-100 bg-sky-50/60 flex justify-between items-center">
+                <div>
+                    <h2 class="text-sky-900 font-black text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-route"></i> 學習地圖 Learning Map
+                    </h2>
+                    <p class="text-[11px] text-sky-600 mt-1">一步一步學習 / Step by step learning</p>
+                </div>
+                <button id="close-sidebar" class="md:hidden text-sky-700 hover:text-sky-950 p-2">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div id="level-list" class="flex-1 overflow-y-auto p-3 space-y-3 no-scrollbar pb-20">
+                <!-- Levels will be dynamically generated here -->
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-4 sm:p-6 overflow-y-auto flex flex-col bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-slate-50/50">
+            <div class="max-w-5xl mx-auto w-full bg-white/95 backdrop-blur rounded-3xl shadow-xl p-5 sm:p-8 flex flex-col border-4 border-sky-100 flex-1 relative">
+                
+                <!-- Title & Progress -->
+                <div class="mb-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                        <div>
+                            <span id="current-stage-tag" class="bg-sky-100 text-sky-800 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block shadow-sm">載入中 Loading...</span>
+                            <h2 id="current-level-title" class="text-2xl sm:text-3xl font-black text-sky-700 mb-2">載入中 Loading...</h2>
+                            <p id="current-level-desc" class="text-gray-600 text-sm sm:text-base font-medium bg-sky-50/50 p-3 rounded-xl border border-sky-100 inline-block">任務準備中 Preparing task...</p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap bg-gray-50 p-2 rounded-2xl border border-gray-100" id="progress-nodes"></div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-6 flex-1">
+                    <!-- Interaction Area (Left) -->
+                    <div class="flex-1 border-4 border-dashed border-sky-200 rounded-3xl p-4 sm:p-8 flex flex-col bg-white relative shadow-sm min-h-[400px]">
+                        <div class="absolute top-4 right-4 z-10 flex gap-3">
+                            <button onclick="checkCurrentAnswer()" id="submit-btn" class="hidden bg-sky-600 hover:bg-sky-500 text-white rounded-full px-5 py-2 text-base font-black shadow-lg transition transform hover:scale-105">
+                                <i class="fa-solid fa-check-circle"></i> 提交 Submit
+                            </button>
+                            <!-- Cantonese TTS Play Button -->
+                            <button onclick="playCurrentQuestionTTS()" class="text-white bg-sky-400 hover:bg-sky-300 rounded-full w-12 h-12 flex items-center justify-center transition shadow-lg hover:animate-bounce" title="聽聽廣東話朗讀 Play Cantonese Audio">
+                                <i class="fa-solid fa-volume-high text-xl"></i>
+                            </button>
+                        </div>
+                        <h3 class="text-xl font-black text-sky-600 mb-6 flex items-center gap-2">
+                            <i class="fa-solid fa-gamepad"></i> 練習 Practice
+                        </h3>
+                        <div id="interactive-area" class="flex-1 flex flex-col justify-center items-center gap-6 w-full"></div>
+                    </div>
+
+                    <!-- Hint & Feedback Area (Right) -->
+                    <div class="w-full lg:w-1/3 bg-sky-50/60 border-4 border-sky-100 rounded-3xl p-5 flex flex-col">
+                        <h3 class="text-lg font-black text-sky-800 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-yellow-500 text-xl"></i> 提示 Hint
+                        </h3>
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-sky-100 flex-1 flex flex-col">
+                            <p id="hint-content" class="text-gray-700 text-base sm:text-lg font-bold leading-relaxed mb-4">提示將顯示於此... Hints will appear here...</p>
+                            
+                            <div class="mt-auto flex flex-col gap-3">
+                                <div id="feedback-area" class="hidden p-4 rounded-xl text-lg font-black text-center transition-all shadow-sm"></div>
+                                <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 rounded-2xl shadow-md transition text-lg flex items-center justify-center gap-2">
+                                    下一題 Next <i class="fa-solid fa-circle-arrow-right"></i>
+                                </button>
+                                <button id="retry-btn" onclick="retryQuestion()" class="hidden w-full bg-sky-100 hover:bg-sky-200 text-sky-700 font-black py-4 rounded-2xl shadow-md transition text-lg flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-rotate-right"></i> 重試 Try Again
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Reset Modal -->
+    <div id="reset-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full border-4 border-sky-100 text-center animate-bounce-short">
+            <i class="fa-solid fa-circle-exclamation text-6xl text-rose-500 mb-4"></i>
+            <h3 class="text-xl font-black text-sky-900 mb-2">確定重置？ Are you sure?</h3>
+            <p class="text-gray-600 text-sm mb-6">將清除所有進度。 All progress will be lost.</p>
+            <div class="flex gap-4">
+                <button onclick="confirmReset()" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 rounded-2xl transition shadow-md">
+                    重置 Reset
+                </button>
+                <button onclick="closeResetModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-2xl transition">
+                    取消 Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ncsLevelsData = [
+            // Category 4: 社交故事與禮貌 (Social Stories & Manners) -> Kept as transition
+            {
+                id: 4, stage: "社交與環境 Social & Environment", title: "1. 社交互動與禮貌 / Social Interactions & Manners", type: "choice",
+                desc: "任務：學習進階的禮貌用語和社交情境。 Task: Learn advanced polite expressions and social situations.",
+                questions: [
+                    { 
+                        text_zh: "如果同學幫了你一個大忙，除了說「多謝」，還可以怎麼表達感激？", text_en: "If a classmate helped you a lot, besides saying 'Thank you', how else can you express gratitude?",
+                        options: [
+                            { zh: "今次真係多得你唔少！", en: "I really owe you this time!", isCorrect: true },
+                            { zh: "你真係好煩！", en: "You are so annoying!", isCorrect: false },
+                            { zh: "下次再講啦。", en: "Let's talk next time.", isCorrect: false }
+                        ],
+                        hint_zh: "這是一句很地道的廣東話，表示非常感激。 (A very native Cantonese expression for deep gratitude.)" 
+                    },
+                    { 
+                        text_zh: "如果你不小心弄壞了別人的東西，除了道歉，還應該說甚麼？", text_en: "If you accidentally broke someone's belonging, besides apologizing, what else should you say?",
+                        options: [
+                            { zh: "係你自己唔小心放。", en: "It's your fault for not putting it carefully.", isCorrect: false },
+                            { zh: "我會賠返俾你。", en: "I will compensate/replace it for you.", isCorrect: true },
+                            { zh: "算啦，無所謂。", en: "Never mind, it doesn't matter.", isCorrect: false }
+                        ],
+                        hint_zh: "表示願意承擔責任並補償。 (Expressing willingness to take responsibility and compensate.)" 
+                    }
+                ]
+            },
+            // Category 5: 校園設施導覽 (School Facilities Navigation) -> Kept as transition
+            {
+                id: 5, stage: "社交與環境 Social & Environment", title: "2. 校園設施運用 / School Facilities Usage", type: "choice",
+                desc: "任務：學習如何在學校不同設施中進行溝通。 Task: Learn how to communicate in different school facilities.",
+                questions: [
+                    { 
+                        text_zh: "你在圖書館想找一本關於歷史的書，可以怎麼問圖書館管理員？", text_en: "You want to find a book about history in the library, how can you ask the librarian?",
+                        options: [
+                            { zh: "歷史書喺邊個書架呀？", en: "Which bookshelf are the history books on?", isCorrect: true },
+                            { zh: "我想買歷史書。", en: "I want to buy a history book.", isCorrect: false },
+                            { zh: "圖書館幾點閂門？", en: "What time does the library close?", isCorrect: false }
+                        ],
+                        hint_zh: "詢問特定種類書籍的位置。 (Asking for the location of specific types of books.)" 
+                    },
+                    { 
+                        text_zh: "你想預訂學校的羽毛球場，應該怎麼跟校務處職員說？", text_en: "You want to book the school's badminton court, how should you tell the general office staff?",
+                        options: [
+                            { zh: "我要打羽毛球。", en: "I want to play badminton.", isCorrect: false },
+                            { zh: "我想book(預訂)羽毛球場，請問有冇空堂？", en: "I would like to book a badminton court, are there any empty slots?", isCorrect: true },
+                            { zh: "羽毛球場喺邊度？", en: "Where is the badminton court?", isCorrect: false }
+                        ],
+                        hint_zh: "表達預訂場地的需求並詢問可用時間。 (Expressing the need to book a venue and asking for availability.)" 
+                    }
+                ]
+            },
+            // Advanced Categories below
+            // Category A1: 討論與表達意見 (Discussions & Expressing Opinions)
+            {
+                id: 16, stage: "進階對話 Advanced Comm", title: "3. 討論與表達意見 / Discussions & Opinions", type: "choice",
+                desc: "任務：學習在小組討論中表達自己的看法。 Task: Learn to express your own views in group discussions.",
+                questions: [
+                    { 
+                        text_zh: "在小組討論中，你同意同學的觀點，可以怎麼說？", text_en: "In a group discussion, you agree with a classmate's point of view, what can you say?",
+                        options: [
+                            { zh: "我絕對贊成你嘅講法。", en: "I absolutely agree with what you said.", isCorrect: true },
+                            { zh: "你講得好錯。", en: "What you said is very wrong.", isCorrect: false },
+                            { zh: "我都唔知。", en: "I don't know either.", isCorrect: false }
+                        ],
+                        hint_zh: "表達完全同意。 (Expressing complete agreement.)" 
+                    },
+                    { 
+                        text_zh: "如果你對同學的提議有不同意見，想婉轉地表達，可以怎麼說？", text_en: "If you have a different opinion from a classmate's suggestion and want to express it tactfully, what can you say?",
+                        options: [
+                            { zh: "你個主意好蠢。", en: "Your idea is stupid.", isCorrect: false },
+                            { zh: "我有啲保留，不如我哋再諗諗？", en: "I have some reservations, how about we think about it more?", isCorrect: true },
+                            { zh: "就咁決定啦。", en: "Let's just decide on this.", isCorrect: false }
+                        ],
+                        hint_zh: "用「保留」一詞來客氣地表達不同意。 (Using the word 'reservations' to politely express disagreement.)" 
+                    }
+                ]
+            },
+            // Category A2: 複雜情緒與同理心 (Complex Emotions & Empathy)
+            {
+                id: 17, stage: "情緒與求助 Emotions & Help", title: "4. 複雜情緒與同理心 / Complex Emotions & Empathy", type: "choice",
+                desc: "任務：學習表達複雜情緒及安慰他人。 Task: Learn to express complex emotions and comfort others.",
+                questions: [
+                    { 
+                        text_zh: "同學因為測驗成績不理想而哭泣，你應該怎麼安慰他？", text_en: "A classmate is crying because of poor test results, how should you comfort them?",
+                        options: [
+                            { zh: "抵死啦你！", en: "Serves you right!", isCorrect: false },
+                            { zh: "唔好唔開心啦，下次再努力過！", en: "Don't be sad, try harder next time!", isCorrect: true },
+                            { zh: "你真係好蠢。", en: "You are really stupid.", isCorrect: false }
+                        ],
+                        hint_zh: "給予鼓勵和支持。 (Providing encouragement and support.)" 
+                    },
+                    { 
+                        text_zh: "你感到非常大壓力，想找老師傾訴，可以怎麼開口？", text_en: "You feel very stressed and want to talk to a teacher, how can you start the conversation?",
+                        options: [
+                            { zh: "老師，我最近覺得好大壓力，可唔可以同你傾下？", en: "Teacher, I've been feeling a lot of stress lately, can I talk to you?", isCorrect: true },
+                            { zh: "老師，我要放假。", en: "Teacher, I need a holiday.", isCorrect: false },
+                            { zh: "老師，你行開下。", en: "Teacher, go away.", isCorrect: false }
+                        ],
+                        hint_zh: "誠實表達感受並請求對話時間。 (Honestly expressing feelings and requesting time to talk.)" 
+                    }
+                ]
+            },
+             // Category A3: 解決衝突 (Conflict Resolution)
+            {
+                id: 18, stage: "進階對話 Advanced Comm", title: "5. 解決衝突 / Conflict Resolution", type: "choice",
+                desc: "任務：學習用冷靜的方式處理同學間的摩擦。 Task: Learn to handle friction among classmates calmly.",
+                questions: [
+                    { 
+                        text_zh: "你和同學因為分組工作產生了誤會，你想澄清，可以怎麼說？", text_en: "You and a classmate have a misunderstanding over group work, you want to clarify, what can you say?",
+                        options: [
+                            { zh: "你根本唔明我講咩！", en: "You just don't understand what I'm saying!", isCorrect: false },
+                            { zh: "我想解釋清楚，其實我嘅意思係...", en: "I want to explain clearly, actually what I meant was...", isCorrect: true },
+                            { zh: "我唔想同你同一組。", en: "I don't want to be in the same group as you.", isCorrect: false }
+                        ],
+                        hint_zh: "主動提出解釋，化解誤會。 (Taking the initiative to explain and resolve the misunderstanding.)" 
+                    },
+                    { 
+                        text_zh: "當兩個同學在爭吵時，你想勸交(勸架)，可以怎麼說？", text_en: "When two classmates are arguing, you want to stop the fight, what can you say?",
+                        options: [
+                            { zh: "你哋繼續鬧啦。", en: "You guys keep arguing.", isCorrect: false },
+                            { zh: "大家冷靜啲先，有咩慢慢講。", en: "Everyone calm down first, let's talk it out slowly.", isCorrect: true },
+                            { zh: "我都幫唔到你哋。", en: "I can't help you guys either.", isCorrect: false }
+                        ],
+                        hint_zh: "呼籲冷靜，鼓勵理性溝通。 (Calling for calm and encouraging rational communication.)" 
+                    }
+                ]
+            },
+            // Category A4: 升學與未來規劃 (Further Studies & Future Plans)
+            {
+                id: 19, stage: "生活技能 Life Skills", title: "6. 升學與未來規劃 / Further Studies & Future", type: "choice",
+                desc: "任務：學習談論將來的目標和計劃。 Task: Learn to talk about future goals and plans.",
+                questions: [
+                    { 
+                        text_zh: "你想問同學將來想做甚麼職業，可以怎麼問？", text_en: "You want to ask a classmate what profession they want to do in the future, how can you ask?",
+                        options: [
+                            { zh: "你第時想做咩工作呀？", en: "What job do you want to do in the future?", isCorrect: true },
+                            { zh: "你聽日去邊度玩？", en: "Where are you going to play tomorrow?", isCorrect: false },
+                            { zh: "你有幾多錢？", en: "How much money do you have?", isCorrect: false }
+                        ],
+                        hint_zh: "「第時」在廣東話中指將來。 ('第時' means future in Cantonese.)" 
+                    },
+                    { 
+                        text_zh: "你想表達自己對電腦科學感興趣，並打算大學修讀相關科目，可以怎麼說？", text_en: "You want to express your interest in computer science and plan to study it in university, what can you say?",
+                        options: [
+                            { zh: "我唔鍾意返學。", en: "I don't like going to school.", isCorrect: false },
+                            { zh: "我對電腦科學好有興趣，打算大學揀呢科。", en: "I am very interested in computer science and plan to choose this subject in university.", isCorrect: true },
+                            { zh: "我想快啲畢業賺錢。", en: "I want to graduate quickly to make money.", isCorrect: false }
+                        ],
+                        hint_zh: "清晰表達興趣和升學意向。 (Clearly expressing interest and intention for further studies.)" 
+                    }
+                ]
+            },
+            // Category A5: 參與課外活動與面試 (Extracurricular Activities & Interviews)
+            {
+                id: 20, stage: "進階對話 Advanced Comm", title: "7. 課外活動與面試 / Activities & Interviews", type: "choice",
+                desc: "任務：學習在面試或參加活動時的得體應對。 Task: Learn proper responses during interviews or participating in activities.",
+                questions: [
+                    { 
+                        text_zh: "參加學會面試時，老師請你自我介紹，你的開場白應該是？", text_en: "During a club interview, the teacher asks you to introduce yourself, what should your opening be?",
+                        options: [
+                            { zh: "各位老師好，我係...，我今日嚟面試係因為...", en: "Hello teachers, I am..., I am here to interview today because...", isCorrect: true },
+                            { zh: "我叫...，你問啦。", en: "My name is..., just ask.", isCorrect: false },
+                            { zh: "我無咩好介紹。", en: "I have nothing much to introduce.", isCorrect: false }
+                        ],
+                        hint_zh: "有禮貌地打招呼並說明目的。 (Politely greeting and stating the purpose.)" 
+                    },
+                    { 
+                        text_zh: "面試完結時，你應該說甚麼來表達感謝？", text_en: "At the end of the interview, what should you say to express thanks?",
+                        options: [
+                            { zh: "拜拜，走先啦。", en: "Bye bye, I'm leaving first.", isCorrect: false },
+                            { zh: "多謝老師抽時間面試，希望有機會加入。", en: "Thank you teachers for taking the time to interview, I hope to have the opportunity to join.", isCorrect: true },
+                            { zh: "記得揀我呀！", en: "Remember to choose me!", isCorrect: false }
+                        ],
+                        hint_zh: "感謝對方的時間並表達期望。 (Thanking for their time and expressing hope.)" 
+                    }
+                ]
+            },
+            // 新增範疇 1: 校園小食部與合作 (School Canteen & Snacks)
+            {
+                id: 21, stage: "校園生活 School Life", title: "8. 校園小食部與合作 / School Canteen & Snacks", type: "choice",
+                desc: "任務：學習在小食部點餐及使用八達通付款。 Task: Learn to order food and pay with Octopus card at the tuck shop.",
+                questions: [
+                    { 
+                        text_zh: "你想買一杯凍檸茶，並且不想要太甜，可以怎麼說？", text_en: "You want to buy an iced lemon tea, and not too sweet, what can you say?",
+                        options: [
+                            { zh: "我要檸檬茶，唔好俾糖我。", en: "I want lemon tea, don't give me sugar.", isCorrect: false },
+                            { zh: "唔該，我要一杯凍檸茶，少甜。", en: "Excuse me, I'd like an iced lemon tea, less sweet.", isCorrect: true },
+                            { zh: "俾杯茶我。", en: "Give me a cup of tea.", isCorrect: false }
+                        ],
+                        hint_zh: "在香港茶餐廳或小食部點飲品，常用「少甜」來表示減少糖分。 (In HK cafes or tuck shops, '少甜' is commonly used for less sugar.)" 
+                    },
+                    { 
+                        text_zh: "你的八達通餘額不足，你想用現金付款，可以怎麼跟小食部阿姨說？", text_en: "Your Octopus card has insufficient value, you want to pay with cash, what can you say to the tuck shop auntie?",
+                        options: [
+                            { zh: "我張八達通負錢，俾現金得唔得呀？", en: "My Octopus card has negative value, can I pay with cash?", isCorrect: true },
+                            { zh: "我無錢。", en: "I have no money.", isCorrect: false },
+                            { zh: "唔用八達通。", en: "Not using Octopus.", isCorrect: false }
+                        ],
+                        hint_zh: "「負錢」表示餘額不足，禮貌詢問是否接受現金。 ('負錢' means negative balance, politely asking if cash is accepted.)" 
+                    }
+                ]
+            },
+            // 新增範疇 2: 同儕社交與港式日常語 (Peer Social & HK Expressions)
+            {
+                id: 22, stage: "社交與環境 Social & Environment", title: "9. 同儕社交與日常語 / Peer Social & HK Expressions", type: "choice",
+                desc: "任務：理解同學常用口頭禪及建立話題。 Task: Understand classmates' common catchphrases and build topics.",
+                questions: [
+                    { 
+                        text_zh: "放學後，同學問你「放學去邊度玩呀？」，你想說你打算回家，可以怎麼回答？", text_en: "After school, a classmate asks 'Where are you going to play after school?', you want to say you plan to go home, how can you answer?",
+                        options: [
+                            { zh: "唔關你事。", en: "None of your business.", isCorrect: false },
+                            { zh: "我返屋企啦，下次再約。", en: "I'm going home, let's hang out next time.", isCorrect: true },
+                            { zh: "我唔知。", en: "I don't know.", isCorrect: false }
+                        ],
+                        hint_zh: "婉拒邀請時，加上「下次再約」會顯得更友善。 (When declining an invitation, adding 'let's hang out next time' makes it friendlier.)" 
+                    },
+                    { 
+                        text_zh: "同學稱讚你的新書包很漂亮，你應該怎麼回應？", text_en: "A classmate praises your new schoolbag for being pretty, how should you respond?",
+                        options: [
+                            { zh: "係呀，好貴㗎。", en: "Yes, it's very expensive.", isCorrect: false },
+                            { zh: "唔好望。", en: "Don't look.", isCorrect: false },
+                            { zh: "多謝！我都好鍾意。", en: "Thank you! I like it a lot too.", isCorrect: true }
+                        ],
+                        hint_zh: "真誠地表示感謝並分享自己的喜悅。 (Sincerely express gratitude and share your joy.)" 
+                    }
+                ]
+            },
+            // 新增範疇 3: 專題研習與小組合作 (Group Project Collaboration)
+            {
+                id: 23, stage: "進階對話 Advanced Comm", title: "10. 專題研習與小組合作 / Group Project", type: "choice",
+                desc: "任務：訓練小組討論時的分工與溝通。 Task: Train task division and communication in group discussions.",
+                questions: [
+                    { 
+                        text_zh: "做 Group Project 時，你想主動負責做 PowerPoint，可以怎麼說？", text_en: "When doing a Group Project, you want to volunteer to do the PowerPoint, what can you say?",
+                        options: [
+                            { zh: "我負責整 PowerPoint 啦，好唔好？", en: "I'll be responsible for making the PowerPoint, is that okay?", isCorrect: true },
+                            { zh: "你哋做曬佢。", en: "You guys do it all.", isCorrect: false },
+                            { zh: "PowerPoint 好難。", en: "PowerPoint is very hard.", isCorrect: false }
+                        ],
+                        hint_zh: "主動承擔責任，並用「好唔好」徵求組員同意。 (Take initiative and use 'is that okay' to ask for agreement.)" 
+                    },
+                    { 
+                        text_zh: "在小組討論中，你聽不懂同學說的廣東話，想請他講慢一點，應該怎麼說？", text_en: "In a group discussion, you can't understand a classmate's Cantonese and want to ask them to speak slower, what should you say?",
+                        options: [
+                            { zh: "你講得太快，我都聽唔明。", en: "You speak too fast, I don't understand at all.", isCorrect: false },
+                            { zh: "唔好意思，我聽唔太清楚，可唔可以講慢少少？", en: "Excuse me, I couldn't hear clearly, could you speak a bit slower?", isCorrect: true },
+                            { zh: "唔好講廣東話。", en: "Don't speak Cantonese.", isCorrect: false }
+                        ],
+                        hint_zh: "先說「唔好意思」，再禮貌地提出請求。 (Say 'Excuse me' first, then politely make the request.)" 
+                    }
+                ]
+            },
+            // 新增範疇 4: 數位學習與通訊禮儀 (Digital Learning & Chat Etiquette)
+            {
+                id: 24, stage: "生活技能 Life Skills", title: "11. 數位學習與通訊禮儀 / Digital & Chat", type: "choice",
+                desc: "任務：掌握校園通訊軟體禮儀。 Task: Master school communication app etiquette.",
+                questions: [
+                    { 
+                        text_zh: "你今天生病了，需要在班級 WhatsApp 群組向老師請假，應該怎麼發訊息？", text_en: "You are sick today and need to ask the teacher for leave in the class WhatsApp group, how should you send the message?",
+                        options: [
+                            { zh: "老師，我今日病咗，唔返學。", en: "Teacher, I'm sick today, not going to school.", isCorrect: false },
+                            { zh: "幫我請假。", en: "Help me ask for leave.", isCorrect: false },
+                            { zh: "陳老師早晨，我今日唔舒服，想請一日病假，醫生紙之後補交，唔該。", en: "Good morning Mr/Ms Chan, I'm not feeling well today and would like to take a day of sick leave. I will submit the medical certificate later, thank you.", isCorrect: true }
+                        ],
+                        hint_zh: "說明原因、請假時長，並提及補交證明。 (State the reason, duration of leave, and mention submitting proof later.)" 
+                    },
+                    { 
+                        text_zh: "老師在 Google Classroom 發佈了新功課，你想留言表示已經收到並明白，可以寫甚麼？", text_en: "The teacher posted a new assignment in Google Classroom, you want to leave a comment to indicate you received and understood it, what can you write?",
+                        options: [
+                            { zh: "收到，謝謝老師。", en: "Received, thank you teacher.", isCorrect: true },
+                            { zh: "又有功課？", en: "Homework again?", isCorrect: false },
+                            { zh: "睇到啦。", en: "Saw it.", isCorrect: false }
+                        ],
+                        hint_zh: "簡單、禮貌地確認收到資訊。 (Simply and politely confirm receipt of information.)" 
+                    }
+                ]
+            },
+            // 新增範疇 5: 校園醫療室與健康表達 (School Health & Clinic)
+            {
+                id: 25, stage: "情緒與求助 Emotions & Help", title: "12. 醫療室與健康表達 / Health & Clinic", type: "choice",
+                desc: "任務：用廣東話精確描述身體不適。 Task: Describe physical discomfort accurately in Cantonese.",
+                questions: [
+                    { 
+                        text_zh: "你覺得頭暈和肚子痛，來到醫療室，可以怎麼跟保健員說？", text_en: "You feel dizzy and have a stomachache, you come to the medical room, what can you say to the health worker?",
+                        options: [
+                            { zh: "姑娘/老師，我覺得有啲頭暈同埋肚痛。", en: "Nurse/Teacher, I feel a bit dizzy and have a stomachache.", isCorrect: true },
+                            { zh: "我好辛苦。", en: "I'm suffering.", isCorrect: false },
+                            { zh: "給我藥。", en: "Give me medicine.", isCorrect: false }
+                        ],
+                        hint_zh: "具體說出不舒服的部位（頭暈、肚痛）。 (Specifically state the uncomfortable parts (dizzy, stomachache).)" 
+                    },
+                    { 
+                        text_zh: "你覺得很不舒服，想在醫療室休息一會，可以怎麼問？", text_en: "You feel very unwell and want to rest in the medical room for a while, how can you ask?",
+                        options: [
+                            { zh: "我要瞓覺。", en: "I want to sleep.", isCorrect: false },
+                            { zh: "我可唔可以喺度休息陣呀？", en: "Can I rest here for a while?", isCorrect: true },
+                            { zh: "唔想上堂。", en: "Don't want to go to class.", isCorrect: false }
+                        ],
+                        hint_zh: "用「可唔可以」禮貌地詢問是否能在這裡休息。 (Use 'Can I' to politely ask if you can rest here.)" 
+                    }
+                ]
+            },
+            // 新增範疇 6: 社區適應與公共交通 (Community & Public Transport)
+            {
+                id: 26, stage: "生活技能 Life Skills", title: "13. 社區適應與公共交通 / Public Transport", type: "choice",
+                desc: "任務：熟悉香港搭車常規與突發狀況應對。 Task: Familiarize with HK commuting norms and handle emergencies.",
+                questions: [
+                    { 
+                        text_zh: "你搭巴士時不知道在哪一個站下車，想請教旁邊的乘客，可以怎麼開口？", text_en: "You don't know which stop to get off the bus, you want to ask the passenger next to you, how can you start?",
+                        options: [
+                            { zh: "喂，邊度落車？", en: "Hey, where to get off?", isCorrect: false },
+                            { zh: "你知唔知路？", en: "Do you know the way?", isCorrect: false },
+                            { zh: "唔好意思，請問如果去圖書館，應該邊個站落車呀？", en: "Excuse me, if I'm going to the library, which stop should I get off at?", isCorrect: true }
+                        ],
+                        hint_zh: "先說「唔好意思」，清楚說出目的地並詢問下車站。 (Say 'Excuse me' first, clearly state destination and ask for the stop.)" 
+                    },
+                    { 
+                        text_zh: "你在便利店想為八達通增值五十元，可以怎麼跟店員說？", text_en: "You want to top up your Octopus card with fifty dollars at a convenience store, what can you say to the clerk?",
+                        options: [
+                            { zh: "俾五十蚊落八達通。", en: "Put fifty dollars into Octopus.", isCorrect: false },
+                            { zh: "唔該，我想增值五十蚊。", en: "Excuse me, I'd like to top up fifty dollars.", isCorrect: true },
+                            { zh: "八達通，五十。", en: "Octopus, fifty.", isCorrect: false }
+                        ],
+                        hint_zh: "「增值」是充值的廣東話常用說法。 ('增值' is the common Cantonese term for top-up.)" 
+                    }
+                ]
+            },
+            // 新增互動範疇 14: 小息與操場社交 (Interactive: Sentence Builder)
+            {
+                id: 27, stage: "互動遊戲 Interactive Games", title: "14. 小息與操場社交 / Playground Social", type: "interactive",
+                desc: "任務：拼湊句子來請求加入遊戲。(點擊排序) \nTask: Build a sentence to ask to join a game.",
+                questions: [
+                    {
+                        interactionType: "sentence-builder",
+                        text_zh: "你想加入同學的遊戲，請順序點擊字詞，拼出「我可唔可以一齊玩？」",
+                        text_en: "You want to join a game. Tap the words in order to build the sentence 'Can I play together?'",
+                        hint_zh: "先說「我」，然後問「可唔可以」，最後說「一齊玩」。 (Start with 'I', then 'can I', finally 'play together'.)",
+                        correctOrder: ["我", "可唔可以", "一齊玩？"],
+                        shuffledParts: ["一齊玩？", "我", "可唔可以"]
+                    },
+                    {
+                        interactionType: "sentence-builder",
+                        text_zh: "你想借用同學的顏色筆，應該怎麼問？",
+                        text_en: "You want to borrow a classmate's color pencil, how should you ask?",
+                        hint_zh: "要有禮貌地問「可唔可以」，然後說「借俾我」。 (Ask politely 'Can I', then 'borrow'.)",
+                        correctOrder: ["唔該，", "可唔可以", "借俾我？"],
+                        shuffledParts: ["借俾我？", "唔該，", "可唔可以"]
+                    }
+                ]
+            },
+            // 新增互動範疇 15: 肢體語言與面部表情 (Interactive: Matching)
+            {
+                id: 28, stage: "互動遊戲 Interactive Games", title: "15. 肢體語言與表情 / Body Language", type: "interactive",
+                desc: "任務：配對正確的面部表情與情緒。(點擊配對) \nTask: Match facial expressions with emotions.",
+                questions: [
+                    {
+                        interactionType: "matching",
+                        text_zh: "同學現在是什麼心情？請將正確的表情圖示放入情緒框內。",
+                        text_en: "How are the classmates feeling? Match the emojis to the correct emotion boxes.",
+                        hint_zh: "留意眉毛和嘴巴的形狀。(Pay attention to the shape of eyebrows and mouth.)",
+                        pairs: [
+                            { id: "angry", emoji: "😠", label_zh: "真係嬲", label_en: "Really Angry" },
+                            { id: "joking", emoji: "😆", label_zh: "講笑", label_en: "Joking" },
+                            { id: "sad", emoji: "😢", label_zh: "唔開心", label_en: "Sad" }
+                        ]
+                    }
+                ]
+            },
+            // 新增互動範疇 16: 突發事件匯報 (Interactive: Sequence Sort)
+            {
+                id: 29, stage: "互動遊戲 Interactive Games", title: "16. 突發事件匯報 / Reporting Incidents", type: "interactive",
+                desc: "任務：將匯報事件的步驟排序。(點擊排序) \nTask: Sort the steps of reporting an incident.",
+                questions: [
+                    {
+                        interactionType: "sequence-sort",
+                        text_zh: "你不見了八達通，要向老師求助，請排好說話順序。",
+                        text_en: "You lost your Octopus card and need help. Sort the phrases in the correct order.",
+                        hint_zh: "先稱呼老師，再說發生了什麼事，最後說出不見了什麼。 (Call the teacher first, say what happened, then what's lost.)",
+                        correctOrder: ["陳老師，", "我唔見咗", "張八達通。"],
+                        shuffledParts: ["張八達通。", "陳老師，", "我唔見咗"]
+                    },
+                    {
+                        interactionType: "sequence-sort",
+                        text_zh: "同學在操場跌倒受傷了，你要報告給校務處，請排好說話順序。",
+                        text_en: "A classmate fell and got hurt. Sort the report sequence to the General Office.",
+                        hint_zh: "先說「有人受傷」，然後說出「地點」。 (Say 'someone is hurt' first, then the 'location'.)",
+                        correctOrder: ["唔該，", "有同學受傷呀，", "喺操場度。"],
+                        shuffledParts: ["喺操場度。", "唔該，", "有同學受傷呀，"]
+                    }
+                ]
+            }
+        ];
+
+        let state = { currentLevelIndex: 0 };
+        let currentQIndex = 0;
+        let selectedOption = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initSidebar();
+            loadLevel(state.currentLevelIndex);
+            
+            // Sidebar toggle logic
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggle-sidebar');
+            const closeBtn = document.getElementById('close-sidebar');
+
+            toggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.innerWidth >= 768) {
+                    // 使用負邊距 (-ml-80) 讓側邊欄滑出，並將空間釋放給主內容
+                    sidebar.classList.toggle('md:-ml-80');
+                } else {
+                    sidebar.classList.toggle('-translate-x-full');
+                }
+            });
+
+            closeBtn.addEventListener('click', () => {
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.add('md:-ml-80');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+        });
+
+        function initSidebar() {
+            const list = document.getElementById('level-list');
+            list.innerHTML = '';
+            let currentStage = "";
+            
+            ncsLevelsData.forEach((level, index) => {
+                if (level.stage !== currentStage) {
+                    currentStage = level.stage;
+                    const stageDiv = document.createElement('div');
+                    stageDiv.className = 'text-xs font-black text-sky-500 mt-5 mb-2 px-2 border-l-4 border-sky-500';
+                    stageDiv.innerText = currentStage;
+                    list.appendChild(stageDiv);
+                }
+
+                const btn = document.createElement('button');
+                const isActive = index === state.currentLevelIndex;
+                btn.className = `w-full text-left px-3 py-3 rounded-2xl border-2 transition font-bold text-sm flex items-center gap-2 ${isActive ? 'border-sky-500 bg-sky-50 text-sky-800 shadow-md transform scale-[1.02]' : 'border-sky-100 bg-white hover:border-sky-400 text-gray-600'}`;
+                
+                // Format title for bilingual sidebar
+                const titleParts = level.title.split('/');
+                const zhTitle = titleParts[0].trim();
+                const enTitle = titleParts.length > 1 ? titleParts[1].trim() : '';
+
+                btn.innerHTML = `
+                    <i class="fa-solid fa-star ${isActive ? 'text-sky-500 animate-pulse' : 'text-gray-300'} w-5 text-center"></i> 
+                    <div class="flex flex-col truncate">
+                        <span>${zhTitle}</span>
+                        <span class="text-[10px] text-gray-400 font-normal truncate">${enTitle}</span>
+                    </div>
+                `;
+                
+                btn.onclick = () => {
+                    state.currentLevelIndex = index;
+                    initSidebar(); 
+                    loadLevel(state.currentLevelIndex);
+                    if (window.innerWidth < 768) {
+                        document.getElementById('sidebar').classList.add('-translate-x-full');
+                    }
+                };
+                list.appendChild(btn);
+            });
+        }
+
+        function loadLevel(levelIndex) {
+            currentQIndex = 0;
+            const level = ncsLevelsData[levelIndex];
+            
+            document.getElementById('current-stage-tag').innerText = level.stage;
+            document.getElementById('current-level-title').innerText = level.title;
+            document.getElementById('current-level-desc').innerText = level.desc;
+            
+            renderProgressNodes(level);
+            renderQuestion();
+        }
+
+        function renderProgressNodes(level) {
+            const container = document.getElementById('progress-nodes');
+            container.innerHTML = '';
+            const qCount = level.questions.length;
+            
+            for(let i=0; i<qCount; i++) {
+                const node = document.createElement('div');
+                node.className = 'flex items-center gap-1';
+                const circle = document.createElement('div');
+                circle.className = `w-8 h-8 rounded-full flex items-center justify-center font-black text-sm border-2 transition-all duration-300 ${i < currentQIndex ? 'bg-sky-500 border-sky-500 text-white shadow-md' : (i === currentQIndex ? 'bg-yellow-300 border-yellow-400 text-yellow-800 shadow-md scale-110' : 'bg-gray-100 border-gray-200 text-gray-400')}`;
+                circle.innerHTML = i < currentQIndex ? '<i class="fa-solid fa-check"></i>' : (i + 1);
+                node.appendChild(circle);
+                container.appendChild(node);
+            }
+        }
+
+        function renderQuestion() {
+            const level = ncsLevelsData[state.currentLevelIndex];
+            if(currentQIndex >= level.questions.length) {
+                showLevelComplete();
+                return;
+            }
+
+            const qData = level.questions[currentQIndex];
+            const area = document.getElementById('interactive-area');
+            const hintArea = document.getElementById('hint-content');
+            const feedback = document.getElementById('feedback-area');
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const retryBtn = document.getElementById('retry-btn');
+            
+            area.innerHTML = ''; 
+            feedback.className = 'hidden'; 
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            if(retryBtn) retryBtn.classList.add('hidden');
+            selectedOption = null;
+            
+            renderProgressNodes(level);
+            
+            // Add TTS button to hint
+            const hintText = qData.hint_zh || "請完成任務 Please complete the task.";
+            hintArea.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-sky-600 block mb-2"><i class="fa-solid fa-comment-dots"></i> 提示 Hint：</span>
+                        <span>${hintText}</span>
+                    </div>
+                    <button onclick="playCantoneseTTS('${hintText.replace(/'/g, "\\'")}')" class="text-sky-500 hover:text-sky-700 bg-sky-100 hover:bg-sky-200 rounded-full w-8 h-8 flex items-center justify-center transition shadow-sm ml-2 shrink-0" title="聽聽廣東話朗讀 Play Cantonese Audio">
+                        <i class="fa-solid fa-volume-high text-sm"></i>
+                    </button>
+                </div>
+            `;
+            
+            // Render Bilingual Question Text
+            const qContainer = document.createElement('div');
+            qContainer.className = "w-full text-center mb-6 bg-slate-50 p-6 rounded-2xl border-2 border-slate-100";
+            qContainer.innerHTML = `
+                <h4 class="text-2xl font-black text-sky-800 mb-2">${qData.text_zh}</h4>
+                <p class="text-lg text-gray-500 font-medium">${qData.text_en}</p>
+            `;
+            area.appendChild(qContainer);
+
+            if (!qData.interactionType || qData.interactionType === 'choice') {
+                // Render Traditional Options
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = "w-full flex flex-col gap-4";
+                
+                qData.options.forEach((opt, index) => {
+                    const btnContainer = document.createElement('div');
+                    btnContainer.className = "w-full flex gap-2";
+
+                    const btn = document.createElement('button');
+                    btn.className = "flex-1 p-4 rounded-xl border-2 border-gray-200 bg-white hover:border-sky-300 hover:bg-sky-50 transition text-left relative overflow-hidden group";
+                    btn.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-500 mr-4 group-hover:bg-sky-200 group-hover:text-sky-700 transition">
+                                ${String.fromCharCode(65 + index)}
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xl font-bold text-gray-800">${opt.zh}</span>
+                                <span class="text-sm text-gray-500">${opt.en}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const ttsBtn = document.createElement('button');
+                    ttsBtn.className = "p-4 rounded-xl border-2 border-sky-100 bg-sky-50 hover:bg-sky-200 text-sky-600 transition flex items-center justify-center shrink-0 w-16";
+                    ttsBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                    ttsBtn.title = "聽聽廣東話朗讀 Play Cantonese Audio";
+                    ttsBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        playCantoneseTTS(opt.zh);
+                    };
+
+                    btn.onclick = () => {
+                        Array.from(optionsContainer.children).forEach(c => {
+                            const optBtn = c.children[0];
+                            optBtn.classList.remove('border-sky-500', 'bg-sky-50', 'ring-4', 'ring-sky-200');
+                            optBtn.classList.add('border-gray-200');
+                        });
+                        btn.classList.remove('border-gray-200');
+                        btn.classList.add('border-sky-500', 'bg-sky-50', 'ring-4', 'ring-sky-200');
+                        selectedOption = opt;
+                        submitBtn.classList.remove('hidden');
+                    };
+                    
+                    btnContainer.appendChild(btn);
+                    btnContainer.appendChild(ttsBtn);
+                    optionsContainer.appendChild(btnContainer);
+                });
+                area.appendChild(optionsContainer);
+            } 
+            else if (qData.interactionType === 'sentence-builder' || qData.interactionType === 'sequence-sort') {
+                createSentenceBuilder(qData, area);
+            }
+            else if (qData.interactionType === 'matching') {
+                createMatching(qData, area);
+            }
+        }
+
+        function createSentenceBuilder(qData, area) {
+            const slotsContainer = document.createElement('div');
+            slotsContainer.className = 'flex flex-wrap justify-center gap-2 mb-8 min-h-[70px] p-4 bg-sky-50 rounded-2xl border-2 border-dashed border-sky-300 w-full shadow-inner';
+            slotsContainer.id = 'answer-slots';
+
+            const poolContainer = document.createElement('div');
+            poolContainer.className = 'flex flex-wrap justify-center gap-3 w-full p-4';
+            poolContainer.id = 'word-pool';
+
+            // Create empty slots
+            qData.correctOrder.forEach((_, i) => {
+                const slot = document.createElement('div');
+                slot.className = 'w-auto min-w-[90px] h-[50px] border-b-4 border-sky-300 flex items-center justify-center transition-all duration-300 bg-white/50 rounded-t-lg';
+                slotsContainer.appendChild(slot);
+            });
+
+            // Create draggable/clickable word blocks
+            qData.shuffledParts.forEach(word => {
+                const btn = document.createElement('button');
+                btn.className = 'px-5 py-3 bg-white border-2 border-sky-400 text-sky-800 font-bold rounded-xl shadow-md hover:bg-sky-100 hover:-translate-y-1 transition-all text-xl cursor-pointer active:scale-95';
+                btn.innerText = word;
+                btn.onclick = () => {
+                    playCantoneseTTS(word); // Read aloud on tap
+                    handleSentenceWordClick(btn, slotsContainer, poolContainer, qData.correctOrder.length);
+                };
+                poolContainer.appendChild(btn);
+            });
+
+            area.appendChild(slotsContainer);
+            area.appendChild(poolContainer);
+        }
+
+        function handleSentenceWordClick(btn, slots, pool, totalSlots) {
+            if (btn.parentElement === pool) {
+                // Find first empty slot and move item there
+                const emptySlot = Array.from(slots.children).find(slot => slot.children.length === 0);
+                if (emptySlot) {
+                    emptySlot.appendChild(btn);
+                    btn.classList.add('bg-sky-100', 'border-sky-500', 'shadow-none');
+                }
+            } else {
+                // Move item back to pool
+                pool.appendChild(btn);
+                btn.classList.remove('bg-sky-100', 'border-sky-500', 'shadow-none');
+            }
+            
+            // Show submit if all slots are filled
+            const filledCount = Array.from(slots.children).filter(slot => slot.children.length > 0).length;
+            const submitBtn = document.getElementById('submit-btn');
+            if (filledCount === totalSlots) submitBtn.classList.remove('hidden');
+            else submitBtn.classList.add('hidden');
+        }
+
+        function createMatching(qData, area) {
+            const zonesContainer = document.createElement('div');
+            zonesContainer.className = 'flex flex-wrap justify-center gap-4 sm:gap-8 mb-8 w-full';
+            
+            const poolContainer = document.createElement('div');
+            poolContainer.className = 'flex flex-wrap justify-center items-center gap-4 w-full p-6 bg-gray-50 rounded-3xl border-4 border-gray-100 shadow-inner min-h-[120px]';
+            poolContainer.id = 'match-pool';
+
+            let selectedItem = null;
+
+            qData.pairs.forEach((pair) => {
+                // Drop Zone
+                const zoneWrapper = document.createElement('div');
+                zoneWrapper.className = 'flex flex-col items-center gap-3';
+                
+                const zone = document.createElement('div');
+                zone.className = 'w-24 h-24 sm:w-28 sm:h-28 border-4 border-dashed border-sky-300 rounded-3xl flex items-center justify-center bg-sky-50 transition-all cursor-pointer hover:bg-sky-100 hover:border-sky-400';
+                zone.dataset.targetId = pair.id;
+                
+                zone.onclick = () => {
+                    if (selectedItem && zone.children.length === 0) {
+                        zone.appendChild(selectedItem);
+                        selectedItem.classList.remove('ring-4', 'ring-yellow-400', 'scale-110', 'shadow-lg');
+                        selectedItem = null;
+                        checkMatchingComplete(qData.pairs.length);
+                    } else if (zone.children.length > 0) {
+                        // Return to pool if clicked again
+                        const item = zone.children[0];
+                        poolContainer.appendChild(item);
+                        checkMatchingComplete(qData.pairs.length);
+                    }
+                };
+
+                const label = document.createElement('div');
+                label.className = 'text-center font-black text-sky-800 text-lg flex flex-col items-center cursor-pointer';
+                label.innerHTML = `<span>${pair.label_zh}</span><span class="text-xs text-sky-500 font-normal">${pair.label_en}</span>`;
+                label.onclick = () => playCantoneseTTS(pair.label_zh); // Read label on click
+                
+                zoneWrapper.appendChild(zone);
+                zoneWrapper.appendChild(label);
+                zonesContainer.appendChild(zoneWrapper);
+            });
+
+            // Randomize emojis for the pool
+            const shuffledItems = [...qData.pairs].sort(() => Math.random() - 0.5);
+            shuffledItems.forEach(pair => {
+                const item = document.createElement('div');
+                item.className = 'w-16 h-16 sm:w-20 sm:h-20 bg-white border-2 border-gray-200 rounded-2xl flex items-center justify-center text-5xl cursor-pointer hover:shadow-lg transition-all select-none drop-shadow-sm active:scale-90';
+                item.innerHTML = pair.emoji;
+                item.dataset.itemId = pair.id;
+                
+                item.onclick = (e) => {
+                    e.stopPropagation();
+                    if (item.parentElement === poolContainer) {
+                        // Select the item
+                        if (selectedItem) selectedItem.classList.remove('ring-4', 'ring-yellow-400', 'scale-110', 'shadow-lg');
+                        selectedItem = item;
+                        item.classList.add('ring-4', 'ring-yellow-400', 'scale-110', 'shadow-lg');
+                    } else {
+                        // Return from zone to pool
+                        poolContainer.appendChild(item);
+                        if(selectedItem === item) selectedItem = null;
+                        item.classList.remove('ring-4', 'ring-yellow-400', 'scale-110', 'shadow-lg');
+                        checkMatchingComplete(qData.pairs.length);
+                    }
+                };
+                poolContainer.appendChild(item);
+            });
+
+            area.appendChild(zonesContainer);
+            area.appendChild(poolContainer);
+            
+            // Instruction snippet
+            const instruct = document.createElement('p');
+            instruct.className = "text-sm text-sky-500 font-bold mt-2";
+            instruct.innerHTML = "<i class='fa-solid fa-hand-pointer'></i> 點擊表情，再點擊對應的虛線框。(Tap emoji, then tap the box)";
+            poolContainer.appendChild(instruct);
+        }
+
+        function checkMatchingComplete(total) {
+            const pool = document.getElementById('match-pool');
+            const submitBtn = document.getElementById('submit-btn');
+            // If only the instruction text remains in the pool
+            if (pool.querySelectorAll('[data-item-id]').length === 0) {
+                submitBtn.classList.remove('hidden');
+            } else {
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        function checkCurrentAnswer() {
+            const level = ncsLevelsData[state.currentLevelIndex];
+            const qData = level.questions[currentQIndex];
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const retryBtn = document.getElementById('retry-btn');
+            const feedback = document.getElementById('feedback-area');
+            
+            submitBtn.classList.add('hidden');
+            feedback.classList.remove('hidden');
+            
+            let isCorrect = false;
+
+            if (!qData.interactionType || qData.interactionType === 'choice') {
+                if(!selectedOption) return;
+                isCorrect = selectedOption.isCorrect;
+            } 
+            else if (qData.interactionType === 'sentence-builder' || qData.interactionType === 'sequence-sort') {
+                const slots = document.getElementById('answer-slots');
+                const currentOrder = Array.from(slots.children).map(slot => slot.children[0]?.innerText || "");
+                isCorrect = JSON.stringify(currentOrder) === JSON.stringify(qData.correctOrder);
+            }
+            else if (qData.interactionType === 'matching') {
+                const zones = document.querySelectorAll('[data-target-id]');
+                let allMatch = true;
+                zones.forEach(zone => {
+                    const targetId = zone.dataset.targetId;
+                    const childId = zone.children[0]?.dataset.itemId;
+                    if (targetId !== childId) allMatch = false;
+                });
+                isCorrect = allMatch;
+            }
+            
+            if(isCorrect) {
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check text-4xl mb-2"></i><br/>太棒了！完全正確！<br/><span class="text-sm font-normal">Excellent! Correct!</span>`;
+                feedback.className = 'p-6 rounded-xl text-xl font-black text-center shadow-sm bg-emerald-100 text-emerald-700 border-2 border-emerald-300 animate-bounce-short';
+                nextBtn.classList.remove('hidden');
+                retryBtn.classList.add('hidden');
+                
+                // Play success sound logic (TTS phrase)
+                if (qData.interactionType === 'sentence-builder' || qData.interactionType === 'sequence-sort') {
+                     playCantoneseTTS(qData.correctOrder.join("")); // Read the full sentence
+                } else {
+                     playCantoneseTTS("叻仔叻女！"); // "Good boy/girl!"
+                }
+            } else {
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-4xl mb-2"></i><br/>唔係呢個答案，試多一次啦。<br/><span class="text-sm font-normal">Not quite right, try again.</span>`;
+                feedback.className = 'p-6 rounded-xl text-xl font-black text-center shadow-sm bg-rose-100 text-rose-700 border-2 border-rose-300 animate-shake';
+                nextBtn.classList.add('hidden');
+                retryBtn.classList.remove('hidden');
+                
+                // Auto reset visual components for interactive types if wrong
+                if (qData.interactionType) {
+                    setTimeout(() => {
+                        if (document.getElementById('retry-btn').classList.contains('hidden')) return; // user already clicked retry
+                        retryQuestion();
+                    }, 2000); // 2 second delay before auto-reset
+                }
+            }
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            renderQuestion();
+        }
+
+        function retryQuestion() {
+            renderQuestion();
+        }
+
+        function showLevelComplete() {
+            const area = document.getElementById('interactive-area');
+            const hintArea = document.getElementById('hint-content');
+            
+            hintArea.innerHTML = "太棒了！你完成了這個階段！<br/>Great job! You completed this stage!";
+            
+            area.innerHTML = `
+                <div class="text-center p-8 bg-sky-50 rounded-3xl border-2 border-sky-100 w-full animate-bounce-short">
+                    <i class="fa-solid fa-award text-6xl text-yellow-400 mb-4 drop-shadow-md"></i>
+                    <h3 class="text-3xl font-black text-sky-800 mb-2">任務完成！</h3>
+                    <h4 class="text-xl font-bold text-sky-600 mb-6">Task Completed!</h4>
+                    <p class="text-gray-600 mb-8">你已經學會了這些廣東話！<br/>You have learned these Cantonese words!</p>
+                    <button onclick="goToNextLevel()" class="bg-sky-600 hover:bg-sky-500 text-white font-black py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105 text-lg">
+                        前往下一關 Next Level <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('feedback-area').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('submit-btn').classList.add('hidden');
+            if(document.getElementById('retry-btn')) document.getElementById('retry-btn').classList.add('hidden');
+        }
+
+        function goToNextLevel() {
+            if(state.currentLevelIndex < ncsLevelsData.length - 1) {
+                state.currentLevelIndex++;
+                initSidebar();
+                loadLevel(state.currentLevelIndex);
+            } else {
+                alert("恭喜！你已完成所有練習！ Congratulations! You have completed all exercises!");
+            }
+        }
+
+        // ==========================================
+        // Cantonese Text-to-Speech (TTS) Function
+        // ==========================================
+        function playCurrentQuestionTTS() {
+            const level = ncsLevelsData[state.currentLevelIndex];
+            if(currentQIndex < level.questions.length) {
+                const qData = level.questions[currentQIndex];
+                playCantoneseTTS(qData.text_zh);
+            } else {
+                playCantoneseTTS(level.title);
+            }
+        }
+
+        function playCantoneseTTS(text) {
+            if (!text) return;
+            
+            // Check if SpeechSynthesis is supported
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // CRITICAL: Set language to Cantonese (Hong Kong)
+                utterance.lang = 'zh-HK'; 
+                
+                // Adjust speed (rate) - 0.85 is often clearer for learning
+                utterance.rate = 0.85; 
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+
+                // Try to specifically select a Cantonese voice if available in the browser
+                const voices = window.speechSynthesis.getVoices();
+                const cantoneseVoice = voices.find(voice => voice.lang === 'zh-HK' || voice.lang === 'yue-HK');
+                
+                if (cantoneseVoice) {
+                    utterance.voice = cantoneseVoice;
+                }
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                console.warn("你的瀏覽器不支援語音朗讀功能。 Your browser does not support text-to-speech.");
+                // Fallback message could go here if needed
+            }
+        }
+
+        // Ensure voices are loaded (needed for some browsers like Chrome)
+        if ('speechSynthesis' in window && speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => {
+                // Voices loaded, ready to use
+            };
+        }
+
+        // Modal functions
+        function triggerResetModal() {
+            document.getElementById('reset-modal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('reset-modal').classList.add('hidden');
+        }
+
+        function confirmReset() {
+            closeResetModal();
+            state.currentLevelIndex = 0;
+            currentQIndex = 0;
+            initSidebar();
+            loadLevel(0);
+        }
+    </script>
+</body>
+</html>
