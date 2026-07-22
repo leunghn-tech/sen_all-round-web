@@ -109,7 +109,7 @@
                     學生基地 <span class="bg-indigo-100 text-indigo-700 text-xs font-black px-2 py-0.5 rounded-full">Gen Z</span>
                 </button>
                 <button onclick="renderSection('professional')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">同工專區</button>
-                <button onclick="renderSection('sen_types')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">10大 SEN 資源</button>
+                <button onclick="renderSection('sen_types')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">8大 SEN 資源</button>
                 
                 <button onclick="toggleLoginModal()" id="login-btn" class="bg-slate-100 text-slate-700 hover:bg-slate-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2">
                     <i class="fa-solid fa-circle-user text-lg text-slate-500"></i> <span id="login-btn-text">協作登入</span>
@@ -128,7 +128,7 @@
                 <span>學生基地 (Gen Z)</span> <span class="bg-indigo-100 text-indigo-700 text-xs font-black px-2 py-0.5 rounded-full">新任務</span>
             </button>
             <button onclick="renderSection('professional'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">同工專區</button>
-            <button onclick="renderSection('sen_types'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">10大 SEN 資源</button>
+            <button onclick="renderSection('sen_types'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">8大 SEN 資源</button>
             <button onclick="toggleLoginModal(); toggleMobileMenu();" class="text-left text-indigo-600 font-bold py-3 flex items-center gap-2">
                 <i class="fa-solid fa-circle-user"></i> <span id="mobile-login-btn-text">協作與授權登入</span>
             </button>
@@ -309,7 +309,7 @@ sessionState.level = Math.floor(sessionState.exp / 250);
                 ]
             },
             sen_types: {
-                title: "📚 10大 SEN 與跨界專業資源庫",
+                title: "📚 8大 SEN 與跨界專業資源庫",
                 description: "對應教育局最新融合教育指引的 9 大特殊教育需要類別，加上「有限智能 (Borderline)」與全新跨類別、輔助科技、少數族裔、生命轉銜之整合教材指南。",
                 items: [
                     { icon: "fa-font", title: "特殊學習困難 (SpLD)", desc: "讀寫障礙校本支援、多感官中英文識字教學與輔助科技應用技巧。", premium: false, action: "sen_spld.html" },
@@ -318,14 +318,8 @@ sessionState.level = Math.floor(sessionState.exp / 250);
                     { icon: "fa-comments", title: "言語障礙 (SLI)", desc: "口語理解與表達能力訓練、語音辨識、敘事能力小組活動教案。", premium: false, action: "sen_sli.html" },
                     { icon: "fa-child-reaching", title: "智力障礙 (ID)", desc: "功能性生活適應技能、簡化步驟教學法 (Task Analysis) 及自理能力卡。", premium: false, action: "sen_id.html" },
                     { icon: "fa-battery-half", title: "有限智能 (Borderline)", desc: "[新增類別 - IQ 70-79支援] 重複性概念鞏固技巧、低起點步步高設計、自尊心重建方法與生涯技能規劃。", premium: false, action: "sen_borderline.html" },
-                    { icon: "fa-ear-listen", title: "聽覺障礙 (HI)", desc: "助聽設備適應、聽覺口語法、教室座位調適與手語提示圖。", premium: false, action: "sen_hi.html" },
-                    { icon: "fa-eye-low-vision", title: "視覺障礙 (VI)", desc: "點字學習指導、定向行走訓練融入校園、多感官放大教材設計。", premium: false, action: "sen_vi.html" },
-                    { icon: "fa-wheelchair", title: "肢體傷殘 (PD)", desc: "無障礙輔具調適、手部精細動作訓練輔助，與自理能力自信心建立。", premium: false, action: "sen_pd.html" },
                     { icon: "fa-cloud-showers-heavy", title: "精神病 (MI)", desc: "校園復元模式 (Recovery Model)、學生情緒海嘯處理程序，及危機評估工具。", premium: false, action: "sen_mi.html" },
-                    { icon: "fa-lightbulb", title: "雙重特殊資優 (2e)", desc: "[新增跨類別] 智商優異 (Gifted) 伴隨 ASD/ADHD/SpLD。平衡拔尖與保底之雙軌 IEP 目標調適策略。", premium: false, action: "sen_2e.html" },
-                    { icon: "fa-network-wired", title: "共病應對策略 (Comorbidity)", desc: "[新增跨類別] 處理常見混合個案（如 ASD+ADHD）。臨床介入與課堂調適之優先順序與整合教案。", premium: false, action: "sen_comorbidity.html" },
                     { icon: "fa-earth-asia", title: "🌏 非華語 (NCS) SEN 學生特殊支援", desc: "[新增跨界別] 針對少數族裔 SEN。提供跨文化評估、全英文 Social Stories/Token Boards，及雙語家長溝通話術卡。", premium: false, action: "sen_ncs.html" },
-                    { icon: "fa-laptop-code", title: "🖥️ 輔助科技 (AT) 智能配對器", desc: "[實用科技] 語音轉文字、報讀及特殊輸入軟硬件。點擊開啟輔助科技清單與資助申報指南。", premium: false, action: "sen_at.html" }
                 ]
             },
             student_quests: [
@@ -490,7 +484,7 @@ sessionState.level = Math.floor(sessionState.exp / 250);
                     <div onclick="renderSection('sen_types')" class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer flex items-start gap-4">
                         <div class="bg-purple-50 text-purple-600 w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-xl"><i class="fa-solid fa-brain"></i></div>
                         <div>
-                            <h3 class="font-extrabold text-slate-800 text-lg mb-1">10大 SEN 類別</h3>
+                            <h3 class="font-extrabold text-slate-800 text-lg mb-1">8大 SEN 類別</h3>
                             <p class="text-slate-500 text-xs sm:text-sm">對應教育局指引，覆蓋 SpLD、ADHD、ASD 及共病策略。</p>
                         </div>
                     </div>
@@ -543,7 +537,7 @@ sessionState.level = Math.floor(sessionState.exp / 250);
             `;
         }
 
-        // 渲染主要三大板塊頁面 (家長 / 同工 / 10大 SEN)
+        // 渲染主要三大板塊頁面 (家長 / 同工 / 8大 SEN)
         function renderSection(sectionKey) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             const section = database[sectionKey];
