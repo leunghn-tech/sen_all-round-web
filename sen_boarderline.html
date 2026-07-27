@@ -18,7 +18,7 @@
         .drop-zone.dragover { background-color: #ccfbf1; border-color: #14b8a6; transform: scale(1.05); }
         .draggable-item { cursor: grab; transition: transform 0.1s, box-shadow 0.1s; touch-action: none; border: 2px solid transparent; }
         .draggable-item:active { cursor: grabbing; transform: scale(0.95); }
-        .draggable-item.selected { border-color: #0ea5e9; background-color: #e0f2fe; transform: translateY(-3px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); color: #0284c7; }
+        .draggable-item.selected { border-color: #0ea5e9; background-color: #e0f2fe; transform: translateY(-3px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);[...]
         
         /* 購物/任務清單按鈕特效 */
         .shopping-btn { transition: transform 0.2s, box-shadow 0.2s; }
@@ -92,7 +92,7 @@
     <div class="flex flex-1 overflow-hidden relative">
         
         <!-- 左側邊欄 -->
-        <aside id="sidebar" class="w-72 bg-white shadow-xl flex flex-col shrink-0 transition-transform duration-300 z-10 border-r border-teal-100 absolute h-full md:relative md:translate-x-0 -translate-x-full">
+        <aside id="sidebar" class="w-72 bg-white shadow-xl flex flex-col shrink-0 transition-transform duration-300 z-10 border-r border-teal-100 absolute h-full md:relative md:translate-x-0 -tran[...]
             <div class="p-4 border-b border-teal-100 bg-teal-50 flex justify-between items-center">
                 <div>
                     <h2 class="text-teal-800 font-black text-sm flex items-center gap-2">
@@ -129,11 +129,11 @@
                     <!-- 左半部：互動區 -->
                     <div class="flex-1 border-4 border-dashed border-teal-200 rounded-3xl p-4 sm:p-8 flex flex-col bg-white relative shadow-sm min-h-[400px]">
                         <div class="absolute top-4 right-4 z-10 flex gap-3">
-                            <button onclick="checkCurrentAnswer()" id="submit-btn" class="hidden bg-emerald-500 hover:bg-emerald-400 text-white rounded-full px-5 py-2 text-base font-black shadow-lg transition transform hover:scale-105">
+                            <button onclick="checkCurrentAnswer()" id="submit-btn" class="hidden bg-emerald-500 hover:bg-emerald-400 text-white rounded-full px-5 py-2 text-base font-black shadow-[...]
                                 <i class="fa-solid fa-check-circle"></i> 提交答案
                             </button>
                             <!-- 全局播放題目按鈕 -->
-                            <button onclick="playTTS(document.getElementById('current-level-desc').innerText)" class="text-white bg-cyan-500 hover:bg-cyan-400 rounded-full w-12 h-12 flex items-center justify-center transition shadow-lg hover:animate-bounce" title="聽聽任務內容">
+                            <button onclick="playTTS(document.getElementById('current-level-desc').innerText)" class="text-white bg-cyan-500 hover:bg-cyan-400 rounded-full w-12 h-12 flex items-center [...]
                                 <i class="fa-solid fa-volume-high text-xl"></i>
                             </button>
                         </div>
@@ -154,10 +154,10 @@
                             
                             <div class="mt-auto flex flex-col gap-3">
                                 <div id="feedback-area" class="hidden p-4 rounded-xl text-lg font-black text-center transition-all shadow-sm"></div>
-                                <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-emerald-400 hover:bg-emerald-500 text-white font-black py-4 rounded-2xl shadow-md transition text-lg flex items-center justify-center gap-2">
+                                <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-emerald-400 hover:bg-emerald-500 text-white font-black py-4 rounded-2xl shadow-md transition[...]
                                     下一題 <i class="fa-solid fa-circle-arrow-right"></i>
                                 </button>
-                                <button id="retry-btn" onclick="retryQuestion()" class="hidden w-full bg-rose-100 hover:bg-rose-200 text-rose-700 font-black py-4 rounded-2xl shadow-md transition text-lg flex items-center justify-center gap-2">
+                                <button id="retry-btn" onclick="retryQuestion()" class="hidden w-full bg-rose-100 hover:bg-rose-200 text-rose-700 font-black py-4 rounded-2xl shadow-md transition text-[...]
                                     <i class="fa-solid fa-rotate-right"></i> 重新嘗試
                                 </button>
                             </div>
@@ -196,8 +196,8 @@
                 id: 2, stage: "第一階段：實用邏輯", title: "2. 家居工具配對", type: "choice",
                 desc: "任務：解決日常家居小問題，選擇合適的工具。",
                 questions: [
-                    { q: "書檯的【螺絲鬆了】，你需要用什麼工具把它扭緊？", options: ["🔨 鐵鎚", "🪛 螺絲批", "✂️ 剪刀"], answer: 1, hint: "螺絲頂部有十字或一字的凹槽，需要能插入扭動的工具。" },
-                    { q: "你想在牆上【掛一幅有掛繩的畫】，你需要把釘子釘入牆內，應使用？", options: ["🔨 鐵鎚", "🔧 扳手", "📏 軟尺"], answer: 0, hint: "需要用敲擊的方式將釘子固定在牆上。" }
+                    { q: "書檯的【螺絲鬆了】，你需要用什麼工具把它扭緊？", options: ["🔨 鐵鎚", "🪛 螺絲批", "✂️ 剪刀"], answer: 1, hint: "螺絲頂部有十[...]
+                    { q: "你想在牆上【掛一幅有掛繩的畫】，你需要把釘子釘入牆內，應使用？", options: ["🔨 鐵鎚", "🔧 扳手", "📏 軟尺"], answer: 0, hint: [...]
                 ]
             },
             {
@@ -216,8 +216,8 @@
                 id: 4, stage: "第二階段：獨立生活", title: "4. 食品安全與標籤", type: "choice",
                 desc: "任務：在超市購買食物時，確保食物安全。",
                 questions: [
-                    { q: "購買盒裝牛奶時，為了確保不會喝壞肚子，你最重要是檢查包裝上的什麼資訊？", options: ["包裝的顏色和圖案", "「此日期或之前食用」(Use By) 日期", "製造商的地址"], answer: 1, hint: "確保食物沒有過期是避免食物中毒的關鍵。" },
-                    { q: "你買了一盒冰鮮豬肉，但打算明天才煮，回家後你應該把它放在哪裡？", options: ["放在廚房檯面", "放入雪櫃的冰格(冷凍庫)", "放入衣櫃"], answer: 1, hint: "生肉必須保存在極低溫的環境才不會變壞。" }
+                    { q: "購買盒裝牛奶時，為了確保不會喝壞肚子，你最重要是檢查包裝上的什麼資訊？", options: ["包裝的顏色和圖案", "「此日期或之前�[...]
+                    { q: "你買了一盒冰鮮豬肉，但打算明天才煮，回家後你應該把它放在哪裡？", options: ["放在廚房檯面", "放入雪櫃的冰格(冷凍庫)", "放入衣[...]
                 ]
             },
             {
@@ -225,7 +225,7 @@
                 desc: "任務：生病看醫生後，必須嚴格按照指示服藥。請填寫正確的服藥方法。",
                 questions: [
                     { 
-                      text: "藥袋指示：「每日三次，每次兩粒，飯後服。」<br><br>這代表我每天總共要吃 [__1__] 次藥，每次吃 [__2__] 粒，並且應該在 [__3__] 吃藥以免傷胃。", 
+                      text: "藥袋指示：「每日三次，每次兩粒，飯後服。」<br><br>這代表我每天總共要吃 [__1__] 次藥，每次吃 [__2__] 粒，並且應該在 [__3__] 吃�[...]
                       blanks: ["3", "2", "吃飽飯之後"], 
                       options: ["3", "2", "睡覺前", "吃飽飯之後", "1"],
                       hint: "仔細對照藥袋上的數字和時間點。" 
@@ -236,24 +236,24 @@
                 id: 6, stage: "第三階段：社區應變", title: "6. 交通突發狀況", type: "choice",
                 desc: "任務：乘搭公共交通工具時遇到問題的解決方法。",
                 questions: [
-                    { q: "你入閘搭港鐵時，發現八達通餘額不足(負數)，而你身上剛好沒有現金，最合適的做法是？", options: ["跟著別人尾隨衝閘進去", "去客務中心向職員求助，或用電子支付增值", "直接放棄回家"], answer: 1, hint: "逃票是犯法的，尋求官方渠道解決問題才是正確做法。" },
-                    { q: "你在巴士上發現自己坐過龍(過站)了，你應該怎麼辦？", options: ["立刻大聲要求司機停車開門", "在下一站下車，然後走到對面馬路搭回頭車", "直接從車窗跳出去"], answer: 1, hint: "交通工具只能在指定車站上落，應保持冷靜並尋找補救路線。" }
+                    { q: "你入閘搭港鐵時，發現八達通餘額不足(負數)，而你身上剛好沒有現金，最合適的做法是？", options: ["跟著別人尾隨衝閘進去", "去客�[...]
+                    { q: "你在巴士上發現自己坐過龍(過站)了，你應該怎麼辦？", options: ["立刻大聲要求司機停車開門", "在下一站下車，然後走到對面馬路搭�[...]
                 ]
             },
             {
                 id: 7, stage: "第三階段：社區應變", title: "7. 危機處理", type: "choice",
                 desc: "任務：遇到緊急情況時，作出正確且安全的判斷。",
                 questions: [
-                    { q: "在商場裡，你看到前面有人突然暈倒在地上，你第一步應該做什麼？", options: ["保持冷靜，立刻尋找保安員或撥打 999 報警", "用力搖晃和拍打他的臉叫醒他", "當作沒看到，趕快走開"], answer: 0, hint: "不當的移動可能會加重傷者的傷勢，尋求專業救援最重要。" },
-                    { q: "如果你在街上不小心遺失了銀包（裡面有身份證和銀行卡），你應該最先處理哪件事？", options: ["在街上大哭", "立刻致電銀行報失提款卡，並去警署報失身份證", "去買一個新的銀包"], answer: 1, hint: "防止財產被盜用和身份被冒用是最急切的任務。" }
+                    { q: "在商場裡，你看到前面有人突然暈倒在地上，你第一步應該做什麼？", options: ["保持冷靜，立刻尋找保安員或撥打 999 報警", "用力搖�[...]
+                    { q: "如果你在街上不小心遺失了銀包（裡面有身份證和銀行卡），你應該最先處理哪件事？", options: ["在街上大哭", "立刻致電銀行報失提[...]
                 ]
             },
             {
                 id: 9, stage: "第四階段：理財規劃", title: "8. 餐廳找續計算", type: "choice",
                 desc: "任務：在餐廳結帳時，確保找贖的金額正確。",
                 questions: [
-                    { q: "你的午餐費用是 $48，加配一杯飲品 $12。你給收銀員一張 $100 紙幣，他應該找回多少錢給你？", options: ["$50", "$40", "$60"], answer: 1, hint: "先計算總消費 ($48 + $12 = $60)，再用 $100 減去總消費。" },
-                    { q: "你想買一件 $120 的外套，你錢包裡有兩張 $50 和一張 $20 紙幣。你的錢足夠購買嗎？", options: ["不夠，還差 $20", "剛好足夠", "足夠，還有找續"], answer: 1, hint: "先計算你手上有多少錢 (50 + 50 + 20)。" }
+                    { q: "你的午餐費用是 $48，加配一杯飲品 $12。你給收銀員一張 $100 紙幣，他應該找回多少錢給你？", options: ["$50", "$40", "$60"], answer: 1, hint: [...]
+                    { q: "你想買一件 $120 的外套，你錢包裡有兩張 $50 和一張 $20 紙幣。你的錢足夠購買嗎？", options: ["不夠，還差 $20", "剛好足夠", "足夠，還[...]
                 ]
             },
             {
@@ -276,8 +276,8 @@
                 id: 11, stage: "第五階段：職場社交", title: "10. 察言觀色", type: "choice",
                 desc: "任務：觀察同事的狀態，選擇合適的應對方式。",
                 questions: [
-                    { q: "你的同事桌上堆滿了文件，並且一直皺著眉頭嘆氣。這時候你應該怎麼說比較合適？", options: ["「你做得很慢啊，快點啦。」", "「你看起來很忙，有什麼我可以幫忙的嗎？」", "假裝沒看到，繼續大聲聽音樂。"], answer: 1, hint: "表達關心並主動提供協助，能建立良好的職場人際關係。" },
-                    { q: "開會時，主管正在說話，你的手機突然響起，你應該？", options: ["立刻在會議室大聲接聽電話", "馬上按掉聲音或掛斷，並在會後向主管致歉", "讓它一直響直到對方掛斷"], answer: 1, hint: "打斷會議是不禮貌的，應迅速靜音以減少干擾。" }
+                    { q: "你的同事桌上堆滿了文件，並且一直皺著眉頭嘆氣。這時候你應該怎麼說比較合適？", options: ["「你做得很慢啊，快點啦。」", "「你[...]
+                    { q: "開會時，主管正在說話，你的手機突然響起，你應該？", options: ["立刻在會議室大聲接聽電話", "馬上按掉聲音或掛斷，並在會後向主[...]
                 ]
             },
             {
@@ -296,16 +296,16 @@
                 id: 13, stage: "第六階段：數位素養", title: "12. 網絡防騙", type: "choice",
                 desc: "任務：辨識手機與網絡上的陷阱，保護自己。",
                 questions: [
-                    { q: "你收到一條不明手機短訊：「你的包裹派遞失敗，請點擊以下連結補交 $5 運費 (www.fake-post.com)」。你應該怎麼做？", options: ["立刻點擊連結並輸入信用卡資料繳費", "截圖傳給朋友，然後點進去看看", "直接刪除短訊，絕對不點擊不明連結"], answer: 2, hint: "釣魚短訊常利用『包裹』或『帳戶異常』騙取金錢和密碼。" },
-                    { q: "有人打電話給你，自稱是銀行職員，說你的戶口有問題，要求你提供提款卡密碼核對身份。你應該？", options: ["告訴他密碼，因為他是銀行職員", "立即掛斷電話，並自己撥打提款卡背面的銀行熱線查詢", "跟他聊天並詢問他的名字"], answer: 1, hint: "真正的銀行職員絕對不會在電話中向你索取密碼。" }
+                    { q: "你收到一條不明手機短訊：「你的包裹派遞失敗，請點擊以下連結補交 $5 運費 (www.fake-post.com)」。你應該怎麼做？", options: ["立刻點�[...]
+                    { q: "有人打電話給你，自稱是銀行職員，說你的戶口有問題，要求你提供提款卡密碼核對身份。你應該？", options: ["告訴他密碼，因為他�[...]
                 ]
             },
             {
                 id: 14, stage: "第六階段：數位素養", title: "13. 網上購物安全", type: "choice",
                 desc: "任務：在社交平台上買東西，如何避免被騙？",
                 questions: [
-                    { q: "在社交平台（如 IG/FB）購物時，哪一種付款方式的風險最高，最容易被騙去金錢？", options: ["貨到付款 (一手交錢一手交貨)", "透過有保障的官方購物平台付款", "直接將全數款項轉帳到對方提供的陌生私人銀行戶口"], answer: 2, hint: "私人轉帳缺乏平台保障，一旦對方收錢後失聯，很難追討。" },
-                    { q: "網上看到最新款的智能手機，官方售價 $8000，但某個不知名網頁只賣 $1000。這最有可能代表什麼？", options: ["店主做善事", "這很大機會是騙局或是賣假貨", "我運氣真好"], answer: 1, hint: "「便宜莫貪」，價格不合理地過低通常是詐騙的誘餌。" }
+                    { q: "在社交平台（如 IG/FB）購物時，哪一種付款方式的風險最高，最容易被騙去金錢？", options: ["貨到付款 (一手交錢一手交貨)", "透過有[...]
+                    { q: "網上看到最新款的智能手機，官方售價 $8000，但某個不知名網頁只賣 $1000。這最有可能代表什麼？", options: ["店主做善事", "這很大機[...]
                 ]
             },
             // --- 第七階段：校園實踐 ---
@@ -381,7 +381,7 @@
                     },
                     { 
                         q: "上視藝課（美術課）時，你發現自己忘記帶木顏色筆，你應該怎樣做才對？", 
-                        options: ["有禮貌地問旁邊的同學能不能借用，或者舉手告訴老師", "不問別人，直接拿走同學桌上的顏色筆", "發脾氣，大聲哭鬧說不上課了"], 
+                        options: ["有禮貌地問旁邊的同學能不能借用，或者舉手告訴老師", "不問別人，直接拿走同學桌上的顏色筆", "發脾氣，大聲哭鬧說不上�[...]
                         answer: 0, 
                         hint: "忘記帶東西沒關係，主動且有禮貌地尋求幫忙就能解決問題，絕對不能不問自取。" 
                     },
@@ -494,7 +494,7 @@
 
                 const btn = document.createElement('button');
                 const isActive = index === state.currentLevelIndex;
-                btn.className = `w-full text-left px-3 py-3 rounded-2xl border-2 transition font-bold text-sm flex items-center gap-2 ${isActive ? 'border-teal-500 bg-teal-50 text-teal-800 shadow-md transform scale-[1.02]' : 'border-teal-100 bg-white hover:border-emerald-400 text-gray-600'}`;
+                btn.className = `w-full text-left px-3 py-3 rounded-2xl border-2 transition font-bold text-sm flex items-center gap-2 ${isActive ? 'border-teal-500 bg-teal-50 text-teal-800 shadow[...]
                 btn.innerHTML = `<i class="fa-solid fa-medal ${isActive ? 'text-emerald-400' : 'text-gray-300'} w-5 text-center"></i> <span class="truncate">${level.title}</span>`;
                 
                 btn.onclick = () => {
@@ -532,7 +532,7 @@
                 const node = document.createElement('div');
                 node.className = 'flex items-center gap-1';
                 const circle = document.createElement('div');
-                circle.className = `w-8 h-8 rounded-full flex items-center justify-center font-black text-sm border-2 transition-all duration-300 ${i < currentQIndex ? 'bg-emerald-500 border-emerald-500 text-white shadow-md' : (i === currentQIndex ? 'bg-yellow-300 border-yellow-400 text-yellow-800 shadow-md scale-110' : 'bg-gray-100 border-gray-200 text-gray-400')}`;
+                circle.className = `w-8 h-8 rounded-full flex items-center justify-center font-black text-sm border-2 transition-all duration-300 ${i < currentQIndex ? 'bg-emerald-500 border-emer[...]
                 circle.innerHTML = i < currentQIndex ? '<i class="fa-solid fa-check"></i>' : (i + 1);
                 node.appendChild(circle);
                 container.appendChild(node);
@@ -564,7 +564,7 @@
             checkCurrentAnswer = () => {}; // Reset submit handler
             
             renderProgressNodes(level);
-            hintArea.innerHTML = `<span class="text-teal-600 block mb-2"><i class="fa-solid fa-comment-dots"></i> 小提示：</span>${qData.hint || "請仔細思考後，嘗試找出答案。"}`;
+            hintArea.innerHTML = `<span class="text-teal-600 block mb-2"><i class="fa-solid fa-comment-dots"></i> 小提示：</span>${qData.hint || "請仔細思考後，嘗試找出答案。"}`[...]
             
             // 延遲播放題目語音，避免切換太突兀
             setTimeout(() => playTTS(qData.q || qData.text || qData.audioText || level.desc), 500);
@@ -590,7 +590,7 @@
                 boxWrapper.className = 'flex flex-col items-center flex-1 w-full min-w-[200px]';
                 
                 const box = document.createElement('div');
-                box.className = 'drop-zone w-full min-h-[160px] border-4 border-dashed border-teal-300 rounded-3xl flex flex-col items-center p-3 bg-teal-50 shadow-sm transition relative overflow-hidden';
+                box.className = 'drop-zone w-full min-h-[160px] border-4 border-dashed border-teal-300 rounded-3xl flex flex-col items-center p-3 bg-teal-50 shadow-sm transition relative overflow[...]
                 box.innerHTML = `
                     <div class="bg-white rounded-full w-14 h-14 flex items-center justify-center mb-2 shadow-sm pointer-events-none">
                         <i class="fa-solid fa-box-open text-3xl text-teal-500"></i>
@@ -628,14 +628,14 @@
 
             shuffledWords.forEach(w => {
                 const wordBlock = document.createElement('div');
-                wordBlock.className = 'draggable-item bg-white text-gray-800 border-2 border-teal-200 font-black text-base sm:text-lg py-2 sm:py-3 px-4 sm:px-5 rounded-2xl shadow-md select-none transition flex items-center gap-3 cursor-pointer';
+                wordBlock.className = 'draggable-item bg-white text-gray-800 border-2 border-teal-200 font-black text-base sm:text-lg py-2 sm:py-3 px-4 sm:px-5 rounded-2xl shadow-md select-none t[...]
                 wordBlock.draggable = true;
                 wordBlock.dataset.text = w.text;
                 
                 // 補齊原本被截斷的 HTML 結構
                 wordBlock.innerHTML = `
                     <span>${w.text}</span>
-                    <button class="tts-btn bg-cyan-100 hover:bg-cyan-200 text-cyan-700 rounded-full w-8 h-8 flex items-center justify-center transition shrink-0" onclick="event.stopPropagation(); playTTS('${w.text}')" title="聆聽">
+                    <button class="tts-btn bg-cyan-100 hover:bg-cyan-200 text-cyan-700 rounded-full w-8 h-8 flex items-center justify-center transition shrink-0" onclick="event.stopPropagation();[...]
                         <i class="fa-solid fa-volume-low text-sm"></i>
                     </button>
                 `;
@@ -715,7 +715,7 @@
 
             qData.options.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = 'bg-white border-2 border-teal-100 hover:border-teal-400 hover:bg-teal-50 text-gray-700 font-bold text-base sm:text-lg p-4 sm:p-5 rounded-2xl text-left transition shadow-sm flex items-center justify-between group';
+                btn.className = 'bg-white border-2 border-teal-100 hover:border-teal-400 hover:bg-teal-50 text-gray-700 font-bold text-base sm:text-lg p-4 sm:p-5 rounded-2xl text-left transition [...]
                 btn.innerHTML = `
                     <span class="flex-1 pr-4">${opt}</span>
                     <i class="fa-solid fa-circle-check text-2xl text-gray-200 group-hover:text-teal-200 transition shrink-0"></i>
@@ -844,7 +844,7 @@
 
         function renderShoppingMemory(qData, container, submitBtn) {
             const playBtn = document.createElement('button');
-            playBtn.className = 'w-20 h-20 sm:w-24 sm:h-24 bg-cyan-400 hover:bg-cyan-500 rounded-full flex items-center justify-center text-white shadow-xl transition transform hover:scale-110 mb-6 animate-bounce';
+            playBtn.className = 'w-20 h-20 sm:w-24 sm:h-24 bg-cyan-400 hover:bg-cyan-500 rounded-full flex items-center justify-center text-white shadow-xl transition transform hover:scale-110 mb-6 an[...]
             playBtn.innerHTML = '<i class="fa-solid fa-ear-listen text-3xl sm:text-4xl"></i>';
             playBtn.onclick = () => {
                 playTTS(qData.audioText);
@@ -877,7 +877,7 @@
 
             allOptions.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'bg-white border-2 border-gray-200 hover:border-cyan-400 text-gray-700 font-bold py-2 sm:py-3 px-4 sm:px-5 rounded-2xl shadow-sm transition shopping-btn text-sm sm:text-lg';
+                btn.className = 'bg-white border-2 border-gray-200 hover:border-cyan-400 text-gray-700 font-bold py-2 sm:py-3 px-4 sm:px-5 rounded-2xl shadow-sm transition shopping-btn text-sm sm:text[...]
                 btn.innerText = opt;
                 btn.onclick = () => {
                     if (userSequence.includes(opt)) return;
@@ -919,7 +919,7 @@
             
             let htmlText = qData.text;
             qData.blanks.forEach((blank, i) => {
-                htmlText = htmlText.replace(`[__${i+1}__]`, `<span class="inline-flex items-center justify-center min-w-[100px] h-[40px] border-b-4 border-dashed border-teal-400 mx-2 text-center text-teal-600 px-2 drop-zone empty-blank align-middle bg-gray-50 rounded-t-lg transition-colors cursor-pointer" data-index="${i}">?</span>`);
+                htmlText = htmlText.replace(`[__${i+1}__]`, `<span class="inline-flex items-center justify-center min-w-[100px] h-[40px] border-b-4 border-dashed border-teal-400 mx-2 text-center [...]
             });
             textContainer.innerHTML = htmlText;
             container.appendChild(textContainer);
