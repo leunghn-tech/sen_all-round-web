@@ -177,93 +177,10 @@
             </div>
         </div>
 
-        <!-- 模塊二：香港 SEN 政府津貼與支援估算器 (Subsidy & Allowance Calculator) -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-100 space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-100 pb-3">
-                <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-calculator text-blue-600"></i> 2. 實時：香港 SEN 津貼與社福支援估算器
-                </h3>
-                <span class="bg-emerald-50 text-emerald-700 text-xs font-black px-2.5 py-1 rounded-full"><i class="fa-solid fa-dollar-sign mr-1"></i>自動算出每月可得金額</span>
-            </div>
-            <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
-                政府設有不同的福利制度，包括社會福利署的**傷殘津貼**、**學習訓練津貼**等。請勾選以下符合您孩子目前狀態的選項，系統將自動實時累加並算出**預估每月可申領金額**，並列出核心申辦條件：
-            </p>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- 左側：勾選條件 (12格中佔7格) -->
-                <div class="lg:col-span-7 space-y-4">
-                    <!-- 年齡/就學狀態勾選 -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
-                        <h5 class="text-xs font-black text-slate-500 uppercase tracking-wider"><i class="fa-solid fa-circle-info mr-1"></i> 1. 年齡與診斷狀態 (請勾選)</h5>
-                        
-                        <label class="flex items-start gap-3 cursor-pointer group p-1.5 hover:bg-white rounded-lg transition">
-                            <input type="checkbox" id="calc-da-normal" onchange="calculateSubsidy()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500 mt-1">
-                            <div>
-                                <span class="font-bold text-slate-800 text-xs sm:text-sm block">領有合格「醫生證明書」證實屬嚴重殘疾/長期病患</span>
-                                <span class="text-[10px] text-slate-400 block mt-0.5">符合普通傷殘津貼基本資格 (經公立醫院醫生評估核實，2026最新調升標準)</span>
-                            </div>
-                        </label>
-
-                        <label class="flex items-start gap-3 cursor-pointer group p-1.5 hover:bg-white rounded-lg transition">
-                            <input type="checkbox" id="calc-da-high" onchange="calculateSubsidy()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500 mt-1">
-                            <div>
-                                <span class="font-bold text-slate-800 text-xs sm:text-sm block">需要家人在日常生活中進行「全天候照顧」</span>
-                                <span class="text-[10px] text-slate-400 block mt-0.5">符合高額傷殘津貼基本資格 (2026年最新調升標準，不能與普通傷殘津貼雙重領取)</span>
-                            </div>
-                        </label>
-                    </div>
-
-                    <!-- 學前/特殊治療狀況勾選 -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
-                        <h5 class="text-xs font-black text-slate-500 uppercase tracking-wider"><i class="fa-solid fa-baby mr-1"></i> 2. 輪候學前資助康復服務 (限0-6歲)</h5>
-                        
-                        <label class="flex items-start gap-3 cursor-pointer group p-1.5 hover:bg-white rounded-lg transition">
-                            <input type="checkbox" id="calc-training-low" onchange="calculateSubsidy()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500 mt-1">
-                            <div>
-                                <span class="font-bold text-slate-800 text-xs sm:text-sm block">正在輪候社署資助學前服務 (如 SCCC / EATC / OPRS)</span>
-                                <span class="text-[10px] text-slate-400 block mt-0.5">符合學習訓練津貼 (普通額) 資格 (不需資產審查)</span>
-                            </div>
-                        </label>
-
-                        <label class="flex items-start gap-3 cursor-pointer group p-1.5 hover:bg-white rounded-lg transition">
-                            <input type="checkbox" id="calc-training-high" onchange="calculateSubsidy()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500 mt-1">
-                            <div>
-                                <span class="font-bold text-slate-800 text-xs sm:text-sm block">正在輪候上述服務，且家庭月入不超過全港中位數 75%</span>
-                                <span class="text-[10px] text-slate-400 block mt-0.5">符合學習訓練津貼 (高額) 資格 (需家庭入息審查，輪候 SCCC 特殊幼兒中心可直接豁免審查)</span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- 右側：估算結果顯示與申辦說明 (12格中佔5格) -->
-                <div class="lg:col-span-5 bg-slate-900 text-white rounded-3xl p-6 flex flex-col justify-between space-y-6 shadow-lg shadow-blue-100/30">
-                    <div class="space-y-4">
-                        <span class="bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase"><i class="fa-solid fa-chart-line mr-1 animate-pulse"></i>估算結果分析</span>
-                        <div class="text-center py-4 border-b border-slate-800">
-                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">預估每月可獲取之最高政府補助</p>
-                            <p class="text-4xl sm:text-5xl font-black text-emerald-400 font-mono mt-1" id="calc-total-amount">HK$ 0</p>
-                            <p class="text-[10px] text-slate-500 mt-2">實際金額以社會福利署最終審核結果為準 (2026年最新法定標準)</p>
-                        </div>
-
-                        <div class="space-y-2.5 text-xs">
-                            <p class="font-bold text-slate-200">📋 申辦指引與資格摘要：</p>
-                            <ul id="calc-tips-list" class="space-y-2 text-slate-400 leading-relaxed list-disc list-inside">
-                                <li>暫未勾選任何項目。請在左側勾選符合狀況的條款。</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <button onclick="copySubsidyResult()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-3 rounded-2xl transition shadow-md shadow-emerald-500/20 text-xs flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-copy"></i> <span>複製此津貼估算清單</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 模塊三：公營與私營評估系統深度對比 -->
+        <!-- 模塊二：公營與私營評估系統深度對比 -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-100 space-y-6">
             <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-scale-balanced text-blue-600"></i> 3. 深度分析：公營 vs 私營評估系統對比
+                <i class="fa-solid fa-scale-balanced text-blue-600"></i> 2. 深度分析：公營 vs 私營評估系統對比
             </h3>
             
             <!-- 響應式對比卡片網格 -->
@@ -338,10 +255,10 @@
             </div>
         </div>
 
-        <!-- 模塊四：香港 SEN 0-18歲 醫療、教育與社福系統交接里程碑 -->
+        <!-- 模塊三：香港 SEN 0-18歲 醫療、教育與社福系統交接里程碑 -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-100 space-y-6">
             <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-timeline text-blue-600"></i> 4. 全方位 SEN 成長過渡與交接里程碑
+                <i class="fa-solid fa-timeline text-blue-600"></i> 3. 全方位 SEN 成長過渡與交接里程碑
             </h3>
             <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
                 在孩子成長的不同階段，他們所依賴的評估與支援系統也會發生根本性的轉移。請密切留意以下三大關鍵轉接期，做好資料交接備忘：
@@ -381,10 +298,10 @@
             </div>
         </div>
 
-        <!-- 新增模塊五：官方參考文獻與法定政策指南 (Official Reference & Policy Guidelines) -->
+        <!-- 新增模塊四：官方參考文獻與法定政策指南 (Official Reference & Policy Guidelines) -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-100 space-y-6">
             <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-building-columns text-blue-600"></i> 5. 官方參考文獻與法定政策指南 (References)
+                <i class="fa-solid fa-building-columns text-blue-600"></i> 4. 官方參考文獻與法定政策指南 (References)
             </h3>
             <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
                 本系統的核心數據與評估轉介流程均嚴謹提煉自以下香港特別行政區政府部門及權威機構之法定指引。您可以點擊下方連結直達官方頁面查閱最新申辦手續：
