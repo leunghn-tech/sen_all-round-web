@@ -9,19 +9,18 @@
     <!-- 引入 Font Awesome 專業圖示 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght=300;400;500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
         body {
             font-family: 'Noto Sans HK', sans-serif;
-            background-color: #f0f9ff; /* 溫馨溫和的淡藍色背景，建立冷靜與專業感 */
+            background-color: #f0f9ff;
             transition: all 0.3s ease;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 隱藏滾動條但保持滾動 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* 無障礙高對比度樣式 */
+        /* 無障礙高對比模式樣式 */
         body.a11y-high-contrast {
             background-color: #000000 !important;
             color: #ffffff !important;
@@ -60,16 +59,19 @@
 <body class="text-slate-800 flex flex-col min-h-screen text-sm sm:text-base pb-12">
 
     <!-- Toast 通知容器 -->
-    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none w-72"></div>
 
     <!-- 頂部導航 -->
     <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-blue-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="index.html#parent" class="flex items-center gap-2 text-blue-700 hover:text-blue-900 font-extrabold transition">
+            <a href="#" class="flex items-center gap-2 text-blue-700 hover:text-blue-900 font-extrabold transition">
                 <i class="fa-solid fa-house-medical text-lg"></i>
                 <span>返回家長專區首頁</span>
             </a>
             <div class="flex items-center gap-2">
+                <button onclick="toggleHighContrast()" class="hidden sm:block text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-full transition font-bold border border-slate-300">
+                    <i class="fa-solid fa-circle-half-stroke mr-1"></i>高對比
+                </button>
                 <span class="bg-blue-100 text-blue-800 text-xs font-black px-2.5 py-1 rounded-full uppercase"><i class="fa-solid fa-map-location-dot mr-1 animate-pulse"></i>政策與導航</span>
             </div>
         </div>
@@ -80,7 +82,7 @@
         
         <!-- 標題橫幅 -->
         <div class="bg-gradient-to-r from-blue-600 via-sky-600 to-indigo-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-            <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
+            <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10 pointer-events-none">
                 <i class="fa-solid fa-map-location-dot text-[150px]"></i>
             </div>
             <div class="relative z-10 space-y-3">
@@ -115,17 +117,17 @@
                         第一步：選擇孩子當前年齡段 (Age Group)
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <button onclick="setWizardAge('preschool')" id="age-preschool" class="p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
+                        <button onclick="setWizardAge('preschool')" id="age-preschool" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
                             <span class="block text-xl mb-1">👶</span>
                             <span class="font-extrabold text-slate-800 text-xs sm:text-sm block">幼兒/學前期</span>
                             <span class="text-[10px] text-slate-400 block mt-0.5">0 - 6 歲以下 (未入小一)</span>
                         </button>
-                        <button onclick="setWizardAge('school')" id="age-school" class="p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
+                        <button onclick="setWizardAge('school')" id="age-school" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
                             <span class="block text-xl mb-1">🎒</span>
                             <span class="font-extrabold text-slate-800 text-xs sm:text-sm block">中小學階段</span>
                             <span class="text-[10px] text-slate-400 block mt-0.5">6 - 18 歲 (小一至中六)</span>
                         </button>
-                        <button onclick="setWizardAge('youth')" id="age-youth" class="p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
+                        <button onclick="setWizardAge('youth')" id="age-youth" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
                             <span class="block text-xl mb-1">🎓</span>
                             <span class="font-extrabold text-slate-800 text-xs sm:text-sm block">大專與職場過渡</span>
                             <span class="text-[10px] text-slate-400 block mt-0.5">18 歲以上 (大專/就業)</span>
@@ -134,17 +136,22 @@
                 </div>
 
                 <!-- 第二步：預算與時間考量 -->
-                <div class="space-y-3">
+                <div class="space-y-3 relative">
+                    <!-- 遮罩 (未完成第一步時覆蓋) -->
+                    <div id="budget-overlay" class="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-xl transition-all duration-300">
+                        <span class="bg-white px-3 py-1.5 rounded-full text-xs font-bold text-slate-500 shadow-sm border border-slate-200">請先選擇上方年齡段</span>
+                    </div>
+
                     <label class="block text-xs font-black text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                         <span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px]">2</span>
                         第二步：選擇您對「時間與預算」的預期 (Budget & Urgency)
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button onclick="setWizardBudget('public')" id="budget-public" class="p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
+                        <button onclick="setWizardBudget('public')" id="budget-public" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
                             <span class="font-extrabold text-slate-800 text-xs sm:text-sm block">🏛️ 公營優先 (低預算、需輪候)</span>
                             <span class="text-[10px] text-slate-400 block mt-1 leading-relaxed">完全免費/標準公共門診費用。評估時間通常需 6-18 個月。</span>
                         </button>
-                        <button onclick="setWizardBudget('private')" id="budget-private" class="p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
+                        <button onclick="setWizardBudget('private')" id="budget-private" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
                             <span class="font-extrabold text-slate-800 text-xs sm:text-sm block">⚡ 私營優先 (希望盡快拿到報告)</span>
                             <span class="text-[10px] text-slate-400 block mt-1 leading-relaxed">費用約 HK$8,000 - $18,000。通常可在 2-4 星期內安排評估。</span>
                         </button>
@@ -152,7 +159,7 @@
                 </div>
 
                 <!-- 行動指南輸出回饋框 -->
-                <div id="wizard-result-box" class="hidden bg-blue-50/50 border border-blue-200 rounded-2xl p-5 sm:p-6 space-y-4">
+                <div id="wizard-result-box" class="hidden bg-blue-50/50 border border-blue-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-inner">
                     <div class="flex items-center gap-3 border-b border-blue-100 pb-3">
                         <span class="text-3xl">🧭</span>
                         <div>
@@ -161,7 +168,7 @@
                         </div>
                     </div>
                     
-                    <div class="space-y-3 text-xs sm:text-sm" id="result-steps-container">
+                    <div class="space-y-4 text-xs sm:text-sm" id="result-steps-container">
                         <!-- 由 JS 動態灌入 -->
                     </div>
 
@@ -298,10 +305,55 @@
             </div>
         </div>
 
-        <!-- 新增模塊四：官方參考文獻與法定政策指南 (Official Reference & Policy Guidelines) -->
+        <!-- 模塊四：政府津貼與財務支援官方資訊 -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-100 space-y-6">
             <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
-                <i class="fa-solid fa-building-columns text-blue-600"></i> 4. 官方參考文獻與法定政策指南 (References)
+                <i class="fa-solid fa-landmark text-amber-500"></i> 4. 政府津貼與財務支援官方資訊
+            </h3>
+            <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                為確保獲取最準確及最新的津貼發放金額、入息審查資格及申請手續，請直接參閱社會福利署及相關政府部門的官方網站。以下為最常涉及的 SEN 兒童相關津貼連結：
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 傷殘津貼 -->
+                <a href="https://www.swd.gov.hk/tc/pubsvc/socsec/ssallowance/index.html" target="_blank" rel="noopener noreferrer" class="group block bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl p-5 transition-all hover:shadow-md">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-wheelchair text-amber-500"></i> 社會福利署：傷殘津貼
+                        </h4>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-slate-300 group-hover:text-amber-500 transition"></i>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed">公共福利金計劃。查閱普通傷殘津貼及高額傷殘津貼的最新申請資格、當前發放金額及醫生證明要求。</p>
+                </a>
+
+                <!-- 學習訓練津貼 -->
+                <a href="https://www.swd.gov.hk/tc/pubsvc/rehab/listofserv/trainingsub/index.html" target="_blank" rel="noopener noreferrer" class="group block bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl p-5 transition-all hover:shadow-md">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-book-open-reader text-amber-500"></i> 社會福利署：學習訓練津貼 (TSP)
+                        </h4>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-slate-300 group-hover:text-amber-500 transition"></i>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed">為正在輪候學前康復服務的兒童提供（最高 $6,904/月）。涵蓋普通額與高額津貼的入息審查標準（輪候特殊幼兒中心者豁免入息審查）。</p>
+                </a>
+                
+                <!-- 關愛基金 -->
+                <a href="https://www.swd.gov.hk/tc/pubsvc/ccf/" target="_blank" rel="noopener noreferrer" class="group block bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl p-5 transition-all hover:shadow-md md:col-span-2">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-hand-holding-heart text-amber-500"></i> 關愛基金 (醫療與康復援助項目)
+                        </h4>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-slate-300 group-hover:text-amber-500 transition"></i>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed">提供特定醫療及復康援助項目，例如資助購買醫療消耗品或特定藥物，以減輕合資格低收入家庭的經濟負擔。</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- 模塊五：官方參考文獻與法定政策指南 (Official Reference & Policy Guidelines) -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-100 space-y-6">
+            <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-building-columns text-blue-600"></i> 5. 官方參考文獻與法定政策指南
             </h3>
             <p class="text-slate-500 text-xs sm:text-sm leading-relaxed">
                 本系統的核心數據與評估轉介流程均嚴謹提煉自以下香港特別行政區政府部門及權威機構之法定指引。您可以點擊下方連結直達官方頁面查閱最新申辦手續：
@@ -315,7 +367,7 @@
                         <h4 class="font-extrabold text-slate-800 text-sm sm:text-base">衞生署 CAS 兒童體能智力測驗服務</h4>
                         <p class="text-slate-400 text-xs leading-relaxed">提供 12 歲以下懷疑發展障礙兒童的權威診斷。家長需持母嬰健康院或註冊西醫的轉介信辦理登記。</p>
                     </div>
-                    <a href="https://www.dhcas.gov.hk/tc/" target="_blank" rel="noopener noreferrer" class="w-full bg-blue-100 hover:bg-blue-600 hover:text-white text-blue-800 font-bold py-2 rounded-xl text-xs text-center transition flex items-center justify-center gap-1">
+                    <a href="https://www.dhcas.gov.hk/tc/" target="_blank" rel="noopener noreferrer" class="w-full bg-blue-100 hover:bg-blue-600 hover:text-white text-blue-800 font-bold py-2 rounded-xl text-xs text-center transition flex items-center justify-center gap-1 mt-auto">
                         <span>訪問 DH CAS 官網</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                     </a>
                 </div>
@@ -325,27 +377,27 @@
                     <div class="space-y-2">
                         <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> 社會福利津貼</span>
                         <h4 class="font-extrabold text-slate-800 text-sm sm:text-base">社署傷殘津貼及 TSP 學習訓練津貼</h4>
-                        <p class="text-slate-400 text-xs leading-relaxed">2026年最新普通傷殘津貼為 HK$2,140/月。高額學習訓練津貼(TSP)為 HK$6,400/月，適用於輪候學前復康服務之低收入家庭。</p>
+                        <p class="text-slate-400 text-xs leading-relaxed">普通傷殘津貼為 HK$2,140/月。學習訓練津貼普通額最高為 HK$3,549/月，高額（輪候 SCCC）最高為 HK$6,904/月（無須入息審查）。</p>
                     </div>
-                    <div class="space-y-1.5">
+                    <div class="space-y-1.5 mt-auto">
                         <a href="https://www.1823.gov.hk/tc/faq/what-are-the-eligibility-criteria-of-disability-allowance-what-is-the-amount-of-assistance-payable" target="_blank" rel="noopener noreferrer" class="w-full bg-emerald-100 hover:bg-emerald-600 hover:text-white text-emerald-800 font-bold py-2 rounded-xl text-xs text-center transition flex items-center justify-center gap-1">
                             <span>傷殘津貼申請資格 (1823)</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                         </a>
-                        <a href="https://www.swd.gov.hk/tc/pubsvc/rehab/cat_serpresch/tsp/" target="_blank" rel="noopener noreferrer" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2 rounded-xl text-xs text-center transition flex items-center justify-center gap-1">
-                            <span>學習訓練津貼 (社署)</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        <a href="https://www.swd.gov.hk/tc/pubsvc/rehab/listofserv/trainingsub/" target="_blank" rel="noopener noreferrer" class="w-full bg-emerald-100 hover:bg-emerald-600 hover:text-white text-emerald-800 font-bold py-2 rounded-xl text-xs text-center transition flex items-center justify-center gap-1">
+                            <span>訓練津貼詳情 (社署)</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                         </a>
                     </div>
                 </div>
 
-                <!-- 教育局融合教育文獻卡 -->
+                <!-- 教育局文獻卡 -->
                 <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 hover:border-purple-300 hover:bg-purple-50/20 transition flex flex-col justify-between space-y-4">
                     <div class="space-y-2">
-                        <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full"><i class="fa-solid fa-school mr-1"></i> 融合教育支援</span>
-                        <h4 class="font-extrabold text-slate-800 text-sm sm:text-base">教育局 SENSE 融合教育資訊網</h4>
-                        <p class="text-slate-400 text-xs leading-relaxed">闡明中小學校本支援的「三層支援模式」、測考特殊調適指引，及校本教育心理學家轉介常規手續。</p>
+                        <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded-full"><i class="fa-solid fa-school mr-1"></i> 學校教育支援</span>
+                        <h4 class="font-extrabold text-slate-800 text-sm sm:text-base">教育局 (EDB) 全校參與模式</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed">全港公營普通學校均推行「全校參與」模式融合教育，透過三層支援架構照顧有特殊教育需要的學生。</p>
                     </div>
-                    <a href="https://sense.edb.gov.hk/tc/index.html" target="_blank" rel="noopener noreferrer" class="w-full bg-purple-100 hover:bg-purple-600 hover:text-white text-purple-800 font-bold py-2 rounded-xl text-xs text-center transition flex items-center justify-center gap-1">
-                        <span>訪問 EDB SENSE 網</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    <a href="https://sense.edb.gov.hk/tc/index.html" target="_blank" rel="noopener noreferrer" class="w-full bg-purple-100 hover:bg-purple-600 hover:text-white text-purple-800 font-bold py-2 rounded-xl text-xs text-center transition flex items-center justify-center gap-1 mt-auto">
+                        <span>融情 SENSE 網站</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                     </a>
                 </div>
             </div>
@@ -353,305 +405,199 @@
 
     </main>
 
-    <!-- 頁尾 -->
-    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center space-y-1 text-xs text-slate-500">
-            <p>© 2026 香港教育與 SEN 專業協作網絡 - 醫療與社福系統完全導航指南</p>
-            <p class="font-mono">本系統不收集任何真實身分資訊，所有決策與估算數據皆在本地瀏覽器處理，100% 隱私合規。</p>
+    <footer class="bg-slate-900 text-slate-400 py-10 mt-auto border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 text-center space-y-4">
+            <p class="text-sm font-bold text-slate-300"><i class="fa-solid fa-shield-halved text-slate-500 mr-2"></i>免責聲明與使用條款</p>
+            <p class="text-xs leading-relaxed max-w-3xl mx-auto">
+                本頁面提供的評估路線圖及津貼金額估算僅供香港 SEN 家長初步參考，並非專業醫療或法律意見。所有津貼申請的最終審批權、資格審查（如資產審查、醫生評估）及最新發放金額，均以香港特別行政區政府相關部門（如社會福利署、衞生署）之官方最新公告為準。我們強烈建議家長遞交任何申請前，直接聯絡有關部門或註冊社工核實詳細資料。
+            </p>
+            <p class="text-xs pt-4 border-t border-slate-800">
+                &copy; 2026 香港 SEN 醫療與社福系統導航. All rights reserved.
+            </p>
         </div>
     </footer>
 
-    <!-- JavaScript 核心控制與計算邏輯 -->
     <script>
-        // 決策樹臨時變量狀態
-        let wizardState = {
-            age: null,
-            budget: null
-        };
-
-        // ================= 決策導航：年齡與預算設定 =================
-        function setWizardAge(ageGroup) {
-            wizardState.age = ageGroup;
-            
-            // 更新按鈕高亮
-            const ageButtons = ['preschool', 'school', 'youth'];
-            ageButtons.forEach(btn => {
-                const el = document.getElementById(`age-${btn}`);
-                if (btn === ageGroup) {
-                    el.className = "p-4 rounded-xl border text-left transition bg-blue-50 border-blue-500 shadow-sm";
-                } else {
-                    el.className = "p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400";
-                }
-            });
-
-            checkWizardOutputs();
-        }
-
-        function setWizardBudget(budgetGroup) {
-            wizardState.budget = budgetGroup;
-
-            // 更新按鈕高亮
-            const budgetButtons = ['public', 'private'];
-            budgetButtons.forEach(btn => {
-                const el = document.getElementById(`budget-${btn}`);
-                if (btn === budgetGroup) {
-                    el.className = "p-4 rounded-xl border text-left transition bg-blue-50 border-blue-500 shadow-sm";
-                } else {
-                    el.className = "p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400";
-                }
-            });
-
-            checkWizardOutputs();
-        }
-
-        // ================= 決策樹邏輯計算與文本灌注 =================
-        function checkWizardOutputs() {
-            if (!wizardState.age || !wizardState.budget) {
-                return; // 未選擇完畢，不處理
-            }
-
-            const resultBox = document.getElementById('wizard-result-box');
-            const routeCode = document.getElementById('result-route-code');
-            const container = document.getElementById('result-steps-container');
-
-            resultBox.classList.remove('hidden');
-
-            const code = `${wizardState.age.toUpperCase()}-${wizardState.budget.toUpperCase()}`;
-            routeCode.innerText = `ROUTE CODE: ${code}`;
-
-            let stepsHtml = '';
-
-            if (wizardState.age === 'preschool' && wizardState.budget === 'public') {
-                stepsHtml = `
-                    <div class="space-y-3">
-                        <p class="font-bold text-blue-900"><i class="fa-solid fa-compass"></i> 學前階段 · 公營黃金低預算路線（推薦介入步驟）：</p>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第一步：母嬰健康院預約轉介 (2 - 4 星期)</strong>
-                            <span>到平時接種疫苗的母嬰健康院，向護士提出孩子在說話、眼神、手部大肌肉上的發展遲緩，經醫生初步篩查後發出轉介信至衞生署 **兒童體能智力測驗中心 (CAS)**。</span>
-                        </div>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第二步：輪候衞生署正式評估 (6 - 12 個月)</strong>
-                            <span>CAS 會排期進行詳細發展測驗（包括智能、自閉症特徵、語言障礙等）。此階段輪候期長，建議**立即申報排期社署學習訓練津貼**，以獲取輪候期間的居家训练補貼。</span>
-                        </div>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第三步：接軌社署資助學前支援 (OPRS / SCCC)</strong>
-                            <span>評估報告確定為 SEN 後，CAS 醫生會直接向社會福利署轉介。如果孩子正在就讀主流幼稚園，將可以配對**「到校學前康復服務 (OPRS)」**，由社福機構的外展言語治療師、EP 及 OT 定期到校訓練。</span>
-                        </div>
-                    </div>
-                `;
-            } else if (wizardState.age === 'preschool' && wizardState.budget === 'private') {
-                stepsHtml = `
-                    <div class="space-y-3">
-                        <p class="font-bold text-blue-900"><i class="fa-solid fa-compass"></i> 學前階段 · 私營極速干預路線（推薦介入步驟）：</p>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第一步：尋求香港註冊臨床/教育心理學家評估 (1 - 3 星期)</strong>
-                            <span>預約信譽良好的私營特教測評中心。進行專門的兒童發展/智力評估、自閉症評測 (ADOS) 等。費用約為 HK$10,000 - $18,000。</span>
-                        </div>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第二步：獲取報告，搶先引進私營自費介入訓練 (即時)</strong>
-                            <span>利用評估報告中的調適建议，自費聘請私營言語治療師 (ST) 或應用行為分析 (ABA) 訓練。**不要等公營排期**，搶在學前大腦黃金塑性期密集刺激。</span>
-                        </div>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第三步：同步排期公立系統，以接軌未來福利 (雙軌並行)</strong>
-                            <span>私營評估完結後，家長仍應持私家醫生轉介信前往衞生署 CAS 登記排隊。這樣孩子在長大後（例如升小一、中學及未來成人轉介時）才能同步享受政府的免費醫療資源。</span>
-                        </div>
-                    </div>
-                `;
-            } else if (wizardState.age === 'school' && wizardState.budget === 'public') {
-                stepsHtml = `
-                    <div class="space-y-3">
-                        <p class="font-bold text-blue-900"><i class="fa-solid fa-compass"></i> 中小學階段 · 校本/公立黃金免費路線（推薦介入步驟）：</p>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第一步：向就讀主流學校的 SENCO 提出書面評估申請 (即時)</strong>
-                            <span>告知班主任或特殊教育协调主任 (SENCO) 孩子在課堂上表現出專注力嚴重不足或默書識字極度困難，申請安排**「教育局校本教育心理學家 (EP)」**到校進行免費學術與智力測驗。</span>
-                        </div>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第二步：啟動教育局「三層支援模式」調適</strong>
-                            <span>心理學家報告出爐後，學校會召開個案會議，將孩子納入三層支援模式（如提供輔導小組、特殊考評調適如加時、放大部分答卷等）。</span>
-                        </div>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第三步：經由校醫或私家普通科醫生轉介醫管局精神科 (1 - 2 年)</strong>
-                            <span>如涉及過度活躍（ADHD）需要藥物控制，教育局心理學家無權開藥。必須經由家庭醫生開出轉介信，排隊至**醫院管理局兒童及青少年精神科**（如葵涌醫院、瑪麗醫院等）進行長期藥物調校跟進。</span>
-                        </div>
-                    </div>
-                `;
-            } else if (wizardState.age === 'school' && wizardState.budget === 'private') {
-                stepsHtml = `
-                    <div class="space-y-3">
-                        <p class="font-bold text-blue-900"><i class="fa-solid fa-compass"></i> 中小學階段 · 快速私營診測路線（推薦介入步驟）：</p>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第一步：委託私人註冊心理學家進行全套測試 (2 - 4 星期)</strong>
-                            <span>可針對「讀寫障礙 (SpLD)」、「自閉症 (ASD)」或「過度活躍 (ADHD)」進行全套私人行為或智能測試。務必確保執筆心理學傢俱有香港心理學會註冊會員資歷。</span>
-                        </div>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第二步：將報告正式呈交給學校 SENCO，要求即時特配調適</strong>
-                            <span>學校在收到具有法定認可資格的私人報告後，**不需等待教育局排期**，可以直接在當前學期直接啟動校本測驗加時、單獨試室、英文大細寫寬免等調適安排。</span>
-                        </div>
-                    </div>
-                `;
-            } else {
-                // 18歲以上 / 青年過渡期
-                stepsHtml = `
-                    <div class="space-y-3">
-                        <p class="font-bold text-blue-900"><i class="fa-solid fa-compass"></i> 大專與職場過渡階段 · 路線引導：</p>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第一步：大專入學主動向學生事務處 (SAO / SEN Support Office) 申報</strong>
-                            <span>香港大專院校（如港大、中文大學、理工等）均設有專屬大專學術調適服務。入學時家長應持以往中學的 EDB 心理報告或醫學證明主動登記，以在大學獲取加時、無障礙設施或教材報讀服務。</span>
-                        </div>
-                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-xs leading-relaxed space-y-1.5">
-                            <strong class="text-slate-800 block">第二步：尋求職業訓練局 (VTC) 或社署「殘疾人士輔助就業」支援</strong>
-                            <span>如果青年畢業後難以融入主流職場，可向社會福利署申請**「輔助就業」**或**「庇護工場」**，在有高度社會保障、輔導員陪同的環境下建立工作自立能力。</span>
-                        </div>
-                    </div>
-                `;
-            }
-
-            container.innerHTML = stepsHtml;
-            showToast("評估路線圖已動態重新生成！", "success");
-        }
-
-        // ================= 津貼估算器：實時計算累加器 =================
-        function calculateSubsidy() {
-            // 2026年最新社署津貼微調標準
-            const DA_NORMAL = 2140; // 普通傷殘津貼
-            const DA_HIGH = 4280;   // 高額傷殘津貼
-            const TRAINING_LOW = 3000;  // 學習訓練津貼 (普通額)
-            const TRAINING_HIGH = 6400; // 學習訓練津貼 (高額)
-
-            let total = 0;
-            let tips = [];
-
-            const daNorm = document.getElementById('calc-da-normal').checked;
-            const daHigh = document.getElementById('calc-da-high').checked;
-            const trainLow = document.getElementById('calc-training-low').checked;
-            const trainHigh = document.getElementById('calc-training-high').checked;
-
-            // 傷殘津貼互斥邏輯 (高額與普通不能雙重申領)
-            if (daHigh) {
-                total += DA_HIGH;
-                tips.push(`<b>高額傷殘津貼 (預估 HK$${DA_HIGH})</b>：需經由醫管局公立醫生證明需要24小時全天候照顧。`);
-                document.getElementById('calc-da-normal').checked = false; // 自動反選
-            } else if (daNorm) {
-                total += DA_NORMAL;
-                tips.push(`<b>普通傷殘津貼 (預估 HK$${DA_NORMAL})</b>：無須資產審查。需公立醫生證明屬嚴重殘疾或長期病患。`);
-            }
-
-            // 學習訓練津貼互斥邏輯 (普通與高額不能重疊)
-            if (trainHigh) {
-                total += TRAINING_HIGH;
-                tips.push(`<b>學習訓練津貼(高額, 預估 HK$${TRAINING_HIGH})</b>：適用於0-6歲並正在排期社署學前資助服務的幼兒，且家庭月入符合社署低收入申報線。`);
-                document.getElementById('calc-training-low').checked = false; // 自動反選
-            } else if (trainLow) {
-                total += TRAINING_LOW;
-                tips.push(`<b>學習訓練津貼(普通額, 預估 HK$${TRAINING_LOW})</b>：適用於0-6歲輪候到校 OP 等服務的幼兒，無須資產審查。`);
-            }
-
-            // 更新顯示
-            document.getElementById('calc-total-amount').innerText = `HK$ ${total}`;
-
-            const tipsList = document.getElementById('calc-tips-list');
-            if (tips.length === 0) {
-                tipsList.innerHTML = `<li>暫未勾選任何項目。請在左側勾選符合狀況的條款。</li>`;
-            } else {
-                tipsList.innerHTML = '';
-                tips.forEach(t => {
-                    const li = document.createElement('li');
-                    li.innerHTML = t;
-                    tipsList.appendChild(li);
-                });
-            }
-        }
-
-        // ================= 列印與複製輔助函數 =================
-        function printWizardResult() {
-            window.print();
-        }
-
-        function copyWizardResult() {
-            const container = document.getElementById('result-steps-container');
-            const textToCopy = container.innerText;
-            
-            const temp = document.createElement('textarea');
-            temp.value = textToCopy;
-            document.body.appendChild(temp);
-            temp.select();
-            document.execCommand('copy');
-            document.body.removeChild(temp);
-            
-            showToast("📋 已成功複製您的評估決策路线圖！可與家人共同對齊。", "success");
-        }
-
-        function copySubsidyResult() {
-            const total = document.getElementById('calc-total-amount').innerText;
-            const tips = document.getElementById('calc-tips-list').innerText;
-            
-            const copyText = `【香港 SEN 社福支援津貼估算清單】\n最高每月預估可得總額：${total}\n資助明細與要求：\n${tips}`;
-            
-            const temp = document.createElement('textarea');
-            temp.value = copyText;
-            document.body.appendChild(temp);
-            temp.select();
-            document.execCommand('copy');
-            document.body.removeChild(temp);
-            
-            showToast("📋 津貼估算報告與資格明細已成功複製到剪貼簿！", "success");
-        }
-
-        // ================= 輕量級 Toast 通知元件 =================
+        // === 1. Toast 通知系統 ===
         function showToast(message, type = "success") {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
             
-            let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
-            let borderClass = 'border-emerald-100 shadow-emerald-50/50';
-            if (type === 'error') {
-                icon = '<i class="fa-solid fa-circle-xmark text-rose-500"></i>';
-                borderClass = 'border-rose-100 shadow-rose-50/50';
-            } else if (type === 'info') {
-                icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
-                borderClass = 'border-blue-100 shadow-blue-50/50';
+            toast.className = "flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg border text-sm font-bold bg-white transition-all duration-300 transform translate-x-10 opacity-0 z-50";
+            
+            let icon = '<i class="fa-solid fa-circle-check text-emerald-500 text-lg mt-0.5"></i>';
+            let borderClass = 'border-emerald-200';
+            
+            if(type === 'error') {
+                icon = '<i class="fa-solid fa-circle-exclamation text-rose-500 text-lg mt-0.5"></i>';
+                borderClass = 'border-rose-200';
             }
-            
+
             toast.className += ` ${borderClass}`;
-            toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
+            toast.innerHTML = `${icon} <span class="text-slate-700 leading-tight">${message}</span>`;
             
             container.appendChild(toast);
             
             // 進場動畫
-            setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
-            }, 10);
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-10', 'opacity-0');
+                    toast.classList.add('translate-x-0', 'opacity-100');
+                }, 10);
+            });
             
             // 退場與銷毀
             setTimeout(() => {
-                toast.classList.add('translate-y-2', 'opacity-0');
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
-            }, 4000);
+                toast.classList.remove('translate-x-0', 'opacity-100');
+                toast.classList.add('translate-x-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         }
 
-        // 讀取無障礙 A11y 狀態
-        function syncA11ySettings() {
-            const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
-            const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
+        // === 2. 高對比模式切換 ===
+        function toggleHighContrast() {
+            document.body.classList.toggle('a11y-high-contrast');
+            const isActive = document.body.classList.contains('a11y-high-contrast');
+            showToast(isActive ? "已開啟高對比模式" : "已關閉高對比模式");
+        }
+
+        // === 3. 黃金評估決策樹邏輯 ===
+        let currentAge = null;
+        let currentBudget = null;
+
+        function setWizardAge(age) {
+            currentAge = age;
             
-            if (cachedContrast === 'true') {
-                document.body.classList.add('a11y-high-contrast');
-            }
-            if (cachedLargeText === 'true') {
-                document.documentElement.classList.add('a11y-large-text');
-            }
+            // UI 更新：重置所有年齡按鈕樣式
+            ['preschool', 'school', 'youth'].forEach(a => {
+                const btn = document.getElementById(`age-${a}`);
+                btn.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50', 'border-blue-500');
+                btn.classList.add('bg-white', 'border-slate-200');
+            });
+            
+            // Highlight 選中項目
+            const selectedBtn = document.getElementById(`age-${age}`);
+            selectedBtn.classList.remove('bg-white', 'border-slate-200');
+            selectedBtn.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50', 'border-blue-500');
+
+            // 解鎖第二步
+            document.getElementById('budget-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('budget-overlay').style.display = 'none';
+            }, 300);
+
+            // 如果兩步都選了，生成結果
+            if (currentBudget) generateWizardResult();
         }
 
-        // ================= 頁面加載初始化 =================
-        window.onload = function() {
-            syncA11ySettings();
-            // 預設為學前階段 + 公立路線
-            setWizardAge('preschool');
-            setWizardBudget('public');
-        };
+        function setWizardBudget(budget) {
+            if (!currentAge) {
+                showToast("請先選擇第一步的「年齡段」", "error");
+                return;
+            }
+
+            currentBudget = budget;
+            
+            // UI 更新
+            ['public', 'private'].forEach(b => {
+                const btn = document.getElementById(`budget-${b}`);
+                btn.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50', 'border-blue-500');
+                btn.classList.add('bg-white', 'border-slate-200');
+            });
+            
+            const selectedBtn = document.getElementById(`budget-${budget}`);
+            selectedBtn.classList.remove('bg-white', 'border-slate-200');
+            selectedBtn.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50', 'border-blue-500');
+
+            generateWizardResult();
+        }
+
+        function generateWizardResult() {
+            const resultBox = document.getElementById('wizard-result-box');
+            const container = document.getElementById('result-steps-container');
+            const routeCodeEl = document.getElementById('result-route-code');
+            
+            resultBox.classList.remove('hidden');
+            let steps = [];
+            let code = `${currentAge.toUpperCase()}-${currentBudget.toUpperCase()}`;
+            routeCodeEl.innerText = `ROUTE CODE: ${code}`;
+
+            // 生成邏輯矩陣
+            if (currentAge === 'preschool') {
+                if (currentBudget === 'public') {
+                    steps = [
+                        "步驟一：前往所屬地區的「母嬰健康院」預約見醫生，提出對孩子發展的疑慮，索取轉介信。",
+                        "步驟二：帶同轉介信前往「衞生署兒童體能智力測驗中心 (CAS)」排期初診及評估 (輪候需時約半年至一年以上)。",
+                        "步驟三：獲取 CAS 報告後，立即攜帶報告前往社署 / 駐校社工，登記「康復服務中央轉介系統 (CRSRehab)」排期 OPRS 或 SCCC 服務。"
+                    ];
+                } else {
+                    steps = [
+                        "步驟一：直接尋找香港註冊臨床心理學家 / 教育心理學家預約私人評估 (最快 2-4 星期可完成)。",
+                        "步驟二：利用私人評估報告，盡早向社工申請「學習訓練津貼 (TSP)」，為自費治療獲取補貼。",
+                        "步驟三：同步將報告交給幼稚園，要求提供校內的初步調適，並在外面私人機構開展言語/物理/職能治療。"
+                    ];
+                }
+            } else if (currentAge === 'school') {
+                if (currentBudget === 'public') {
+                    steps = [
+                        "步驟一：主動聯絡學校的「特殊教育需要統籌主任 (SENCO)」，反映孩子的學習或情緒困難。",
+                        "步驟二：要求學校安排「校本教育心理學家 (EP)」或「醫管局兒童精神科」進行評估 (通常以轉介情況嚴重者優先)。",
+                        "步驟三：確診後，學校將啟動教育局的「三層支援模式」，提供測考加時、功課減量或抽離式小組訓練。"
+                    ];
+                } else {
+                    steps = [
+                        "步驟一：尋找私人執業的教育心理學家(EP)或精神科醫生，快速進行讀寫障礙、ADHD或ASD評估。",
+                        "步驟二：取得正式醫療報告後，立即遞交給學校 SENCO，要求按報告建議提供測考調適 (如加時 25%)。",
+                        "步驟三：利用課餘時間，在外自費參與針對性的社交小組或執行功能訓練課程。"
+                    ];
+                }
+            } else if (currentAge === 'youth') {
+                steps = [
+                    "關鍵一步：若正面對中學文憑試 (HKDSE)，最遲需在中五學年透過學校向考評局提交最新的評估報告，申請特別考試安排。",
+                    "醫療交接：年滿 18 歲後，若有服藥需要，醫管局會將檔案從「兒童及青少年精神科」轉移至「成人精神科」。",
+                    "大專支援：升讀大專院校後，需由學生本人「主動」向院校的 SEN 支援小組申報及遞交報告，以獲取學術調適。"
+                ];
+            }
+
+            // 渲染步驟
+            container.innerHTML = steps.map((step, index) => `
+                <div class="flex gap-3 items-start bg-white p-3 rounded-xl border border-blue-100">
+                    <div class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">${index + 1}</div>
+                    <p class="text-slate-700 leading-relaxed">${step}</p>
+                </div>
+            `).join('');
+            
+            // 滾動到結果
+            setTimeout(() => {
+                resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function printWizardResult() {
+            if(!currentAge || !currentBudget) return;
+            window.print();
+        }
+
+        function copyWizardResult() {
+            if(!currentAge || !currentBudget) return;
+            const routeCodeEl = document.getElementById('result-route-code').innerText;
+            const container = document.getElementById('result-steps-container');
+            const steps = Array.from(container.querySelectorAll('p')).map((p, i) => `${i+1}. ${p.innerText}`).join('\n\n');
+            
+            const textToCopy = `【香港 SEN 評估與介入路線圖】\n${routeCodeEl}\n\n${steps}\n\n-- 來自香港 SEN 醫療與社福系統導航`;
+            
+            try {
+                const temp = document.createElement('textarea');
+                temp.value = textToCopy;
+                document.body.appendChild(temp);
+                temp.select();
+                document.execCommand('copy');
+                document.body.removeChild(temp);
+                showToast("📋 已成功複製路線圖，可貼上至備忘錄或 WhatsApp。");
+            } catch (err) {
+                showToast("複製失敗，請手動複製。", "error");
+            }
+        }
     </script>
 </body>
 </html>
