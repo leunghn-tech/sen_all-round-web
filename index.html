@@ -18,7 +18,7 @@
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
+
         .card-glow {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -39,9 +39,9 @@
             box-shadow: none !important;
             text-shadow: none !important;
         }
-        body.a11y-high-contrast header, body.a11y-high-contrast footer, body.a11y-high-contrast main, 
-        body.a11y-high-contrast #app-content, body.a11y-high-contrast .bg-white, body.a11y-high-contrast .bg-slate-50, 
-        body.a11y-high-contrast .bg-indigo-900, body.a11y-high-contrast .bg-rose-600, body.a11y-high-contrast .bg-emerald-700, 
+        body.a11y-high-contrast header, body.a11y-high-contrast footer, body.a11y-high-contrast main,
+        body.a11y-high-contrast #app-content, body.a11y-high-contrast .bg-white, body.a11y-high-contrast .bg-slate-50,
+        body.a11y-high-contrast .bg-indigo-900, body.a11y-high-contrast .bg-rose-600, body.a11y-high-contrast .bg-emerald-700,
         body.a11y-high-contrast #chat-window, body.a11y-high-contrast #login-modal > div, body.a11y-high-contrast div[class*="bg-"] {
             background-color: #121212 !important;
             border: 2px solid #ffffff !important;
@@ -57,8 +57,8 @@
             background-color: #ffff00 !important; color: #000000 !important;
         }
         body.a11y-high-contrast button:hover *, body.a11y-high-contrast a:hover * { color: #000000 !important; }
-        body.a11y-high-contrast h1, body.a11y-high-contrast h2, body.a11y-high-contrast h3, body.a11y-high-contrast h4, 
-        body.a11y-high-contrast strong, body.a11y-high-contrast b, body.a11y-high-contrast [class*="text-blue-"], 
+        body.a11y-high-contrast h1, body.a11y-high-contrast h2, body.a11y-high-contrast h3, body.a11y-high-contrast h4,
+        body.a11y-high-contrast strong, body.a11y-high-contrast b, body.a11y-high-contrast [class*="text-blue-"],
         body.a11y-high-contrast [class*="text-indigo-"], body.a11y-high-contrast [class*="text-emerald-"] {
             color: #ffff00 !important;
         }
@@ -67,7 +67,7 @@
         }
 
         html.a11y-large-text { font-size: 125% !important; }
-        
+
         #reading-ruler {
             display: none; position: fixed; left: 0; width: 100%; height: 40px;
             background-color: rgba(253, 224, 71, 0.25); border-top: 2px solid rgba(234, 179, 8, 0.8);
@@ -98,38 +98,38 @@
                 </div>
                 <div>
                     <h1 class="text-lg sm:text-xl font-black text-slate-800 tracking-tight leading-none">香港教育與 SEN 專業協作平台</h1>
-                    <span class="text-[10px] sm:text-xs text-slate-400 font-bold tracking-wider block mt-0.5">HK EDUCATIONAL & SEN COLLABORATIVE NETWORK</span>
+                    <span class="text-[10px] sm:text-xs text-slate-400 font-bold tracking-wider block mt-0.5">HK EDUCATIONAL &amp; SEN COLLABORATIVE NETWORK</span>
                 </div>
             </div>
-            
+
             <nav class="hidden lg:flex space-x-6 items-center">
-                <button onclick="renderHome()" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">首頁</button>
-                <button onclick="renderSection('parent')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">家長專區</button>
-                <button onclick="renderStudentDashboard()" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1 flex items-center gap-1">
+                <button type="button" onclick="renderHome()" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">首頁</button>
+                <button type="button" onclick="renderSection('parent')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">家長專區</button>
+                <button type="button" onclick="renderStudentDashboard()" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1 flex items-center gap-1">
                     學生基地 <span class="bg-indigo-100 text-indigo-700 text-xs font-black px-2 py-0.5 rounded-full">Gen Z</span>
                 </button>
-                <button onclick="renderSection('professional')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">同工專區</button>
-                <button onclick="renderSection('sen_types')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">8大 SEN 資源</button>
-                
-                <button onclick="toggleLoginModal()" id="login-btn" class="bg-slate-100 text-slate-700 hover:bg-slate-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2">
+                <button type="button" onclick="renderSection('professional')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">同工專區</button>
+                <button type="button" onclick="renderSection('sen_types')" class="text-slate-600 hover:text-blue-600 font-medium transition py-2 px-1">8大 SEN 資源</button>
+
+                <button type="button" onclick="toggleLoginModal()" id="login-btn" class="bg-slate-100 text-slate-700 hover:bg-slate-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2">
                     <i class="fa-solid fa-circle-user text-lg text-slate-500"></i> <span id="login-btn-text">協作登入</span>
                 </button>
             </nav>
-            
-            <button onclick="toggleMobileMenu()" class="lg:hidden text-slate-600 hover:text-blue-600 p-3 -mr-3 text-2xl flex items-center justify-center min-w-[44px] min-h-[44px]">
+
+            <button type="button" onclick="toggleMobileMenu()" class="lg:hidden text-slate-600 hover:text-blue-600 p-3 -mr-3 text-2xl flex items-center justify-center min-w-[44px] min-h-[44px]" aria-label="執行操作">
                 <i class="fa-solid fa-bars" id="menu-icon"></i>
             </button>
         </div>
-        
+
         <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-slate-100 py-3 px-6 flex flex-col gap-1.5 shadow-inner">
-            <button onclick="renderHome(); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">首頁</button>
-            <button onclick="renderSection('parent'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">家長專區</button>
-            <button onclick="renderStudentDashboard(); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50 flex justify-between items-center">
+            <button type="button" onclick="renderHome(); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">首頁</button>
+            <button type="button" onclick="renderSection('parent'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">家長專區</button>
+            <button type="button" onclick="renderStudentDashboard(); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50 flex justify-between items-center">
                 <span>學生基地 (Gen Z)</span> <span class="bg-indigo-100 text-indigo-700 text-xs font-black px-2 py-0.5 rounded-full">新任務</span>
             </button>
-            <button onclick="renderSection('professional'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">同工專區</button>
-            <button onclick="renderSection('sen_types'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">8大 SEN 資源</button>
-            <button onclick="toggleLoginModal(); toggleMobileMenu();" class="text-left text-indigo-600 font-bold py-3 flex items-center gap-2">
+            <button type="button" onclick="renderSection('professional'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">同工專區</button>
+            <button type="button" onclick="renderSection('sen_types'); toggleMobileMenu();" class="text-left text-slate-600 font-bold py-3 border-b border-slate-50">8大 SEN 資源</button>
+            <button type="button" onclick="toggleLoginModal(); toggleMobileMenu();" class="text-left text-indigo-600 font-bold py-3 flex items-center gap-2">
                 <i class="fa-solid fa-circle-user"></i> <span id="mobile-login-btn-text">協作與授權登入</span>
             </button>
         </div>
@@ -145,10 +145,10 @@
         <div class="bg-slate-800 text-white rounded-r-2xl shadow-lg border border-l-0 border-slate-700 overflow-hidden flex">
             <div class="p-3 w-[110px] space-y-3 bg-slate-900">
                 <p class="text-[10px] font-bold text-slate-400 uppercase text-center border-b border-slate-700 pb-1">視覺與聽覺輔助</p>
-                <button onclick="toggleA11y('text')" class="w-full h-10 text-xs hover:text-blue-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-text-height w-4"></i> 放大字體</button>
-                <button onclick="toggleA11y('contrast')" class="w-full h-10 text-xs hover:text-amber-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-circle-half-stroke w-4"></i> 高對比度</button>
-                <button onclick="toggleA11y('ruler')" class="w-full h-10 text-xs hover:text-yellow-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-ruler-horizontal w-4"></i> 閱讀線</button>
-                <button onclick="toggleA11y('tts')" id="btn-a11y-tts" class="w-full h-10 text-xs hover:text-emerald-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-volume-high w-4"></i> <span>語音導讀</span></button>
+                <button type="button" onclick="toggleA11y('text')" class="w-full h-10 text-xs hover:text-blue-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-text-height w-4"></i> 放大字體</button>
+                <button type="button" onclick="toggleA11y('contrast')" class="w-full h-10 text-xs hover:text-amber-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-circle-half-stroke w-4"></i> 高對比度</button>
+                <button type="button" onclick="toggleA11y('ruler')" class="w-full h-10 text-xs hover:text-yellow-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-ruler-horizontal w-4"></i> 閱讀線</button>
+                <button type="button" onclick="toggleA11y('tts')" id="btn-a11y-tts" class="w-full h-10 text-xs hover:text-emerald-400 transition text-left flex items-center gap-2 rounded-lg px-1"><i class="fa-solid fa-volume-high w-4"></i> <span>語音導讀</span></button>
             </div>
             <div class="bg-slate-800 flex items-center justify-center w-12 h-14 cursor-pointer">
                 <i class="fa-solid fa-eye text-xl text-blue-400 animate-pulse group-hover:animate-none"></i>
@@ -165,7 +165,7 @@
                         <i class="fa-solid fa-shield-halved text-emerald-600 text-xl"></i>
                         <h3 class="text-xl sm:text-2xl font-extrabold text-slate-800">校本與專業授權存取</h3>
                     </div>
-                    <button onclick="toggleLoginModal()" class="text-slate-400 hover:text-slate-600 p-2 text-2xl flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" onclick="toggleLoginModal()" class="text-slate-400 hover:text-slate-600 p-2 text-2xl flex items-center justify-center" aria-label="執行操作"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <p class="text-slate-500 mb-6 text-sm leading-relaxed">部分進階臨床工作紙與實證小組教案受版權與專業指引保護。輸入協作授權碼即可解鎖完整資源。</p>
                 <div class="space-y-4">
@@ -175,9 +175,9 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">授權密碼 / 協作憑證</label>
-                        <input type="password" id="login-pass" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none transition h-12" placeholder="輸入：co-create2026 測試體驗">
+                        <input autocomplete="current-password" type="password" id="login-pass" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:outline-none transition h-12" placeholder="輸入：co-create2026 測試體驗">
                     </div>
-                    <button onclick="attemptLogin()" class="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg font-bold rounded-xl px-4 hover:from-blue-700 hover:to-indigo-700 transition shadow-lg shadow-indigo-100 mt-2 flex items-center justify-center">
+                    <button type="button" onclick="attemptLogin()" class="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg font-bold rounded-xl px-4 hover:from-blue-700 hover:to-indigo-700 transition shadow-lg shadow-indigo-100 mt-2 flex items-center justify-center">
                         授權登入並解鎖
                     </button>
                 </div>
@@ -202,34 +202,34 @@
                         <span class="text-xs text-blue-100 block">初步諮詢與篩查導航</span>
                     </div>
                 </div>
-                <button onclick="toggleChat()" class="text-white/80 hover:text-white p-2 flex items-center justify-center">
+                <button type="button" onclick="toggleChat()" class="text-white/80 hover:text-white p-2 flex items-center justify-center" aria-label="開啟或關閉聊天視窗">
                     <i class="fa-solid fa-times text-xl"></i>
                 </button>
             </div>
-            
+
             <div class="h-[280px] sm:h-[320px] p-4 sm:p-5 overflow-y-auto bg-slate-50/50 no-scrollbar flex flex-col gap-4" id="chat-messages">
                 <div class="flex items-start gap-2.5">
                     <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-sm font-bold">AI</div>
                     <div class="bg-white border border-slate-100 p-3.5 rounded-2xl rounded-tl-none text-sm leading-relaxed text-slate-700 shadow-sm">
                         你好！我是本平台的智能輔導助手。我可以協助你進行<b>初步的情緒、學習或社交狀況諮詢</b>，並引流到最適合你的專業訓練技巧。
                         <div class="mt-3 flex flex-col gap-2">
-                            <button onclick="handleChatSelect('parent')" class="bg-blue-50 text-blue-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-100 transition">👨‍👩‍👧 我是家長，想評估孩子</button>
-                            <button onclick="handleChatSelect('student')" class="bg-indigo-50 text-indigo-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-indigo-100 transition">😎 我是學生，想探索自己</button>
-                            <button onclick="handleChatSelect('educator')" class="bg-purple-50 text-purple-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-purple-100 transition">💼 我是老師/同工專區</button>
+                            <button type="button" onclick="handleChatSelect('parent')" class="bg-blue-50 text-blue-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-blue-100 transition">👨‍👩‍👧 我是家長，想評估孩子</button>
+                            <button type="button" onclick="handleChatSelect('student')" class="bg-indigo-50 text-indigo-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-indigo-100 transition">😎 我是學生，想探索自己</button>
+                            <button type="button" onclick="handleChatSelect('educator')" class="bg-purple-50 text-purple-700 text-left px-3 py-2.5 rounded-xl text-xs font-bold hover:bg-purple-100 transition">💼 我是老師/同工專區</button>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
                 <input type="text" id="chat-input" onkeypress="handleChatKey(event)" placeholder="輸入訊息..." class="flex-grow bg-slate-100 border-none rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition h-11">
-                <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl w-11 h-11 flex items-center justify-center shrink-0 shadow-md transition">
+                <button type="button" onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl w-11 h-11 flex items-center justify-center shrink-0 shadow-md transition" aria-label="傳送訊息">
                     <i class="fa-solid fa-paper-plane text-sm"></i>
                 </button>
             </div>
         </div>
-        
-        <button onclick="toggleChat()" class="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-full w-14 h-14 sm:w-16 sm:h-16 shadow-lg shadow-indigo-200 flex items-center justify-center text-2xl sm:text-3xl transition-transform hover:scale-105 active:scale-95 relative">
+
+        <button type="button" onclick="toggleChat()" class="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-full w-14 h-14 sm:w-16 sm:h-16 shadow-lg shadow-indigo-200 flex items-center justify-center text-2xl sm:text-3xl transition-transform hover:scale-105 active:scale-95 relative" aria-label="開啟或關閉聊天視窗">
             <i class="fa-solid fa-message-dots"></i>
             <span class="absolute top-0 right-0 flex h-3.5 w-3.5">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -251,9 +251,9 @@
                 <p class="text-slate-500 text-sm leading-relaxed mb-6">
                     本平台由前線心理學家、特殊教育顧問共同開發。旨在推廣實證研究與支援資源。
                 </p>
-                <p class="text-xs text-slate-600 font-mono">© 2026 HK Educational & SEN Collaborative Network.</p>
+                <p class="text-xs text-slate-600 font-mono">© 2026 HK Educational &amp; SEN Collaborative Network.</p>
             </div>
-            
+
             <div class="md:w-2/3 w-full bg-slate-800/40 p-5 sm:p-6 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors">
                 <p class="font-bold text-slate-200 text-base sm:text-lg mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-shield-halved text-emerald-500"></i> 數據私隱合規聲明 (PDPO Compliance)
@@ -271,7 +271,7 @@
     isAuthorized: localStorage.getItem('sen_authorized') === 'true',
     userId: localStorage.getItem('sen_user') || null,
     unlockedAll: false,
-    exp: parseInt(localStorage.getItem('agent_exp') || '0'), 
+    exp: parseInt(localStorage.getItem('agent_exp') || '0'),
     level: 1
 };
 // 根據 EXP 自動計算等級 (每 250 EXP 一級)
@@ -339,7 +339,7 @@ sessionState.level = Math.floor(sessionState.exp / 250);
 
         function toggleA11y(type) {
             const body = document.body;
-            const htmlRoot = document.documentElement; 
+            const htmlRoot = document.documentElement;
             if (type === 'text') {
                 a11yState.text = !a11yState.text;
                 a11yState.text ? htmlRoot.classList.add('a11y-large-text') : htmlRoot.classList.remove('a11y-large-text');
@@ -392,14 +392,14 @@ sessionState.level = Math.floor(sessionState.exp / 250);
             if (window.speechSynthesis) {
                 window.speechSynthesis.cancel();
                 document.querySelectorAll('.tts-highlight').forEach(el => el.classList.remove('tts-highlight'));
-                
+
                 target.classList.add('tts-highlight');
                 const text = target.getAttribute('data-tts') || target.innerText;
-                
+
                 activeUtterance = new SpeechSynthesisUtterance(text);
                 activeUtterance.lang = 'zh-HK';
                 activeUtterance.rate = 1.0;
-                
+
                 activeUtterance.onend = function() { target.classList.remove('tts-highlight'); };
                 window.speechSynthesis.speak(activeUtterance);
             }
@@ -425,17 +425,17 @@ sessionState.level = Math.floor(sessionState.exp / 250);
                 sessionState.isAuthorized = true;
                 sessionState.userId = user || "協作同工";
                 sessionState.unlockedAll = true;
-                
+
                 localStorage.setItem('sen_authorized', 'true');
                 localStorage.setItem('sen_user', sessionState.userId);
 
                 toggleLoginModal();
                 showToast("🎉 成功解鎖專業同工進階資源！", "success");
-                
+
                 // 更新登入按鈕 UI
                 document.getElementById('login-btn-text').innerText = "已授權解鎖";
                 document.getElementById('login-btn').className = "bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-2";
-                
+
                 // 重新渲染當前頁面以刷新鎖定狀態
                 renderHome();
             } else {
@@ -449,7 +449,7 @@ sessionState.level = Math.floor(sessionState.exp / 250);
         function renderHome() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             const content = document.getElementById('app-content');
-            
+
             content.innerHTML = `
                 <!-- Hero Section Banner -->
                 <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 rounded-3xl p-6 sm:p-10 md:p-12 text-white shadow-xl relative overflow-hidden mb-10">
@@ -544,15 +544,15 @@ sessionState.level = Math.floor(sessionState.exp / 250);
             if (!section) return;
 
             const content = document.getElementById('app-content');
-            
+
             let cardHtml = '';
             section.items.forEach(item => {
                 const borderClass = item.customClass || 'border-slate-100 bg-white text-slate-700';
                 const isLocked = item.premium && !sessionState.isAuthorized;
-                const lockBadge = isLocked 
-                    ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-lock mr-1"></i>學校專屬</span>` 
+                const lockBadge = isLocked
+                    ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-lock mr-1"></i>學校專屬</span>`
                     : ``;
-                
+
                 // 動態注入用於無障礙語音導讀 (TTS) 的字串
                 const ttsContent = `${item.title}。${item.desc}`;
 
@@ -596,7 +596,7 @@ sessionState.level = Math.floor(sessionState.exp / 250);
         function renderStudentDashboard() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             const content = document.getElementById('app-content');
-            
+
             // 計算進度條百分比
             const progressPercent = (sessionState.exp / 1000) * 100;
 
@@ -683,7 +683,7 @@ sessionState.level = Math.floor(sessionState.exp / 250);
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0";
-            
+
             let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
             let borderClass = 'border-emerald-100 shadow-emerald-50/50';
             if (type === 'error') {
@@ -693,17 +693,17 @@ sessionState.level = Math.floor(sessionState.exp / 250);
                 icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
                 borderClass = 'border-blue-100 shadow-blue-50/50';
             }
-            
+
             toast.className += ` ${borderClass}`;
             toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
-            
+
             container.appendChild(toast);
-            
+
             // 進場動畫
             setTimeout(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
             }, 10);
-            
+
             // 退場與銷毀
             setTimeout(() => {
                 toast.classList.add('translate-y-2', 'opacity-0');
@@ -776,7 +776,7 @@ sessionState.level = Math.floor(sessionState.exp / 250);
         function appendMessage(sender, text, btnAction = null, btnText = null) {
             const box = document.getElementById('chat-messages');
             const msg = document.createElement('div');
-            
+
             if (sender === 'user') {
                 msg.className = "flex items-start gap-2.5 justify-end";
                 msg.innerHTML = `
@@ -802,7 +802,7 @@ sessionState.level = Math.floor(sessionState.exp / 250);
                     </div>
                 `;
             }
-            
+
             box.appendChild(msg);
             box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
         }
@@ -835,7 +835,7 @@ renderSection = function(sectionId) {
 // 2. 核心路由監聽與處理器
 function handleRoute() {
     const hash = window.location.hash;
-    
+
     if (hash === '#student') {
         if (typeof originalRenderStudentDashboard === 'function') originalRenderStudentDashboard();
     } else if (hash === '#parent') {
@@ -854,7 +854,7 @@ function handleRoute() {
 window.onload = function() {
     const cachedAuth = localStorage.getItem('sen_authorized');
     const cachedUser = localStorage.getItem('sen_user');
-    
+
     if (cachedAuth === 'true') {
         sessionState.isAuthorized = true;
         sessionState.userId = cachedUser || "協作同工";
@@ -869,7 +869,7 @@ window.onload = function() {
     window.addEventListener('hashchange', handleRoute);
 
     // 檢查是否有剛通關的任務需要導回學生大廳
-    if (localStorage.getItem('mission_college_completed') === 'true' || 
+    if (localStorage.getItem('mission_college_completed') === 'true' ||
         localStorage.getItem('mission_bullying_completed') === 'true' ||
         localStorage.getItem('mission_interview_completed') === 'true') {
         // 清理臨時通關標記，避免每次刷京都強鎖學生基地

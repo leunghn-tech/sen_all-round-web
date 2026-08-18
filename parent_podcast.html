@@ -95,7 +95,7 @@
 
     <!-- 主要內容區 -->
     <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full space-y-8">
-        
+
         <!-- 標題橫幅 -->
         <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
             <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
@@ -114,13 +114,13 @@
 
         <!-- 雙欄版面：左側主播放器與滾動高亮歌詞 transcript；右側為播放列表、白噪音混音器與記事筆記 -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
+
             <!-- 左欄：主播放器與Transcript同步區 (佔8格) -->
             <div class="lg:col-span-8 space-y-6">
-                
+
                 <!-- 主播放器控制面板 (The Master Player Panel) -->
                 <div id="master-player-panel" class="bg-gradient-to-b from-white to-slate-50 rounded-3xl p-6 sm:p-8 shadow-md border border-indigo-100/50 space-y-6 flex flex-col justify-between active-pulse transition-all">
-                    
+
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                         <!-- 當前播放資訊 -->
                         <div class="flex items-center gap-4 text-left w-full sm:w-auto">
@@ -157,11 +157,11 @@
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-slate-100">
                         <div class="flex items-center gap-3">
                             <!-- 播放/暫停主按鈕 -->
-                            <button id="podcast-play-btn" onclick="togglePodcastPlayback()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black px-6 py-3.5 rounded-2xl transition duration-300 text-sm shadow-md shadow-indigo-100 flex items-center gap-2 w-full sm:w-auto justify-center active:scale-95">
+                            <button type="button" id="podcast-play-btn" onclick="togglePodcastPlayback()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black px-6 py-3.5 rounded-2xl transition duration-300 text-sm shadow-md shadow-indigo-100 flex items-center gap-2 w-full sm:w-auto justify-center active:scale-95">
                                 <i class="fa-solid fa-play"></i> <span id="podcast-play-text">啟動播客語音</span>
                             </button>
                             <!-- 停止按鈕 -->
-                            <button onclick="stopPodcastPlayback()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-3.5 rounded-2xl transition text-sm flex items-center gap-1.5 active:scale-95">
+                            <button type="button" onclick="stopPodcastPlayback()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-4 py-3.5 rounded-2xl transition text-sm flex items-center gap-1.5 active:scale-95">
                                 <i class="fa-solid fa-square"></i> <span>停止</span>
                             </button>
                         </div>
@@ -193,14 +193,14 @@
 
             <!-- 右欄：播放列表、環境混音器、自筆記 (佔4格) -->
             <div class="lg:col-span-4 space-y-6">
-                
+
                 <!-- 播客播放列表 (Podcast Playlists) -->
                 <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 space-y-4 max-h-[400px] flex flex-col">
                     <h4 class="font-black text-slate-800 text-sm sm:text-base flex items-center gap-1.5 border-b border-slate-100 pb-2.5 shrink-0">
                         <i class="fa-solid fa-list-ul text-indigo-600"></i>
                         <span>特教家長 5分鐘 快速清單 (30集)</span>
                     </h4>
-                    
+
                     <div class="space-y-2.5 overflow-y-auto no-scrollbar flex-grow pr-1" id="playlist-container">
                         <!-- 由 JS 動態注入 30 大暖心特教音軌單集 -->
                     </div>
@@ -256,7 +256,7 @@
 
                     <div class="space-y-3 pt-1">
                         <textarea id="caregiver-note" rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-slate-700 leading-relaxed" placeholder="例如：『照顧好自己，才是送給孩子最好的禮物。』今天我也辛苦了..."></textarea>
-                        <button onclick="saveCaregiverNote()" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-extrabold py-2.5 rounded-xl transition text-xs flex items-center justify-center gap-1">
+                        <button type="button" onclick="saveCaregiverNote()" class="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-extrabold py-2.5 rounded-xl transition text-xs flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cloud-arrow-up"></i> <span>儲存聆聽筆記</span>
                         </button>
                     </div>
@@ -753,7 +753,7 @@
         // 2. Web Audio API 本地環境音訊與白噪音合成器引擎
         // ==========================================
         let audioCtx = null;
-        
+
         // 實時合成節點
         let alphaBinauralNode = null;
         let alphaGain = null;
@@ -944,7 +944,7 @@
         // ==========================================
         function adjustBinauralVolume(type, val) {
             initAudioContext();
-            
+
             // 如果瀏覽器因保護機制掛起，點擊拉桿主動喚醒
             if (audioCtx && audioCtx.state === 'suspended') {
                 audioCtx.resume();
@@ -963,7 +963,7 @@
                 if (!fireCrackleNode) initFireplace();
                 if (fireGain) fireGain.gain.linearRampToValueAtTime(targetVal * 1.2, audioCtx.currentTime + 0.4);
             }
-            
+
             playClickSound();
             // 每次調整都確認啟動示波器動畫
             drawBrainWaves();
@@ -979,11 +979,11 @@
             podcastDatabase.forEach(ep => {
                 const isActive = activeEpisode && activeEpisode.id === ep.id;
                 const borderClass = isActive ? 'border-indigo-400 bg-indigo-50/50 shadow-inner' : 'border-slate-100 bg-white hover:border-indigo-200';
-                
+
                 const card = document.createElement('button');
                 card.className = `w-full text-left p-4 border rounded-2xl transition duration-200 flex flex-col justify-between space-y-2 shadow-sm ${borderClass}`;
                 card.onclick = () => selectEpisode(ep.id);
-                
+
                 card.innerHTML = `
                     <div class="flex justify-between items-start w-full">
                         <span class="bg-indigo-100 text-indigo-800 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">${ep.duration}</span>
@@ -1080,7 +1080,7 @@
             if (window.speechSynthesis) window.speechSynthesis.cancel();
             isPlaying = false;
             currentUtteranceIndex = 0;
-            
+
             document.getElementById('podcast-play-text').innerText = "啟動播客語音";
             document.getElementById('podcast-play-btn').className = "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-black px-6 py-3.5 rounded-2xl transition duration-300 text-sm shadow-md shadow-indigo-100 flex items-center gap-2 w-full sm:w-auto justify-center active:scale-95";
             document.getElementById('player-timer-text').innerText = `進度：0 / ${activeEpisode ? activeEpisode.transcript.length : 0} 句`;
@@ -1137,7 +1137,7 @@
         function jumpToLine(index) {
             playClickSound();
             if (window.speechSynthesis) window.speechSynthesis.cancel();
-            
+
             if (isPlaying) {
                 speakLine(index);
             } else {
@@ -1156,7 +1156,7 @@
             speechRate = parseFloat(rate);
             playClickSound();
             showToast(`語速調整為：${rate}x`, "info");
-            
+
             // 如果正在播放，重啟目前句子的朗讀以適應新語速
             if (isPlaying) {
                 if (window.speechSynthesis) window.speechSynthesis.cancel();
@@ -1202,7 +1202,7 @@
             function animate() {
                 // 如果播客和白噪音都沒在播，直接靜止成水平線
                 const isAnySoundActive = isPlaying || (alphaGain && alphaGain.gain.value > 0) || (seaGain && seaGain.gain.value > 0) || (fireGain && fireGain.gain.value > 0);
-                
+
                 ctx.fillStyle = '#020617';
                 ctx.fillRect(0, 0, width, height);
 
@@ -1244,7 +1244,7 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
-            
+
             let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
             let borderClass = 'border-emerald-100 shadow-emerald-50/50';
             if (type === 'error') {
@@ -1254,16 +1254,16 @@
                 icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
                 borderClass = 'border-blue-100 shadow-blue-50/50';
             }
-            
+
             toast.className += ` ${borderClass}`;
             toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
-            
+
             container.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
             }, 10);
-            
+
             setTimeout(() => {
                 toast.classList.add('translate-y-2', 'opacity-0');
                 setTimeout(() => {
@@ -1275,7 +1275,7 @@
         function syncA11ySettings() {
             const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
             const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
-            
+
             if (cachedContrast === 'true') {
                 document.body.classList.add('a11y-high-contrast');
             }
@@ -1291,7 +1291,7 @@
             syncA11ySettings();
             loadCaregiverNote(); // 載入樹洞手記
             renderPodcastPlaylist(); // 渲染單集清單
-            
+
             // 預設加載 Episode 1 (情緒急救包)
             selectEpisode('ep_1');
             drawBrainWaves(); // 啟動 Canvas 示波器

@@ -18,7 +18,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
+
         /* AI 聊天訊息自訂樣式 */
         .ai-msg-content h4 { font-weight: 900; margin-top: 12px; margin-bottom: 6px; color: #1e293b; font-size: 13px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
         .ai-msg-content ul { list-style-type: none; padding-left: 0px; margin-bottom: 10px; }
@@ -52,7 +52,7 @@
     </nav>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full flex-grow space-y-6 pb-12">
-        
+
         <!-- 頂部橫幅 -->
         <div class="bg-gradient-to-r from-teal-800 via-emerald-700 to-emerald-600 rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
             <i class="fa-solid fa-book-journal-whills absolute -right-6 -bottom-6 text-[150px] text-white opacity-10"></i>
@@ -71,7 +71,7 @@
         <!-- 📚 領航：SEN 校政行政與團隊協作指南 -->
         <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm relative overflow-hidden">
             <div class="absolute top-0 right-0 w-48 h-48 bg-indigo-50 rounded-bl-full -z-10 opacity-70"></div>
-            
+
             <div class="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
                 <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xl shadow-inner">
                     <i class="fa-solid fa-map-location-dot"></i>
@@ -106,7 +106,7 @@
                             </p>
                         </div>
                         <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-200">
-                            <a href="https://www.edb.gov.hk/tc/edu-system/special/support/wsa/lsg.html" target="_blank" class="bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-[10px] font-bold px-2.5 py-1.5 rounded flex items-center gap-1 transition shadow-sm">
+                            <a href="https://www.edb.gov.hk/tc/edu-system/special/support/wsa/lsg.html" target="_blank" class="bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-[10px] font-bold px-2.5 py-1.5 rounded flex items-center gap-1 transition shadow-sm" rel="noopener noreferrer">
                                 <i class="fa-solid fa-arrow-up-right-from-square text-emerald-600"></i> EDB 學習支援津貼指引
                             </a>
                         </div>
@@ -122,8 +122,8 @@
                         <table class="w-full text-xs text-left border-collapse bg-white rounded-lg overflow-hidden border border-slate-200">
                             <thead>
                                 <tr class="bg-blue-50 text-blue-800 border-b border-blue-100">
-                                    <th class="p-2 w-1/3">團隊角色</th>
-                                    <th class="p-2 w-2/3">核心職責與交匯點</th>
+                                    <th scope="col" class="p-2 w-1/3">團隊角色</th>
+                                    <th scope="col" class="p-2 w-2/3">核心職責與交匯點</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 text-slate-600">
@@ -162,7 +162,7 @@
                             <strong class="text-xs text-emerald-700 block mb-1">🎯 SEN 輔導員 / 學校社工</strong>
                             <p class="text-[11px] text-slate-600 leading-relaxed">聚焦「情緒與社交」：帶領社交技巧訓練小組、個別情緒疏導、家長輔導支持、突發情緒危機第一線介入。</p>
                         </div>
-                        <button onclick="downloadSentaChecklistToWord()" class="w-full mt-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold py-2 rounded-lg border border-emerald-200 transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <button type="button" onclick="downloadSentaChecklistToWord()" class="w-full mt-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold py-2 rounded-lg border border-emerald-200 transition flex items-center justify-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-file-word"></i> 下載：科任老師 × SENTA 課堂協作備忘錄 (Word)
                         </button>
                     </div>
@@ -204,7 +204,7 @@
                             </ul>
                         </div>
                         <div class="bg-white p-4 rounded-xl border border-rose-100">
-                            <strong class="text-xs text-rose-700 block mb-2 border-b border-rose-50 pb-1">⚡ 行為急救 (Do's & Don'ts) 快速對照</strong>
+                            <strong class="text-xs text-rose-700 block mb-2 border-b border-rose-50 pb-1">⚡ 行為急救 (Do's &amp; Don'ts) 快速對照</strong>
                             <ul class="text-[11px] text-slate-600 space-y-3 leading-relaxed">
                                 <li>
                                     <span class="font-bold text-slate-700 block">學生拒絕離開課室：</span>
@@ -225,10 +225,10 @@
 
         <!-- 實戰工具區：學生支援摘要 Template + AI 顧問 -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
+
             <!-- 📄 學生支援摘要 (校本主要支援安排) Template -->
             <div class="lg:col-span-7 xl:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5 relative">
-                
+
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 pb-4 mb-2 gap-4">
                     <div>
                         <h2 class="text-lg font-black text-slate-800 flex items-center gap-2">
@@ -238,7 +238,7 @@
                     </div>
                     <div class="flex gap-2">
                         <!-- 只保留導出 Word 按鈕 -->
-                        <button onclick="exportSupportSummaryToWord()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl transition text-xs flex items-center gap-2 shadow-sm shrink-0">
+                        <button type="button" onclick="exportSupportSummaryToWord()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl transition text-xs flex items-center gap-2 shadow-sm shrink-0">
                             <i class="fa-solid fa-file-word"></i> 導出 Word
                         </button>
                     </div>
@@ -342,16 +342,16 @@
                         </div>
 
                         <div class="flex flex-wrap gap-2 mb-4 shrink-0 border-b border-slate-100 pb-4">
-                            <button onclick="askPresetQuestion('ASD', 'meltdown')" class="bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-300 hover:border-emerald-300 text-[11px] px-3 py-1.5 rounded-lg transition font-bold shadow-sm">
+                            <button type="button" onclick="askPresetQuestion('ASD', 'meltdown')" class="bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-300 hover:border-emerald-300 text-[11px] px-3 py-1.5 rounded-lg transition font-bold shadow-sm">
                                 ASD 感官崩潰
                             </button>
-                            <button onclick="askPresetQuestion('ADHD', 'hyperactivity')" class="bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-300 hover:border-emerald-300 text-[11px] px-3 py-1.5 rounded-lg transition font-bold shadow-sm">
+                            <button type="button" onclick="askPresetQuestion('ADHD', 'hyperactivity')" class="bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-300 hover:border-emerald-300 text-[11px] px-3 py-1.5 rounded-lg transition font-bold shadow-sm">
                                 ADHD 衝動離座
                             </button>
-                            <button onclick="askPresetQuestion('SpLD', 'academic')" class="bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-300 hover:border-emerald-300 text-[11px] px-3 py-1.5 rounded-lg transition font-bold shadow-sm">
+                            <button type="button" onclick="askPresetQuestion('SpLD', 'academic')" class="bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-300 hover:border-emerald-300 text-[11px] px-3 py-1.5 rounded-lg transition font-bold shadow-sm">
                                 SpLD 課業抗拒
                             </button>
-                            <button onclick="askPresetQuestion('MI', 'somatization')" class="bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-300 hover:border-emerald-300 text-[11px] px-3 py-1.5 rounded-lg transition font-bold shadow-sm">
+                            <button type="button" onclick="askPresetQuestion('MI', 'somatization')" class="bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-300 hover:border-emerald-300 text-[11px] px-3 py-1.5 rounded-lg transition font-bold shadow-sm">
                                 焦慮軀體化 (肚痛)
                             </button>
                         </div>
@@ -404,7 +404,7 @@
                                 </select>
                             </div>
                         </div>
-                        <button onclick="generateStrategyBySelect()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-lg text-sm transition flex items-center justify-center shadow-sm">
+                        <button type="button" onclick="generateStrategyBySelect()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-lg text-sm transition flex items-center justify-center shadow-sm">
                             <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> 生成精準三層支援策略
                         </button>
                     </div>
@@ -457,7 +457,7 @@
             const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><title>SENTA課堂協作備忘錄</title></head><body>";
             const footer = "</body></html>";
             const sourceHTML = header + htmlContent + footer;
-            
+
             // 加入 \ufeff BOM 防止 Word 中文亂碼
             const blob = new Blob(['\ufeff', sourceHTML], { type: 'application/msword;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -467,7 +467,7 @@
         }
 
         // --------------------------------------------------------
-        // 2. 學生支援摘要：導出 Word 引擎 
+        // 2. 學生支援摘要：導出 Word 引擎
         // --------------------------------------------------------
         function exportSupportSummaryToWord() {
             const name = document.getElementById('sumName').value || '未填寫';
@@ -521,11 +521,11 @@
                     <table style="width: 100%; border: none; margin-top: 40px; font-size: 11pt; font-weight: bold; color: #555;"><tr><td style="text-align: left; width: 50%;">副本交予家長保留</td><td style="text-align: right; width: 50%;">文件發出日期：${docDate}</td></tr></table>
                 </div>
             `;
-            
+
             const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'><title>學生支援摘要</title></head><body>";
             const footer = "</body></html>";
             const sourceHTML = header + wordContent + footer;
-            
+
             // 加入 \ufeff (Byte Order Mark) 解決亂碼
             const blob = new Blob(['\ufeff', sourceHTML], { type: 'application/msword;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -537,7 +537,7 @@
         // --------------------------------------------------------
         // 3. AI 智能顧問引擎 (100種交叉矩陣，改為下拉選單式引導)
         // --------------------------------------------------------
-        
+
         // SEN 特徵資料庫
         const senProfiles = {
             "ASD": { name: "自閉症 (ASD)", deficit: "大腦缺乏中央統整能力，常伴隨感官過敏與單一固執思維", home: "需與學校統一視覺化常規，不隨意改變家中指令" },
@@ -672,14 +672,14 @@
         function generateStrategyBySelect() {
             const senKey = document.getElementById('senSelect').value;
             const sceneKey = document.getElementById('scenarioSelect').value;
-            
+
             if (!senKey || !sceneKey) {
                 showToast("請在上方兩個選單中選擇「SEN 類別」及「行為挑戰」！");
                 return;
             }
 
             const chatArea = document.getElementById('aiChatArea');
-            
+
             // 處理「其他」選項
             let displayQuery = "";
             if (sceneKey === "other") {
@@ -694,7 +694,7 @@
                     <div class="bg-emerald-600 text-white p-3.5 rounded-2xl shadow-sm max-w-[85%] text-[13px] leading-relaxed">${displayQuery}</div>
                     <div class="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0 font-bold text-xs"><i class="fa-solid fa-user"></i></div>
                 </div>`;
-            
+
             // 輸出 Loading 動畫
             const loadingId = "ai-loading-" + Date.now();
             chatArea.innerHTML += `
@@ -709,7 +709,7 @@
             // 處理邏輯
             setTimeout(() => {
                 document.getElementById(loadingId).remove();
-                
+
                 let responseData = null;
 
                 if (sceneKey === "other") {
@@ -727,7 +727,7 @@
                     // Normal Matrix Matching
                     const senInfo = senProfiles[senKey];
                     const sceneInfo = scenarios[sceneKey];
-                    
+
                     let tiers = {};
                     if (explicitMatrix[sceneKey] && explicitMatrix[sceneKey][senKey]) {
                         tiers = explicitMatrix[sceneKey][senKey];
@@ -755,7 +755,7 @@
                             </h4>
                             <p>${responseData.analysis}</p>
                         </div>
-                        
+
                         <div class="mb-4 bg-rose-50 p-3 rounded-xl border border-rose-100">
                             <h4 class="flex items-center gap-1.5 text-rose-800 !border-b-0 !mb-1 !mt-0">
                                 <i class="fa-solid fa-truck-medical"></i> 危機即時介入 (首 30 秒)

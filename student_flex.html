@@ -9,7 +9,7 @@
     <!-- 引入 FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- 引入字體 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&amp;family=Poppins:wght@600;800&amp;display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Noto Sans HK', sans-serif;
@@ -38,7 +38,7 @@
         .flip-card-back {
             transform: rotateY(180deg);
         }
-        
+
         /* 遊戲與回饋動畫 */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -82,7 +82,11 @@
             background-color: #ecfdf5 !important;
         }
     </style>
-</head>
+
+        <style id="audit-inline-style-replacements">
+            .audit-student-flex-style-1{width: 0%}
+        </style>
+    </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
 
     <!-- 頂部導航 -->
@@ -119,7 +123,7 @@
     </header>
 
     <main class="w-full max-w-5xl mx-auto px-6 pb-20 flex-grow relative z-10">
-        
+
         <!-- 知識點 1：橡皮筋與鉛筆理論 -->
         <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-emerald-100 mb-10 relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
@@ -150,14 +154,14 @@
                 <i class="fa-solid fa-snowflake"></i> 核心裝備：大腦降溫冷卻器
             </h2>
             <p class="text-slate-400 font-medium mb-8">當計畫被打亂，大腦過熱快要「當機發脾氣」時，第一步永遠是先降溫！</p>
-            
+
             <div class="relative w-48 h-48 mx-auto flex items-center justify-center mb-8">
                 <div id="breathe-circle" class="absolute inset-0 bg-sky-400 rounded-full opacity-60"></div>
-                <button onclick="toggleBreathing()" id="breathe-btn" class="relative z-10 w-32 h-32 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full shadow-[0_0_20px_rgba(56,189,248,0.5)] border-4 border-white/20 font-black text-xl flex flex-col items-center justify-center hover:scale-105 transition-transform active:scale-95 text-white">
+                <button type="button" onclick="toggleBreathing()" id="breathe-btn" class="relative z-10 w-32 h-32 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full shadow-[0_0_20px_rgba(56,189,248,0.5)] border-4 border-white/20 font-black text-xl flex flex-col items-center justify-center hover:scale-105 transition-transform active:scale-95 text-white">
                     <span id="breathe-text">點擊<br>降溫</span>
                 </button>
             </div>
-            
+
             <div class="bg-slate-900 rounded-xl p-4 inline-block border border-slate-600">
                 <p id="breathe-instruction" class="text-sky-300 font-bold text-lg tracking-widest">系統待命中...</p>
             </div>
@@ -226,10 +230,10 @@
                 <i class="fa-solid fa-gears"></i> 戰術擴充 1：多重戰術推演 (Plan B, C, D 腦力激盪)
             </h2>
             <p class="text-slate-600 font-medium mb-6">優秀特工絕不只有一個備案！點擊將合適的行動，分配給 Plan B、C 和 D 吧！</p>
-            
+
             <div class="bg-indigo-50 p-6 rounded-2xl border-2 border-indigo-200 relative">
                 <div class="absolute top-4 right-4 text-xs font-bold text-indigo-400" id="bs-counter">情境 1 / 4</div>
-                
+
                 <div class="text-center mb-6 mt-2">
                     <span class="bg-indigo-600 text-white font-bold text-xs px-3 py-1.5 rounded-full uppercase tracking-wider">Plan A 失敗情境</span>
                     <h3 id="bs-scenario" class="text-xl md:text-2xl font-black text-slate-800 mt-3">「放假原本約好要去打籃球，但突然下大雨！」</h3>
@@ -257,9 +261,9 @@
                 </div>
 
                 <div class="text-center mt-6 flex flex-col items-center">
-                    <button id="bs-verify-btn" onclick="verifyBrainstorm()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-black px-8 py-3 rounded-full text-sm shadow-md transition-all">驗證戰術</button>
+                    <button type="button" id="bs-verify-btn" onclick="verifyBrainstorm()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-black px-8 py-3 rounded-full text-sm shadow-md transition-all">驗證戰術</button>
                     <p id="bs-msg" class="text-sm font-bold mt-3 hidden"></p>
-                    <button id="bs-next-btn" onclick="nextBrainstorm()" class="hidden mt-4 border-2 border-indigo-600 text-indigo-700 font-bold px-6 py-2 rounded-full hover:bg-indigo-100 transition-colors">下一個情境 <i class="fa-solid fa-arrow-right"></i></button>
+                    <button type="button" id="bs-next-btn" onclick="nextBrainstorm()" class="hidden mt-4 border-2 border-indigo-600 text-indigo-700 font-bold px-6 py-2 rounded-full hover:bg-indigo-100 transition-colors">下一個情境 <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
         </div>
@@ -271,7 +275,7 @@
                 <i class="fa-solid fa-helicopter"></i> 戰術擴充 2：視角切換無人機 (人際讀心模擬)
             </h2>
             <p class="text-slate-600 font-medium mb-6">發生摩擦時，直覺大腦容易生氣，啟動無人機升空，掃描對方隱藏的苦衷！</p>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
                 <!-- 無人機面板 -->
                 <div class="bg-slate-900 rounded-2xl p-6 text-white flex flex-col justify-between h-[340px] relative border-4 border-slate-800 shadow-xl">
@@ -280,7 +284,7 @@
                         <div class="absolute inset-0 bg-cyan-900/10"></div>
                         <div class="absolute right-0 bottom-0 w-6 h-6 bg-gradient-to-br from-cyan-400/50 to-transparent radar-line"></div>
                     </div>
-                    
+
                     <div class="pr-12">
                         <span class="bg-cyan-600 text-white text-xs font-bold px-2 py-1 rounded">直覺視角</span>
                         <h4 class="text-base md:text-lg font-bold mt-3 text-cyan-50" id="drone-scenario-title">情境載入中...</h4>
@@ -291,7 +295,7 @@
                         <p class="text-xs text-cyan-200 font-bold">等待無人機鎖定掃描目標...</p>
                     </div>
 
-                    <button onclick="launchDrone()" id="drone-action-btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-black py-3 rounded-full text-sm shadow-md transition-all active:scale-95">
+                    <button type="button" onclick="launchDrone()" id="drone-action-btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-black py-3 rounded-full text-sm shadow-md transition-all active:scale-95">
                         <i class="fa-solid fa-tower-broadcast"></i> 升空掃描對方的隱藏訊息
                     </button>
                 </div>
@@ -303,7 +307,7 @@
                         <!-- JS 注入 -->
                     </div>
                     <p id="drone-feedback-msg" class="text-sm font-bold text-center mt-2 hidden"></p>
-                    <button id="drone-next-btn" onclick="nextDrone()" class="hidden mt-2 border-2 border-cyan-500 text-cyan-700 font-bold px-6 py-2 rounded-full hover:bg-cyan-100 transition-colors self-center">下一個目標 <i class="fa-solid fa-arrow-right"></i></button>
+                    <button type="button" id="drone-next-btn" onclick="nextDrone()" class="hidden mt-2 border-2 border-cyan-500 text-cyan-700 font-bold px-6 py-2 rounded-full hover:bg-cyan-100 transition-colors self-center">下一個目標 <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
         </div>
@@ -315,27 +319,27 @@
                 <i class="fa-solid fa-shield-halved"></i> 戰術擴充 3：邊界防禦盾 (衝突冷處理)
             </h2>
             <p class="text-slate-600 font-medium mb-6">遇到惡意挑釁時不一定要硬碰硬，選擇合適的護盾化解攻擊！</p>
-            
+
             <div class="bg-rose-50 p-6 rounded-2xl border-2 border-rose-200 relative">
                 <div class="absolute top-4 right-4 text-rose-500 font-bold text-xs" id="shield-counter">攻擊 1 / 4</div>
-                
+
                 <div class="text-center mb-6 mt-2">
                     <span class="bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase">遭遇惡意言語攻擊</span>
                     <h3 id="shield-scenario" class="text-xl md:text-xl font-black text-rose-900 mt-4 h-16">載入中...</h3>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <button onclick="activateShield('greyrock')" class="bg-white hover:bg-rose-100 border border-rose-200 p-4 rounded-xl text-left transition-all active:scale-95">
-                        <div class="text-2xl mb-1 text-slate-400"><i class="fa-solid fa-circle"></i> 灰石冷處理盾</div>
-                        <p class="text-xs text-slate-500">不給予任何情緒反饋</p>
+                    <button type="button" onclick="activateShield('greyrock')" class="bg-white hover:bg-rose-100 border border-rose-200 p-4 rounded-xl text-left transition-all active:scale-95">
+                        <span class="text-2xl mb-1 text-slate-400"><i class="fa-solid fa-circle"></i> 灰石冷處理盾</span>
+                        <span class="text-xs text-slate-500">不給予任何情緒反饋</span>
                     </button>
-                    <button onclick="activateShield('humor')" class="bg-white hover:bg-rose-100 border border-rose-200 p-4 rounded-xl text-left transition-all active:scale-95">
-                        <div class="text-2xl mb-1 text-yellow-500"><i class="fa-solid fa-face-laugh-beam"></i> 幽默自嘲盾</div>
-                        <p class="text-xs text-slate-500">將惡意折射成幽默玩笑</p>
+                    <button type="button" onclick="activateShield('humor')" class="bg-white hover:bg-rose-100 border border-rose-200 p-4 rounded-xl text-left transition-all active:scale-95">
+                        <span class="text-2xl mb-1 text-yellow-500"><i class="fa-solid fa-face-laugh-beam"></i> 幽默自嘲盾</span>
+                        <span class="text-xs text-slate-500">將惡意折射成幽默玩笑</span>
                     </button>
-                    <button onclick="activateShield('fire')" class="bg-white hover:bg-rose-100 border border-rose-200 p-4 rounded-xl text-left transition-all active:scale-95">
-                        <div class="text-2xl mb-1 text-rose-500"><i class="fa-solid fa-fire"></i> 憤怒火焰 (硬接)</div>
-                        <p class="text-xs text-slate-500">以牙還牙，直接對罵</p>
+                    <button type="button" onclick="activateShield('fire')" class="bg-white hover:bg-rose-100 border border-rose-200 p-4 rounded-xl text-left transition-all active:scale-95">
+                        <span class="text-2xl mb-1 text-rose-500"><i class="fa-solid fa-fire"></i> 憤怒火焰 (硬接)</span>
+                        <span class="text-xs text-slate-500">以牙還牙，直接對罵</span>
                     </button>
                 </div>
 
@@ -344,9 +348,9 @@
                     <p id="shield-action-text" class="text-sm font-black mb-2 block"></p>
                     <p id="shield-result-text" class="text-sm font-medium"></p>
                 </div>
-                
+
                 <div class="text-center mt-4">
-                    <button id="shield-next-btn" onclick="nextShield()" class="hidden border-2 border-rose-500 text-rose-700 font-bold px-6 py-2 rounded-full hover:bg-rose-100 transition-colors">應對下一波攻擊 <i class="fa-solid fa-arrow-right"></i></button>
+                    <button type="button" id="shield-next-btn" onclick="nextShield()" class="hidden border-2 border-rose-500 text-rose-700 font-bold px-6 py-2 rounded-full hover:bg-rose-100 transition-colors">應對下一波攻擊 <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
         </div>
@@ -358,13 +362,13 @@
                 <i class="fa-solid fa-mask"></i> 戰術擴充 4：隱形潛入戰術 (融入群體 SOP)
             </h2>
             <p class="text-slate-600 font-medium mb-6">別人已經在玩了，怎樣加入才不會被討厭？選擇場景，觀看標準潛入三步驟！</p>
-            
+
             <!-- 場景選擇 -->
             <div class="flex flex-wrap gap-2 mb-6 justify-center">
-                <button onclick="changeSopScenario(0)" id="sop-tab-0" class="sop-tab bg-emerald-600 text-white font-bold px-4 py-2 rounded-lg text-sm transition-all shadow-sm">🎮 同學打緊機</button>
-                <button onclick="changeSopScenario(1)" id="sop-tab-1" class="sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm">📺 圍埋傾動畫</button>
-                <button onclick="changeSopScenario(2)" id="sop-tab-2" class="sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm">🏀 操場踢緊波</button>
-                <button onclick="changeSopScenario(3)" id="sop-tab-3" class="sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm">🃏 玩緊桌遊</button>
+                <button type="button" onclick="changeSopScenario(0)" id="sop-tab-0" class="sop-tab bg-emerald-600 text-white font-bold px-4 py-2 rounded-lg text-sm transition-all shadow-sm">🎮 同學打緊機</button>
+                <button type="button" onclick="changeSopScenario(1)" id="sop-tab-1" class="sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm">📺 圍埋傾動畫</button>
+                <button type="button" onclick="changeSopScenario(2)" id="sop-tab-2" class="sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm">🏀 操場踢緊波</button>
+                <button type="button" onclick="changeSopScenario(3)" id="sop-tab-3" class="sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm">🃏 玩緊桌遊</button>
             </div>
 
             <div class="bg-emerald-50/50 p-6 rounded-2xl border-2 border-emerald-200 max-w-2xl mx-auto">
@@ -386,7 +390,7 @@
                     <div class="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm flex gap-4">
                         <div class="text-2xl text-emerald-400"><i class="fa-solid fa-thumbs-up"></i></div>
                         <div>
-                            <h4 class="font-bold text-emerald-800 text-sm">步驟 2：刷存在感與讚美 (Mirror & Praise)</h4>
+                            <h4 class="font-bold text-emerald-800 text-sm">步驟 2：刷存在感與讚美 (Mirror &amp; Praise)</h4>
                             <p id="sop-text-2" class="text-sm text-slate-600 mt-1">「哇，你連呢隻王都打得贏，好勁喎！」</p>
                         </div>
                     </div>
@@ -408,7 +412,7 @@
                 <i class="fa-solid fa-flag"></i> 戰術擴充 5：戰略性撤退 (接納與放下)
             </h2>
             <p class="text-slate-600 font-medium mb-6">有些失去無法變成「新玩法」。這時不需要假裝開心，點擊翻開以下卡片，學習「極限接納」。</p>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- 卡片 1 -->
                 <div class="flip-card cursor-pointer h-64" onclick="this.classList.toggle('flipped')">
@@ -477,15 +481,15 @@
         <h2 class="text-2xl font-bold mb-6 text-slate-800 text-center">
             🎮 實戰應變模擬器 (終極挑戰)
         </h2>
-        
+
         <div id="game-container" class="bg-slate-800 rounded-[2rem] p-6 md:p-10 shadow-xl mb-12 relative overflow-hidden border-4 border-slate-700">
             <div class="w-full bg-slate-700 rounded-full h-2 mb-6">
-                <div id="game-progress" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                <div id="game-progress" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-2 rounded-full transition-all duration-500 audit-student-flex-style-1"></div>
             </div>
 
             <div id="game-screen" class="bg-white rounded-xl p-6 md:p-8 shadow-inner relative">
                 <div class="absolute top-4 right-4 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full" id="game-counter">第 1 / 8 局</div>
-                
+
                 <div class="text-center mb-8 mt-4">
                     <div id="game-icon" class="text-5xl mb-4 text-emerald-500">⚠️</div>
                     <p id="game-question" class="text-lg md:text-xl font-bold text-slate-700">
@@ -500,9 +504,9 @@
                     <div class="flex items-start gap-3">
                         <div id="feedback-icon" class="text-2xl mt-1"></div>
                         <div>
-                            <h4 id="feedback-title" class="font-bold text-lg mb-1"></h4>
+                            <h4 id="feedback-title" class="font-bold text-lg mb-1">載入中…</h4>
                             <p id="feedback-text" class="text-sm text-slate-600 mb-3"></p>
-                            <button id="next-btn" onclick="nextQuestion()" class="hidden bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-700 transition-colors">
+                            <button type="button" id="next-btn" onclick="nextQuestion()" class="hidden bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-700 transition-colors">
                                 下一局 <i class="fa-solid fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -517,7 +521,7 @@
             <div class="text-5xl mb-4 text-emerald-500"><i class="fa-solid fa-infinity"></i></div>
             <h3 class="text-2xl font-black mb-2 text-slate-800">變形金剛訓練完成！</h3>
             <p class="text-slate-500 mb-6">你已經獲得了「橡皮筋大腦」，以後遇到突發狀況與人際風暴都不怕卡關了！</p>
-            <button onclick="completeMission()" id="claimBtn" class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 mx-auto">
+            <button type="button" onclick="completeMission()" id="claimBtn" class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 mx-auto">
                 <i class="fa-solid fa-check-circle"></i> 領取 350 EXP 並返回大廳
             </button>
             <p id="successMsg" class="text-emerald-600 font-bold mt-4 hidden">
@@ -605,7 +609,7 @@
                 hints: "提示：特工出任務前通常有雲端備份，這是最好的B計畫。"
             }
         ];
-        
+
         let bsIndex = 0;
         let selectedSlotId = null;
         let brainstormPlacements = { B: null, C: null, D: null };
@@ -617,7 +621,7 @@
             document.getElementById('label-B').innerText = data.labels.B;
             document.getElementById('label-C').innerText = data.labels.C;
             document.getElementById('label-D').innerText = data.labels.D;
-            
+
             brainstormPlacements = { B: null, C: null, D: null };
             ['B', 'C', 'D'].forEach(s => {
                 document.getElementById(`slot-${s}-content`).innerText = "👆 點擊槽位，再選卡片";
@@ -659,10 +663,10 @@
             // Put in slot
             document.getElementById(`slot-${selectedSlotId}-content`).innerText = cardText;
             brainstormPlacements[selectedSlotId] = targetVal; // we store the card's target to check if it matches the slot
-            
+
             // Mark card as used
             document.getElementById(`card-${cardId}`).className = 'bg-slate-100 border border-slate-200 rounded-lg px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed shadow-none';
-            
+
             document.getElementById(`slot-${selectedSlotId}`).classList.remove('slot-active');
             selectedSlotId = null;
         }
@@ -676,7 +680,7 @@
                 msg.classList.add('text-emerald-600');
                 msg.innerText = "🎉 完美戰術組合！你已經為這個危機準備了三套不同的備案！";
                 document.getElementById('bs-verify-btn').classList.add('hidden');
-                
+
                 if (bsIndex < bsData.length - 1) {
                     document.getElementById('bs-next-btn').classList.remove('hidden');
                 } else {
@@ -686,7 +690,7 @@
                 msg.classList.add('text-rose-500');
                 msg.innerText = `⚠️ 戰術推演有誤。${data.hints} 請重新配對。`;
                 // Reset this round
-                loadBrainstorm(); 
+                loadBrainstorm();
                 document.getElementById('bs-msg').classList.remove('hidden'); // Keep error visible
             }
         }
@@ -731,7 +735,7 @@
                 fail: "❌ 防線崩潰：以暴易暴只會讓你變成加害者。特工應該保持冷靜，看清全局。"
             }
         ];
-        
+
         let droneIndex = 0;
         let droneScanned = false;
 
@@ -739,23 +743,23 @@
             const data = droneData[droneIndex];
             document.getElementById('drone-counter').innerText = `情境 ${droneIndex + 1} / ${droneData.length}`;
             document.getElementById('drone-scenario-title').innerText = `情境：${data.scenario}`;
-            
+
             // 重置面板
             const btn = document.getElementById('drone-action-btn');
             btn.innerHTML = "<i class='fa-solid fa-tower-broadcast'></i> 升空掃描對方的隱藏訊息";
             btn.disabled = false;
-            
+
             const display = document.getElementById('drone-scan-display');
             display.className = "bg-slate-800/80 p-4 rounded-xl border border-cyan-500/20 text-center my-4 h-[100px] flex flex-col justify-center";
             display.innerHTML = `
                 <i class="fa-solid fa-satellite text-cyan-400 text-2xl animate-bounce mb-2"></i>
                 <p class="text-xs text-cyan-200 font-bold">等待無人機鎖定掃描目標...</p>
             `;
-            
+
             // 載入選項
             const optsContainer = document.getElementById('drone-options');
             optsContainer.innerHTML = '';
-            
+
             [data.optA, data.optB].forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'drone-opt-btn bg-white border border-cyan-200 rounded-xl p-4 text-left font-bold text-slate-700 hover:border-cyan-500 shadow-sm transition-all opacity-50 cursor-not-allowed';
@@ -764,7 +768,7 @@
                 btn.onclick = () => checkDroneResponse(opt.correct, btn);
                 optsContainer.appendChild(btn);
             });
-            
+
             document.getElementById('drone-feedback-msg').classList.add('hidden');
             document.getElementById('drone-next-btn').classList.add('hidden');
             droneScanned = false;
@@ -775,10 +779,10 @@
             const btn = document.getElementById('drone-action-btn');
             const display = document.getElementById('drone-scan-display');
             const data = droneData[droneIndex];
-            
+
             btn.disabled = true;
             btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> 掃描中...";
-            
+
             setTimeout(() => {
                 display.className = "bg-slate-800/80 p-4 rounded-xl border-2 border-cyan-400 text-left animate-pop h-[100px] overflow-y-auto";
                 display.innerHTML = `
@@ -786,7 +790,7 @@
                     <p class="text-xs text-white leading-relaxed">${data.secret}</p>
                 `;
                 btn.innerHTML = "<i class='fa-solid fa-check'></i> 鎖定目標心理狀態";
-                
+
                 document.querySelectorAll('.drone-opt-btn').forEach(b => {
                     b.disabled = false;
                     b.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -800,7 +804,7 @@
             const msg = document.getElementById('drone-feedback-msg');
             const data = droneData[droneIndex];
             const nextBtn = document.getElementById('drone-next-btn');
-            
+
             document.querySelectorAll('.drone-opt-btn').forEach(b => b.disabled = true);
             msg.classList.remove('hidden', 'text-emerald-600', 'text-rose-500');
 
@@ -809,7 +813,7 @@
                 selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800');
                 msg.classList.add('text-emerald-600');
                 msg.innerHTML = data.success;
-                
+
                 nextBtn.classList.remove('hidden');
                 if (droneIndex === droneData.length - 1) {
                     nextBtn.innerText = "完成讀心訓練";
@@ -819,7 +823,7 @@
                 selectedBtn.classList.add('bg-rose-50', 'text-rose-800', 'animate-shake');
                 msg.classList.add('text-rose-500');
                 msg.innerHTML = data.fail;
-                
+
                 setTimeout(() => {
                     selectedBtn.classList.remove('animate-shake');
                     document.querySelectorAll('.drone-opt-btn').forEach(b => b.disabled = false);
@@ -882,9 +886,9 @@
             const actionTextEl = document.getElementById('shield-action-text');
             const resultTextEl = document.getElementById('shield-result-text');
             const nextBtn = document.getElementById('shield-next-btn');
-            
+
             display.classList.remove('hidden', 'bg-slate-100', 'border-slate-300', 'text-slate-700', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-800', 'bg-rose-50', 'border-rose-200', 'text-rose-800');
-            
+
             let actionText, resultText;
 
             if (type === 'greyrock') {
@@ -902,7 +906,7 @@
                 display.classList.add('animate-shake');
                 setTimeout(() => display.classList.remove('animate-shake'), 400);
             }
-            
+
             actionTextEl.innerText = `📢 你的行動：${actionText}`;
             resultTextEl.innerText = resultText;
 
@@ -956,7 +960,7 @@
                     tab.className = "sop-tab bg-white text-emerald-700 border border-emerald-300 font-bold px-4 py-2 rounded-lg text-sm hover:bg-emerald-50 transition-all shadow-sm";
                 }
             });
-            
+
             // 加上動畫效果更新文字
             for(let i=1; i<=3; i++) {
                 const textEl = document.getElementById(`sop-text-${i}`);
@@ -1079,13 +1083,13 @@
             document.getElementById('game-counter').innerText = `第 ${index + 1} / ${finalQuizData.length} 局`;
             document.getElementById('game-icon').innerText = data.icon;
             document.getElementById('game-question').innerText = data.question;
-            
+
             const progress = (index / finalQuizData.length) * 100;
             document.getElementById('game-progress').style.width = `${progress}%`;
 
             const optionsContainer = document.getElementById('game-options');
             optionsContainer.innerHTML = '';
-            
+
             data.options.forEach((opt, i) => {
                 const btn = document.createElement('button');
                 btn.className = 'game-option w-full text-left p-4 rounded-xl border-2 border-slate-100 hover:border-emerald-400 hover:bg-emerald-50 transition-all font-medium text-slate-700 bg-white text-sm md:text-base';
@@ -1107,7 +1111,7 @@
             const nextBtn = document.getElementById('next-btn');
 
             feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
-            
+
             const allBtns = document.querySelectorAll('.game-option');
             allBtns.forEach(b => b.disabled = true);
 
@@ -1115,13 +1119,13 @@
                 selectedBtn.classList.replace('border-slate-100', 'border-emerald-500');
                 selectedBtn.classList.replace('hover:border-emerald-400', 'border-emerald-500');
                 selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'font-bold');
-                
+
                 feedbackBox.classList.add('bg-emerald-50', 'border-emerald-200');
                 title.className = "font-bold text-lg mb-1 text-emerald-800";
                 icon.innerHTML = '<i class="fa-solid fa-infinity text-emerald-500"></i>';
                 title.innerText = data.successTitle;
                 text.innerText = data.successText;
-                
+
                 nextBtn.classList.remove('hidden');
                 if(currentFinalQuestionIndex === finalQuizData.length - 1) {
                     nextBtn.innerText = "完成應變訓練！";
@@ -1130,7 +1134,7 @@
                 }
             } else {
                 selectedBtn.classList.add('animate-shake', 'bg-rose-50', 'border-rose-300', 'text-rose-700');
-                
+
                 feedbackBox.classList.add('bg-rose-50', 'border-rose-200');
                 title.className = "font-bold text-lg mb-1 text-rose-800";
                 icon.innerHTML = '<i class="fa-solid fa-pencil text-rose-500"></i>';
@@ -1158,20 +1162,20 @@
         function completeMission() {
             const btn = document.getElementById('claimBtn');
             const msg = document.getElementById('successMsg');
-            
+
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在上傳彈性數據...';
             btn.classList.add('opacity-75', 'cursor-not-allowed');
-            
+
             // 統一讀取 agent_exp 本地儲存累加 350 EXP
             let currentExp = parseInt(localStorage.getItem('agent_exp') || '0');
             currentExp += 350;
             localStorage.setItem('agent_exp', currentExp.toString());
             localStorage.setItem('mission_flex_completed', 'true');
-            
+
             setTimeout(() => {
                 btn.classList.add('hidden');
                 msg.classList.remove('hidden');
-                
+
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 2000);
@@ -1185,7 +1189,7 @@
             loadShieldScenario();
             changeSopScenario(0);
             initFinalGame();
-            
+
             // 更新頁面上的總 EXP 顯示
             const totalExp = localStorage.getItem('agent_exp') || '0';
             const expEl = document.getElementById('current-total-exp');

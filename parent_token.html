@@ -98,7 +98,7 @@
 
     <!-- 主要內容區 -->
     <main class="flex-grow max-w-6xl mx-auto px-4 py-8 w-full space-y-8">
-        
+
         <!-- 標題橫幅 -->
         <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
             <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
@@ -153,7 +153,7 @@
 
         <!-- 雙欄排版：左邊為家長控制端，右邊為學生代幣盤展示端 -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
-            
+
             <!-- 家長控制台 (12格中佔5格) -->
             <div class="lg:col-span-5 bg-white rounded-3xl p-6 shadow-xl border border-emerald-100 space-y-5 flex flex-col justify-between">
                 <div class="space-y-4">
@@ -168,8 +168,8 @@
                     <div class="bg-slate-50 p-4 rounded-2xl space-y-3 border border-slate-100">
                         <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider"><i class="fa-solid fa-gauge-high mr-1"></i> 代幣容量自訂設置 (Token Capacity)</label>
                         <div class="flex flex-wrap gap-2 items-center">
-                            <button onclick="setStarCap(5)" id="cap-5-btn" class="flex-1 min-w-[70px] bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs transition border border-emerald-500">5 星盤</button>
-                            <button onclick="setStarCap(10)" id="cap-10-btn" class="flex-1 min-w-[70px] bg-white hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-xs transition border border-slate-200">10 星盤</button>
+                            <button type="button" onclick="setStarCap(5)" id="cap-5-btn" class="flex-1 min-w-[70px] bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs transition border border-emerald-500">5 星盤</button>
+                            <button type="button" onclick="setStarCap(10)" id="cap-10-btn" class="flex-1 min-w-[70px] bg-white hover:bg-slate-100 text-slate-600 font-bold py-2 rounded-xl text-xs transition border border-slate-200">10 星盤</button>
                             <div class="flex items-center gap-1.5 flex-1 min-w-[120px] bg-white border border-slate-200 rounded-xl px-2 py-1">
                                 <span class="text-[10px] text-slate-400 font-bold whitespace-nowrap">自訂:</span>
                                 <input type="number" id="custom-cap-input" min="3" max="20" value="5" onchange="handleCustomCapChange(this.value)" class="w-full text-center font-bold text-xs text-slate-700 focus:outline-none bg-transparent">
@@ -200,7 +200,7 @@
                                     <option value="life">🧼 生活自理/常規</option>
                                 </select>
                             </div>
-                            <button onclick="createNewTask()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl transition shadow-sm text-xs">
+                            <button type="button" onclick="createNewTask()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl transition shadow-sm text-xs">
                                 ➕ 新增至快速增強清單
                             </button>
                         </div>
@@ -220,10 +220,10 @@
 
                 <!-- 家長自訂星數加減 -->
                 <div class="pt-3 border-t border-slate-100 flex gap-2">
-                    <button onclick="adjustStars(-1)" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold py-3 rounded-xl flex-1 text-xs transition border border-rose-100 flex items-center justify-center gap-1.5">
+                    <button type="button" onclick="adjustStars(-1)" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold py-3 rounded-xl flex-1 text-xs transition border border-rose-100 flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-minus-circle"></i> 減少一粒星 (極少用)
                     </button>
-                    <button onclick="adjustStars(1)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl flex-1 text-xs transition shadow-md shadow-emerald-100 flex items-center justify-center gap-1.5">
+                    <button type="button" onclick="adjustStars(1)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl flex-1 text-xs transition shadow-md shadow-emerald-100 flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-plus-circle"></i> 獎勵一粒星 ⭐
                     </button>
                 </div>
@@ -245,7 +245,7 @@
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">當前大目標 (Target Reinforcer)</span>
                             <h5 id="target-reward-title" class="font-black text-slate-800 text-sm sm:text-base">🎁 兌換目標：去公園踩單車 30 分鐘</h5>
                         </div>
-                        <button onclick="openTargetModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-3.5 rounded-xl text-xs transition shrink-0">
+                        <button type="button" onclick="openTargetModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-3.5 rounded-xl text-xs transition shrink-0">
                             設定大目標
                         </button>
                     </div>
@@ -264,7 +264,7 @@
 
                 <!-- 兌換最終增強物按鈕 -->
                 <div class="pt-4 border-t border-slate-100">
-                    <button id="exchange-btn" disabled onclick="exchangeReward()" class="w-full h-14 bg-slate-100 text-slate-400 font-black rounded-2xl text-sm transition flex items-center justify-center gap-2 cursor-not-allowed">
+                    <button type="button" id="exchange-btn" disabled onclick="exchangeReward()" class="w-full h-14 bg-slate-100 text-slate-400 font-black rounded-2xl text-sm transition flex items-center justify-center gap-2 cursor-not-allowed">
                         <i class="fa-solid fa-gift"></i> <span id="exchange-btn-text">未集滿代幣（需集滿 5 顆星）</span>
                     </button>
                 </div>
@@ -293,10 +293,10 @@
                 <div class="flex items-start gap-3.5">
                     <div id="feedback-icon" class="text-2xl mt-0.5 shrink-0"></div>
                     <div class="space-y-2">
-                        <h4 id="feedback-title" class="font-black text-sm sm:text-base"></h4>
+                        <h4 id="feedback-title" class="font-black text-sm sm:text-base">載入中…</h4>
                         <p id="feedback-desc" class="text-xs sm:text-sm leading-relaxed"></p>
                         <!-- 下一題按鈕 -->
-                        <button id="next-question-btn" onclick="loadNextQuestion()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition">下一題</button>
+                        <button type="button" id="next-question-btn" onclick="loadNextQuestion()" class="mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition">下一題</button>
                     </div>
                 </div>
             </div>
@@ -308,7 +308,7 @@
                 <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
                     <i class="fa-solid fa-clock-rotate-left text-emerald-600"></i> 行為事件實時紀錄 (Behavior Logs)
                 </h3>
-                <button onclick="clearLogs()" class="text-xs font-bold text-slate-400 hover:text-rose-600 transition">清除紀錄</button>
+                <button type="button" onclick="clearLogs()" class="text-xs font-bold text-slate-400 hover:text-rose-600 transition">清除紀錄</button>
             </div>
             <div id="log-container" class="space-y-2.5 max-h-48 overflow-y-auto text-xs text-slate-500 leading-relaxed">
                 <!-- 動態注入的行為日誌 -->
@@ -330,10 +330,10 @@
                     <input type="text" id="target-input" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none h-11" placeholder="例如: 睇電視 15 分鐘 / 食哈根達斯雪糕">
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="closeTargetModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl text-xs transition">
+                    <button type="button" onclick="closeTargetModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl text-xs transition">
                         取消
                     </button>
-                    <button onclick="saveTargetReward()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-xs transition">
+                    <button type="button" onclick="saveTargetReward()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-xs transition">
                         儲存設置
                     </button>
                 </div>
@@ -378,11 +378,11 @@
             if (!audioCtx) return;
 
             const now = audioCtx.currentTime;
-            
+
             for (let i = 0; i < times; i++) {
                 const offset = i * 0.12;
                 playNote(523.25 + (i * 100), now + offset, 0.15); // 音高隨顆數微微上昇
-                playNote(659.25 + (i * 100), now + offset + 0.05, 0.2); 
+                playNote(659.25 + (i * 100), now + offset + 0.05, 0.2);
             }
         }
 
@@ -408,8 +408,8 @@
             const gain = audioCtx.createGain();
 
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(220, now); 
-            osc.frequency.exponentialRampToValueAtTime(110, now + 0.3); 
+            osc.frequency.setValueAtTime(220, now);
+            osc.frequency.exponentialRampToValueAtTime(110, now + 0.3);
 
             gain.gain.setValueAtTime(0.12, now);
             gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
@@ -456,9 +456,9 @@
                 const cell = document.createElement('div');
                 // 根據總星星數，動態微調圓球寬度，確保 3~20 顆星都能完美在一兩行內收納
                 const sizeClass = tokenState.starCap > 12 ? "w-10 h-10 text-xl rounded-xl" : "w-14 h-14 text-3xl rounded-2xl";
-                
+
                 cell.className = `${sizeClass} border-2 flex items-center justify-center transition-all duration-300 relative shadow-sm shrink-0`;
-                
+
                 if (i <= tokenState.currentStars) {
                     cell.className += " bg-amber-500 border-amber-400 text-white star-pop shadow-md shadow-amber-100";
                     cell.innerHTML = '<i class="fa-solid fa-star"></i>';
@@ -486,7 +486,7 @@
             let num = parseInt(val);
             if (isNaN(num) || num < 3) num = 3;
             if (num > 20) num = 20;
-            
+
             document.getElementById('custom-cap-input').value = num;
             setStarCap(num);
         }
@@ -495,7 +495,7 @@
         function setStarCap(cap) {
             tokenState.starCap = cap;
             tokenState.currentStars = 0; // 重設避免越界混亂
-            
+
             const btn5 = document.getElementById('cap-5-btn');
             const btn10 = document.getElementById('cap-10-btn');
 
@@ -555,7 +555,7 @@
             tokenState.tasks.forEach(task => {
                 const btn = document.createElement('div');
                 btn.className = "group w-full flex items-center justify-between bg-slate-50 hover:bg-emerald-50/40 p-2.5 rounded-xl border border-slate-100 hover:border-emerald-200 transition text-xs";
-                
+
                 // 動態判斷 Icon 與類別色
                 let badgeClass = 'bg-slate-200 text-slate-700';
                 let icon = '🎯';
@@ -663,20 +663,20 @@
             for (let i = 0; i < particleCount; i++) {
                 const conf = document.createElement('div');
                 conf.className = 'confetti';
-                
+
                 const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6', '#eab308'];
                 conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                
+
                 const startX = container.offsetWidth / 2;
                 const startY = container.offsetHeight - 50;
-                
+
                 conf.style.left = startX + 'px';
                 conf.style.top = startY + 'px';
                 conf.style.opacity = '1';
-                
+
                 container.appendChild(conf);
 
-                const angle = Math.random() * Math.PI - Math.PI; 
+                const angle = Math.random() * Math.PI - Math.PI;
                 const velocity = 5 + Math.random() * 8;
                 const gravity = 0.22;
 
@@ -688,7 +688,7 @@
 
                 let animFrame = null;
                 function updateParticle() {
-                    vy += gravity; 
+                    vy += gravity;
                     curX += vx;
                     curY += vy;
                     currentOpacity -= 0.018;
@@ -738,7 +738,7 @@
         // ================= 行為日誌 =================
         function addLog(category, message) {
             const container = document.getElementById('log-container');
-            
+
             if (container.querySelector('italic')) {
                 container.innerHTML = '';
             }
@@ -777,7 +777,7 @@
             if (defaultText) defaultText.remove();
 
             container.insertBefore(log, container.firstChild);
-            
+
             setTimeout(() => {
                 log.classList.remove('animate-pulse');
             }, 500);
@@ -907,7 +907,7 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
-            
+
             let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
             let borderClass = 'border-emerald-100 shadow-emerald-50/50';
             if (type === 'error') {
@@ -917,16 +917,16 @@
                 icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
                 borderClass = 'border-blue-100 shadow-blue-50/50';
             }
-            
+
             toast.className += ` ${borderClass}`;
             toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
-            
+
             container.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
             }, 10);
-            
+
             setTimeout(() => {
                 toast.classList.add('translate-y-2', 'opacity-0');
                 setTimeout(() => {
@@ -939,7 +939,7 @@
         function syncA11ySettings() {
             const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
             const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
-            
+
             if (cachedContrast === 'true') {
                 document.body.classList.add('a11y-high-contrast');
             }

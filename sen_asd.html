@@ -9,7 +9,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
         body { font-family: 'Noto Sans HK', sans-serif; background-color: #f1f5f9; color: #334155; }
-        
+
         h1, h2, h3, h4, h5, h6, p, .subtitle, .desc-text {
             word-wrap: break-word !important;
             overflow-wrap: break-word !important;
@@ -29,13 +29,13 @@
         .room-card:hover { border-color: #0d9488; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
         .room-card.active { border-color: #0d9488; background-color: #f0fdfa; box-shadow: inset 4px 0 0 #0d9488, 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
 
-        #canvasContainer { 
-            position: relative; 
-            width: 100%; 
-            height: 100%; 
-            overflow-y: auto !important; 
-            overflow-x: hidden; 
-            background-color: #e2e8f0; 
+        #canvasContainer {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto !important;
+            overflow-x: hidden;
+            background-color: #e2e8f0;
         }
 
         #posterScaleWrapper {
@@ -45,12 +45,12 @@
             align-items: flex-start;
             min-height: 100%;
             padding: 20px 0 60px 0;
-            transform: none !important; 
+            transform: none !important;
         }
 
         #posterPrintArea {
             width: 92% !important;
-            max-width: 780px !important;  
+            max-width: 780px !important;
             margin: 20px auto !important;
             min-height: 80vh !important;
             height: auto !important;
@@ -69,7 +69,7 @@
 
         .room-content-wrapper {
             padding: 15px 20px !important;
-            padding-bottom: 60px !important; 
+            padding-bottom: 60px !important;
         }
         .main-card, .sub-card {
             padding: 15px 20px !important;
@@ -79,11 +79,11 @@
 
         .level-nodes-container {
             display: flex !important;
-            justify-content: space-around !important; 
+            justify-content: space-around !important;
             align-items: center !important;
             width: 100% !important;
             padding: 15px 5px !important;
-            gap: 8px !important; 
+            gap: 8px !important;
             box-sizing: border-box !important;
         }
 
@@ -104,8 +104,8 @@
             50% { box-shadow: 0 0 0 10px rgba(20, 184, 166, 0); transform: scale(1.15); }
             100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); transform: scale(1.1); }
         }
-        .node-glow { 
-            animation: nodePulseGlow 1.5s infinite ease-out !important; 
+        .node-glow {
+            animation: nodePulseGlow 1.5s infinite ease-out !important;
             border-color: #0d9488 !important;
             color: #0d9488 !important;
             z-index: 20 !important;
@@ -117,7 +117,7 @@
             50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 60px rgba(45, 212, 191, 0.8); }
             100% { transform: scale(1); opacity: 0.6; box-shadow: 0 0 20px rgba(45, 212, 191, 0.3); }
         }
-        .breathe-pulse { animation: safeHouseBreathe 1.5s infinite ease-in-out; } 
+        .breathe-pulse { animation: safeHouseBreathe 1.5s infinite ease-in-out; }
 
         /* 突發事件閃爍動畫 */
         @keyframes emergencyFlash {
@@ -127,19 +127,19 @@
         .emergency-flash { animation: emergencyFlash 1.5s infinite ease-in-out; }
 
         #posterPrintArea h1, #posterPrintArea .main-title {
-            font-size: 1.25rem !important; 
+            font-size: 1.25rem !important;
             line-height: 1.4 !important;
             margin-bottom: 0.5rem !important;
         }
         #posterPrintArea h2, #posterPrintArea h3, #posterPrintArea .subtitle {
-            font-size: 1rem !important; 
+            font-size: 1rem !important;
             line-height: 1.4 !important;
             margin-bottom: 0.5rem !important;
         }
-        #posterPrintArea p:not(.decoration-only), 
-        #posterPrintArea button:not(.level-node-btn), 
+        #posterPrintArea p:not(.decoration-only),
+        #posterPrintArea button:not(.level-node-btn),
         #posterPrintArea .desc-text {
-            font-size: 0.95rem !important; 
+            font-size: 0.95rem !important;
             line-height: 1.5 !important;
         }
         #posterPrintArea .decoration-only {
@@ -169,11 +169,17 @@
         .sortable-item { cursor: grab; transition: transform 0.2s, background-color 0.2s, border-color 0.2s; }
         .sortable-item:active { cursor: grabbing; }
         .sortable-item.dragging { opacity: 0.4; transform: scale(0.98); }
-        
+
         .blueprint-slot { min-height: 50px; border: 2px dashed #cbd5e1; border-radius: 0.5rem; transition: all 0.3s; }
         .blueprint-slot.drag-over { border-color: #8b5cf6; background-color: #f3e8ff; }
     </style>
-</head>
+
+        <style id="audit-inline-style-replacements">
+            .audit-sen-asd-style-1{width: 0%;}
+            .audit-sen-asd-style-2{width: 100%;}
+            .audit-sen-asd-style-3{transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
+        </style>
+    </head>
 <body class="text-slate-800 min-h-screen flex flex-col pb-12 bg-slate-50/50">
 
     <!-- 🛡️ 安全屋冷卻機制 Overlay -->
@@ -199,7 +205,7 @@
                     計畫有變！請將原本的規則反過來執行。
                 </p>
             </div>
-            <button onclick="window.dismissEmergencyEvent()" class="w-full bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-black py-4 rounded-2xl text-2xl transition shadow-lg transform hover:-translate-y-1">
+            <button type="button" onclick="window.dismissEmergencyEvent()" class="w-full bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-black py-4 rounded-2xl text-2xl transition shadow-lg transform hover:-translate-y-1">
                 收到指示！
             </button>
         </div>
@@ -217,16 +223,16 @@
                 <span class="text-[10px] text-slate-500 font-bold block mt-0.5 uppercase tracking-widest">Adolescent Spectrum Tactical Camp</span>
             </div>
         </div>
-        
+
         <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-4">
-            <button onclick="window.toggleSidebar()" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1.5">
+            <button type="button" onclick="window.toggleSidebar()" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1.5">
                 <i class="fa-solid fa-bars-staggered"></i> <span class="hidden sm:inline">目錄</span>
             </button>
-            
+
             <div class="flex items-center gap-1.5 text-xs font-bold bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200 shadow-inner">
                 <span class="text-amber-500 flex items-center gap-1"><i class="fa-solid fa-star"></i> Lv.<span id="globalLevelTxt">1</span></span>
                 <div class="w-12 sm:w-20 bg-slate-200 h-2.5 rounded-full overflow-hidden border border-slate-300 relative ml-1">
-                    <div id="globalExpBar" class="bg-gradient-to-r from-amber-400 to-amber-500 h-full transition-all duration-500" style="width: 0%;"></div>
+                    <div id="globalExpBar" class="bg-gradient-to-r from-amber-400 to-amber-500 h-full transition-all duration-500 audit-sen-asd-style-1"></div>
                 </div>
             </div>
 
@@ -234,7 +240,7 @@
                 <span class="text-slate-600 hidden sm:inline">能量：</span>
                 <i class="fa-solid fa-bolt text-teal-500 sm:hidden"></i>
                 <div class="w-12 sm:w-20 bg-slate-200 h-2.5 rounded-full overflow-hidden border border-slate-300 ml-1">
-                    <div id="hudStamina" class="bg-emerald-500 h-full transition-all duration-300" style="width: 100%;"></div>
+                    <div id="hudStamina" class="bg-emerald-500 h-full transition-all duration-300 audit-sen-asd-style-2"></div>
                 </div>
                 <span id="hudStaminaText" class="text-emerald-600 min-w-[30px] text-right font-black">100%</span>
             </div>
@@ -255,7 +261,7 @@
 
         <!-- 右側畫布 -->
         <section class="flex-grow h-[70%] md:h-full relative overflow-hidden" id="canvasContainer">
-            <div id="posterScaleWrapper" style="transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+            <div id="posterScaleWrapper" class="audit-sen-asd-style-3">
                 <div id="posterPrintArea" class="bg-white">
                     <!-- 內容由 JS 動態注入 -->
                     <div id="confetti-container"></div>
@@ -280,18 +286,18 @@
         let globalExp = 0;
         let globalLevel = 1;
         let currentCombo = 0;
-        let consecutiveErrors = 0; 
-        let showHint = false;      
-        
+        let consecutiveErrors = 0;
+        let showHint = false;
+
         let currentRoomId = 'r1';
-        let roomProgress = {}; 
-        let roomAnswered = {}; 
-        let roomResults = {};  
-        let lastAnswerResult = null; 
+        let roomProgress = {};
+        let roomAnswered = {};
+        let roomResults = {};
+        let lastAnswerResult = null;
 
         let currentSortableItems = [];
         let draggedSortItem = null;
-        
+
         let firedEvents = new Set();
         let emergencyTimer = null;
         let activeEmergencyKey = null; // 🚨 防護鎖：確保緊急任務不會被重複計算或取消
@@ -539,7 +545,7 @@
             if (canvas) {
                 canvas.style.transform = 'none';
                 canvas.style.height = 'auto';
-                canvas.style.width = '92%'; 
+                canvas.style.width = '92%';
             }
         }
         window.addEventListener('resize', resizeCanvas);
@@ -566,7 +572,7 @@
 
         function updateGlobalExp(amount) {
             globalExp += amount;
-            let expNeeded = globalLevel * 50; 
+            let expNeeded = globalLevel * 50;
             if (globalExp >= expNeeded) {
                 globalExp -= expNeeded;
                 globalLevel++;
@@ -584,7 +590,7 @@
             const toastMsg = document.getElementById('toastMsg');
             const toastIcon = document.getElementById('toastIcon');
             if (!toast || !toastMsg || !toastIcon) return;
-            
+
             toastMsg.innerText = msg;
             toastIcon.className = type === 'error' ? "fa-solid fa-circle-exclamation text-rose-500 text-3xl" : "fa-solid fa-circle-check text-emerald-500 text-3xl";
             toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
@@ -598,7 +604,7 @@
         function fireConfetti() {
             const container = document.getElementById('confetti-container');
             if (!container) return;
-            container.innerHTML = ''; 
+            container.innerHTML = '';
             const emojis = ['🎉', '✨', '🏆', '⭐', '🎈'];
             for(let i=0; i<40; i++) {
                 let conf = document.createElement('div');
@@ -621,7 +627,7 @@
             const card = document.getElementById('emergencyCard');
             const textEl = document.getElementById('emergencyText');
             if (msg && textEl) textEl.innerText = msg;
-            
+
             if (overlay && card) {
                 overlay.classList.remove('hidden');
                 overlay.classList.add('flex');
@@ -629,7 +635,7 @@
                 overlay.classList.remove('opacity-0');
                 card.classList.remove('scale-95');
                 card.classList.add('scale-100');
-                
+
                 showToast("⚠️ 總部傳來緊急指示！", "error");
                 updateHUD(-5);
             }
@@ -655,21 +661,21 @@
             if(!overlay || !progress) return;
 
             overlay.classList.remove('hidden');
-            overlay.classList.add('flex'); 
+            overlay.classList.add('flex');
             setTimeout(() => { overlay.classList.remove('opacity-0'); }, 10);
-            
+
             progress.style.transition = 'width 3s linear';
             progress.style.width = '0%';
             setTimeout(() => { progress.style.width = '100%'; }, 50);
 
             setTimeout(() => {
                 overlay.classList.add('opacity-0');
-                setTimeout(() => { 
-                    overlay.classList.add('hidden'); 
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
                     overlay.classList.remove('flex');
-                    consecutiveErrors = 0; 
-                    showHint = true;       
-                    renderRoom();          
+                    consecutiveErrors = 0;
+                    showHint = true;
+                    renderRoom();
                     showToast("🛡️ 冷卻完畢，系統已為您開啟戰術提示！", "success");
                 }, 500);
             }, 3000);
@@ -677,10 +683,10 @@
 
         function handleTaskError() {
             consecutiveErrors++;
-            currentCombo = 0; 
+            currentCombo = 0;
             updateHUD(-10);
-            
-            if (consecutiveErrors >= 5) { 
+
+            if (consecutiveErrors >= 5) {
                 triggerSafeHouse();
             } else {
                 showToast(`❌ 發生誤判！(錯誤 ${consecutiveErrors}/5)`, "error");
@@ -694,7 +700,7 @@
             clearTimeout(emergencyTimer);
             activeEmergencyKey = null; // 換房重置鎖
             currentRoomId = roomId;
-            currentCombo = 0; 
+            currentCombo = 0;
             consecutiveErrors = 0;
             showHint = false;
             lastAnswerResult = null;
@@ -711,7 +717,7 @@
             roomProgress[currentRoomId] = index;
             roomAnswered[currentRoomId] = false;
             lastAnswerResult = null;
-            currentSortableItems = []; 
+            currentSortableItems = [];
             consecutiveErrors = 0;
             showHint = false;
             renderRoom();
@@ -720,13 +726,13 @@
         function checkQuizAnswer(selectedIdx, correctIdx) {
             if (roomAnswered[currentRoomId]) return;
             const isCorrect = (selectedIdx === correctIdx);
-            
+
             if (isCorrect) {
                 roomAnswered[currentRoomId] = true;
                 if(!roomResults[currentRoomId]) roomResults[currentRoomId] = [];
                 roomResults[currentRoomId][roomProgress[currentRoomId]] = true;
 
-                consecutiveErrors = 0; 
+                consecutiveErrors = 0;
                 currentCombo++;
                 let comboMultiplier = currentCombo >= 3 ? 1.5 : 1;
                 let expGained = Math.floor(10 * comboMultiplier);
@@ -736,21 +742,21 @@
             } else {
                 handleTaskError();
             }
-            
+
             lastAnswerResult = { isCorrect, selectedIdx };
             renderRoom();
         }
 
         function nextQuizQuestion() {
             if (roomProgress[currentRoomId] >= 7) {
-                roomProgress[currentRoomId] = 8; 
+                roomProgress[currentRoomId] = 8;
                 fireConfetti();
             } else {
                 roomProgress[currentRoomId]++;
             }
             roomAnswered[currentRoomId] = false;
             lastAnswerResult = null;
-            currentSortableItems = []; 
+            currentSortableItems = [];
             consecutiveErrors = 0;
             showHint = false;
             renderRoom();
@@ -775,7 +781,7 @@
         }
 
         function resetCurrentTask() {
-            currentSortableItems = []; 
+            currentSortableItems = [];
             lastAnswerResult = null;
             renderRoom();
             showToast("🔄 已為您重新準備任務，請再試一次！");
@@ -821,7 +827,7 @@
             if (!e) return;
             if (e.preventDefault) e.preventDefault();
             const target = e.currentTarget;
-            
+
             if (target && target.classList.contains('blueprint-slot')) {
                 target.classList.add('drag-over');
                 return;
@@ -856,7 +862,7 @@
             const target = e.currentTarget;
             target.style.borderTop = "";
             target.style.borderBottom = "";
-            
+
             if (target.classList.contains('blueprint-slot')) {
                 target.classList.remove('drag-over');
                 if (draggedSortItem) {
@@ -873,11 +879,11 @@
                 target.appendChild(draggedSortItem);
                 return;
             }
-            
+
             if (target && draggedSortItem && target !== draggedSortItem && target.classList && target.classList.contains('sortable-item') && target.getAttribute('draggable') !== 'false') {
                 const bounding = target.getBoundingClientRect();
                 const offset = bounding.y + (bounding.height / 2);
-                const container = target.parentElement; 
+                const container = target.parentElement;
                 if (container) {
                     if (e.clientY - offset > 0) {
                         container.insertBefore(draggedSortItem, target.nextSibling);
@@ -896,11 +902,11 @@
             let hasErrors = false;
 
             slots.forEach(slot => {
-                const expectedId = slot.getAttribute('data-slot-id'); 
+                const expectedId = slot.getAttribute('data-slot-id');
                 if (slot.children.length > 0) {
                     filledSlots++;
                     const child = slot.children[0];
-                    const childId = child.getAttribute('data-id'); 
+                    const childId = child.getAttribute('data-id');
                     if (childId === expectedId) {
                         child.className = child.className.replace(/border-slate-200|border-rose-400|hover:border-purple-300|cursor-grab/g, 'border-emerald-400')
                                                         .replace(/bg-white|bg-rose-50/g, 'bg-emerald-50') + ' text-emerald-800 cursor-default';
@@ -912,12 +918,12 @@
                     } else {
                         isAllCorrect = false;
                         hasErrors = true;
-                        sourceContainer.appendChild(child); 
+                        sourceContainer.appendChild(child);
 
                         child.classList.remove('shake-bounce');
-                        void child.offsetWidth; 
+                        void child.offsetWidth;
                         child.classList.add('shake-bounce');
-                        
+
                         child.classList.replace('border-slate-200', 'border-rose-400');
                         child.classList.replace('bg-white', 'bg-rose-50');
                         setTimeout(() => {
@@ -926,7 +932,7 @@
                         }, 800);
                     }
                 } else {
-                    isAllCorrect = false; 
+                    isAllCorrect = false;
                 }
             });
 
@@ -943,14 +949,14 @@
                     btn.className = btn.className.replace(/bg-purple-600|bg-rose-600/g, 'bg-emerald-600') + ' scale-bounce';
                     btn.innerHTML = `<i class="fa-solid fa-check-double"></i> 順序正確！即將自動跳轉...`;
                 }
-                
+
                 if(!roomResults[currentRoomId]) roomResults[currentRoomId] = [];
                 roomResults[currentRoomId][roomProgress[currentRoomId]] = true;
 
                 updateGlobalExp(15);
                 showToast("🏆 任務切割順序完全正確！", "success");
                 fireConfetti();
-                
+
                 setTimeout(() => { nextQuizQuestion(); }, 1500);
             } else {
                 if (hasErrors) {
@@ -990,12 +996,12 @@
                     } else {
                         isAllCorrect = false;
                         hasErrors = true;
-                        sourceContainer.appendChild(child); 
+                        sourceContainer.appendChild(child);
 
                         child.classList.remove('shake-bounce');
-                        void child.offsetWidth; 
+                        void child.offsetWidth;
                         child.classList.add('shake-bounce');
-                        
+
                         child.classList.replace('border-slate-200', 'border-rose-400');
                         child.classList.replace('bg-white', 'bg-rose-50');
                         setTimeout(() => {
@@ -1004,7 +1010,7 @@
                         }, 800);
                     }
                 } else {
-                    isAllCorrect = false; 
+                    isAllCorrect = false;
                 }
             });
 
@@ -1019,7 +1025,7 @@
                 consecutiveErrors = 0;
                 const bpData = blueprintDb[currentRoomId][roomProgress[currentRoomId]];
                 const fullText = bpData.fragments.map(f => f.text).join('，') + '。';
-                
+
                 const bpArea = document.getElementById('blueprintArea');
                 bpArea.innerHTML = `
                     <div class="bg-emerald-50 border-4 border-emerald-300 p-6 rounded-2xl shadow-inner scale-bounce">
@@ -1032,19 +1038,19 @@
                     btn.className = btn.className.replace(/bg-indigo-600|bg-rose-600/g, 'bg-emerald-600') + ' scale-bounce';
                     btn.innerHTML = `<i class="fa-solid fa-check-double"></i> 結構完美！即將自動跳轉...`;
                 }
-                
+
                 roomAnswered[currentRoomId] = true;
                 updateGlobalExp(20);
                 showToast("🏆 藍圖重組完全正確！", "success");
                 fireConfetti();
-                
+
                 setTimeout(() => { nextQuizQuestion(); }, 2500);
             } else {
                 const bpArea = document.getElementById('blueprintArea');
                 bpArea.classList.remove('shake-bounce');
-                void bpArea.offsetWidth; 
+                void bpArea.offsetWidth;
                 bpArea.classList.add('shake-bounce');
-                
+
                 if (btn) {
                     const origClass = btn.className;
                     const origText = btn.innerHTML;
@@ -1074,27 +1080,27 @@
                 roomProgress[currentRoomId] = 0;
                 currentIndex = 0;
             }
-            
+
             let totalTasks = 8;
-            
+
             let nodesHtml = `
                 <div class="w-full overflow-x-auto hide-scrollbar pb-2">
                     <div class="level-nodes-container relative min-w-[500px] max-w-[800px] mx-auto px-4 mt-2">
                         <div class="absolute left-[6.25%] right-[6.25%] top-1/2 -translate-y-1/2 h-1.5 bg-slate-200 z-0 rounded-full"></div>
                         <div class="absolute left-[6.25%] top-1/2 -translate-y-1/2 h-1.5 bg-teal-500 z-0 rounded-full transition-all duration-500" style="width: ${(Math.min(currentIndex, totalTasks-1) / (totalTasks - 1)) * 100}%"></div>
             `;
-            
+
             for(let i=0; i<totalTasks; i++) {
                 let stateClass, icon;
-                if (i < currentIndex || (currentIndex === 8 && i <= 7)) { 
-                    stateClass = "bg-teal-500 text-white border-teal-600 shadow-md"; 
-                    icon = "✓"; 
-                } else if (i === currentIndex) { 
-                    stateClass = "bg-white border-teal-500 text-teal-600 shadow-md ring-4 ring-teal-100 transform scale-110 node-glow"; 
-                    icon = i + 1; 
-                } else { 
-                    stateClass = "bg-slate-100 border-slate-300 text-slate-400"; 
-                    icon = "🔒"; 
+                if (i < currentIndex || (currentIndex === 8 && i <= 7)) {
+                    stateClass = "bg-teal-500 text-white border-teal-600 shadow-md";
+                    icon = "✓";
+                } else if (i === currentIndex) {
+                    stateClass = "bg-white border-teal-500 text-teal-600 shadow-md ring-4 ring-teal-100 transform scale-110 node-glow";
+                    icon = i + 1;
+                } else {
+                    stateClass = "bg-slate-100 border-slate-300 text-slate-400";
+                    icon = "🔒";
                 }
                 nodesHtml += `<button onclick="window.changeTask(${i})" class="level-node-btn border-[3px] flex items-center justify-center font-black z-10 transition-all duration-300 ${stateClass} cursor-pointer hover:scale-110">${icon}</button>`;
             }
@@ -1108,13 +1114,13 @@
                 let stars = 1;
                 let titleMsg = "特工，再接再厲！";
                 let descMsg = "失敗是學習的一部分，成長心態會幫助你越來越強！";
-                
-                if (correctCount >= 8) { 
-                    stars = 3; titleMsg = "完美潛入！神級特工！"; 
+
+                if (correctCount >= 8) {
+                    stars = 3; titleMsg = "完美潛入！神級特工！";
                     descMsg = "你的大腦煞車與社交雷達無可挑剔，完美破關！";
                 }
-                else if (correctCount >= 5) { 
-                    stars = 2; titleMsg = "表現優異！"; 
+                else if (correctCount >= 5) {
+                    stars = 2; titleMsg = "表現優異！";
                     descMsg = "你已經掌握了大部分的特工技巧，再稍微留意陷阱就完美了！";
                 }
 
@@ -1140,7 +1146,7 @@
                         </div>
                     </div>
                 `;
-            } 
+            }
             else if (config.type === 'quiz') {
                 const db = quizDb[currentRoomId];
                 const data = (db && db[currentIndex]) ? db[currentIndex] : { q: "無資料", c: "無", w1: "無", w2: "無", emoji: "❓" };
@@ -1163,10 +1169,10 @@
                     if (isAnswered) {
                         if (opt.correct) {
                             btnClass = "bg-emerald-50 border-emerald-400 text-emerald-800";
-                            if (lastAnswerResult && lastAnswerResult.isCorrect && lastAnswerResult.selectedIdx === idx) animClass = "scale-bounce"; 
+                            if (lastAnswerResult && lastAnswerResult.isCorrect && lastAnswerResult.selectedIdx === idx) animClass = "scale-bounce";
                         } else if (lastAnswerResult && !lastAnswerResult.isCorrect && lastAnswerResult.selectedIdx === idx) {
                             btnClass = "bg-rose-50 border-rose-400 text-rose-800";
-                            cardAnimClass = "shake-bounce"; 
+                            cardAnimClass = "shake-bounce";
                         } else {
                             btnClass = "bg-slate-50 border-slate-200 text-slate-400 opacity-50 cursor-not-allowed";
                         }
@@ -1216,7 +1222,7 @@
                         </div>
                     </div>
                 `;
-            } 
+            }
             else if (config.type === 'chunking') {
                 const db = chunkingDb[currentRoomId];
                 if (!db || !db[currentIndex]) {
@@ -1224,12 +1230,12 @@
                     currentIndex = 0;
                 }
                 const data = (db && db[currentIndex]) ? db[currentIndex] : { name: "無資料", steps: [] };
-                
+
                 if (currentSortableItems.length === 0 && data.steps && data.steps.length > 0) {
                     currentSortableItems = data.steps.map((step, idx) => ({
                         id: idx,
                         index: idx,
-                        text: step.replace(/^\d+\.\s*/, '') 
+                        text: step.replace(/^\d+\.\s*/, '')
                     })).sort(() => Math.random() - 0.5);
                 }
 
@@ -1252,7 +1258,7 @@
                             <div class="w-1/4 sm:w-1/5 bg-slate-100 border-2 border-slate-200 rounded-lg p-2 flex items-center justify-center text-center font-bold text-slate-600 text-sm shrink-0">
                                 步驟${numberWords[idx]}
                             </div>
-                            <div class="blueprint-slot w-3/4 sm:w-4/5 bg-slate-50 relative flex items-center justify-center p-2" 
+                            <div class="blueprint-slot w-3/4 sm:w-4/5 bg-slate-50 relative flex items-center justify-center p-2"
                                  data-slot-id="${idx}"
                                  ondragover="window.sortDragOver(event)" ondrop="window.sortDrop(event)" ondragenter="window.sortDragEnter(event)" ondragleave="window.sortDragLeave(event)">
                             </div>
@@ -1274,7 +1280,7 @@
                         <div class="main-card w-full md:w-[40%] flex flex-col bg-slate-100 border-slate-300 shadow-inner relative">
                             <h2 class="subtitle font-black text-slate-600 w-full mb-2"><i class="fa-solid fa-cubes text-purple-500"></i> 任務碎片區</h2>
                             <p class="desc-text font-bold text-slate-500 mb-4">請將下列步驟積木拖曳到右側對應的插槽中：</p>
-                            
+
                             <div id="sortableContainer" class="w-full flex-grow overflow-y-auto custom-scrollbar pr-2 pb-2"
                                  ondragover="window.sortDragOver(event)" ondrop="window.sortDrop(event)" ondragenter="window.sortDragEnter(event)" ondragleave="window.sortDragLeave(event)">
                                 ${sourceBlocksHtml}
@@ -1285,13 +1291,13 @@
                             <div class="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-xl font-bold flex items-center gap-2 mb-4 w-full shrink-0 shadow-sm">
                                 <i class="fa-solid fa-lightbulb text-lg text-amber-500 shrink-0"></i> 任務目標：${data.name}
                             </div>
-                            
+
                             ${hintUI}
-                            
+
                             <div id="blueprintArea" class="w-full flex flex-col flex-grow transition-all duration-300">
                                 ${slotsHtml}
                             </div>
-                            
+
                             <div class="flex gap-3 mt-4 shrink-0 border-t border-slate-100 pt-4">
                                 <button id="chkSortBtn" onclick="window.verifyChunkingTask()" class="flex-grow bg-purple-600 hover:bg-purple-700 text-white font-black py-3 rounded-xl transition shadow-md flex items-center justify-center gap-2">
                                     <i class="fa-solid fa-check-double"></i> 確認完成
@@ -1307,7 +1313,7 @@
             else if (config.type === 'blueprint') {
                 const db = blueprintDb[currentRoomId];
                 const data = (db && db[currentIndex]) ? db[currentIndex] : { title: "無資料", slots: [], fragments: [] };
-                
+
                 if (currentSortableItems.length === 0 && data.fragments) {
                     currentSortableItems = [...data.fragments].sort(() => Math.random() - 0.5);
                 }
@@ -1330,7 +1336,7 @@
                             <div class="w-1/3 bg-slate-100 border-2 border-slate-200 rounded-lg p-3 flex items-center justify-center text-center font-bold text-slate-600 text-sm shrink-0">
                                 ${slot.label}
                             </div>
-                            <div class="blueprint-slot w-2/3 bg-slate-50 relative flex items-center justify-center p-2" 
+                            <div class="blueprint-slot w-2/3 bg-slate-50 relative flex items-center justify-center p-2"
                                  data-slot-id="${slot.id}"
                                  ondragover="window.sortDragOver(event)" ondrop="window.sortDrop(event)" ondragenter="window.sortDragEnter(event)" ondragleave="window.sortDragLeave(event)">
                             </div>
@@ -1349,11 +1355,11 @@
 
                 contentHtml = `
                     <div class="flex flex-col md:flex-row gap-6 flex-grow h-auto min-h-full pb-[80px]">
-                        
+
                         <div class="main-card w-full md:w-[40%] flex flex-col bg-slate-100 border-slate-300 shadow-inner relative">
                             <h2 class="subtitle font-black text-slate-600 w-full mb-2"><i class="fa-solid fa-cubes text-indigo-500"></i> 句子碎片區</h2>
                             <p class="desc-text font-bold text-slate-500 mb-4">請將下列積木拖曳到右側的對應位置：</p>
-                            
+
                             <div id="sortableContainer" class="w-full flex-grow overflow-y-auto custom-scrollbar pr-2 pb-2"
                                  ondragover="window.sortDragOver(event)" ondrop="window.sortDrop(event)" ondragenter="window.sortDragEnter(event)" ondragleave="window.sortDragLeave(event)">
                                 ${sourceBlocksHtml}
@@ -1364,13 +1370,13 @@
                             <div class="bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-xl font-bold flex items-center gap-2 mb-4 w-full shrink-0 shadow-sm">
                                 <i class="fa-solid fa-map text-lg shrink-0 text-blue-500"></i> 任務目標：重組「${data.title}」
                             </div>
-                            
+
                             ${hintUI}
-                            
+
                             <div id="blueprintArea" class="w-full flex flex-col flex-grow transition-all duration-300">
                                 ${slotsHtml}
                             </div>
-                            
+
                             <div class="flex gap-3 mt-2 shrink-0 border-t border-slate-100 pt-4">
                                 <button id="chkSortBtn" onclick="window.verifyBlueprintTask()" class="flex-grow bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3 rounded-xl transition shadow-md flex items-center justify-center gap-2">
                                     <i class="fa-solid fa-check-double"></i> 確認藍圖
@@ -1406,7 +1412,7 @@
             // 🚨 觸發隨機緊急事件 (特定關卡)
             clearTimeout(emergencyTimer);
             const eventKey = `${currentRoomId}_${currentIndex}`;
-            if (currentIndex === 4 && !firedEvents.has(eventKey)) { 
+            if (currentIndex === 4 && !firedEvents.has(eventKey)) {
                 if (activeEmergencyKey !== eventKey) {
                     activeEmergencyKey = eventKey;
                     emergencyTimer = setTimeout(() => {
@@ -1427,10 +1433,10 @@
             triggerRandomEvent, dismissEmergencyEvent
         });
 
-        window.onload = function() { 
+        window.onload = function() {
             initSidebar();
-            selectRoom('r1'); 
-        } 
+            selectRoom('r1');
+        }
     </script>
     <script>
     window.verifyChunkingTask = function() {
@@ -1450,7 +1456,7 @@
                 // 【答對邏輯】：變更為綠色成功樣式
                 item.classList.remove('border-slate-200', 'cursor-grab', 'hover:border-purple-300', 'hover:bg-purple-50');
                 item.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-800');
-                
+
                 const icon = item.querySelector('i');
                 if (icon) {
                     icon.className = 'fa-solid fa-check text-emerald-600 mr-2 px-1 pointer-events-none';
@@ -1458,9 +1464,9 @@
 
                 // 【關鍵修復：徹底鎖定】
                 // 1. 禁止拖曳
-                item.setAttribute('draggable', 'false'); 
+                item.setAttribute('draggable', 'false');
                 // 2. 讓滑鼠點擊事件穿透（無法點選返回）
-                item.style.pointerEvents = 'none'; 
+                item.style.pointerEvents = 'none';
                 // 3. 移除積木上的 onClick 事件
                 item.removeAttribute('onclick');
                 // 4. 同時關閉該「插槽」的接收功能，防止其他積木又被硬塞進來
@@ -1468,11 +1474,11 @@
                 slot.removeAttribute('ondrop');
                 slot.removeAttribute('ondragenter');
                 slot.removeAttribute('ondragleave');
-                
+
             } else {
                 // 【答錯邏輯】：震動並退回左側庫存區
                 allCorrect = false;
-                
+
                 item.classList.add('animate-shake', 'border-red-500', 'bg-red-50', 'text-red-800');
                 const icon = item.querySelector('i');
                 if(icon) {

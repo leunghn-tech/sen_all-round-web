@@ -9,7 +9,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
         body { font-family: 'Noto Sans HK', sans-serif; background-color: #f1f5f9; color: #334155; }
-        
+
         .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -41,14 +41,19 @@
         .dys-blur { filter: blur(1.5px); }
 
         @keyframes textWobble { 0% { letter-spacing: -1px; word-spacing: 2px; } 100% { letter-spacing: 2px; word-spacing: 8px; } }
-        
+
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* 撒花特效容器 */
         #confetti-container { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
     </style>
-</head>
+
+        <style id="audit-inline-style-replacements">
+            .audit-sen-spld-style-1{width: 100%;}
+            .audit-sen-spld-style-2{transform-origin: center center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
+        </style>
+    </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col">
 
     <!-- 頂部導航 -->
@@ -63,10 +68,10 @@
                 <span class="text-[10px] text-slate-500 font-bold block mt-1 uppercase tracking-widest">Dyslexia Tactician Training Camp</span>
             </div>
         </div>
-        
+
         <div class="flex items-center gap-4">
             <!-- 隱藏/顯示選單按鈕 (點擊放大任務) -->
-            <button onclick="toggleSidebar()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold px-4 py-2 rounded-xl transition shadow-sm flex items-center gap-2">
+            <button type="button" onclick="toggleSidebar()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold px-4 py-2 rounded-xl transition shadow-sm flex items-center gap-2">
                 <i class="fa-solid fa-bars-staggered"></i> <span class="hidden sm:inline">隱藏/顯示目錄 (放大字體)</span>
             </button>
 
@@ -75,7 +80,7 @@
                 <span class="text-slate-600 hidden md:inline">特工體力：</span>
                 <i class="fa-solid fa-battery-half text-slate-500 md:hidden"></i>
                 <div class="w-20 sm:w-32 bg-slate-200 h-3 rounded-full overflow-hidden border border-slate-300">
-                    <div id="hudStamina" class="bg-emerald-500 h-full transition-all duration-300" style="width: 100%;"></div>
+                    <div id="hudStamina" class="bg-emerald-500 h-full transition-all duration-300 audit-sen-spld-style-1"></div>
                 </div>
                 <span id="hudStaminaText" class="text-emerald-600 min-w-[40px] text-right font-black">100%</span>
             </div>
@@ -83,7 +88,7 @@
     </nav>
 
     <main class="flex-grow flex flex-col md:flex-row overflow-hidden relative bg-slate-50 w-full h-full">
-        
+
         <!-- 左側選單 -->
         <aside id="sidebarMenu" class="flex-none w-full md:w-[320px] lg:w-[380px] h-[30%] md:h-full bg-white border-r border-slate-200 flex flex-col z-20 shadow-lg transition-all duration-300">
             <div class="p-4 border-b border-slate-100 bg-slate-50 shrink-0">
@@ -132,7 +137,7 @@
 
         <!-- 右側畫布 -->
         <section class="flex-grow h-[70%] md:h-full relative overflow-hidden" id="canvasContainer">
-            <div id="posterScaleWrapper" style="transform-origin: center center; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+            <div id="posterScaleWrapper" class="audit-sen-spld-style-2">
                 <div id="posterPrintArea" class="a4-canvas">
                     <!-- 內容由 JS 注入 -->
                     <div id="confetti-container"></div>
@@ -171,17 +176,17 @@
             const container = document.getElementById('canvasContainer');
             const wrapper = document.getElementById('posterScaleWrapper');
             const canvas = document.getElementById('posterPrintArea');
-            
+
             if(!container || !canvas) return;
 
             // 暫時解除縮放，獲取內容真實高度
             canvas.style.transform = `translate(-50%, -50%) scale(1)`;
-            
+
             const baseWidth = 1122;
             canvas.style.height = 'auto'; // 允許自動生長
             const baseHeight = Math.max(793, canvas.offsetHeight); // 取得實際需要的高度，最少為 A4
 
-            const padding = window.innerWidth < 768 ? 20 : 40; 
+            const padding = window.innerWidth < 768 ? 20 : 40;
             const availableWidth = container.clientWidth - padding;
             const availableHeight = container.clientHeight - padding;
 
@@ -189,7 +194,7 @@
 
             // 計算最小縮放比，確保長或寬都能完美納入螢幕
             const scale = Math.min(availableWidth / baseWidth, availableHeight / baseHeight);
-            
+
             // 套用自適應高度與縮放
             canvas.style.height = `${baseHeight}px`;
             canvas.style.transform = `translate(-50%, -50%) scale(${scale})`;
@@ -201,8 +206,8 @@
         // ==========================================
         let stamina = 100;
         let currentRoom = "at";
-        let currentTaskIndex = 0; 
-        
+        let currentTaskIndex = 0;
+
         let pomoInterval;
         let boardTimer;
         let isPomoRunning = false;
@@ -212,9 +217,9 @@
         let currentLaserStep = 1;
         let selectedBufferIcons = new Set();
         let boardSecs = 100;
-        let currentSortIndex = 0; 
+        let currentSortIndex = 0;
         let sortedCount = 0;
-        let isQuestionInspected = false; 
+        let isQuestionInspected = false;
         let shotTargets = new Set();
 
         function updateHUD(staminaDiff) {
@@ -253,7 +258,7 @@
         function fireConfetti() {
             const container = document.getElementById('confetti-container');
             if (!container) return;
-            container.innerHTML = ''; 
+            container.innerHTML = '';
             const emojis = ['🎉', '✨', '🏆', '⭐', '🎈'];
             for(let i=0; i<40; i++) {
                 let conf = document.createElement('div');
@@ -264,7 +269,7 @@
                 conf.style.fontSize = (Math.random() * 30 + 30) + 'px';
                 conf.style.transition = 'top 2s ease-in, opacity 2s ease-out';
                 container.appendChild(conf);
-                
+
                 setTimeout(() => {
                     conf.style.top = '110%';
                     conf.style.opacity = '0';
@@ -275,7 +280,7 @@
         // ==========================================
         // 擴充版 10-15 關卡資料庫
         // ==========================================
-        
+
         // 1. AT
         const atTasks = [
             { title: "【中文科】", text: "讀寫障礙學生最大的挫折來自於「死磕文字」。大腦在解碼文字形體時需要耗費極大電量，導致短時間內產生大腦極度疲勞。我們需要教導學生使用科技武器來「繞過」障礙，將精力集中在理解核心知識上。" },
@@ -340,9 +345,9 @@
         ];
 
         // 8. Sorting Items
-        const sortingItems = [ 
-            { icon: "📄", text: "數學工作紙", folder: "blue" }, 
-            { icon: "📝", text: "中文默書紙", folder: "red" }, 
+        const sortingItems = [
+            { icon: "📄", text: "數學工作紙", folder: "blue" },
+            { icon: "📝", text: "中文默書紙", folder: "red" },
             { icon: "📖", text: "英文課本", folder: "yellow" },
             { icon: "📗", text: "常識作業", folder: "green" },
             { icon: "📐", text: "數學用具", folder: "blue" },
@@ -370,7 +375,7 @@
             clearInterval(pomoInterval);
             clearInterval(boardTimer);
             isPomoRunning = false;
-            currentTaskIndex = 0; 
+            currentTaskIndex = 0;
             currentRoom = roomId;
 
             document.querySelectorAll('.room-card').forEach(card => card.classList.remove('active'));
@@ -401,7 +406,7 @@
                             <button onclick="changeTask('at', 2)" class="px-5 py-2 rounded-xl font-bold text-lg ${currentTaskIndex===2 ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">數學</button>
                         </div>
                     </div>
-                    
+
                     <div class="flex-grow p-6 bg-slate-50 overflow-hidden flex flex-col relative min-h-0">
                         <div class="flex gap-6 flex-grow h-full min-h-0">
                             <!-- 左側：閱讀區 -->
@@ -412,7 +417,7 @@
                                     <p>${at.text}</p>
                                 </div>
                             </div>
-                            
+
                             <!-- 右側：控制器 -->
                             <div class="w-[40%] bg-white border-2 border-slate-200 rounded-3xl p-6 flex flex-col shadow-xl min-h-0">
                                 <div class="space-y-4 flex-grow overflow-y-auto custom-scrollbar pr-2">
@@ -441,7 +446,7 @@
                         </div>
                     </div>
                 `;
-            } 
+            }
             else if (roomId === "decoding") {
                 const dec = decodingTasks[currentTaskIndex];
                 currentDefuseIndex = 0;
@@ -462,11 +467,11 @@
                                 <span class="text-[160px] font-black text-purple-600 bg-purple-100 px-8 py-2 rounded-[2rem] shadow-inner drop-shadow-xl leading-none border-4 border-purple-200">${dec.target}</span>
                             </div>
                             <p class="text-2xl text-slate-500 font-bold mb-8 text-center bg-white border-2 border-slate-200 px-6 py-3 rounded-2xl shadow-sm">請按正確的書寫/空間順序，點擊下方碎裂部件來組裝並拆除炸彈。</p>
-                            
+
                             <div class="flex justify-center items-center gap-4 mb-8 flex-wrap" id="defuseContainer">
                                 ${dec.parts.map((p, i) => `<div id="defuseBox_${i}" class="w-24 h-24 bg-white border-4 border-dashed border-slate-300 rounded-3xl flex items-center justify-center font-black text-5xl text-slate-300">?</div>`).join('')}
                             </div>
-                            
+
                             <div class="flex justify-center gap-4 flex-wrap">
                                 ${[...dec.parts].sort(() => Math.random() - 0.5).map((p, i) => `
                                     <button id="def_btn_${i}" onclick="clickDefuseComponent('${p}', 'def_btn_${i}')" class="w-28 h-28 bg-white hover:bg-slate-50 border-4 border-slate-200 rounded-[2rem] font-black text-6xl text-slate-700 shadow-xl active:scale-95 transition hover:border-purple-400">${p}</button>
@@ -475,7 +480,7 @@
                         </div>
                     </div>
                 `;
-            } 
+            }
             else if (roomId === "stamina") {
                 html = `
                     <div class="flex flex-col h-full bg-white overflow-hidden relative">
@@ -514,7 +519,7 @@
                         </div>
                     </div>
                 `;
-            } 
+            }
             else if (roomId === "chunking") {
                 const chk = chunkingTasks[currentTaskIndex];
                 currentLaserStep = 1;
@@ -556,7 +561,7 @@
                         </div>
                     </div>
                 `;
-            } 
+            }
             else if (roomId === "buffer") {
                 const buf = bufferTasks[currentTaskIndex];
                 selectedBufferIcons.clear();
@@ -596,7 +601,7 @@
                         </div>
                     </div>
                 `;
-            } 
+            }
             else if (roomId === "spatial") {
                 const spa = spatialTasks[currentTaskIndex];
                 html = `
@@ -610,7 +615,7 @@
                                 ${spatialTasks.map((_, i) => `<button onclick="changeTask('spatial', ${i})" class="px-3 py-1.5 rounded-lg font-bold text-sm ${currentTaskIndex===i ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}">關卡 ${i+1}</button>`).join('')}
                             </div>
                         </div>
-                        
+
                         <div class="flex-grow p-6 bg-slate-50 overflow-y-auto flex flex-col custom-scrollbar">
                             <p class="text-lg text-slate-600 font-bold mb-4 bg-white px-6 py-4 rounded-2xl border border-slate-200 shadow-sm shrink-0">
                                 💡 <strong>指引：</strong> 讀寫障礙常將形狀相似的字母或數字左右/上下反轉。此區訓練大腦的空間方向感定位。請朗讀並做出下方提示動作。
@@ -624,7 +629,7 @@
                         </div>
                     </div>
                 `;
-            } 
+            }
             else if (roomId === "ocr") {
                 const ocr = ocrTasks[currentTaskIndex];
                 html = `
@@ -670,7 +675,7 @@
                     </div>
                 `;
                 setTimeout(startBoardTimer, 50);
-            } 
+            }
             else if (roomId === "inventory") {
                 html = `
                     <div class="flex flex-col h-full bg-white overflow-hidden relative">
@@ -713,7 +718,7 @@
                     </div>
                 `;
                 setTimeout(initSortingItem, 50);
-            } 
+            }
             else if (roomId === "survival") {
                 const exm = examTasks[currentTaskIndex];
                 isQuestionInspected = false;
@@ -760,7 +765,7 @@
             }
 
             canvas.innerHTML = html;
-            
+
             if (roomId === "at") {
                 const rulerCb = document.getElementById('rulerCheckbox');
                 if (rulerCb && rulerCb.checked) {
@@ -822,7 +827,7 @@
             document.getElementById('simReaderText').classList.remove('dyslexia-wobble');
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const text = atTasks[currentTaskIndex].text.substring(0, 50) + "..."; 
+                const text = atTasks[currentTaskIndex].text.substring(0, 50) + "...";
                 const u = new SpeechSynthesisUtterance(text);
                 u.lang = 'zh-HK'; u.rate = 0.85; window.speechSynthesis.speak(u);
             }
@@ -841,7 +846,7 @@
                 document.getElementById(btnId).style.visibility = 'hidden';
                 currentDefuseIndex++;
                 showToast(`✅ 正確！解鎖 ${char} 密碼`, "success");
-                
+
                 if(currentDefuseIndex === dec.parts.length) {
                     updateHUD(15);
                     showToast(`🏆 密碼炸彈已拆除！成功組合「${dec.target}」！`, "success");
@@ -858,14 +863,14 @@
             document.getElementById('pomoStatus').innerText = "Focusing...";
             document.getElementById('pomoStatus').className = "text-2xl text-emerald-500 font-black mt-4 uppercase tracking-widest animate-pulse";
             pomoInterval = setInterval(() => {
-                pomoSeconds -= 60; 
+                pomoSeconds -= 60;
                 if(pomoSeconds <= 0) {
                     clearInterval(pomoInterval);
                     document.getElementById('pomoTime').innerText = "05:00";
                     document.getElementById('pomoStatus').innerText = "Break Time!";
                     document.getElementById('pomoStatus').className = "text-2xl text-amber-500 font-black mt-4 uppercase tracking-widest animate-bounce";
                     stamina = 100;
-                    updateHUD(0); 
+                    updateHUD(0);
                     showToast("⏰ 20分鐘衝刺結束！進入小休，體力已完全重置為 100%！", "success");
                     isPomoRunning = false;
                 } else {
@@ -889,7 +894,7 @@
             const hpMap = { 1: 80, 2: 60, 3: 40, 4: 20, 5: 0 };
             document.getElementById('monsterHp').innerText = `HP: ${hpMap[step]}%`;
             document.getElementById('monsterHpBar').style.width = `${hpMap[step]}%`;
-            
+
             document.getElementById(`lBtn${step}`).className = "w-full bg-rose-50 border-2 border-rose-500 text-rose-600 font-bold text-2xl py-5 rounded-2xl text-left px-6 flex items-center justify-between shadow-sm transform scale-[1.02] transition";
             document.getElementById(`lBtn${step}`).innerHTML = `<span>✓ 已完成</span><span class="text-base bg-rose-500 px-3 py-1 rounded-lg text-white">Done</span>`;
 
@@ -991,8 +996,8 @@
             currentSortIndex++; showNextSortingItem();
         }
         function verifySortingResult() {
-            if(sortedCount === sortingItems.length) { 
-                updateHUD(20); showToast("🏆 運用色彩編碼，成功建立收納常規！"); fireConfetti(); 
+            if(sortedCount === sortingItems.length) {
+                updateHUD(20); showToast("🏆 運用色彩編碼，成功建立收納常規！"); fireConfetti();
             } else { showToast("有歸類錯誤，請點選按鈕重新挑戰！", "error"); initSortingItem(); }
         }
 
@@ -1000,31 +1005,31 @@
             isQuestionInspected = true;
             const exm = examTasks[currentTaskIndex];
             document.getElementById('currentQuestionBox').innerHTML = `🚨 <strong>已開啟狙擊鏡：</strong> 請在上方文章中找出並點擊【${exm.target}】與【${exm.target2}】！`;
-            
+
             // 移除 pointer-events-none，讓文字可點擊
             document.getElementById('examArticleBox').classList.remove('pointer-events-none');
-            
+
             // 加上可點擊的視覺提示 (hover 時才明顯)
             const t1 = document.getElementById('examTarget_1');
             const t2 = document.getElementById('examTarget_2');
             t1.classList.add('hover:bg-fuchsia-200', 'hover:text-fuchsia-800');
             t2.classList.add('hover:bg-fuchsia-200', 'hover:text-fuchsia-800');
-            
+
             showToast("🔍 狙擊鏡已開啟！請在文章中尋找目標關鍵字並點擊！");
         }
         function shootExamTarget(t, element) {
             if(!isQuestionInspected) return;
             if(shotTargets.has(t)) return; // 防止重複點擊
-            
+
             shotTargets.add(t);
             element.classList.add('bg-fuchsia-500', 'text-white', 'px-2', 'py-1', 'rounded-lg', 'shadow-md');
             element.classList.remove('hover:bg-fuchsia-200', 'hover:text-fuchsia-800');
-            
+
             document.getElementById('examScore').innerText = `狙擊點：${shotTargets.size}/2`;
             showToast(`🎯 擊中關鍵詞：[${t}]！`);
-            
-            if(shotTargets.size === 2) { 
-                updateHUD(20); showToast("🏆 考場拆彈成功！運用 Skimming 快速定位答案！", "success"); fireConfetti(); 
+
+            if(shotTargets.size === 2) {
+                updateHUD(20); showToast("🏆 考場拆彈成功！運用 Skimming 快速定位答案！", "success"); fireConfetti();
             }
         }
 

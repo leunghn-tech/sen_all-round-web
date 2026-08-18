@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>👨‍👩‍👧 親子溝通與家庭系統支持指南 (Parent-Child Communication & Family Support)</title>
+    <title>親子溝通與家庭支持 | SEN</title>
     <!-- 引入 Tailwind CSS 進行精緻視覺排版 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入 Font Awesome 專業圖示 -->
@@ -93,7 +93,7 @@
 
     <!-- 主要內容區 -->
     <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full space-y-8">
-        
+
         <!-- 標題橫幅 -->
         <div class="bg-gradient-to-r from-rose-500 via-rose-600 to-amber-500 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
             <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
@@ -112,23 +112,23 @@
 
         <!-- 三板塊頂部 Tab 切換按鈕 -->
         <div class="flex flex-wrap gap-2.5 bg-white p-2 rounded-2xl shadow-sm border border-slate-100 justify-center">
-            <button id="tab-coaching" onclick="switchFamilyTab('coaching')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-rose-700 bg-rose-50 border border-rose-100 shadow-sm">
+            <button type="button" id="tab-coaching" onclick="switchFamilyTab('coaching')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-rose-700 bg-rose-50 border border-rose-100 shadow-sm">
                 <i class="fa-solid fa-headset"></i> 1. 情緒導航 (Emotion Coaching) 模擬艙
             </button>
-            <button id="tab-senco" onclick="switchFamilyTab('senco')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
+            <button type="button" id="tab-senco" onclick="switchFamilyTab('senco')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
                 <i class="fa-solid fa-school-flag"></i> 2. 家校通訊與 SENCO 信件產生器
             </button>
-            <button id="tab-sibling" onclick="switchFamilyTab('sibling')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
+            <button type="button" id="tab-sibling" onclick="switchFamilyTab('sibling')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
                 <i class="fa-solid fa-people-arrows animate-pulse"></i> 3. 特教家庭的手足支持空間
             </button>
         </div>
 
         <!-- 主體內容：左右兩欄佈局 -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
+
             <!-- 左欄：互動操作區 (12格中佔 8格) -->
             <div class="lg:col-span-8 space-y-6">
-                
+
                 <!-- 模塊一：情緒導航模擬艙 (Emotion Coaching Simulator) -->
                 <div id="panel-coaching" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-6">
                     <!-- 說明 -->
@@ -207,35 +207,35 @@
                         </label>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                             <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
-                                <input type="checkbox" name="sen-type-chk" value="特殊學習困難 (SpLD/讀寫障礙)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <input type="checkbox" name="sen-type-chk-1" data-group="sen-type-chk" value="特殊學習困難 (SpLD/讀寫障礙)" class="accent-rose-500 w-4 h-4 shrink-0">
                                 <span>讀寫困難 (SpLD)</span>
                             </label>
                             <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
-                                <input type="checkbox" name="sen-type-chk" value="注意力不足/過度活躍症 (ADHD)" class="accent-rose-500 w-4 h-4 shrink-0" checked>
+                                <input type="checkbox" name="sen-type-chk-2" data-group="sen-type-chk" value="注意力不足/過度活躍症 (ADHD)" class="accent-rose-500 w-4 h-4 shrink-0" checked>
                                 <span>過度活躍症 (ADHD)</span>
                             </label>
                             <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
-                                <input type="checkbox" name="sen-type-chk" value="自閉症譜系障礙 (ASD)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <input type="checkbox" name="sen-type-chk-3" data-group="sen-type-chk" value="自閉症譜系障礙 (ASD)" class="accent-rose-500 w-4 h-4 shrink-0">
                                 <span>自閉症譜系 (ASD)</span>
                             </label>
                             <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
-                                <input type="checkbox" name="sen-type-chk" value="言語障礙 (SLI)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <input type="checkbox" name="sen-type-chk-4" data-group="sen-type-chk" value="言語障礙 (SLI)" class="accent-rose-500 w-4 h-4 shrink-0">
                                 <span>言語障礙 (SLI)</span>
                             </label>
                             <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
-                                <input type="checkbox" name="sen-type-chk" value="精神健康需要 (MI/焦慮抑鬱)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <input type="checkbox" name="sen-type-chk-5" data-group="sen-type-chk" value="精神健康需要 (MI/焦慮抑鬱)" class="accent-rose-500 w-4 h-4 shrink-0">
                                 <span>精神健康需要 (MI)</span>
                             </label>
                             <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
-                                <input type="checkbox" name="sen-type-chk" value="雙重特殊資優 (2e)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <input type="checkbox" name="sen-type-chk-6" data-group="sen-type-chk" value="雙重特殊資優 (2e)" class="accent-rose-500 w-4 h-4 shrink-0">
                                 <span>雙重特殊資優 (2e)</span>
                             </label>
                             <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
-                                <input type="checkbox" name="sen-type-chk" value="發展遲緩 (DD)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <input type="checkbox" name="sen-type-chk-7" data-group="sen-type-chk" value="發展遲緩 (DD)" class="accent-rose-500 w-4 h-4 shrink-0">
                                 <span>發展遲緩 (DD)</span>
                             </label>
                             <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl hover:bg-slate-50/50 cursor-pointer transition text-xs font-bold text-slate-700">
-                                <input type="checkbox" name="sen-type-chk" value="有限智能 (Borderline)" class="accent-rose-500 w-4 h-4 shrink-0">
+                                <input type="checkbox" name="sen-type-chk-8" data-group="sen-type-chk" value="有限智能 (Borderline)" class="accent-rose-500 w-4 h-4 shrink-0">
                                 <span>有限智能 (Borderline)</span>
                             </label>
                         </div>
@@ -247,25 +247,25 @@
                             <i class="fa-solid fa-list-check text-rose-500"></i> 當前希望校方提供之具體調適措施 (可跨範疇多選)
                         </label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            
+
                             <!-- 類別 1: 測驗考試調適安排 -->
                             <div class="bg-rose-50/20 border border-rose-100 rounded-2xl p-4 space-y-3">
                                 <h5 class="text-xs font-extrabold text-rose-800 flex items-center gap-1"><i class="fa-solid fa-file-signature"></i> 1. 測驗考試調適安排 (Exam Accom.)</h5>
                                 <div class="space-y-2">
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-exam" value="安排延長 25% 答題時間 (考評加時)" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0" checked>
+                                        <input type="checkbox" name="adjust-exam-1" data-group="adjust-exam" value="安排延長 25% 答題時間 (考評加時)" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0" checked>
                                         <span>安排延長 25% 答題時間 (考評加時)</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-exam" value="提供低刺激、安靜之特別試室應考，避免大班感官干擾" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-exam-2" data-group="adjust-exam" value="提供低刺激、安靜之特別試室應考，避免大班感官干擾" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>提供低刺激、安靜之特別試室應考</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-exam" value="提供放大試卷或文字報讀音訊、讀題輔助 (如有讀寫困難)" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-exam-3" data-group="adjust-exam" value="提供放大試卷或文字報讀音訊、讀題輔助 (如有讀寫困難)" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>提供放大試卷及文字報讀輔助</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-exam" value="酌情寬限非主科語文因筆順、筆誤、大細寫或手寫困難引致之扣分" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-exam-4" data-group="adjust-exam" value="酌情寬限非主科語文因筆順、筆誤、大細寫或手寫困難引致之扣分" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>寬限非語文科因筆順/拼寫筆誤之扣分</span>
                                     </label>
                                 </div>
@@ -276,19 +276,19 @@
                                 <h5 class="text-xs font-extrabold text-blue-800 flex items-center gap-1"><i class="fa-solid fa-book-open"></i> 2. 功課分量與輔助調配 (Homework Accom.)</h5>
                                 <div class="space-y-2">
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-homework" value="功課實施「質重於量」彈性減免 (如免除重複性生字抄寫及罰抄)" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-homework-1" data-group="adjust-homework" value="功課實施「質重於量」彈性減免 (如免除重複性生字抄寫及罰抄)" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>功課「質重於量」彈性減免 (如免罰抄)</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-homework" value="容許以語音轉文字、口頭錄音、或打字代替部分傳統手寫功課" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-homework-2" data-group="adjust-homework" value="容許以語音轉文字、口頭錄音、或打字代替部分傳統手寫功課" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>容許以語音、錄音或打字代替手寫</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-homework" value="容許彈性遲交功課 1-2 天，以舒緩傍晚因功課拖延引發之家庭情緒衝突" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-homework-3" data-group="adjust-homework" value="容許彈性遲交功課 1-2 天，以舒緩傍晚因功課拖延引發之家庭情緒衝突" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>容許彈性延期 1-2 天提交功課</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-homework" value="將複雜、大篇幅的申論題型簡化，拆解為分步引導式填空或連線選擇題" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-homework-4" data-group="adjust-homework" value="將複雜、大篇幅的申論題型簡化，拆解為分步引導式填空或連線選擇題" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>將長篇題型拆解、簡化為引導填空題</span>
                                     </label>
                                 </div>
@@ -299,19 +299,19 @@
                                 <h5 class="text-xs font-extrabold text-amber-800 flex items-center gap-1"><i class="fa-solid fa-chair"></i> 3. 課室環境與教學輔導 (Classroom Accom.)</h5>
                                 <div class="space-y-2">
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-classroom" value="座位安排在前排靠近講台中央，避免安排在靠近窗戶、後門走廊等感官干擾源的位置" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-classroom-1" data-group="adjust-classroom" value="座位安排在前排靠近講台中央，避免安排在靠近窗戶、後門走廊等感官干擾源的位置" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>座位安排在前排，避開窗戶/後門干擾</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-classroom" value="當學童課堂分神遊魂時，科任老師使用低調的非口頭密碼 (如輕敲桌面、特許默契手勢) 溫和重召專注" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-classroom-2" data-group="adjust-classroom" value="當學童課堂分神遊魂時，科任老師使用低調的非口頭密碼 (如輕敲桌面、特許默契手勢) 溫和重召專注" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>科任老師使用低調密碼/手勢重召專注</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-classroom" value="容許學童上課時使用減壓指尖玩具或觸覺防震氣墊，以調節多動傾向並調平身體警醒度" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-classroom-3" data-group="adjust-classroom" value="容許學童上課時使用減壓指尖玩具或觸覺防震氣墊，以調節多動傾向並調平身體警醒度" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>容許上課使用指尖玩具/觸覺防震氣墊</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-classroom" value="於課桌邊張貼個人專屬的「上課視覺常規卡/收拾備忘清單」以輔助工作記憶弱項" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-classroom-4" data-group="adjust-classroom" value="於課桌邊張貼個人專屬的「上課視覺常規卡/收拾備忘清單」以輔助工作記憶弱項" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>課桌邊張貼上課視覺提示與常規收拾</span>
                                     </label>
                                 </div>
@@ -322,19 +322,19 @@
                                 <h5 class="text-xs font-extrabold text-emerald-800 flex items-center gap-1"><i class="fa-solid fa-face-smile"></i> 4. 社交情緒與輔導干預 (Social Accom.)</h5>
                                 <div class="space-y-2">
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-social" value="安排學童加入校本「社交思考/溝通合作小組」，或由駐校社工/心理學家定期進行一對一跟進輔導" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-social-1" data-group="adjust-social" value="安排學童加入校本「社交思考/溝通合作小組」，或由駐校社工/心理學家定期進行一對一跟進輔導" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>安排加入社交思考小組或社工跟進輔導</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-social" value="當學童面臨社交衝突或情緒暴發臨界時，校方協助實施「ABC前因後果解碼分析」引導，而非直接給予道德處分" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-social-2" data-group="adjust-social" value="當學童面臨社交衝突或情緒暴發臨界時，校方協助實施「ABC前因後果解碼分析」引導，而非直接給予道德處分" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>情緒爆發時由校方進行「ABC前因後果分析」</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-social" value="課堂或集體分組活動中，請班主任安排正面、包容及溫和的關愛同學擔任協作伙伴" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-social-3" data-group="adjust-social" value="課堂或集體分組活動中，請班主任安排正面、包容及溫和的關愛同學擔任協作伙伴" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>指派班中「關愛天使組」同儕正面扶持</span>
                                     </label>
                                     <label class="flex items-start gap-2 text-xs font-medium text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="adjust-social" value="於校內設立情绪「安全撤退空間」(如輔導室特定沙發)，允許學童感到極度感官超載時申請前往降溫" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
+                                        <input type="checkbox" name="adjust-social-4" data-group="adjust-social" value="於校內設立情绪「安全撤退空間」(如輔導室特定沙發)，允許學童感到極度感官超載時申請前往降溫" class="accent-rose-500 mt-0.5 w-3.5 h-3.5 shrink-0">
                                         <span>設立校園情緒「安全撤退空間」供避難</span>
                                     </label>
                                 </div>
@@ -344,7 +344,7 @@
                     </div>
 
                     <!-- 生成按鈕 -->
-                    <button onclick="generateSencoEmail()" class="w-full h-14 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-2xl transition shadow-md shadow-rose-100 text-xs flex items-center justify-center gap-1.5">
+                    <button type="button" onclick="generateSencoEmail()" class="w-full h-14 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-2xl transition shadow-md shadow-rose-100 text-xs flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-wand-magic-sparkles"></i> <span>一鍵生成專業家校信件電郵範本</span>
                     </button>
 
@@ -352,7 +352,7 @@
                     <div id="senco-result-box" class="hidden bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
                         <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                             <span class="text-xs font-bold text-slate-400 uppercase tracking-wide"><i class="fa-solid fa-envelope-open-text mr-1"></i> 家校電郵範本已生成：</span>
-                            <button onclick="copySencoEmail()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold py-1.5 px-3.5 rounded-xl text-xs transition flex items-center gap-1">
+                            <button type="button" onclick="copySencoEmail()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold py-1.5 px-3.5 rounded-xl text-xs transition flex items-center gap-1">
                                 <i class="fa-solid fa-copy"></i> <span>複製信件文字</span>
                             </button>
                         </div>
@@ -410,7 +410,7 @@
                         <div class="flex items-start gap-3.5">
                             <div id="feedback-icon" class="text-2xl mt-0.5 shrink-0"></div>
                             <div class="space-y-2">
-                                <h4 id="feedback-title" class="font-black text-sm sm:text-base"></h4>
+                                <h4 id="feedback-title" class="font-black text-sm sm:text-base">載入中…</h4>
                                 <p id="feedback-desc" class="text-xs sm:text-sm leading-relaxed"></p>
                             </div>
                         </div>
@@ -599,7 +599,7 @@
             Object.keys(coachingDatabase).forEach(key => {
                 const data = coachingDatabase[key];
                 const btn = document.createElement('button');
-                
+
                 if (key === activeScenarioKey) {
                     btn.className = "py-2.5 px-3 rounded-xl font-bold text-xs transition border bg-rose-600 text-white border-rose-500 shadow-sm";
                 } else {
@@ -656,7 +656,7 @@
             // 1. 動態更新大腦視覺化指標
             const brainIcon = document.getElementById('coaching-brain-icon');
             brainIcon.className = `w-12 h-12 rounded-full flex items-center justify-center text-xl text-white ${opt.brainColor}`;
-            
+
             if (type === 'coaching') {
                 brainIcon.innerHTML = '<i class="fa-solid fa-brain"></i>';
                 playSuccessSound();
@@ -691,9 +691,9 @@
         function generateSencoEmail() {
             const name = document.getElementById('senco-student-name').value.trim() || "Sunny";
             const sClass = document.getElementById('senco-student-class').value.trim() || "3B";
-            
+
             // 1. 收集並編譯選中的 SEN 類別 (支持共病與多選)
-            const checkedSENs = Array.from(document.querySelectorAll('input[name="sen-type-chk"]:checked')).map(el => el.value);
+            const checkedSENs = Array.from(document.querySelectorAll('input[data-group="sen-type-chk"]:checked')).map(el => el.value);
             let senTypeStr = "特殊教育需要 (SEN)";
             if (checkedSENs.length > 0) {
                 if (checkedSENs.length === 1) {
@@ -706,10 +706,10 @@
             // 2. 收集並編譯所有選中的調適選項
             let adjustmentsContent = "";
 
-            const examChecked = Array.from(document.querySelectorAll('input[name="adjust-exam"]:checked')).map(el => el.value);
-            const hwChecked = Array.from(document.querySelectorAll('input[name="adjust-homework"]:checked')).map(el => el.value);
-            const crChecked = Array.from(document.querySelectorAll('input[name="adjust-classroom"]:checked')).map(el => el.value);
-            const socChecked = Array.from(document.querySelectorAll('input[name="adjust-social"]:checked')).map(el => el.value);
+            const examChecked = Array.from(document.querySelectorAll('input[data-group="adjust-exam"]:checked')).map(el => el.value);
+            const hwChecked = Array.from(document.querySelectorAll('input[data-group="adjust-homework"]:checked')).map(el => el.value);
+            const crChecked = Array.from(document.querySelectorAll('input[data-group="adjust-classroom"]:checked')).map(el => el.value);
+            const socChecked = Array.from(document.querySelectorAll('input[data-group="adjust-social"]:checked')).map(el => el.value);
 
             if (examChecked.length === 0 && hwChecked.length === 0 && crChecked.length === 0 && socChecked.length === 0) {
                 playErrorSound();
@@ -769,7 +769,7 @@ ${adjustmentsContent}本人深信家校雙方的積極協調與相互理解，�
 
             document.getElementById('senco-email-textarea').value = emailText;
             document.getElementById('senco-result-box').classList.remove('hidden');
-            
+
             playSuccessSound();
             showToast("✉️ 專業電郵信件範本已動態組裝完成！已完美融合共病與多維調配手段。", "success");
         }
@@ -996,7 +996,7 @@ ${adjustmentsContent}本人深信家校雙方的積極協調與相互理解，�
 
             const optionsContainer = document.getElementById('quiz-options');
             const feedbackContainer = document.getElementById('quiz-feedback');
-            
+
             feedbackContainer.classList.add('hidden'); // 切換 Tab 時隱藏舊的反饋
 
             optionsContainer.innerHTML = `
@@ -1051,7 +1051,7 @@ ${adjustmentsContent}本人深信家校雙方的積極協調與相互理解，�
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
-            
+
             let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
             let borderClass = 'border-emerald-100 shadow-emerald-50/50';
             if (type === 'error') {
@@ -1061,16 +1061,16 @@ ${adjustmentsContent}本人深信家校雙方的積極協調與相互理解，�
                 icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
                 borderClass = 'border-blue-100 shadow-blue-50/50';
             }
-            
+
             toast.className += ` ${borderClass}`;
             toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
-            
+
             container.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
             }, 10);
-            
+
             setTimeout(() => {
                 toast.classList.add('translate-y-2', 'opacity-0');
                 setTimeout(() => {
@@ -1082,7 +1082,7 @@ ${adjustmentsContent}本人深信家校雙方的積極協調與相互理解，�
         function syncA11ySettings() {
             const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
             const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
-            
+
             if (cachedContrast === 'true') {
                 document.body.classList.add('a11y-high-contrast');
             }
@@ -1096,7 +1096,7 @@ ${adjustmentsContent}本人深信家校雙方的積極協調與相互理解，�
         // ==========================================
         window.onload = function() {
             syncA11ySettings();
-            
+
             // 默認加載第一大 Tab
             switchFamilyTab('coaching');
         };

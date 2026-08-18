@@ -11,14 +11,14 @@
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
+
         /* 拖曳與選取互動樣式 */
         .drop-zone { transition: all 0.2s ease; }
         .drop-zone.dragover { background-color: #d1fae5; border-color: #10b981; transform: scale(1.02); }
         .draggable-item { cursor: grab; transition: transform 0.1s, box-shadow 0.1s; touch-action: none; }
         .draggable-item:active { cursor: grabbing; transform: scale(0.95); }
         .draggable-item.selected { box-shadow: 0 0 0 4px #fbbf24; transform: translateY(-2px); } /* 點擊選取狀態 */
-        
+
         /* 記憶題按鈕特效 */
         .memory-btn:active { transform: scale(0.95); }
         .memory-flash { animation: flash 0.5s ease-in-out; }
@@ -30,7 +30,7 @@
             0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
-        
+
         /* 錯誤震動特效 */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -40,14 +40,18 @@
         .animate-shake { animation: shake 0.3s ease-in-out; }
         .pointer-events-none { pointer-events: none; }
     </style>
-</head>
+
+        <style id="audit-inline-style-replacements">
+            .audit-sen-sli-style-1{width: 0%;}
+        </style>
+    </head>
 <body class="bg-gray-100 flex flex-col h-screen overflow-hidden text-gray-800 font-sans">
 
     <!-- 頂部導航列 -->
     <nav class="bg-indigo-900 text-white shadow-md no-print z-20 shrink-0">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <!-- 返回8大類別首頁按鈕 --> 
+                <!-- 返回8大類別首頁按鈕 -->
                 <a href="index.html#sen_types" class="flex items-center gap-2 bg-indigo-800 hover:bg-indigo-700 px-3 py-2 rounded-xl transition text-indigo-100 hover:text-white shadow-inner">
                     <i class="fa-solid fa-house"></i>
                     <span class="text-[11px] sm:text-xs font-bold hidden sm:inline">返回10大類別首頁</span>
@@ -59,10 +63,10 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <button onclick="resetProgress()" class="text-xs bg-red-600 hover:bg-red-500 px-3 py-1.5 rounded-lg font-bold transition">
+                <button type="button" onclick="resetProgress()" class="text-xs bg-red-600 hover:bg-red-500 px-3 py-1.5 rounded-lg font-bold transition">
                     <i class="fa-solid fa-rotate-right"></i> 重置進度
                 </button>
-                <button id="toggle-sidebar" class="flex items-center gap-2 bg-teal-600 hover:bg-teal-500 px-4 py-2 rounded-full text-sm font-bold transition shadow">
+                <button type="button" id="toggle-sidebar" class="flex items-center gap-2 bg-teal-600 hover:bg-teal-500 px-4 py-2 rounded-full text-sm font-bold transition shadow">
                     <i class="fa-solid fa-bars"></i>
                     <span class="hidden sm:inline">目錄</span>
                 </button>
@@ -70,7 +74,7 @@
                     <i class="fa-solid fa-bolt text-yellow-400"></i>
                     <span class="text-xs font-bold hidden sm:inline">特工電量 :</span>
                     <div class="w-24 sm:w-32 h-2.5 bg-gray-600 rounded-full overflow-hidden">
-                        <div id="energy-bar" class="h-full bg-green-400 transition-all duration-500 ease-out" style="width: 0%;"></div>
+                        <div id="energy-bar" class="h-full bg-green-400 transition-all duration-500 ease-out audit-sen-sli-style-1"></div>
                     </div>
                     <span id="energy-text" class="text-xs font-bold text-green-300">0%</span>
                 </div>
@@ -96,7 +100,7 @@
         <!-- 右側主內容區 -->
         <main class="flex-1 bg-slate-100 p-4 sm:p-6 overflow-y-auto flex flex-col">
             <div class="max-w-6xl mx-auto w-full bg-white rounded-3xl shadow-lg p-6 flex flex-col border border-gray-100 flex-1">
-                
+
                 <!-- 標題與進度 -->
                 <div class="mb-4">
                     <div class="flex justify-between items-start">
@@ -111,15 +115,15 @@
 
                 <hr class="border-gray-200 mb-4">
 
-                <!-- 互動區 & 提示板 -->
+                <!-- 互動區 &amp; 提示板 -->
                 <div class="flex flex-col lg:flex-row gap-6 flex-1">
                     <!-- 左半部：互動區 -->
                     <div class="flex-1 border-2 border-gray-100 rounded-2xl p-6 flex flex-col bg-gray-50 relative shadow-inner min-h-[400px]">
                         <div class="absolute top-4 right-4 z-10 flex gap-2">
-                            <button onclick="checkCurrentAnswer()" id="submit-btn" class="hidden bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-4 py-2 text-sm font-bold shadow transition">
+                            <button type="button" onclick="checkCurrentAnswer()" id="submit-btn" class="hidden bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-4 py-2 text-sm font-bold shadow transition">
                                 <i class="fa-solid fa-check"></i> 提交答案
                             </button>
-                            <button onclick="playTTS()" class="text-teal-600 hover:text-teal-800 bg-teal-100 hover:bg-teal-200 rounded-full w-10 h-10 flex items-center justify-center transition shadow-sm" title="語音朗讀">
+                            <button type="button" onclick="playTTS()" class="text-teal-600 hover:text-teal-800 bg-teal-100 hover:bg-teal-200 rounded-full w-10 h-10 flex items-center justify-center transition shadow-sm" title="語音朗讀" aria-label="語音朗讀">
                                 <i class="fa-solid fa-volume-high"></i>
                             </button>
                         </div>
@@ -141,13 +145,13 @@
                                 <span id="difficulty-badge" class="text-xs font-bold text-gray-500"></span>
                             </div>
                             <p id="hint-content" class="text-gray-700 text-sm leading-relaxed mb-4">任務提示將顯示於此...</p>
-                            
+
                             <div class="mt-auto">
                                 <div id="feedback-area" class="hidden p-4 rounded-xl text-sm font-bold text-center transition-all shadow-inner"></div>
-                                <button id="next-btn" onclick="nextQuestion()" class="hidden w-full mt-3 bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-xl shadow transition">
+                                <button type="button" id="next-btn" onclick="nextQuestion()" class="hidden w-full mt-3 bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-xl shadow transition">
                                     進入下一題 <i class="fa-solid fa-arrow-right"></i>
                                 </button>
-                                <button id="retry-btn" onclick="retryQuestion()" class="hidden w-full mt-3 bg-orange-500 hover:bg-orange-400 text-white font-bold py-3 rounded-xl shadow transition">
+                                <button type="button" id="retry-btn" onclick="retryQuestion()" class="hidden w-full mt-3 bg-orange-500 hover:bg-orange-400 text-white font-bold py-3 rounded-xl shadow transition">
                                     <i class="fa-solid fa-rotate-right"></i> 重新作答
                                 </button>
                             </div>
@@ -170,9 +174,9 @@
                 id: 1, stage: "第一階段：詞彙與語意訓練", title: "1. 情報歸檔室 (詞彙分類)", type: "drag-category",
                 desc: "任務：將詞彙拖曳（或點擊選取）到正確的類別箱中，建立語意網絡。",
                 questions: [
-                    { 
-                        diff: "★★☆ 綜合", 
-                        categories: ["交通工具", "通訊設備", "特工武器"], 
+                    {
+                        diff: "★★☆ 綜合",
+                        categories: ["交通工具", "通訊設備", "特工武器"],
                         words: [
                             { text: "對講機", cat: "通訊設備" },
                             { text: "私家車", cat: "交通工具" },
@@ -180,7 +184,7 @@
                             { text: "直升機", cat: "交通工具" },
                             { text: "無人機", cat: "通訊設備" }
                         ],
-                        hint: "請觀察下方 5 個積木，把它們分門別類放進適合的箱子裡。" 
+                        hint: "請觀察下方 5 個積木，把它們分門別類放進適合的箱子裡。"
                     }
                 ]
             },
@@ -280,11 +284,11 @@
                 id: 12, stage: "第四階段：進階敘事與邏輯", title: "12. 終極特工報告 (故事填空)", type: "fill-blank",
                 desc: "任務：請將下方的詞彙「拖曳」放入正確的空缺，完成通順的特工報告！",
                 questions: [
-                    { diff: "★★★ 終極", 
-                      text: "今天下午，[__1__] 潛入了敵方的 [__2__]。他小心翼翼地 [__3__] 了警報系統。最後，成功地完成了任務，帶著機密文件 [__4__]。", 
-                      blanks: ["特工阿杰", "秘密基地", "解除", "安全撤退"], 
+                    { diff: "★★★ 終極",
+                      text: "今天下午，[__1__] 潛入了敵方的 [__2__]。他小心翼翼地 [__3__] 了警報系統。最後，成功地完成了任務，帶著機密文件 [__4__]。",
+                      blanks: ["特工阿杰", "秘密基地", "解除", "安全撤退"],
                       options: ["秘密基地", "解除", "安全撤退", "特工阿杰"],
-                      hint: "第一格填(主角/誰)，第二格填(地點)，第三格填(動作)，第四格填(結果)。可拖曳或點選放入。" 
+                      hint: "第一格填(主角/誰)，第二格填(地點)，第三格填(動作)，第四格填(結果)。可拖曳或點選放入。"
                     }
                 ]
             },
@@ -324,14 +328,14 @@
         const totalQuestions = 30; // 概算題數
 
         let currentQIndex = 0;
-        let userSequence = []; 
+        let userSequence = [];
         let globalSelectedObj = null; // 用於儲存「點擊」選中的DOM，支援無拖曳操作
 
         document.addEventListener("DOMContentLoaded", () => {
             loadProgress();
             initSidebar();
             loadLevel(state.currentLevelIndex);
-            
+
             document.getElementById('toggle-sidebar').addEventListener('click', () => {
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('-translate-x-full');
@@ -374,7 +378,7 @@
             const list = document.getElementById('level-list');
             list.innerHTML = '';
             let currentStage = "";
-            
+
             sliLevels.forEach((level, index) => {
                 if (level.stage !== currentStage) {
                     currentStage = level.stage;
@@ -388,11 +392,11 @@
                 const isActive = index === state.currentLevelIndex;
                 btn.className = `w-full text-left px-3 py-2.5 rounded-xl border-2 transition font-bold text-xs sm:text-sm flex items-center gap-2 ${isActive ? 'border-orange-500 bg-orange-50 text-orange-700 shadow-md' : 'border-gray-200 bg-white hover:border-teal-300 text-gray-600'}`;
                 btn.innerHTML = `<i class="fa-solid fa-unlock-keyhole text-teal-500 w-4"></i> <span class="truncate">${level.title}</span>`;
-                
+
                 btn.onclick = () => {
                     state.currentLevelIndex = index;
                     saveProgress();
-                    initSidebar(); 
+                    initSidebar();
                     loadLevel(state.currentLevelIndex);
                 };
                 list.appendChild(btn);
@@ -405,11 +409,11 @@
         function loadLevel(levelIndex) {
             currentQIndex = 0;
             const level = sliLevels[levelIndex];
-            
+
             document.getElementById('current-stage-tag').innerText = level.stage;
             document.getElementById('current-level-title').innerText = level.title;
             document.getElementById('current-level-desc').innerText = level.desc;
-            
+
             renderProgressNodes(level);
             renderQuestion();
         }
@@ -418,7 +422,7 @@
             const container = document.getElementById('progress-nodes');
             container.innerHTML = '';
             const qCount = level.questions.length;
-            
+
             for(let i=0; i<qCount; i++) {
                 const node = document.createElement('div');
                 node.className = 'flex items-center';
@@ -426,7 +430,7 @@
                 circle.className = `w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs border-2 transition-colors ${i < currentQIndex ? 'bg-teal-500 border-teal-500 text-white' : (i === currentQIndex ? 'bg-white border-teal-500 text-teal-600' : 'bg-gray-100 border-gray-300 text-gray-400')}`;
                 circle.innerText = i + 1;
                 node.appendChild(circle);
-                
+
                 if (i < qCount - 1) {
                     const line = document.createElement('div');
                     line.className = `h-0.5 w-4 sm:w-8 transition-colors ${i < currentQIndex ? 'bg-teal-500' : 'bg-gray-300'}`;
@@ -450,19 +454,19 @@
             const submitBtn = document.getElementById('submit-btn');
             const nextBtn = document.getElementById('next-btn');
             const retryBtn = document.getElementById('retry-btn');
-            
-            area.innerHTML = ''; 
-            feedback.className = 'hidden'; 
+
+            area.innerHTML = '';
+            feedback.className = 'hidden';
             submitBtn.classList.add('hidden');
             nextBtn.classList.add('hidden');
             if(retryBtn) retryBtn.classList.add('hidden');
             userSequence = [];
             globalSelectedObj = null;
-            
+
             renderProgressNodes(level);
             hintArea.innerText = qData.hint || "請仔細觀察題目，完成特工任務！";
             document.getElementById('difficulty-badge').innerText = qData.diff || "";
-            
+
             if (level.type === 'drag-category') renderCategory(qData, area, submitBtn);
             else if (level.type === 'choice') renderChoice(qData, area);
             else if (level.type === 'sequence') renderSequence(qData, area, submitBtn);
@@ -473,7 +477,7 @@
         // ==========================================
         // 4. 五大題型引擎
         // ==========================================
-        
+
         // 引擎 A: 拖曳分類 (房間1) - 完全重寫修復 Bug
         function renderCategory(qData, container, submitBtn) {
             // 上方箱子區
@@ -481,16 +485,16 @@
             boxesContainer.className = 'flex flex-wrap gap-4 w-full justify-center mb-8';
 
             let categoryMap = {}; // 追蹤每個箱子的狀態
-            
+
             qData.categories.forEach(cat => {
                 categoryMap[cat] = [];
                 const boxWrapper = document.createElement('div');
                 boxWrapper.className = 'flex flex-col items-center flex-1 min-w-[120px] max-w-[200px]';
-                
+
                 const box = document.createElement('div');
                 box.className = 'drop-zone w-full min-h-[120px] border-4 border-dashed border-indigo-300 rounded-2xl flex flex-col items-center p-2 text-indigo-800 bg-white shadow-sm transition relative overflow-hidden';
                 box.innerHTML = `<i class="fa-solid fa-box-open text-2xl mb-1 mt-2 text-indigo-400 pointer-events-none"></i><span class="font-bold text-sm bg-indigo-100 px-2 rounded pointer-events-none">${cat}</span>`;
-                
+
                 const itemContainer = document.createElement('div');
                 itemContainer.className = 'w-full flex flex-col gap-1 mt-2 pointer-events-none';
                 box.appendChild(itemContainer);
@@ -518,13 +522,13 @@
             // 下方積木區
             const wordsContainer = document.createElement('div');
             wordsContainer.className = 'flex flex-wrap gap-3 w-full justify-center min-h-[60px] bg-gray-200 p-4 rounded-xl shadow-inner';
-            
+
             qData.words.forEach(w => {
                 const wordBlock = document.createElement('div');
                 wordBlock.className = 'draggable-item bg-indigo-600 text-white font-bold py-2 px-3 sm:px-4 rounded-lg shadow-lg select-none transition-colors flex items-center gap-2 pr-2';
                 wordBlock.draggable = true;
                 wordBlock.dataset.text = w.text;
-                
+
                 wordBlock.innerHTML = `
                     <span>${w.text}</span>
                     <button class="tts-btn bg-black/20 hover:bg-black/40 text-white rounded-full w-6 h-6 flex items-center justify-center transition shrink-0" title="朗讀選項">
@@ -537,15 +541,15 @@
                     e.stopPropagation(); // 避免觸發點擊選取
                     playTTS(w.text);
                 });
-                
+
                 // Drag 事件
-                wordBlock.addEventListener('dragstart', (e) => { 
-                    e.dataTransfer.setData('text/plain', w.text); 
-                    wordBlock.style.opacity = '0.5'; 
+                wordBlock.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', w.text);
+                    wordBlock.style.opacity = '0.5';
                     clearSelection();
                 });
                 wordBlock.addEventListener('dragend', (e) => { e.target.style.opacity = '1'; });
-                
+
                 // Click (取代拖曳) 事件
                 wordBlock.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -560,7 +564,7 @@
 
             container.appendChild(boxesContainer);
             container.appendChild(wordsContainer);
-            
+
             const hintNode = document.createElement('p');
             hintNode.className = 'text-xs text-gray-500 mt-4 text-center w-full bg-yellow-100 p-2 rounded';
             hintNode.innerHTML = '<i class="fa-solid fa-hand-pointer"></i> 提示：可用滑鼠「拖曳」積木到箱子，或「先點擊積木，再點擊箱子」。';
@@ -582,9 +586,9 @@
                     // 答對後隱藏個別喇叭，保持整潔
                     const btn = sourceEl.querySelector('.tts-btn');
                     if (btn) btn.style.display = 'none';
-                    
+
                     targetContainer.appendChild(sourceEl);
-                    
+
                     // 檢查是否全部完成
                     if (wordsContainer.children.length === 0) {
                         setTimeout(() => handleResult(true), 500);
@@ -635,7 +639,7 @@
             qData.options.forEach((optText, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'text-left w-full p-3 sm:p-4 border-2 border-gray-200 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition text-gray-700 font-medium flex gap-3 items-center bg-white relative';
-                
+
                 // 懶音特訓（13、14關）：初始化只顯示拼音部分
                 let initialTextToShow = optText;
                 if (isLispLevel) {
@@ -647,13 +651,13 @@
 
                 // 加入選項文字與喇叭按鈕
                 btn.innerHTML = `
-                    <div class="indicator-icon w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center shrink-0 transition-colors"></div> 
+                    <div class="indicator-icon w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center shrink-0 transition-colors"></div>
                     <span class="text-sm sm:text-base flex-1 option-display-text">${initialTextToShow}</span>
                     <div class="tts-btn bg-indigo-100 text-indigo-600 hover:bg-indigo-200 rounded-full w-8 h-8 flex items-center justify-center transition shrink-0 shadow-sm z-10" title="朗讀選項">
                         <i class="fa-solid fa-bullhorn text-xs pointer-events-none"></i>
                     </div>
                 `;
-                
+
                 // 獨立處理喇叭點擊事件
                 btn.querySelector('.tts-btn').addEventListener('click', (e) => {
                     e.stopPropagation(); // 阻止選項被選擇
@@ -666,7 +670,7 @@
                     // 鎖定所有按鈕
                     const allBtns = optsDiv.querySelectorAll('button');
                     allBtns.forEach(b => b.style.pointerEvents = 'none');
-                    
+
                     // 觸發「解碼」顯示原本被屏蔽的中文字
                     if (isLispLevel) {
                         allBtns.forEach((b, sIdx) => {
@@ -676,7 +680,7 @@
                     }
 
                     const iconDiv = btn.querySelector('.indicator-icon');
-                    
+
                     if (idx === qData.answer) {
                         btn.classList.remove('border-gray-200', 'hover:border-indigo-400', 'hover:bg-indigo-50');
                         btn.classList.add('border-green-500', 'bg-green-50', 'text-green-800');
@@ -702,27 +706,27 @@
         // 引擎 C: 排序題 (採用點擊重組代替複雜拖曳)
         function renderSequence(qData, container, submitBtn) {
             container.innerHTML = `<p class="text-sm font-bold text-gray-600 mb-2">請將以下情報重新組合：<br/><span class="text-indigo-600 text-lg">${qData.orig || ''}</span></p>`;
-            
+
             const targetArea = document.createElement('div');
             targetArea.className = 'w-full min-h-[80px] bg-white border-2 border-dashed border-indigo-300 rounded-xl p-4 flex flex-wrap gap-2 mb-6 items-center shadow-inner transition-all';
-            
+
             const sourceArea = document.createElement('div');
             sourceArea.className = 'flex flex-wrap gap-3 justify-center bg-gray-100 p-4 rounded-xl transition-all';
-            
+
             let availableWords = [...qData.words].sort(() => Math.random() - 0.5);
             let isChecking = false;
 
             function updateView() {
                 if(isChecking) return;
-                
+
                 targetArea.innerHTML = '';
                 sourceArea.innerHTML = '';
-                
+
                 userSequence.forEach((word, index) => {
                     const el = document.createElement('div');
                     el.className = 'bg-indigo-500 text-white px-3 py-2 rounded-lg font-bold shadow cursor-pointer hover:bg-indigo-600 transition flex items-center gap-2 pr-2';
                     el.innerHTML = `<span>${word}</span><div class="tts-btn bg-black/20 hover:bg-black/40 text-white rounded-full w-6 h-6 flex items-center justify-center transition shrink-0" title="朗讀"><i class="fa-solid fa-bullhorn text-[10px] pointer-events-none"></i></div>`;
-                    
+
                     el.querySelector('.tts-btn').addEventListener('click', (e) => { e.stopPropagation(); playTTS(word); });
                     el.onclick = () => { userSequence.splice(index, 1); availableWords.push(word); updateView(); };
                     targetArea.appendChild(el);
@@ -732,7 +736,7 @@
                     const el = document.createElement('div');
                     el.className = 'bg-white border-2 border-gray-300 text-gray-700 px-3 py-2 rounded-lg font-bold shadow-sm cursor-pointer hover:border-indigo-400 transition flex items-center gap-2 pr-2';
                     el.innerHTML = `<span>${word}</span><div class="tts-btn bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-indigo-500 rounded-full w-6 h-6 flex items-center justify-center transition shrink-0" title="朗讀"><i class="fa-solid fa-bullhorn text-[10px] pointer-events-none"></i></div>`;
-                    
+
                     el.querySelector('.tts-btn').addEventListener('click', (e) => { e.stopPropagation(); playTTS(word); });
                     el.onclick = () => { availableWords.splice(index, 1); userSequence.push(word); updateView(); };
                     sourceArea.appendChild(el);
@@ -742,7 +746,7 @@
                 if(availableWords.length === 0) {
                     isChecking = true;
                     const isCorrect = JSON.stringify(userSequence) === JSON.stringify(qData.answer);
-                    
+
                     if(isCorrect) {
                         targetArea.classList.replace('border-indigo-300', 'border-green-500');
                         targetArea.classList.add('bg-green-50');
@@ -756,15 +760,15 @@
                     }
                 }
             }
-            
+
             container.appendChild(targetArea);
             container.appendChild(sourceArea);
-            
+
             const hintNode = document.createElement('p');
             hintNode.className = 'text-xs text-gray-400 mt-4 w-full text-center';
             hintNode.innerHTML = '💡 依序點擊下方白色積木放入框中；點擊藍色積木可退回。';
             container.appendChild(hintNode);
-            
+
             updateView();
             window.checkCurrentAnswer = undefined;
             submitBtn.classList.add('hidden');
@@ -775,10 +779,10 @@
             const controls = document.createElement('div');
             controls.className = 'mb-6 w-full flex flex-col items-center';
             controls.innerHTML = `<button onclick="playTTS()" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-8 rounded-full shadow-lg flex items-center gap-3 text-lg animate-bounce"><i class="fa-solid fa-volume-high text-2xl"></i> 點此播放長官指令</button>`;
-            
+
             const grid = document.createElement('div');
             grid.className = 'grid grid-cols-3 gap-4 p-6 bg-gray-200 rounded-3xl w-full max-w-sm mx-auto shadow-inner';
-            
+
             const shapes = [
                 {id: 'red-square', color: 'bg-red-500', rounded: 'rounded-md'},
                 {id: 'blue-circle', color: 'bg-blue-500', rounded: 'rounded-full'},
@@ -803,28 +807,28 @@
             shapes.forEach(s => {
                 const btnContainer = document.createElement('div');
                 btnContainer.className = 'flex justify-center items-center h-20 w-20 bg-white rounded-2xl shadow-md cursor-pointer memory-btn transition hover:bg-gray-50';
-                
+
                 const shapeEl = document.createElement('div');
                 if(s.isTriangle) shapeEl.className = s.color;
                 else shapeEl.className = `w-12 h-12 ${s.color} ${s.rounded}`;
-                
+
                 btnContainer.appendChild(shapeEl);
                 btnContainer.onclick = () => {
                     if (userSequence.length >= qData.answer.length) return;
 
                     btnContainer.classList.add('memory-flash');
                     setTimeout(() => btnContainer.classList.remove('memory-flash'), 500);
-                    
+
                     userSequence.push(s.id);
-                    
+
                     const wrap = document.createElement('div');
                     wrap.className = 'w-8 h-8 flex justify-center items-center bg-white border-2 border-gray-200 rounded-md shadow-sm animate-pulse';
                     const innerShape = document.createElement('div');
                     innerShape.className = smallShapeMap[s.id];
                     wrap.appendChild(innerShape);
-                    
+
                     answerDisplay.appendChild(wrap);
-                    
+
                     if (userSequence.length === qData.answer.length) {
                         submitBtn.classList.remove('hidden');
                     }
@@ -840,7 +844,7 @@
                 const isCorrect = JSON.stringify(userSequence) === JSON.stringify(qData.answer);
                 handleResult(isCorrect);
                 if(!isCorrect) {
-                    answerDisplay.innerHTML = ''; 
+                    answerDisplay.innerHTML = '';
                 }
             };
         }
@@ -860,7 +864,7 @@
             optionsArea.className = 'flex flex-wrap gap-3 justify-center mt-6 p-5 bg-gray-100 rounded-xl w-full shadow-inner min-h-[80px]';
 
             let userAnswers = new Array(qData.blanks.length).fill(null);
-            
+
             function clearSelection() {
                 optionsArea.querySelectorAll('.draggable-item').forEach(el => el.classList.remove('selected'));
                 globalSelectedObj = null;
@@ -873,7 +877,7 @@
                         const btn = document.createElement('div');
                         btn.className = 'draggable-item bg-indigo-600 text-white px-4 py-2.5 rounded-lg font-bold shadow-md cursor-grab select-none flex items-center gap-2 pr-2';
                         btn.draggable = true;
-                        
+
                         btn.innerHTML = `
                             <span>${opt}</span>
                             <button class="tts-btn bg-black/20 hover:bg-black/40 text-white rounded-full w-6 h-6 flex items-center justify-center transition shrink-0" title="朗讀">
@@ -885,14 +889,14 @@
                             e.stopPropagation();
                             playTTS(opt);
                         });
-                        
+
                         btn.addEventListener('dragstart', (e) => {
                             e.dataTransfer.setData('text/plain', opt);
                             btn.style.opacity = '0.5';
                             clearSelection();
                         });
                         btn.addEventListener('dragend', (e) => { e.target.style.opacity = '1'; });
-                        
+
                         btn.addEventListener('click', (e) => {
                             e.stopPropagation();
                             clearSelection();
@@ -921,7 +925,7 @@
                             userAnswers[idx] = globalSelectedObj.innerText;
                             clearSelection();
                             updateState();
-                        } 
+                        }
                         else if (userAnswers[idx]) {
                             userAnswers[idx] = null;
                             updateState();
@@ -931,7 +935,7 @@
                     slot.addEventListener('dragover', (e) => { e.preventDefault(); slot.classList.add('dragover'); });
                     slot.addEventListener('dragleave', () => { slot.classList.remove('dragover'); });
                     slot.addEventListener('drop', (e) => {
-                        e.preventDefault(); 
+                        e.preventDefault();
                         slot.classList.remove('dragover');
                         const text = e.dataTransfer.getData('text/plain');
                         if(!userAnswers[idx]) {
@@ -951,12 +955,12 @@
 
             container.appendChild(textBlock);
             container.appendChild(optionsArea);
-            
+
             const hintNode = document.createElement('p');
             hintNode.className = 'text-xs text-gray-500 mt-4 text-center w-full bg-yellow-100 p-2 rounded';
             hintNode.innerHTML = '<i class="fa-solid fa-hand-pointer"></i> 提示：將詞彙「拖曳」到空格中，或「先點擊詞彙，再點擊空格」。';
             container.appendChild(hintNode);
-            
+
             updateState();
 
             window.checkCurrentAnswer = () => {
@@ -978,7 +982,7 @@
             const nextBtn = document.getElementById('next-btn');
             const submitBtn = document.getElementById('submit-btn');
             const retryBtn = document.getElementById('retry-btn');
-            
+
             feedback.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200', 'bg-green-50', 'text-green-700', 'border-green-200');
             submitBtn.classList.add('hidden');
             nextBtn.classList.add('hidden');
@@ -991,7 +995,7 @@
             } else {
                 feedback.classList.add('bg-red-50', 'text-red-700', 'border', 'border-red-200');
                 feedback.innerHTML = '<i class="fa-solid fa-circle-xmark text-xl mb-1 block"></i> 哎呀，不對喔！請看提示重試。';
-                userSequence = []; 
+                userSequence = [];
                 if (retryBtn) retryBtn.classList.remove('hidden');
             }
         }
@@ -1033,7 +1037,7 @@
                 confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
                 document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 5000); 
+                setTimeout(() => confetti.remove(), 5000);
             }
         }
 
@@ -1041,7 +1045,7 @@
             const level = sliLevels[state.currentLevelIndex];
             if(!level || !level.questions[currentQIndex]) return;
             const qData = level.questions[currentQIndex];
-            
+
             let textToRead = customText;
             if(!textToRead) {
                 if (qData.audioText) textToRead = qData.audioText;

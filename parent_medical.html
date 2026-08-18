@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>📋 香港 SEN 醫療與社福系統導航 (HK SEN Healthcare & Welfare Navigator)</title>
+    <title>📋 香港 SEN 醫療與社福系統導航 (HK SEN Healthcare &amp; Welfare Navigator)</title>
     <!-- 引入 Tailwind CSS 進行精緻視覺排版 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入 Font Awesome 專業圖示 -->
@@ -69,7 +69,7 @@
                 <span>返回家長專區首頁</span>
             </a>
             <div class="flex items-center gap-2">
-                <button onclick="toggleHighContrast()" class="hidden sm:block text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-full transition font-bold border border-slate-300">
+                <button type="button" onclick="toggleHighContrast()" class="hidden sm:block text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-full transition font-bold border border-slate-300">
                     <i class="fa-solid fa-circle-half-stroke mr-1"></i>高對比
                 </button>
                 <span class="bg-blue-100 text-blue-800 text-xs font-black px-2.5 py-1 rounded-full uppercase"><i class="fa-solid fa-map-location-dot mr-1 animate-pulse"></i>政策與導航</span>
@@ -79,7 +79,7 @@
 
     <!-- 主要內容區 -->
     <main class="flex-grow max-w-5xl mx-auto px-4 py-8 w-full space-y-8">
-        
+
         <!-- 標題橫幅 -->
         <div class="bg-gradient-to-r from-blue-600 via-sky-600 to-indigo-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
             <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10 pointer-events-none">
@@ -117,17 +117,17 @@
                         第一步：選擇孩子當前年齡段 (Age Group)
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <button onclick="setWizardAge('preschool')" id="age-preschool" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
+                        <button type="button" onclick="setWizardAge('preschool')" id="age-preschool" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
                             <span class="block text-xl mb-1">👶</span>
                             <span class="font-extrabold text-slate-800 text-xs sm:text-sm block">幼兒/學前期</span>
                             <span class="text-[10px] text-slate-400 block mt-0.5">0 - 6 歲以下 (未入小一)</span>
                         </button>
-                        <button onclick="setWizardAge('school')" id="age-school" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
+                        <button type="button" onclick="setWizardAge('school')" id="age-school" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
                             <span class="block text-xl mb-1">🎒</span>
                             <span class="font-extrabold text-slate-800 text-xs sm:text-sm block">中小學階段</span>
                             <span class="text-[10px] text-slate-400 block mt-0.5">6 - 18 歲 (小一至中六)</span>
                         </button>
-                        <button onclick="setWizardAge('youth')" id="age-youth" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
+                        <button type="button" onclick="setWizardAge('youth')" id="age-youth" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
                             <span class="block text-xl mb-1">🎓</span>
                             <span class="font-extrabold text-slate-800 text-xs sm:text-sm block">大專與職場過渡</span>
                             <span class="text-[10px] text-slate-400 block mt-0.5">18 歲以上 (大專/就業)</span>
@@ -144,14 +144,14 @@
 
                     <label class="block text-xs font-black text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                         <span class="bg-blue-600 text-white w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px]">2</span>
-                        第二步：選擇您對「時間與預算」的預期 (Budget & Urgency)
+                        第二步：選擇您對「時間與預算」的預期 (Budget &amp; Urgency)
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button onclick="setWizardBudget('public')" id="budget-public" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
+                        <button type="button" onclick="setWizardBudget('public')" id="budget-public" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
                             <span class="font-extrabold text-slate-800 text-xs sm:text-sm block">🏛️ 公營優先 (低預算、需輪候)</span>
                             <span class="text-[10px] text-slate-400 block mt-1 leading-relaxed">完全免費/標準公共門診費用。評估時間通常需 6-18 個月。</span>
                         </button>
-                        <button onclick="setWizardBudget('private')" id="budget-private" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
+                        <button type="button" onclick="setWizardBudget('private')" id="budget-private" class="wizard-btn p-4 rounded-xl border text-left transition bg-white border-slate-200 hover:border-blue-400 group">
                             <span class="font-extrabold text-slate-800 text-xs sm:text-sm block">⚡ 私營優先 (希望盡快拿到報告)</span>
                             <span class="text-[10px] text-slate-400 block mt-1 leading-relaxed">費用約 HK$8,000 - $18,000。通常可在 2-4 星期內安排評估。</span>
                         </button>
@@ -167,16 +167,16 @@
                             <p class="text-[10px] text-blue-700 font-mono font-bold uppercase tracking-wider mt-0.5" id="result-route-code">ROUTE CODE: --</p>
                         </div>
                     </div>
-                    
+
                     <div class="space-y-4 text-xs sm:text-sm" id="result-steps-container">
                         <!-- 由 JS 動態灌入 -->
                     </div>
 
                     <div class="pt-3 border-t border-blue-100 flex flex-wrap gap-2">
-                        <button onclick="printWizardResult()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs shadow-sm flex items-center gap-1.5">
+                        <button type="button" onclick="printWizardResult()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs shadow-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-print"></i> <span>列印此路線圖</span>
                         </button>
-                        <button onclick="copyWizardResult()" class="bg-white hover:bg-slate-100 text-slate-600 font-bold py-2.5 px-4 rounded-xl transition text-xs border border-slate-200 flex items-center gap-1.5">
+                        <button type="button" onclick="copyWizardResult()" class="bg-white hover:bg-slate-100 text-slate-600 font-bold py-2.5 px-4 rounded-xl transition text-xs border border-slate-200 flex items-center gap-1.5">
                             <i class="fa-solid fa-copy"></i> <span>複製行動清單</span>
                         </button>
                     </div>
@@ -189,7 +189,7 @@
             <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
                 <i class="fa-solid fa-scale-balanced text-blue-600"></i> 2. 深度分析：公營 vs 私營評估系統對比
             </h3>
-            
+
             <!-- 響應式對比卡片網格 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- 公營測驗服務 (衞生署 CAS / 醫管局) -->
@@ -281,7 +281,7 @@
                         發現發展遲緩、疑有 ASD/ADHD。家長需經由母嬰健康院或私家醫生轉介至衞生署兒童體能智力測驗服務（CAS）。評估合格後轉介社署，引入到校康復服務（OPRS）或排期特殊幼兒中心（SCCC）。
                     </p>
                 </div>
-                
+
                 <!-- 里程碑 2 -->
                 <div class="relative pl-6 border-l-2 border-blue-200 space-y-1.5">
                     <div class="absolute -left-[7px] top-1 w-3 h-3 bg-amber-500 rounded-full"></div>
@@ -299,7 +299,7 @@
                     <span class="bg-indigo-100 text-indigo-800 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">青少年至大專過渡期 (15 - 18 歲)</span>
                     <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm">成人交接：兒童精神科轉入「成人精神科」與大專 DSE 考試調適</h4>
                     <p class="text-slate-500 text-xs leading-relaxed">
-                        中四至中五前，學校需協助家長正式向「考評局」申報學術調適（如延長 25% 時間、特殊答卷等）。中六畢業時，原先醫院管理局的「兒童及青少年精神科（C&A Psychiatry）」檔案，將自動轉介至「成人精神科」進行藥物與跟進銜接。
+                        中四至中五前，學校需協助家長正式向「考評局」申報學術調適（如延長 25% 時間、特殊答卷等）。中六畢業時，原先醫院管理局的「兒童及青少年精神科（C&amp;A Psychiatry）」檔案，將自動轉介至「成人精神科」進行藥物與跟進銜接。
                     </p>
                 </div>
             </div>
@@ -336,7 +336,7 @@
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed">為正在輪候學前康復服務的兒童提供（最高 $6,904/月）。涵蓋普通額與高額津貼的入息審查標準（輪候特殊幼兒中心者豁免入息審查）。</p>
                 </a>
-                
+
                 <!-- 關愛基金 -->
                 <a href="https://www.swd.gov.hk/tc/pubsvc/ccf/" target="_blank" rel="noopener noreferrer" class="group block bg-slate-50 border border-slate-100 hover:border-amber-300 rounded-2xl p-5 transition-all hover:shadow-md md:col-span-2">
                     <div class="flex items-center justify-between mb-2">
@@ -350,7 +350,7 @@
             </div>
         </div>
 
-        <!-- 模塊五：官方參考文獻與法定政策指南 (Official Reference & Policy Guidelines) -->
+        <!-- 模塊五：官方參考文獻與法定政策指南 (Official Reference &amp; Policy Guidelines) -->
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-blue-100 space-y-6">
             <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
                 <i class="fa-solid fa-building-columns text-blue-600"></i> 5. 官方參考文獻與法定政策指南
@@ -422,12 +422,12 @@
         function showToast(message, type = "success") {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            
+
             toast.className = "flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg border text-sm font-bold bg-white transition-all duration-300 transform translate-x-10 opacity-0 z-50";
-            
+
             let icon = '<i class="fa-solid fa-circle-check text-emerald-500 text-lg mt-0.5"></i>';
             let borderClass = 'border-emerald-200';
-            
+
             if(type === 'error') {
                 icon = '<i class="fa-solid fa-circle-exclamation text-rose-500 text-lg mt-0.5"></i>';
                 borderClass = 'border-rose-200';
@@ -435,9 +435,9 @@
 
             toast.className += ` ${borderClass}`;
             toast.innerHTML = `${icon} <span class="text-slate-700 leading-tight">${message}</span>`;
-            
+
             container.appendChild(toast);
-            
+
             // 進場動畫
             requestAnimationFrame(() => {
                 setTimeout(() => {
@@ -445,7 +445,7 @@
                     toast.classList.add('translate-x-0', 'opacity-100');
                 }, 10);
             });
-            
+
             // 退場與銷毀
             setTimeout(() => {
                 toast.classList.remove('translate-x-0', 'opacity-100');
@@ -467,14 +467,14 @@
 
         function setWizardAge(age) {
             currentAge = age;
-            
+
             // UI 更新：重置所有年齡按鈕樣式
             ['preschool', 'school', 'youth'].forEach(a => {
                 const btn = document.getElementById(`age-${a}`);
                 btn.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50', 'border-blue-500');
                 btn.classList.add('bg-white', 'border-slate-200');
             });
-            
+
             // Highlight 選中項目
             const selectedBtn = document.getElementById(`age-${age}`);
             selectedBtn.classList.remove('bg-white', 'border-slate-200');
@@ -497,14 +497,14 @@
             }
 
             currentBudget = budget;
-            
+
             // UI 更新
             ['public', 'private'].forEach(b => {
                 const btn = document.getElementById(`budget-${b}`);
                 btn.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50', 'border-blue-500');
                 btn.classList.add('bg-white', 'border-slate-200');
             });
-            
+
             const selectedBtn = document.getElementById(`budget-${budget}`);
             selectedBtn.classList.remove('bg-white', 'border-slate-200');
             selectedBtn.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50', 'border-blue-500');
@@ -516,7 +516,7 @@
             const resultBox = document.getElementById('wizard-result-box');
             const container = document.getElementById('result-steps-container');
             const routeCodeEl = document.getElementById('result-route-code');
-            
+
             resultBox.classList.remove('hidden');
             let steps = [];
             let code = `${currentAge.toUpperCase()}-${currentBudget.toUpperCase()}`;
@@ -566,7 +566,7 @@
                     <p class="text-slate-700 leading-relaxed">${step}</p>
                 </div>
             `).join('');
-            
+
             // 滾動到結果
             setTimeout(() => {
                 resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -583,9 +583,9 @@
             const routeCodeEl = document.getElementById('result-route-code').innerText;
             const container = document.getElementById('result-steps-container');
             const steps = Array.from(container.querySelectorAll('p')).map((p, i) => `${i+1}. ${p.innerText}`).join('\n\n');
-            
+
             const textToCopy = `【香港 SEN 評估與介入路線圖】\n${routeCodeEl}\n\n${steps}\n\n-- 來自香港 SEN 醫療與社福系統導航`;
-            
+
             try {
                 const temp = document.createElement('textarea');
                 temp.value = textToCopy;

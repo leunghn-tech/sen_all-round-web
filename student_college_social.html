@@ -9,7 +9,7 @@
     <!-- 引入 FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- 引入字體 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;900&amp;family=Poppins:wght@600;800&amp;display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Noto Sans HK', sans-serif;
@@ -38,7 +38,7 @@
         .flip-card-back {
             transform: rotateY(180deg);
         }
-        
+
         /* 遊戲與回饋動畫 */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -72,15 +72,19 @@
             width: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1); 
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.5); 
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 4px;
         }
     </style>
-</head>
+
+        <style id="audit-inline-style-replacements">
+            .audit-student-college-social-style-1{width: 0%}
+        </style>
+    </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
 
     <!-- 頂部導航 -->
@@ -116,7 +120,7 @@
     </header>
 
     <main class="w-full max-w-5xl mx-auto px-6 pb-20 flex-grow relative z-10">
-        
+
         <!-- 裝置 1：👥 Group Project 危機處理陣 (修正排版與箭頭) -->
         <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-teal-100 mb-10 relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
@@ -124,7 +128,7 @@
                 <i class="fa-solid fa-users-gear"></i> 裝置 1：Group Project 危機處理陣
             </h2>
             <p class="text-slate-600 font-medium mb-6">大專最可怕的不是考試，而是分組報告 (Group Project)！點擊翻開卡片，查看遇到「麻煩組員」時的標準處理程序 (SOP)。</p>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- 卡片 1 -->
                 <div class="flip-card cursor-pointer h-80" onclick="this.classList.toggle('flipped')">
@@ -185,10 +189,10 @@
                 <i class="fa-solid fa-snowflake"></i> 裝置 2：Tutorial (導修課) 破冰組隊儀器
             </h2>
             <p class="text-slate-600 font-medium mb-6">教授突然說：「現在請大家 4 個人一組。」這對不擅長主動交際的學生宛如世界末日。啟動破冰 SOP，無痛潛入小組！</p>
-            
+
             <div class="bg-cyan-50/50 p-6 rounded-2xl border-2 border-cyan-200 max-w-2xl mx-auto relative">
                 <div class="absolute top-4 right-4 text-cyan-600 font-bold text-xs" id="group-sop-counter">階段 1 / 3</div>
-                
+
                 <div class="flex justify-between items-center mb-8 relative px-4">
                     <div class="absolute left-4 right-4 top-1/2 h-1 bg-cyan-200 -translate-y-1/2 z-0"></div>
                     <div id="group-step-1" class="z-10 w-10 h-10 rounded-full bg-cyan-600 text-white flex items-center justify-center font-bold shadow-md">1</div>
@@ -203,7 +207,7 @@
                 </div>
 
                 <div class="text-center mt-6">
-                    <button onclick="nextGroupStep()" id="group-sop-btn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-black px-6 py-2 rounded-full text-sm shadow-md transition-all">執行下一個步驟</button>
+                    <button type="button" onclick="nextGroupStep()" id="group-sop-btn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-black px-6 py-2 rounded-full text-sm shadow-md transition-all">執行下一個步驟</button>
                 </div>
             </div>
         </div>
@@ -215,10 +219,10 @@
                 <i class="fa-solid fa-sliders"></i> 裝置 3：Hi-Bye Friend 期望值調節器
             </h2>
             <p class="text-slate-600 font-medium mb-6">大學同學下課後各自散去，不代表排擠你。大專友誼多數是「散餐制」，請選擇適當的「認知濾鏡」化解失落感！</p>
-            
+
             <div class="bg-indigo-50 p-6 rounded-2xl border-2 border-indigo-200 max-w-3xl mx-auto relative">
                 <div class="absolute top-4 right-4 text-indigo-600 font-bold text-xs" id="hibye-counter">情境 1 / 4</div>
-                
+
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-indigo-100 mb-6 mt-4 flex items-center gap-4">
                     <div class="text-3xl"><i class="fa-solid fa-person-walking-arrow-right text-indigo-400"></i></div>
                     <div>
@@ -233,7 +237,7 @@
 
                 <div id="hibye-feedback" class="hidden mt-6 p-5 rounded-xl border-2 text-center animate-pop bg-white flex flex-col items-center">
                     <div id="hibye-result"></div>
-                    <button id="hibye-next-btn" onclick="nextHibye()" class="hidden mt-4 bg-indigo-100 text-indigo-800 font-bold px-6 py-2 rounded-full hover:bg-indigo-200 transition-colors">
+                    <button type="button" id="hibye-next-btn" onclick="nextHibye()" class="hidden mt-4 bg-indigo-100 text-indigo-800 font-bold px-6 py-2 rounded-full hover:bg-indigo-200 transition-colors">
                         分析下一個情境 <i class="fa-solid fa-arrow-right ml-1"></i>
                     </button>
                 </div>
@@ -247,19 +251,19 @@
                 <i class="fa-solid fa-campground"></i> 裝置 4：Ocamp / 迎新營生存背包
             </h2>
             <p class="text-slate-600 font-medium mb-6">迎新營有很多吵鬧的破冰遊戲。特工要學會如何保護自己免於「感官過載」，同時又不失禮！</p>
-            
+
             <div class="bg-emerald-50 p-6 rounded-2xl border-2 border-emerald-200 relative max-w-3xl mx-auto">
                 <div class="absolute top-4 right-4 text-emerald-600 font-bold text-xs" id="ocamp-counter">情境 1 / 3</div>
-                
+
                 <h3 id="ocamp-scenario" class="text-lg md:text-xl font-black text-emerald-900 mt-4 mb-6">「大家圍圈玩破冰遊戲，需要一直大聲嗌同埋有好多身體接觸，你覺得好抗拒、好唔舒服。」</h3>
-                
+
                 <div class="flex flex-col gap-3" id="ocamp-options">
                     <!-- JS 動態注入 -->
                 </div>
 
                 <div id="ocamp-feedback" class="hidden mt-6 p-6 rounded-2xl border-2 text-center animate-pop max-w-3xl mx-auto bg-white flex flex-col items-center">
                     <div id="ocamp-result"></div>
-                    <button id="ocamp-next-btn" onclick="nextOcamp()" class="hidden mt-4 bg-emerald-100 text-emerald-800 font-bold px-6 py-2 rounded-full hover:bg-emerald-200 transition-colors">
+                    <button type="button" id="ocamp-next-btn" onclick="nextOcamp()" class="hidden mt-4 bg-emerald-100 text-emerald-800 font-bold px-6 py-2 rounded-full hover:bg-emerald-200 transition-colors">
                         下一個生存情境 <i class="fa-solid fa-arrow-right ml-1"></i>
                     </button>
                 </div>
@@ -273,10 +277,10 @@
                 <i class="fa-solid fa-shield-halved"></i> 裝置 5：大專人際界線防禦盾 (拒絕情緒勒索)
             </h2>
             <p class="text-slate-600 font-medium mb-6">在大學，學會「莊員」或前輩有時會用「唔夠熱血」來情緒勒索。點擊播放發聲，練習溫和但堅定的防禦話術！</p>
-            
+
             <div class="bg-pink-50 p-6 rounded-2xl border-2 border-pink-100 max-w-3xl mx-auto relative">
                 <div class="absolute top-4 right-4 text-pink-600 font-bold text-xs" id="shield-counter">情境 1 / 6</div>
-                
+
                 <div class="text-center mb-6 mt-2">
                     <h3 id="shield-scenario" class="text-lg md:text-xl font-black text-pink-900 mt-4 min-h-[48px]">學會前輩 (老鬼) 逼你通宵搞活動：「你咁早走？唔為個莊著想嘅？有冇熱血㗎你！」</h3>
                 </div>
@@ -288,7 +292,7 @@
                 <div id="shield-display" class="hidden bg-white p-6 rounded-xl border-2 border-pink-200 text-center animate-pop shadow-sm">
                     <div class="flex flex-col items-center justify-center">
                         <p id="shield-speech" class="text-base md:text-lg font-black text-pink-700 bg-pink-50 py-3 px-6 rounded-lg mb-4 w-full shadow-inner"></p>
-                        <button onclick="playShieldTTS()" class="bg-pink-500 hover:bg-pink-600 text-white font-black py-2 px-6 rounded-full flex items-center gap-2 text-sm shadow-md active:scale-95 mb-4 transition-all">
+                        <button type="button" onclick="playShieldTTS()" class="bg-pink-500 hover:bg-pink-600 text-white font-black py-2 px-6 rounded-full flex items-center gap-2 text-sm shadow-md active:scale-95 mb-4 transition-all">
                             <i class="fa-solid fa-volume-high"></i> 練習大聲拒絕
                         </button>
                         <p id="shield-result-desc" class="text-xs md:text-sm text-slate-600 font-medium"></p>
@@ -296,7 +300,7 @@
                 </div>
 
                 <div class="text-center mt-6">
-                    <button id="shield-next-btn" onclick="nextShield()" class="hidden border-2 border-pink-500 text-pink-700 font-bold px-6 py-2 rounded-full hover:bg-pink-100 transition-colors">應對下一種威脅 <i class="fa-solid fa-arrow-right"></i></button>
+                    <button type="button" id="shield-next-btn" onclick="nextShield()" class="hidden border-2 border-pink-500 text-pink-700 font-bold px-6 py-2 rounded-full hover:bg-pink-100 transition-colors">應對下一種威脅 <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
         </div>
@@ -308,10 +312,10 @@
                 <i class="fa-solid fa-envelope-open-text"></i> 裝置 6：教授通訊修復器 (Email 禮儀)
             </h2>
             <p class="text-slate-600 font-medium mb-6">不禮貌或不清晰的 Email 會被教授無視！請對比並選出最專業的「學術 Email 裝備」。</p>
-            
+
             <div class="bg-slate-50 p-6 rounded-2xl border-2 border-slate-200 shadow-sm max-w-4xl mx-auto relative">
                 <div class="absolute top-4 right-4 text-purple-600 font-bold text-xs bg-purple-100 px-2 py-1 rounded" id="email-counter">信件 1 / 3</div>
-                
+
                 <div class="text-center mb-6 mt-4">
                     <h3 id="email-scenario" class="text-lg font-black text-purple-900 bg-white inline-block px-4 py-2 rounded-lg border border-purple-200 shadow-sm">
                         【情境】：你想問教授關於 Assignment 1 的截止日期。
@@ -324,7 +328,7 @@
 
                 <div id="email-feedback" class="hidden mt-6 p-5 rounded-xl border-2 text-center animate-pop flex flex-col items-center">
                     <div id="email-result"></div>
-                    <button id="email-next-btn" onclick="nextEmail()" class="hidden mt-4 bg-purple-600 text-white font-bold px-6 py-2 rounded-full hover:bg-purple-500 transition-colors text-sm shadow-md">
+                    <button type="button" id="email-next-btn" onclick="nextEmail()" class="hidden mt-4 bg-purple-600 text-white font-bold px-6 py-2 rounded-full hover:bg-purple-500 transition-colors text-sm shadow-md">
                         修復下一封 Email <i class="fa-solid fa-arrow-right ml-1"></i>
                     </button>
                 </div>
@@ -335,15 +339,15 @@
         <h2 class="text-2xl font-bold mb-6 text-slate-800 text-center">
             🎮 終極大專生存戰 (10題 畢業考核)
         </h2>
-        
+
         <div id="game-container" class="bg-slate-800 rounded-[2rem] p-6 md:p-10 shadow-xl mb-12 relative overflow-hidden border-4 border-slate-700">
             <div class="w-full bg-slate-700 rounded-full h-2 mb-6">
-                <div id="game-progress" class="bg-gradient-to-r from-teal-400 to-emerald-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                <div id="game-progress" class="bg-gradient-to-r from-teal-400 to-emerald-500 h-2 rounded-full transition-all duration-500 audit-student-college-social-style-1"></div>
             </div>
 
             <div id="game-screen" class="bg-white rounded-xl p-6 md:p-8 shadow-inner relative">
                 <div class="absolute top-4 right-4 bg-slate-100 text-slate-500 text-xs font-bold px-3 py-1 rounded-full" id="game-counter">第 1 / 10 局</div>
-                
+
                 <div class="text-center mb-8 mt-4">
                     <div id="game-icon" class="text-5xl mb-4 text-teal-500">🎓</div>
                     <p id="game-question" class="text-lg md:text-xl font-bold text-slate-700">
@@ -358,9 +362,9 @@
                     <div class="flex items-start gap-3">
                         <div id="feedback-icon" class="text-2xl mt-1"></div>
                         <div>
-                            <h4 id="feedback-title" class="font-bold text-lg mb-1"></h4>
+                            <h4 id="feedback-title" class="font-bold text-lg mb-1">載入中…</h4>
                             <p id="feedback-text" class="text-sm text-slate-600 mb-3"></p>
-                            <button id="next-btn" onclick="nextQuestion()" class="hidden bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-700 transition-colors">
+                            <button type="button" id="next-btn" onclick="nextQuestion()" class="hidden bg-slate-800 text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-slate-700 transition-colors">
                                 下一局 <i class="fa-solid fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -375,7 +379,7 @@
             <div class="text-5xl mb-4 text-teal-500"><i class="fa-solid fa-graduation-cap"></i></div>
             <h3 class="text-2xl font-black mb-2 text-slate-800">大專生存演練完成！</h3>
             <p class="text-slate-500 mb-6">太棒了！你已經解開了 Group Project 的詛咒、掌握了 Email 禮儀，成為無懼大專挑戰的高級特工！</p>
-            <button onclick="completeMission()" id="claimBtn" class="bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 mx-auto">
+            <button type="button" onclick="completeMission()" id="claimBtn" class="bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 mx-auto">
                 <i class="fa-solid fa-check-circle"></i> 領取 300 EXP 並返回大廳
             </button>
             <p id="successMsg" class="text-emerald-600 font-bold mt-4 hidden">
@@ -491,13 +495,13 @@
             const data = hibyeData[hibyeIndex];
             document.getElementById('hibye-counter').innerText = `情境 ${hibyeIndex + 1} / ${hibyeData.length}`;
             document.getElementById('hibye-scenario').innerText = data.scenario;
-            
+
             const container = document.getElementById('hibye-options');
             container.innerHTML = `
                 <button onclick="checkHibye(false, this)" class="hibye-btn bg-white border-2 border-indigo-100 hover:border-indigo-400 p-4 rounded-xl text-left font-bold text-slate-700 transition-all text-sm shadow-sm">${data.optA}</button>
                 <button onclick="checkHibye(true, this)" class="hibye-btn bg-white border-2 border-indigo-100 hover:border-indigo-400 p-4 rounded-xl text-left font-bold text-slate-700 transition-all text-sm shadow-sm">${data.optB}</button>
             `;
-            
+
             // For the last question, optA is correct, optB is false
             if (hibyeIndex === 3) {
                 container.innerHTML = `
@@ -523,10 +527,10 @@
             if (isCorrect) {
                 btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800');
                 btn.classList.remove('opacity-50');
-                
+
                 fb.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-800');
                 fbResult.innerHTML = `<h4 class="font-black text-lg mb-2">${data.successTitle}</h4><p class="text-sm font-medium">${data.successText}</p>`;
-                
+
                 nextBtn.classList.remove('hidden');
                 if (hibyeIndex === hibyeData.length - 1) {
                     nextBtn.innerText = "完成期望值調節！";
@@ -534,10 +538,10 @@
             } else {
                 btn.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-800', 'animate-shake');
                 btn.classList.remove('opacity-50');
-                
+
                 fb.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-800');
                 fbResult.innerHTML = `<h4 class="font-black text-lg mb-2">${data.failTitle}</h4><p class="text-sm font-medium">${data.failText}</p>`;
-                
+
                 setTimeout(() => {
                     btn.classList.remove('animate-shake', 'bg-rose-50', 'border-rose-400', 'text-rose-800');
                     btns.forEach(b => b.classList.remove('opacity-50', 'pointer-events-none'));
@@ -593,13 +597,13 @@
             const data = ocampData[ocampIndex];
             document.getElementById('ocamp-counter').innerText = `情境 ${ocampIndex + 1} / ${ocampData.length}`;
             document.getElementById('ocamp-scenario').innerText = data.scenario;
-            
+
             const container = document.getElementById('ocamp-options');
             container.innerHTML = `
                 <button onclick="checkOcamp(false, this)" class="ocamp-btn bg-white border-2 border-emerald-200 hover:border-emerald-400 p-4 rounded-xl text-left font-bold text-slate-700 transition-all shadow-sm">${data.optA}</button>
                 <button onclick="checkOcamp(true, this)" class="ocamp-btn bg-white border-2 border-emerald-200 hover:border-emerald-400 p-4 rounded-xl text-left font-bold text-slate-700 transition-all shadow-sm">${data.optB}</button>
             `;
-            
+
             if(Math.random() > 0.5) {
                 container.appendChild(container.firstElementChild);
             }
@@ -621,10 +625,10 @@
             if (isCorrect) {
                 btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800');
                 btn.classList.remove('opacity-50');
-                
+
                 fb.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-800');
                 fb.querySelector('#ocamp-result').innerHTML = `<h4 class="font-black text-lg mb-2"><i class="fa-solid fa-check-circle"></i> 生存策略正確！</h4><p class="text-sm">${data.success}</p>`;
-                
+
                 nextBtn.classList.remove('hidden');
                 if (ocampIndex === ocampData.length - 1) {
                     nextBtn.innerText = "完成背包整理！";
@@ -632,10 +636,10 @@
             } else {
                 btn.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-800', 'animate-shake');
                 btn.classList.remove('opacity-50');
-                
+
                 fb.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-800');
                 fb.querySelector('#ocamp-result').innerHTML = `<h4 class="font-black text-lg mb-2"><i class="fa-solid fa-triangle-exclamation"></i> 社交危機！</h4><p class="text-sm">${data.fail}</p>`;
-                
+
                 setTimeout(() => {
                     btn.classList.remove('animate-shake', 'bg-rose-50', 'border-rose-400', 'text-rose-800');
                     btns.forEach(b => b.classList.remove('opacity-50', 'pointer-events-none'));
@@ -698,7 +702,7 @@
             const data = shieldData[currentShieldIndex];
             document.getElementById('shield-counter').innerText = `情境 ${currentShieldIndex + 1} / ${shieldData.length}`;
             document.getElementById('shield-scenario').innerText = data.scenario;
-            
+
             const container = document.getElementById('shield-options');
             container.innerHTML = `
                 <button onclick="activateShield('${data.speech}', '${data.desc}')" class="bg-white hover:bg-pink-100 border-2 border-pink-200 p-4 rounded-xl text-left transition-all shadow-sm">
@@ -710,7 +714,7 @@
                     <p class="text-xs text-slate-500">這會破壞關係或讓自己受傷</p>
                 </button>
             `;
-            
+
             if(Math.random() > 0.5) {
                 container.appendChild(container.firstElementChild);
             }
@@ -734,7 +738,7 @@
                 speechEl.innerText = "【 錯誤示範，沒有啟動保護 】";
                 speechEl.className = "text-base md:text-lg font-black text-rose-700 bg-rose-50 py-3 px-6 rounded-lg mb-4 w-full shadow-inner animate-shake";
                 shieldSpeechText = "";
-                
+
                 setTimeout(() => {
                     display.classList.add('hidden');
                     btns.forEach(b => b.classList.remove('opacity-50', 'pointer-events-none'));
@@ -744,7 +748,7 @@
                 speechEl.innerText = `💬 練習說：「${customSpeech}」`;
                 shieldSpeechText = customSpeech;
                 playShieldTTS();
-                
+
                 descEl.innerText = descText;
                 nextBtn.classList.remove('hidden');
                 if (currentShieldIndex === shieldData.length - 1) {
@@ -758,9 +762,9 @@
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(shieldSpeechText);
-                utterance.lang = 'zh-HK'; 
+                utterance.lang = 'zh-HK';
                 utterance.pitch = 1.0;
-                utterance.rate = 0.9; 
+                utterance.rate = 0.9;
                 window.speechSynthesis.speak(utterance);
             }
         }
@@ -807,9 +811,9 @@
             const data = emailData[currentEmailIndex];
             document.getElementById('email-counter').innerText = `信件 ${currentEmailIndex + 1} / ${emailData.length}`;
             document.getElementById('email-scenario').innerText = data.scenario;
-            
+
             const container = document.getElementById('email-options');
-            
+
             const btnBad = `<button onclick="checkEmail(false, this)" class="email-btn flex flex-col h-full bg-slate-800 border-2 border-slate-600 hover:border-purple-400 p-0 rounded-xl overflow-hidden transition-all text-left shadow-lg">
                 <div class="bg-slate-700 w-full p-3 border-b border-slate-600 font-bold text-rose-400 flex items-center gap-2">
                     <i class="fa-solid fa-triangle-exclamation"></i> 選擇 A
@@ -818,7 +822,7 @@
                     ${data.badHTML}
                 </div>
             </button>`;
-            
+
             const btnGood = `<button onclick="checkEmail(true, this)" class="email-btn flex flex-col h-full bg-slate-800 border-2 border-slate-600 hover:border-purple-400 p-0 rounded-xl overflow-hidden transition-all text-left shadow-lg">
                 <div class="bg-slate-700 w-full p-3 border-b border-slate-600 font-bold text-emerald-400 flex items-center gap-2">
                     <i class="fa-solid fa-check"></i> 選擇 B
@@ -844,7 +848,7 @@
             const fb = document.getElementById('email-feedback');
             const fbResult = document.getElementById('email-result');
             const nextBtn = document.getElementById('email-next-btn');
-            
+
             btns.forEach(b => b.classList.add('opacity-50', 'pointer-events-none'));
             fb.classList.remove('hidden', 'bg-purple-900', 'border-purple-400', 'text-purple-100', 'bg-rose-900', 'border-rose-400', 'text-rose-100');
 
@@ -857,7 +861,7 @@
                     <h4 class="font-black text-lg mb-2 text-purple-300"><i class="fa-solid fa-check-circle"></i> 專業 Email 裝備成功！</h4>
                     <p class="text-sm font-medium leading-relaxed">${data.success}</p>
                 `;
-                
+
                 nextBtn.classList.remove('hidden');
                 if (currentEmailIndex === emailData.length - 1) {
                     nextBtn.innerText = "完成 Email 修復訓練！";
@@ -1004,7 +1008,7 @@
         function initQuiz() {
             const savedExp = localStorage.getItem('agent_exp') || '0';
             document.getElementById('current-total-exp').innerText = savedExp;
-            
+
             loadHibyeData();
             loadShieldData();
             loadEmailData();
@@ -1016,13 +1020,13 @@
             document.getElementById('game-counter').innerText = `第 ${index + 1} / ${quizData.length} 局`;
             document.getElementById('game-icon').innerText = data.icon;
             document.getElementById('game-question').innerText = data.question;
-            
+
             const progress = (index / quizData.length) * 100;
             document.getElementById('game-progress').style.width = `${progress}%`;
 
             const optionsContainer = document.getElementById('game-options');
             optionsContainer.innerHTML = '';
-            
+
             data.options.forEach((opt, i) => {
                 const btn = document.createElement('button');
                 btn.className = 'game-option w-full text-left p-4 rounded-xl border-2 border-slate-100 hover:border-teal-400 hover:bg-teal-50 transition-all font-medium text-slate-700 bg-white text-xs md:text-sm';
@@ -1044,7 +1048,7 @@
             const nextBtn = document.getElementById('next-btn');
 
             feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
-            
+
             const allBtns = document.querySelectorAll('.game-option');
             allBtns.forEach(b => b.disabled = true);
 
@@ -1052,13 +1056,13 @@
                 selectedBtn.classList.replace('border-slate-100', 'border-emerald-500');
                 selectedBtn.classList.replace('hover:border-teal-400', 'border-emerald-500');
                 selectedBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'font-bold');
-                
+
                 feedbackBox.classList.add('bg-emerald-50', 'border-emerald-200');
                 title.className = "font-bold text-base md:text-lg mb-1 text-emerald-800";
                 icon.innerHTML = '<i class="fa-solid fa-check-circle text-emerald-500"></i>';
                 title.innerText = data.successTitle;
                 text.innerText = data.successText;
-                
+
                 nextBtn.classList.remove('hidden');
                 if(currentQuestionIndex === quizData.length - 1) {
                     nextBtn.innerText = "完成大專考核！";
@@ -1067,7 +1071,7 @@
                 }
             } else {
                 selectedBtn.classList.add('animate-shake', 'bg-rose-50', 'border-rose-300', 'text-rose-700');
-                
+
                 feedbackBox.classList.add('bg-rose-50', 'border-rose-200');
                 title.className = "font-bold text-base md:text-lg mb-1 text-rose-800";
                 icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-500"></i>';
@@ -1095,19 +1099,19 @@
         function completeMission() {
             const btn = document.getElementById('claimBtn');
             const msg = document.getElementById('successMsg');
-            
+
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 正在加密存檔...';
             btn.classList.add('opacity-75', 'cursor-not-allowed');
-            
+
             let currentExp = parseInt(localStorage.getItem('agent_exp') || '0');
             currentExp += 300;
             localStorage.setItem('agent_exp', currentExp.toString());
             localStorage.setItem('mission_college_completed', 'true');
-            
+
             setTimeout(() => {
                 btn.classList.add('hidden');
                 msg.classList.remove('hidden');
-                
+
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 2000);

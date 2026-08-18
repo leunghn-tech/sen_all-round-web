@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入 Font Awesome 專業圖標 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
         body {
@@ -19,14 +19,14 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
+
         /* 畫廊卡片 Hover 效果 */
         .poster-card { transition: all 0.3s ease; }
         .poster-card:hover { transform: translateY(-4px); box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
-        
+
         /* 分類按鈕選中狀態 */
         .category-btn.active { background-color: #0f766e; color: white; border-color: #0f766e; }
-        
+
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -50,7 +50,12 @@
             background-color: rgba(16, 185, 129, 0.15);
         }
     </style>
-</head>
+
+        <style id="audit-inline-style-replacements">
+            .audit-professional-posters-style-1{transform-origin: center center; transition: transform 0.2s ease;}
+            .audit-professional-posters-style-2{width: 1122px; height: 793px;}
+        </style>
+    </head>
 <body class="text-slate-800 min-h-screen flex flex-col pb-12 bg-slate-50/50">
 
     <!-- 頂部導航欄 -->
@@ -75,7 +80,7 @@
     </nav>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full flex-grow space-y-8">
-        
+
         <!-- 頂部橫幅 -->
         <div class="bg-gradient-to-r from-teal-800 via-emerald-700 to-green-600 rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
             <i class="fa-solid fa-images absolute -right-4 -bottom-4 text-[160px] text-white opacity-10"></i>
@@ -96,13 +101,13 @@
                     <h2 class="text-sm font-black text-slate-800 mb-4 border-b border-slate-100 pb-2 flex items-center gap-2">
                         <i class="fa-solid fa-filter text-teal-600"></i> 教具分類篩選
                     </h2>
-                    
+
                     <div class="space-y-6">
                         <!-- Tier 1 -->
                         <div>
                             <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Tier 1 全校/全班常規</h3>
                             <div class="flex flex-col gap-1.5">
-                                <button onclick="renderGallery('tier1')" class="category-btn active text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-teal-50 border border-transparent transition flex items-center justify-between group">
+                                <button type="button" onclick="renderGallery('tier1')" class="category-btn active text-left px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-teal-50 border border-transparent transition flex items-center justify-between group">
                                     <span>🏫 課室常規與心態</span>
                                     <i class="fa-solid fa-chevron-right text-[10px] opacity-0 group-hover:opacity-100 transition"></i>
                                 </button>
@@ -144,7 +149,7 @@
 
     <!-- 🖼️ 全螢幕海報展示與編輯視窗 (Modal) -->
     <div id="posterModal" class="fixed inset-0 z-[100] hidden flex flex-col bg-slate-900/95 backdrop-blur-sm transition-opacity opacity-0 duration-300">
-        
+
         <!-- 視窗標頭與工具列 (Toolbar) -->
         <div id="posterModalHeader" class="bg-white p-4 border-b border-slate-300 flex flex-wrap lg:flex-nowrap justify-between items-center shrink-0 z-10 shadow-sm gap-4 transition-all duration-300">
             <div class="flex items-center gap-3">
@@ -154,26 +159,26 @@
                     <p class="text-[10px] text-slate-500 font-bold">完美自適應螢幕，修改完成後請自行截圖</p>
                 </div>
             </div>
-            
+
             <!-- 中間客製化控制器 (只保留主題顏色切換) -->
             <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 p-2 rounded-2xl">
                 <span class="text-xs font-bold text-slate-500 hidden sm:inline-block pr-2 border-r border-slate-200">主題顏色：</span>
                 <div class="flex items-center gap-2">
-                    <button onclick="changeTheme('blue')" class="w-7 h-7 rounded-full bg-blue-500 hover:scale-110 transition shadow-inner border border-white" title="藍色主題"></button>
-                    <button onclick="changeTheme('emerald')" class="w-7 h-7 rounded-full bg-emerald-500 hover:scale-110 transition shadow-inner border border-white" title="綠色主題"></button>
-                    <button onclick="changeTheme('rose')" class="w-7 h-7 rounded-full bg-rose-500 hover:scale-110 transition shadow-inner border border-white" title="粉紅主題"></button>
-                    <button onclick="changeTheme('amber')" class="w-7 h-7 rounded-full bg-amber-500 hover:scale-110 transition shadow-inner border border-white" title="橙黃主題"></button>
-                    <button onclick="changeTheme('purple')" class="w-7 h-7 rounded-full bg-purple-500 hover:scale-110 transition shadow-inner border border-white" title="紫色主題"></button>
-                    <button onclick="changeTheme('slate')" class="w-7 h-7 rounded-full bg-slate-600 hover:scale-110 transition shadow-inner border border-white" title="灰階主題"></button>
+                    <button type="button" onclick="changeTheme('blue')" class="w-7 h-7 rounded-full bg-blue-500 hover:scale-110 transition shadow-inner border border-white" title="藍色主題" aria-label="藍色主題"></button>
+                    <button type="button" onclick="changeTheme('emerald')" class="w-7 h-7 rounded-full bg-emerald-500 hover:scale-110 transition shadow-inner border border-white" title="綠色主題" aria-label="綠色主題"></button>
+                    <button type="button" onclick="changeTheme('rose')" class="w-7 h-7 rounded-full bg-rose-500 hover:scale-110 transition shadow-inner border border-white" title="粉紅主題" aria-label="粉紅主題"></button>
+                    <button type="button" onclick="changeTheme('amber')" class="w-7 h-7 rounded-full bg-amber-500 hover:scale-110 transition shadow-inner border border-white" title="橙黃主題" aria-label="橙黃主題"></button>
+                    <button type="button" onclick="changeTheme('purple')" class="w-7 h-7 rounded-full bg-purple-500 hover:scale-110 transition shadow-inner border border-white" title="紫色主題" aria-label="紫色主題"></button>
+                    <button type="button" onclick="changeTheme('slate')" class="w-7 h-7 rounded-full bg-slate-600 hover:scale-110 transition shadow-inner border border-white" title="灰階主題" aria-label="灰階主題"></button>
                 </div>
             </div>
 
             <div class="flex gap-3 items-center shrink-0">
-                <button id="editModeBtn" onclick="toggleEditMode()" class="bg-amber-100 hover:bg-amber-200 text-amber-700 border border-amber-200 font-bold px-4 py-2.5 rounded-xl transition text-xs sm:text-sm flex items-center gap-2 shadow-sm">
+                <button type="button" id="editModeBtn" onclick="toggleEditMode()" class="bg-amber-100 hover:bg-amber-200 text-amber-700 border border-amber-200 font-bold px-4 py-2.5 rounded-xl transition text-xs sm:text-sm flex items-center gap-2 shadow-sm">
                     <i class="fa-solid fa-pen"></i> 自訂文字
                 </button>
 
-                <button onclick="closePosterModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition flex items-center justify-center shadow-sm text-xs sm:text-sm gap-1">
+                <button type="button" onclick="closePosterModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition flex items-center justify-center shadow-sm text-xs sm:text-sm gap-1">
                     <i class="fa-solid fa-xmark"></i> 返回
                 </button>
             </div>
@@ -187,9 +192,9 @@
         <!-- 海報渲染畫布容器 (確保絕對縮放與置中) -->
         <div id="modalCanvasContainer" class="flex-grow flex items-center justify-center relative overflow-hidden px-4 pb-6">
             <!-- 絕對縮放包裝器 -->
-            <div id="posterScaleWrapper" class="flex items-center justify-center" style="transform-origin: center center; transition: transform 0.2s ease;">
+            <div id="posterScaleWrapper" class="flex items-center justify-center audit-professional-posters-style-1">
                 <!-- 真正的渲染區域，鎖定 1122x793 的絕對像素尺寸以防止破版 -->
-                <div id="posterPrintArea" class="bg-white shadow-2xl relative overflow-hidden flex flex-col border border-slate-200 shrink-0" style="width: 1122px; height: 793px;">
+                <div id="posterPrintArea" class="bg-white shadow-2xl relative overflow-hidden flex flex-col border border-slate-200 shrink-0 audit-professional-posters-style-2">
                     <!-- 海報內容將被動態注入於此 -->
                 </div>
             </div>
@@ -285,14 +290,14 @@
                                         <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-black decoration-only">🎯</div>
                                         <h1 class="text-3xl font-black text-blue-900 flex-grow w-full">今天的挑戰任務：<span class="border-b-4 border-blue-400 inline-block w-64 ml-2 decoration-only"></span></h1>
                                     </div>
-                                    
+
                                     <div class="flex-grow flex flex-col justify-between py-2 font-bold text-2xl text-slate-700 w-full">
                                         <div class="flex items-center gap-6 w-full"><div class="w-12 h-12 border-4 border-slate-300 rounded-xl shrink-0 decoration-only"></div><p class="border-b-4 border-dashed border-slate-300 flex-grow pb-2 w-full">第一步：___________________</p></div>
                                         <div class="flex items-center gap-6 w-full"><div class="w-12 h-12 border-4 border-slate-300 rounded-xl shrink-0 decoration-only"></div><p class="border-b-4 border-dashed border-slate-300 flex-grow pb-2 w-full">第二步：___________________</p></div>
                                         <div class="flex items-center gap-6 w-full"><div class="w-12 h-12 border-4 border-slate-300 rounded-xl shrink-0 decoration-only"></div><p class="border-b-4 border-dashed border-slate-300 flex-grow pb-2 w-full">第三步：___________________</p></div>
                                         <div class="flex items-center gap-6 w-full"><div class="w-12 h-12 border-4 border-slate-300 rounded-xl shrink-0 decoration-only"></div><p class="border-b-4 border-dashed border-slate-300 flex-grow pb-2 w-full">第四步：___________________</p></div>
                                     </div>
-                                    
+
                                     <div class="bg-emerald-100 rounded-xl p-4 mt-6 border-2 border-emerald-300 flex items-center gap-4 shadow-sm shrink-0 w-full">
                                         <div class="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center text-white text-3xl font-black decoration-only">🎉</div>
                                         <h1 class="text-3xl font-black text-emerald-900 flex-grow w-full">完成後我可以：<span class="border-b-4 border-emerald-400 inline-block w-64 ml-2 decoration-only"></span></h1>
@@ -308,7 +313,7 @@
                         html: `
                             <div class="h-full w-full bg-slate-50 p-8 flex flex-col items-center justify-center relative">
                                 <h1 class="text-3xl font-black text-slate-800 absolute top-6 w-full text-center">桌面提示卡 (請沿虛線對摺 ✂️)</h1>
-                                
+
                                 <!-- 對摺虛線 -->
                                 <div class="absolute inset-x-0 top-1/2 border-t-8 border-dashed border-slate-300 w-full z-0 flex justify-end pr-10 decoration-only">
                                     <span class="text-3xl -mt-5 bg-slate-50 px-2 decoration-only">✂️ 摺線</span>
@@ -321,7 +326,7 @@
                                         <h2 class="text-5xl font-black text-blue-600 mb-4 w-full">老師，<br>請幫幫我！</h2>
                                         <p class="text-2xl font-bold text-slate-500 w-full">(我遇到困難，我不懂做)</p>
                                     </div>
-                                    
+
                                     <!-- 右半部 (休息) -->
                                     <div class="flex-1 w-full bg-white border-[8px] border-emerald-400 rounded-[3rem] p-6 flex flex-col items-center justify-center text-center shadow-xl">
                                         <span class="text-7xl mb-4 decoration-only">⏸️</span>
@@ -346,7 +351,7 @@
                             <div class="h-full w-full bg-indigo-50 p-8 flex flex-col items-center justify-center">
                                 <h1 class="text-4xl font-black text-indigo-900 mb-4 tracking-wide drop-shadow-sm w-full text-center">🏓 對話就像打乒乓球</h1>
                                 <p class="text-2xl text-indigo-700 font-bold mb-8 w-full text-center">不要一個人拿著球不放，要把球傳給對方！</p>
-                                
+
                                 <div class="flex items-stretch justify-center w-full gap-4 max-w-5xl flex-grow pb-4">
                                     <!-- 發球 -->
                                     <div class="flex-1 w-full bg-white p-6 rounded-[2rem] shadow-xl border-t-8 border-blue-500 text-center relative mt-8 flex flex-col">
@@ -354,7 +359,7 @@
                                         <h2 class="text-3xl font-black text-blue-800 mt-8 mb-4 w-full">發球 (開話題)</h2>
                                         <p class="text-lg text-slate-700 bg-blue-50 p-4 rounded-xl font-bold leading-relaxed flex-grow w-full text-center flex items-center justify-center">「你週末去哪裡玩？」<br><br>「你看過這套動漫嗎？」</p>
                                     </div>
-                                    
+
                                     <div class="flex items-center"><i class="fa-solid fa-arrow-right text-5xl text-indigo-300 decoration-only"></i></div>
 
                                     <!-- 接球 -->
@@ -419,7 +424,7 @@
                             <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center">
                                 <h1 class="text-4xl font-black text-slate-800 mb-4 w-full text-center">📏 社交距離「呼啦圈法則」</h1>
                                 <p class="text-xl text-slate-500 font-bold mb-8 w-full text-center">每個人身邊都有一個隱形的呼啦圈，要保持禮貌的距離！</p>
-                                
+
                                 <div class="relative w-[500px] h-[500px] flex items-center justify-center decoration-only">
                                     <!-- 陌生人 -->
                                     <div class="absolute inset-0 rounded-full bg-slate-100 border-4 border-slate-300 flex justify-center pt-8 shadow-sm">
@@ -611,7 +616,7 @@
                                 <div class="flex flex-col w-full max-w-4xl relative flex-grow justify-between pb-4">
                                     <!-- 連接線 -->
                                     <div class="absolute left-[2.5rem] top-8 bottom-8 w-3 bg-indigo-100 z-0 rounded-full decoration-only"></div>
-                                    
+
                                     <!-- 步驟 1 -->
                                     <div class="flex items-center gap-6 relative z-10 w-full flex-grow">
                                         <div class="w-20 h-20 shrink-0 bg-rose-500 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-md border-[4px] border-white decoration-only">1</div>
@@ -663,7 +668,7 @@
                                             <h2 class="text-2xl font-black text-amber-800 w-full">🎁 集滿換：<br><span class="border-b-[4px] border-amber-400 inline-block w-40 mt-4 decoration-only"></span></h2>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- 星星格 -->
                                     <div class="grid grid-cols-5 gap-6 flex-grow content-center w-full">
                                         <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">1</div>
@@ -673,7 +678,7 @@
                                         <div class="aspect-square rounded-full border-[8px] border-amber-200 bg-amber-50 flex items-center justify-center text-6xl text-amber-300 font-black shadow-inner relative overflow-hidden decoration-only">
                                             5 <div class="absolute -right-2 -bottom-2 text-5xl opacity-50 decoration-only">🌟</div>
                                         </div>
-                                        
+
                                         <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">6</div>
                                         <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">7</div>
                                         <div class="aspect-square rounded-full border-[8px] border-slate-100 bg-slate-50 flex items-center justify-center text-6xl text-slate-200 font-black shadow-inner decoration-only">8</div>
@@ -702,20 +707,20 @@
                                     <!-- 裝飾用書籤頭 -->
                                     <div class="bg-blue-600 h-8 w-full absolute top-0 decoration-only"></div>
                                     <div class="w-20 h-20 rounded-full bg-slate-100 absolute -top-10 left-1/2 transform -translate-x-1/2 border-[4px] border-slate-200 decoration-only"></div>
-                                    
+
                                     <div class="p-8 pt-20 flex flex-col gap-6 flex-grow justify-center w-full">
                                         <h2 class="text-4xl font-black text-center text-blue-900 border-b-[4px] border-slate-100 pb-6 mb-2 w-full">閱讀理解<br>放大鏡策略 🔍</h2>
-                                        
+
                                         <div class="bg-blue-50 p-6 rounded-2xl border-4 border-blue-200 shadow-sm w-full">
                                             <h3 class="font-black text-blue-800 text-2xl mb-2 w-full">第一步：</h3>
                                             <p class="font-bold text-slate-700 text-xl w-full">找找六何 (5W1H)<br><span class="text-base text-slate-500 font-medium">人、時、地、事...</span></p>
                                         </div>
-                                        
+
                                         <div class="bg-rose-50 p-6 rounded-2xl border-4 border-rose-200 shadow-sm w-full">
                                             <h3 class="font-black text-rose-800 text-2xl mb-2 w-full">第二步：</h3>
                                             <p class="font-bold text-slate-700 text-xl w-full">🖍️ 圈出關鍵字<br><span class="text-base text-slate-500 font-medium">看看前後文猜意思</span></p>
                                         </div>
-                                        
+
                                         <div class="bg-amber-50 p-6 rounded-2xl border-4 border-amber-200 shadow-sm w-full">
                                             <h3 class="font-black text-amber-800 text-2xl mb-2 w-full">第三步：</h3>
                                             <p class="font-bold text-slate-700 text-xl w-full">🔮 預測故事結果<br><span class="text-base text-slate-500 font-medium">主角接下來會怎樣？</span></p>
@@ -733,7 +738,7 @@
                             <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center">
                                 <h1 class="text-4xl font-black text-slate-800 mb-6 drop-shadow-sm w-full text-center">🧩 漢字部件「砌圖」視覺底板</h1>
                                 <p class="text-xl font-bold text-slate-500 mb-10 w-full text-center">將透明字卡或泥膠放在對應顏色的格子上，拆解漢字結構。</p>
-                                
+
                                 <div class="flex gap-10 w-full max-w-5xl flex-grow pb-4">
                                     <!-- 左右結構 -->
                                     <div class="flex-1 w-full flex flex-col">
@@ -747,7 +752,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- 上下結構 -->
                                     <div class="flex-1 w-full flex flex-col">
                                         <h2 class="text-3xl font-black text-center text-slate-700 mb-6 w-full">上下結構 (如：草)</h2>
@@ -771,26 +776,26 @@
                         html: `
                             <div class="h-full w-full bg-amber-50 p-8 flex flex-col items-center justify-center">
                                 <h1 class="text-4xl font-black text-amber-900 mb-8 drop-shadow-sm w-full text-center">🍔 寫作「漢堡包」大綱組織圖</h1>
-                                
+
                                 <div class="w-full max-w-4xl flex flex-col gap-4 flex-grow pb-4">
                                     <!-- 頂包 -->
                                     <div class="flex-grow bg-[#FCD34D] p-6 rounded-t-[4rem] rounded-b-2xl border-[4px] border-[#F59E0B] shadow-md flex flex-col w-full">
                                         <h2 class="text-2xl font-black text-amber-900 mb-2 w-full">🍞 頂層麵包：開首 / 中心論點 (Topic Sentence)</h2>
                                         <div class="w-full border-b-[4px] border-dashed border-amber-700/30 mt-auto decoration-only"></div>
                                     </div>
-                                    
+
                                     <!-- 菜 -->
                                     <div class="flex-grow bg-[#86EFAC] p-6 rounded-2xl border-[4px] border-[#22C55E] shadow-md flex flex-col w-full">
                                         <h2 class="text-2xl font-black text-green-900 mb-2 w-full">🥬 配料一：細節或例子 1 (Detail 1)</h2>
                                         <div class="w-full border-b-[4px] border-dashed border-green-700/30 mt-auto decoration-only"></div>
                                     </div>
-                                    
+
                                     <!-- 肉 -->
                                     <div class="flex-grow bg-[#FCA5A5] p-6 rounded-2xl border-[4px] border-[#EF4444] shadow-md flex flex-col w-full">
                                         <h2 class="text-2xl font-black text-red-900 mb-2 w-full">🥩 配料二：細節或例子 2 (Detail 2)</h2>
                                         <div class="w-full border-b-[4px] border-dashed border-red-700/30 mt-auto decoration-only"></div>
                                     </div>
-                                    
+
                                     <!-- 底包 -->
                                     <div class="flex-grow bg-[#FCD34D] p-6 rounded-b-[4rem] rounded-t-2xl border-[4px] border-[#F59E0B] shadow-md flex flex-col w-full">
                                         <h2 class="text-2xl font-black text-amber-900 mb-2 w-full">🍞 底層麵包：總結 / 感受 (Concluding Sentence)</h2>
@@ -814,15 +819,15 @@
                             <div class="h-full w-full bg-slate-800 p-8 flex flex-col items-center justify-center text-center">
                                 <h1 class="text-4xl font-black text-white mb-6 tracking-widest drop-shadow-md w-full">🌬️ 無限符號呼吸法</h1>
                                 <p class="text-slate-400 font-bold text-2xl mb-12 w-full">用手指沿著光環慢慢滑動，讓大腦放鬆下來</p>
-                                
+
                                 <div class="relative w-full max-w-4xl flex items-center justify-center flex-grow">
                                     <!-- 使用 CSS Text Stroke 製作空心字體 -->
                                     <h2 class="text-[300px] leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-300 to-teal-400 font-black decoration-only" style="-webkit-text-stroke: 10px rgba(255,255,255,0.3);">∞</h2>
-                                    
+
                                     <div class="absolute left-[15%] top-1/2 transform -translate-y-1/2 text-center w-[200px] decoration-only">
                                         <p class="text-teal-300 font-black text-2xl uppercase tracking-widest bg-slate-800/90 px-6 py-3 rounded-full backdrop-blur border-2 border-teal-500/30 shadow-md">慢慢吸氣</p>
                                     </div>
-                                    
+
                                     <div class="absolute right-[15%] top-1/2 transform -translate-y-1/2 text-center w-[200px] decoration-only">
                                         <p class="text-emerald-300 font-black text-2xl uppercase tracking-widest bg-slate-800/90 px-6 py-3 rounded-full backdrop-blur border-2 border-emerald-500/30 shadow-md">慢慢呼出</p>
                                     </div>
@@ -871,9 +876,9 @@
                                 <div class="bg-slate-800 w-[400px] max-w-full h-[95%] rounded-[4rem] p-10 shadow-2xl border-[10px] border-slate-600 flex flex-col items-center relative">
                                     <!-- 遙控器紅外線頭 -->
                                     <div class="w-24 h-6 bg-slate-900 rounded-full absolute -top-3 decoration-only"></div>
-                                    
+
                                     <h1 class="text-3xl font-black text-white mb-10 tracking-widest text-center mt-6 w-full">大腦遙控器</h1>
-                                    
+
                                     <div class="flex flex-col gap-10 w-full flex-grow justify-center">
                                         <!-- 暫停 -->
                                         <div class="flex flex-col items-center group w-full">
@@ -881,14 +886,14 @@
                                             <p class="text-white font-bold text-2xl mb-1 w-full text-center">暫停鍵</p>
                                             <p class="text-slate-400 text-lg font-medium w-full text-center">(停一停，不衝動)</p>
                                         </div>
-                                        
+
                                         <!-- 播放 -->
                                         <div class="flex flex-col items-center group w-full">
                                             <div class="w-28 h-28 rounded-full bg-green-500 flex items-center justify-center text-white text-5xl shadow-[0_8px_0_rgb(22,101,52)] mb-3 border-[4px] border-green-400 decoration-only">▶️</div>
                                             <p class="text-white font-bold text-3xl mb-1 w-full text-center">播放鍵</p>
                                             <p class="text-slate-400 text-lg font-medium w-full text-center">(開始專心做任務)</p>
                                         </div>
-                                        
+
                                         <!-- 倒退 -->
                                         <div class="flex flex-col items-center group w-full">
                                             <div class="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl shadow-[0_6px_0_rgb(30,58,138)] mb-3 border-[4px] border-blue-400 decoration-only">⏪</div>
@@ -940,7 +945,7 @@
                         html: `
                             <div class="h-full w-full bg-purple-50 p-8 flex flex-col items-center justify-center">
                                 <h1 class="text-4xl font-black text-purple-900 mb-8 drop-shadow-sm w-full text-center">🔀 突發狀況「Plan B」應變卡</h1>
-                                
+
                                 <div class="w-full max-w-5xl bg-white rounded-[2rem] shadow-xl border-[6px] border-purple-200 overflow-hidden flex flex-col h-[70%]">
                                     <!-- 示範 -->
                                     <div class="flex flex-1 poster-main-layout items-stretch border-b-[4px] border-slate-100">
@@ -957,7 +962,7 @@
                                             <h2 class="text-3xl font-black text-green-700 w-full">留堂玩桌遊</h2>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- 空白範本 -->
                                     <div class="flex flex-1 poster-main-layout items-stretch">
                                         <div class="w-full bg-slate-50 p-8 flex flex-col justify-center border-r-[4px] border-slate-100 flex-1">
@@ -984,7 +989,7 @@
                         html: `
                             <div class="h-full w-full bg-white p-8 flex flex-col items-center justify-center">
                                 <h1 class="text-4xl font-black text-slate-800 mb-10 drop-shadow-sm w-full text-center">🗺️ 校園社交地圖與音量規則</h1>
-                                
+
                                 <div class="grid grid-cols-2 gap-6 w-full max-w-5xl flex-grow pb-4">
                                     <!-- 圖書館 -->
                                     <div class="bg-blue-50 border-[4px] border-blue-200 rounded-[2rem] p-6 flex gap-6 items-center shadow-sm w-full">
@@ -1042,7 +1047,7 @@
                                     <h1 class="text-4xl font-black text-rose-900 mb-2 drop-shadow-sm w-full">🗣️ 「我訊息」表達魔法</h1>
                                     <p class="text-rose-600 font-bold text-xl w-full">生氣時不要動手，試著把心裡的話「填空」說出來：</p>
                                 </div>
-                                
+
                                 <div class="w-full max-w-4xl bg-white rounded-[3rem] shadow-xl p-8 border-[4px] border-rose-200 space-y-4 flex-grow flex flex-col justify-between pb-6">
                                     <div class="flex items-center gap-6 bg-red-50 p-4 rounded-2xl border border-red-100 shadow-sm w-full">
                                         <div class="w-12 h-12 bg-red-200 rounded-full flex items-center justify-center text-2xl font-black text-red-700 shrink-0 border-2 border-white decoration-only">1</div>
@@ -1152,7 +1157,7 @@
                                 <div class="relative w-full max-w-2xl bg-slate-100 border-[8px] border-indigo-200 rounded-[3rem] p-8 pb-12 shadow-xl flex flex-col gap-4 flex-grow">
                                     <!-- 手挽 -->
                                     <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 w-40 h-16 border-[8px] border-indigo-200 rounded-t-full decoration-only"></div>
-                                    
+
                                     <!-- 大格 -->
                                     <div class="bg-indigo-100 border-2 border-dashed border-indigo-300 rounded-2xl p-6 relative flex-grow w-full flex flex-col justify-center">
                                         <span class="absolute -left-4 -top-4 bg-indigo-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow decoration-only">後</span>
@@ -1162,7 +1167,7 @@
                                             <span class="flex-1 w-full bg-white px-4 py-2 rounded-lg font-bold text-slate-700 shadow-sm border border-slate-200 text-lg text-center">📁 A4 快勞</span>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- 中格 -->
                                     <div class="bg-blue-100 border-2 border-dashed border-blue-300 rounded-2xl p-6 relative ml-4 mr-4 flex-grow w-auto flex flex-col justify-center">
                                         <span class="absolute -left-4 -top-4 bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow decoration-only">中</span>
@@ -1172,7 +1177,7 @@
                                             <span class="flex-1 w-full bg-white px-4 py-2 rounded-lg font-bold text-slate-700 shadow-sm border border-slate-200 text-lg text-center">✏️ 筆袋</span>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- 前袋 -->
                                     <div class="bg-emerald-100 border-2 border-dashed border-emerald-300 rounded-2xl p-6 relative ml-8 mr-8 flex-grow w-auto flex flex-col justify-center">
                                         <span class="absolute -left-4 -top-4 bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow decoration-only">前</span>
@@ -1193,29 +1198,29 @@
                         html: `
                             <div class="h-full w-full bg-emerald-50 p-8 flex flex-col items-center justify-center">
                                 <h1 class="text-4xl font-black text-emerald-900 mb-12 drop-shadow-sm w-full text-center">💰 小賣部購物流程</h1>
-                                
+
                                 <div class="grid grid-cols-4 gap-4 w-full max-w-5xl relative h-[45%] flex-grow pb-4">
                                     <!-- 進度線 -->
                                     <div class="absolute top-1/2 left-10 right-10 h-3 bg-emerald-200 transform -translate-y-1/2 z-0 rounded-full decoration-only"></div>
-                                    
+
                                     <div class="w-full bg-white rounded-3xl shadow-lg border-2 border-emerald-300 p-6 flex flex-col items-center justify-center text-center z-10">
                                         <div class="text-6xl mb-4 decoration-only">🚶</div>
                                         <div class="bg-emerald-500 text-white w-10 h-10 rounded-full font-black text-xl flex items-center justify-center mb-3 shadow decoration-only">1</div>
                                         <h2 class="font-black text-slate-700 text-lg w-full">排隊等待</h2>
                                     </div>
-                                    
+
                                     <div class="w-full bg-white rounded-3xl shadow-lg border-2 border-emerald-300 p-6 flex flex-col items-center justify-center text-center z-10">
                                         <div class="text-6xl mb-4 decoration-only">🗣️</div>
                                         <div class="bg-emerald-500 text-white w-10 h-10 rounded-full font-black text-xl flex items-center justify-center mb-3 shadow decoration-only">2</div>
                                         <h2 class="font-black text-slate-700 text-lg w-full">說出食物名稱</h2>
                                     </div>
-                                    
+
                                     <div class="w-full bg-white rounded-3xl shadow-xl border-4 border-emerald-500 p-6 flex flex-col items-center justify-center text-center z-10 transform scale-110 ring-4 ring-emerald-100">
                                         <div class="text-6xl mb-4 decoration-only">💳</div>
                                         <div class="bg-emerald-600 text-white w-10 h-10 rounded-full font-black text-xl flex items-center justify-center mb-3 shadow decoration-only">3</div>
                                         <h2 class="font-black text-emerald-800 text-xl w-full">拍八達通</h2>
                                     </div>
-                                    
+
                                     <div class="w-full bg-white rounded-3xl shadow-lg border-2 border-emerald-300 p-6 flex flex-col items-center justify-center text-center z-10">
                                         <div class="text-6xl mb-4 decoration-only">🍔</div>
                                         <div class="bg-emerald-500 text-white w-10 h-10 rounded-full font-black text-xl flex items-center justify-center mb-3 shadow decoration-only">4</div>
@@ -1289,7 +1294,7 @@
                                         <div class="text-7xl mb-6 grayscale opacity-50 decoration-only">🧠</div>
                                         <h2 class="text-3xl font-black text-slate-400 line-through decoration-slate-500 decoration-[4px] mb-2 leading-relaxed w-full">我好蠢，<br>我做不到！</h2>
                                     </div>
-                                    
+
                                     <!-- 背面 -->
                                     <div class="flex-1 w-full bg-green-50 rounded-[3rem] border-[6px] border-green-400 p-8 flex flex-col items-center justify-center text-center shadow-xl transform scale-105 relative">
                                         <div class="absolute top-6 bg-green-100 px-4 py-1 rounded-lg text-green-700 font-bold text-lg w-4/5">(背面：成長心態)</div>
@@ -1313,7 +1318,7 @@
                                     <!-- 十字分隔線 -->
                                     <div class="absolute top-0 bottom-0 left-1/2 w-2 bg-amber-200 -translate-x-1/2 decoration-only"></div>
                                     <div class="absolute left-0 right-0 top-1/2 h-2 bg-amber-200 -translate-y-1/2 decoration-only"></div>
-                                    
+
                                     <!-- 四個象限 -->
                                     <div class="w-1/2 h-1/2 p-6 flex flex-col items-center justify-center text-center bg-amber-50/50">
                                         <p class="text-amber-800 font-black text-xl mb-4 w-full">我最叻的科目...</p>
@@ -1345,14 +1350,14 @@
                                     <h1 class="text-4xl font-black text-purple-900 mb-2 drop-shadow-sm w-full">🏆 每日成功小碎片 (Success Jar)</h1>
                                     <p class="text-purple-600 font-bold text-lg w-full">每做對一件小事，就在瓶子裡畫一顆星星！</p>
                                 </div>
-                                
+
                                 <!-- 玻璃瓶 CSS Art -->
                                 <div class="relative w-72 flex-grow max-h-[400px] bg-white/60 backdrop-blur border-[8px] border-slate-300 rounded-b-[4rem] shadow-inner flex flex-wrap content-end p-6 gap-4 decoration-only">
                                     <!-- 瓶口 -->
                                     <div class="absolute -top-8 -left-4 -right-4 h-10 border-[8px] border-slate-300 rounded-xl bg-slate-100 decoration-only"></div>
                                     <!-- 高光反光 -->
                                     <div class="absolute top-10 right-4 w-4 h-48 bg-white/90 rounded-full blur-[2px] decoration-only"></div>
-                                    
+
                                     <!-- 星星內容 -->
                                     <div class="text-4xl animate-bounce drop-shadow-sm decoration-only">⭐</div>
                                     <div class="text-4xl drop-shadow-sm decoration-only">⭐</div>
@@ -1435,7 +1440,7 @@
                                     <h1 class="text-4xl font-black text-amber-900 mb-4 drop-shadow-sm w-full">🍽️ 我的感官急救餐單</h1>
                                     <p class="text-2xl font-bold text-amber-700 w-full">我覺得不舒服，我現在需要...</p>
                                 </div>
-                                
+
                                 <div class="grid grid-cols-3 gap-8 w-full max-w-5xl h-[50%] flex-grow pb-4">
                                     <div class="w-full bg-white border-[6px] border-amber-300 rounded-[3rem] p-8 flex flex-col items-center justify-center text-center shadow-md">
                                         <span class="text-7xl mb-6 drop-shadow-md decoration-only">🥎</span>
@@ -1480,12 +1485,12 @@
             document.getElementById('itemCount').innerText = data.items.length;
 
             const grid = document.getElementById('galleryGrid');
-            grid.innerHTML = ''; 
+            grid.innerHTML = '';
 
             data.items.forEach((item, index) => {
                 // 將 HTML 縮小顯示作為縮圖
                 const thumbnailHtml = `<div class="w-[1122px] h-[793px] transform scale-[0.22] sm:scale-[0.3] lg:scale-[0.22] xl:scale-[0.25] origin-top-left pointer-events-none">${item.html}</div>`;
-                
+
                 const cardHtml = `
                     <div class="poster-card bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col h-full cursor-pointer shadow-sm group" onclick="openPosterModal('${categoryId}', ${index})">
                         <div class="h-48 sm:h-56 bg-slate-100 border-b border-slate-200 relative overflow-hidden flex items-start justify-start p-0">
@@ -1515,15 +1520,15 @@
 
         function openPosterModal(categoryId, itemIndex) {
             const item = postersDb[categoryId].items[itemIndex];
-            
+
             const modalTitleTextEl = document.getElementById('modalTitleText');
             if (modalTitleTextEl) modalTitleTextEl.innerText = item.title;
-            
+
             // 注入真實 HTML 到列印區
             document.getElementById('posterPrintArea').innerHTML = item.html;
-            
+
             // 重置所有設定狀態
-            if(isEditMode) toggleEditMode(); 
+            if(isEditMode) toggleEditMode();
 
             const modal = document.getElementById('posterModal');
             modal.classList.remove('hidden');
@@ -1536,12 +1541,12 @@
         function closePosterModal() {
             const modal = document.getElementById('posterModal');
             modal.classList.add('opacity-0');
-            
-            if(isEditMode) toggleEditMode(); 
+
+            if(isEditMode) toggleEditMode();
 
             setTimeout(() => {
                 modal.classList.add('hidden');
-                document.getElementById('posterPrintArea').innerHTML = ''; 
+                document.getElementById('posterPrintArea').innerHTML = '';
             }, 300);
         }
 
@@ -1550,24 +1555,24 @@
             const container = document.getElementById('modalCanvasContainer');
             const wrapper = document.getElementById('posterScaleWrapper');
             const posterArea = document.getElementById('posterPrintArea');
-            
+
             if(!container || !wrapper || !posterArea || document.getElementById('posterModal').classList.contains('hidden')) return;
-            
+
             // 強制畫布原始尺寸為 A4 橫向比例
             const baseWidth = 1122;
             const baseHeight = 793;
 
             // 取得可用寬高
-            const paddingX = 32; 
-            const paddingY = 32; 
-            const availableWidth = container.clientWidth - paddingX; 
+            const paddingX = 32;
+            const paddingY = 32;
+            const availableWidth = container.clientWidth - paddingX;
             const availableHeight = container.clientHeight - paddingY;
-            
+
             if(availableWidth <= 0 || availableHeight <= 0) return;
 
             // 計算最佳縮放比例 (取最小倍率以確保全畫面可見，絕不裁切邊緣)
             const scale = Math.min(availableWidth / baseWidth, availableHeight / baseHeight);
-            
+
             // 應用絕對縮放，並使用 flex 置中
             wrapper.style.transform = `scale(${scale})`;
             wrapper.style.width = `${baseWidth * scale}px`;
@@ -1583,14 +1588,14 @@
         function changeTheme(newColor) {
             const printArea = document.getElementById('posterPrintArea');
             if (!printArea) return;
-            
+
             if(isEditMode) toggleEditMode();
-            
+
             const colorRegex = /\b(emerald|teal|green|blue|indigo|cyan|rose|red|pink|amber|yellow|orange|purple|fuchsia|slate)\b/g;
-            
+
             let currentHtml = printArea.innerHTML;
             const newHtml = currentHtml.replace(colorRegex, newColor);
-            
+
             printArea.innerHTML = newHtml;
             showToast(`🎨 已為您切換至專屬主題色！`);
         }
@@ -1604,14 +1609,14 @@
             const btn = document.getElementById('editModeBtn');
 
             const textElements = printArea.querySelectorAll('h1, h2, h3, h4, p, span');
-            
+
             textElements.forEach(el => {
                 if (el.classList.contains('decoration-only')) return;
-                
+
                 el.contentEditable = isEditMode;
                 if (isEditMode) {
                     el.classList.add('editable-active');
-                    el.title = "點擊可修改文字"; 
+                    el.title = "點擊可修改文字";
                 } else {
                     el.classList.remove('editable-active');
                     el.title = "";
@@ -1639,7 +1644,7 @@
         function initSidebar() {
             const container = document.getElementById('tier2Categories');
             let html = '';
-            
+
             // 跳過 tier1，只渲染 10 大類
             categoriesData.forEach(cat => {
                 html += `
@@ -1650,19 +1655,19 @@
                 `;
             });
             container.innerHTML = html;
-            
+
             renderGallery('tier1');
         }
 
         // 啟動
         window.onload = initSidebar;
-        
+
         // Toast 工具
         function showToast(msg, type = "success") {
             const toast = document.getElementById('toast');
             const msgEl = document.getElementById('toastMsg');
             msgEl.innerText = msg;
-            
+
             toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
             toast.classList.add('opacity-100', 'translate-y-0');
             setTimeout(() => {

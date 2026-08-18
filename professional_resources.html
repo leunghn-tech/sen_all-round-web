@@ -39,7 +39,7 @@
                 </a>
                 <div class="flex flex-col justify-center border-l border-sky-800 pl-4">
                     <h1 class="text-xs sm:text-sm font-black tracking-tight leading-none">特教通用教材與測考調適資源庫</h1>
-                    <span class="text-[9px] text-sky-200 font-bold block mt-1 uppercase tracking-widest">SEN Open Resources & Visual Supports</span>
+                    <span class="text-[9px] text-sky-200 font-bold block mt-1 uppercase tracking-widest">SEN Open Resources &amp; Visual Supports</span>
                 </div>
             </div>
             <div class="flex items-center gap-2">
@@ -52,7 +52,7 @@
 
     <!-- 主編輯介面 -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full flex-grow space-y-8">
-        
+
         <!-- 頂部橫幅 -->
         <div class="bg-gradient-to-r from-sky-800 via-blue-700 to-indigo-600 rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
             <i class="fa-solid fa-layer-group absolute -right-6 -bottom-6 text-[150px] text-white opacity-10"></i>
@@ -84,7 +84,7 @@
                     <div class="resource-card border border-slate-200 rounded-xl p-4 bg-white">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-bold text-slate-800 text-sm">📖 UDL (通用設計學習) 各科教案範例</h3>
-                            <button onclick="downloadUDL()" class="bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5 shrink-0">
+                            <button type="button" onclick="downloadUDL()" class="bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5 shrink-0">
                                 <i class="fa-solid fa-download"></i> 導出 Word
                             </button>
                         </div>
@@ -97,7 +97,7 @@
                     <div class="resource-card border border-slate-200 rounded-xl p-4 bg-white">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-bold text-slate-800 text-sm">👁️ 視覺化班級常規與心態海報</h3>
-                            <button onclick="downloadTier1Posters()" class="bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5 shrink-0">
+                            <button type="button" onclick="downloadTier1Posters()" class="bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5 shrink-0">
                                 <i class="fa-solid fa-download"></i> 導出海報範本
                             </button>
                         </div>
@@ -129,54 +129,54 @@
                 <div class="p-4 flex-grow bg-slate-50/30 overflow-y-auto max-h-[400px]">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <!-- 1. 社交溝通 -->
-                        <button onclick="downloadTier2Visuals('social')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
-                            <h3 class="font-bold text-slate-800 text-[11px] mb-1">🗣️ 1. 社交溝通類</h3>
-                            <p class="text-[9px] text-slate-500">對話乒乓球、輪流卡、社交界線</p>
+                        <button type="button" onclick="downloadTier2Visuals('social')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
+                            <span class="font-bold text-slate-800 text-[11px] mb-1">🗣️ 1. 社交溝通類</span>
+                            <span class="text-[9px] text-slate-500">對話乒乓球、輪流卡、社交界線</span>
                         </button>
                         <!-- 2. 情緒與行為管理 -->
-                        <button onclick="downloadTier2Visuals('emotion')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
-                            <h3 class="font-bold text-slate-800 text-[11px] mb-1">🚦 2. 情緒與行為管理</h3>
-                            <p class="text-[9px] text-slate-500">聲量尺、情緒停機坪、專注力引擎</p>
+                        <button type="button" onclick="downloadTier2Visuals('emotion')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
+                            <span class="font-bold text-slate-800 text-[11px] mb-1">🚦 2. 情緒與行為管理</span>
+                            <span class="text-[9px] text-slate-500">聲量尺、情緒停機坪、專注力引擎</span>
                         </button>
                         <!-- 3. 執行功能 -->
-                        <button onclick="downloadTier2Visuals('executive')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
-                            <h3 class="font-bold text-slate-800 text-[11px] mb-1">🧠 3. 執行功能與認知</h3>
-                            <p class="text-[9px] text-slate-500">先..然後..提示板、尋求協助4部曲</p>
+                        <button type="button" onclick="downloadTier2Visuals('executive')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
+                            <span class="font-bold text-slate-800 text-[11px] mb-1">🧠 3. 執行功能與認知</span>
+                            <span class="text-[9px] text-slate-500">先..然後..提示板、尋求協助4部曲</span>
                         </button>
                         <!-- 4. 讀寫支援 -->
-                        <button onclick="downloadTier2Visuals('spld')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
-                            <h3 class="font-bold text-slate-800 text-[11px] mb-1">📖 4. 讀寫多感官學習</h3>
-                            <p class="text-[9px] text-slate-500">閱讀放大鏡、漢字砌圖、寫作漢堡包</p>
+                        <button type="button" onclick="downloadTier2Visuals('spld')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
+                            <span class="font-bold text-slate-800 text-[11px] mb-1">📖 4. 讀寫多感官學習</span>
+                            <span class="text-[9px] text-slate-500">閱讀放大鏡、漢字砌圖、寫作漢堡包</span>
                         </button>
                         <!-- 5. 專注力與靜觀 -->
-                        <button onclick="downloadTier2Visuals('mindfulness')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
-                            <h3 class="font-bold text-slate-800 text-[11px] mb-1">🧘 5. 專注力與靜觀降溫</h3>
-                            <p class="text-[9px] text-slate-500">呼吸圖卡、感官尋寶、大腦遙控器</p>
+                        <button type="button" onclick="downloadTier2Visuals('mindfulness')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
+                            <span class="font-bold text-slate-800 text-[11px] mb-1">🧘 5. 專注力與靜觀降溫</span>
+                            <span class="text-[9px] text-slate-500">呼吸圖卡、感官尋寶、大腦遙控器</span>
                         </button>
                         <!-- 6. 轉銜與適應 -->
-                        <button onclick="downloadTier2Visuals('transition')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
-                            <h3 class="font-bold text-slate-800 text-[11px] mb-1">🔀 6. 轉銜與校園適應</h3>
-                            <p class="text-[9px] text-slate-500">倒數提示牌、Plan B卡、校園地圖</p>
+                        <button type="button" onclick="downloadTier2Visuals('transition')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
+                            <span class="font-bold text-slate-800 text-[11px] mb-1">🔀 6. 轉銜與校園適應</span>
+                            <span class="text-[9px] text-slate-500">倒數提示牌、Plan B卡、校園地圖</span>
                         </button>
                         <!-- 7. 衝突解決 -->
-                        <button onclick="downloadTier2Visuals('conflict')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
-                            <h3 class="font-bold text-slate-800 text-[11px] mb-1">🤝 7. 朋輩衝突解決</h3>
-                            <p class="text-[9px] text-slate-500">我訊息句板、和解三部曲、大小問題尺</p>
+                        <button type="button" onclick="downloadTier2Visuals('conflict')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
+                            <span class="font-bold text-slate-800 text-[11px] mb-1">🤝 7. 朋輩衝突解決</span>
+                            <span class="text-[9px] text-slate-500">我訊息句板、和解三部曲、大小問題尺</span>
                         </button>
                         <!-- 8. 自理技能 -->
-                        <button onclick="downloadTier2Visuals('lifeskills')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
-                            <h3 class="font-bold text-slate-800 text-[11px] mb-1">🎒 8. 自理與獨立生活</h3>
-                            <p class="text-[9px] text-slate-500">書包透視圖、購物流程卡、打卡清單</p>
+                        <button type="button" onclick="downloadTier2Visuals('lifeskills')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
+                            <span class="font-bold text-slate-800 text-[11px] mb-1">🎒 8. 自理與獨立生活</span>
+                            <span class="text-[9px] text-slate-500">書包透視圖、購物流程卡、打卡清單</span>
                         </button>
                         <!-- 9. 成長心態 -->
-                        <button onclick="downloadTier2Visuals('growth')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
-                            <h3 class="font-bold text-slate-800 text-[11px] mb-1">🌟 9. 成長心態與自我肯定</h3>
-                            <p class="text-[9px] text-slate-500">大腦翻轉卡、強項盾牌、成功小碎片</p>
+                        <button type="button" onclick="downloadTier2Visuals('growth')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
+                            <span class="font-bold text-slate-800 text-[11px] mb-1">🌟 9. 成長心態與自我肯定</span>
+                            <span class="text-[9px] text-slate-500">大腦翻轉卡、強項盾牌、成功小碎片</span>
                         </button>
                         <!-- 10. 感覺統合 -->
-                        <button onclick="downloadTier2Visuals('sensory')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
-                            <h3 class="font-bold text-slate-800 text-[11px] mb-1">🤸‍♀️ 10. 感覺統合與動作</h3>
-                            <p class="text-[9px] text-slate-500">動一動動作卡、透視坐姿圖、感官餐單</p>
+                        <button type="button" onclick="downloadTier2Visuals('sensory')" class="resource-card bg-white border border-slate-200 rounded-xl p-3 text-left hover:border-indigo-400">
+                            <span class="font-bold text-slate-800 text-[11px] mb-1">🤸‍♀️ 10. 感覺統合與動作</span>
+                            <span class="text-[9px] text-slate-500">動一動動作卡、透視坐姿圖、感官餐單</span>
                         </button>
                     </div>
                 </div>
@@ -196,21 +196,21 @@
                     </div>
                 </div>
                 <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/30">
-                    
+
                     <!-- 小學組 -->
                     <div class="space-y-3">
                         <h3 class="font-black text-slate-700 text-sm border-b border-slate-200 pb-1">🏫 小學組 8節 詳細教案</h3>
                         <div class="resource-card bg-white border border-slate-200 rounded-lg p-3 flex justify-between items-center">
                             <div><strong class="text-[11px] block">🗣️ 社交技巧訓練小組</strong><span class="text-[9px] text-slate-500">解讀非語言、輪流等待、妥協</span></div>
-                            <button onclick="downloadGroup('primary_social')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
+                            <button type="button" onclick="downloadGroup('primary_social')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
                         </div>
                         <div class="resource-card bg-white border border-slate-200 rounded-lg p-3 flex justify-between items-center">
                             <div><strong class="text-[11px] block">🎯 專注力與執行功能小組</strong><span class="text-[9px] text-slate-500">Stroop 效應、紅綠燈、舒爾特</span></div>
-                            <button onclick="downloadGroup('primary_attention')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
+                            <button type="button" onclick="downloadGroup('primary_attention')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
                         </div>
                         <div class="resource-card bg-white border border-slate-200 rounded-lg p-3 flex justify-between items-center">
                             <div><strong class="text-[11px] block">🎭 情緒表達與調控小組</strong><span class="text-[9px] text-slate-500">Inside Out、Dixit、Pass the bomb</span></div>
-                            <button onclick="downloadGroup('primary_emotion')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
+                            <button type="button" onclick="downloadGroup('primary_emotion')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
                         </div>
                     </div>
 
@@ -219,15 +219,15 @@
                         <h3 class="font-black text-slate-700 text-sm border-b border-slate-200 pb-1">🎓 中學組 8節 詳細教案</h3>
                         <div class="resource-card bg-white border border-slate-200 rounded-lg p-3 flex justify-between items-center">
                             <div><strong class="text-[11px] block">🧭 生涯規劃與轉銜支援</strong><span class="text-[9px] text-slate-500">RIASEC、CV撰寫、模擬面試</span></div>
-                            <button onclick="downloadGroup('secondary_career')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
+                            <button type="button" onclick="downloadGroup('secondary_career')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
                         </div>
                         <div class="resource-card bg-white border border-slate-200 rounded-lg p-3 flex justify-between items-center">
                             <div><strong class="text-[11px] block">🎨 壓力管理小組 (屋樹人)</strong><span class="text-[9px] text-slate-500">HTP 藝術投射釋放壓力、正念</span></div>
-                            <button onclick="downloadGroup('secondary_htp')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
+                            <button type="button" onclick="downloadGroup('secondary_htp')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
                         </div>
                         <div class="resource-card bg-white border border-slate-200 rounded-lg p-3 flex justify-between items-center">
                             <div><strong class="text-[11px] block">📚 溫習技巧與時間管理</strong><span class="text-[9px] text-slate-500">番茄鐘、心智圖、記憶宮殿</span></div>
-                            <button onclick="downloadGroup('secondary_executive')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
+                            <button type="button" onclick="downloadGroup('secondary_executive')" class="bg-purple-100 text-purple-700 hover:bg-purple-200 text-[10px] px-2.5 py-1.5 rounded font-bold transition">下載</button>
                         </div>
                     </div>
                 </div>
@@ -245,19 +245,19 @@
                             <span class="text-[10px] text-rose-600 font-bold block">適用資格與具體操作流程對照表</span>
                         </div>
                     </div>
-                    <button onclick="downloadExamCheatSheet()" class="bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5 shrink-0">
+                    <button type="button" onclick="downloadExamCheatSheet()" class="bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5 shrink-0">
                         <i class="fa-solid fa-file-word"></i> 導出表格
                     </button>
                 </div>
-                
+
                 <div class="p-5 overflow-x-auto">
                     <table class="w-full text-xs cheat-sheet-table border-collapse">
                         <thead>
                             <tr>
-                                <th class="w-[15%]">常見調適項目</th>
-                                <th class="w-[20%]">適用 SEN 資格 (主要)</th>
-                                <th class="w-[30%]">EDB 標準及建議操作</th>
-                                <th class="w-[35%]">前線操作流程與注意事項 (懶人包)</th>
+                                <th scope="col" class="w-[15%]">常見調適項目</th>
+                                <th scope="col" class="w-[20%]">適用 SEN 資格 (主要)</th>
+                                <th scope="col" class="w-[30%]">EDB 標準及建議操作</th>
+                                <th scope="col" class="w-[35%]">前線操作流程與注意事項 (懶人包)</th>
                             </tr>
                         </thead>
                         <tbody class="text-slate-700">
@@ -313,12 +313,12 @@
 
             const blob = new Blob(['\ufeff', sourceHTML], { type: 'application/msword;charset=utf-8' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); 
-            a.href = url; 
+            const a = document.createElement('a');
+            a.href = url;
             a.download = filename + '.doc';
-            document.body.appendChild(a); 
-            a.click(); 
-            document.body.removeChild(a); 
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
             showToast(`已成功導出「${filename}」Word 文件！`);
         }
@@ -346,7 +346,7 @@
             const content = `
                 <div style="font-family: 'Microsoft JhengHei', sans-serif; color: #000;">
                     <h1 style="text-align: center; font-size: 18pt; border-bottom: 2px solid #000; padding-bottom: 10px;">通用設計學習 (UDL) 科目教案範本及學科範例</h1>
-                    
+
                     <h3 style="margin-top: 20px; color: #0f766e;">【教案空白範本】</h3>
                     <table style="width: 100%; border-collapse: collapse; margin-top: 10px;" border="1" cellpadding="8">
                         <tr style="background-color: #f1f5f9;"><td style="width: 20%; font-weight: bold;">科目：</td><td style="width: 30%;"></td><td style="width: 20%; font-weight: bold;">課題：</td><td style="width: 30%;"></td></tr>
@@ -354,7 +354,7 @@
                         <tr><td colspan="4" style="background-color: #e2e8f0; font-weight: bold; font-size: 12pt;">學習目標 (Learning Objectives)</td></tr>
                         <tr><td colspan="4" style="height: 60px;">1. 知識目標：<br>2. 技能目標：<br>3. 價值觀目標：</td></tr>
                     </table>
-                    
+
                     <table style="width: 100%; border-collapse: collapse; margin-top: 15px;" border="1" cellpadding="8">
                         <tr style="background-color: #e2e8f0; font-weight: bold;">
                             <td style="width: 33%;">1. 提供多重表徵方式<br>(Representation - 呈現知識)</td>
@@ -371,7 +371,7 @@
                     <br><hr><br>
 
                     <h3 style="margin-top: 20px; color: #0f766e;">【各學科 UDL 實戰範例參考】</h3>
-                    
+
                     <h4 style="background-color: #f8fafc; padding: 5px; border-left: 4px solid #3b82f6;">📕 中文科 (課題：認讀形聲字 / 寫作)</h4>
                     <ul>
                         <li><strong>多重表徵：</strong> 使用不同顏色的粉筆區分「形旁」和「聲旁」；使用「拆字字卡」實物讓學生拼湊。</li>
@@ -410,7 +410,7 @@
                 <div style="font-family: 'Microsoft JhengHei', sans-serif; color: #000;">
                     <h1 style="text-align: center; font-size: 18pt; border-bottom: 2px solid #000; padding-bottom: 10px;">Tier 1 視覺化常規與心態海報範本</h1>
                     <p style="text-align: center; color: #666; font-size: 10pt;">老師可直接在此 Word 檔案中修改文字，列印後過膠使用。</p>
-                    
+
                     <div style="page-break-after: always;">
                         <h2 style="color: #b91c1c;">1. 成長心態 (Growth Mindset) 課室牆貼：「換個說法」</h2>
                         <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 14pt; font-weight: bold;" border="1" cellpadding="15">
@@ -814,12 +814,12 @@
             if (type === 'primary_emotion') {
                 title = "情緒表達小組 (融入「說書人 Dixit」與「玩轉腦朋友」)";
                 filename = "Tier2_小學情緒表達小組_詳細教案";
-                
+
                 contentHTML = `
                     <p><strong>適用對象：</strong> 述情障礙、焦慮、社交退縮 (小三至小六)</p>
                     <p><strong>小組節數：</strong> 8 節 (每節 60 分鐘)</p>
                     <p><strong>小組訓練目標：</strong> 學習認識基本情緒、覺察衝動反應、並利用桌遊作情緒投射與表達。</p>
-                    
+
                     <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; margin-top: 15px;">
                         <h4 style="margin: 0 0 5px 0; color: #4338ca;">所需主要物資清單 (Materials List)：</h4>
                         <ul style="margin: 0; padding-left: 20px; font-size: 11pt;">
@@ -834,7 +834,7 @@
                     </div>
 
                     <h3 style="margin-top: 20px;">每節內容：</h3>
-                    
+
                     ${buildSessionTable(1, "認識基本情緒與大腦", [
                         {time: "引入：互相認識 (10分鐘)", content: "小遊戲：當導師出示興趣/食物圖卡，符合學生興趣則站起來解釋原因。透過詢問加深認識。"},
                         {time: "主題教學1：介紹情緒 (15分鐘)", content: "播放影片《Inside Out 玩轉腦朋友》，介紹各種基本情緒（開心、憤怒、失落、擔憂）。導師分享不同情緒伴隨的「身體反應」（如心跳加速、冒汗）。"},
@@ -842,7 +842,7 @@
                         {time: "主題教學2：情緒溫度計 (20分鐘)", content: "介紹「情緒溫度計」0-5度。以「開心」為例：0度平穩 ➔ 2度聲量提升 ➔ 5度興奮大叫。"},
                         {time: "總結及回饋 (10分鐘)", content: "重溫基本情緒。派發功課：在家完成「憤怒」的情緒溫度計。回饋並派發代幣。"}
                     ])}
-                    
+
                     ${buildSessionTable(2, "衝動與不理想行為", [
                         {time: "引入：重溫功課 (10分鐘)", content: "分享上一節派發的「憤怒溫度計」功課，給予肯定。"},
                         {time: "主題教學1：衝動怪 (15分鐘)", content: "介紹「衝動怪」特徵（心急、不理後果）。舉例：小息搶零食、未舉手作答。"},
@@ -850,7 +850,7 @@
                         {time: "應用活動：Pass the Bomb (20分鐘)", content: "利用「Pass the bomb junior 妙傳爆趣」玩具。輪流讓學生分享自己過往在日常生活中的不理想衝動行為，並分析當時的身心反應。"},
                         {time: "總結及回饋 (10分鐘)", content: "帶出「衝動怪」帶來的負面影響。預告下一節的應對技巧。"}
                     ])}
-                    
+
                     ${buildSessionTable(3, "停、想、做 (Stop-Think-Do)", [
                         {time: "引入：重溫 (10分鐘)", content: "重溫上節的「衝動怪」與身體反應。"},
                         {time: "主題教學1：大腦暫停鍵 (15分鐘)", content: "介紹「大腦遙控器」的「暫停鍵」。當按下暫停鍵，便做出「停、想、做」三部曲（停一停、想一想、慢慢做）。"},
@@ -858,7 +858,7 @@
                         {time: "應用活動：情境分析 (20分鐘)", content: "播放短片或出示情境圖（如班房不懂做題大叫、操場打球爭執）。讓學生練習在適當時機加入「停、想、做」，並說出替代行為。"},
                         {time: "總結及回饋 (10分鐘)", content: "總結「停想做」威力，回饋學生表現並計分。"}
                     ])}
-                    
+
                     ${buildSessionTable(4, "情緒萬花筒 (Dixit 初探)", [
                         {time: "引入：介紹 Dixit (10分鐘)", content: "向學生介紹《說書人 Dixit》桌遊的精美抽象卡牌。"},
                         {time: "主題教學：尋找情緒的形狀 (15分鐘)", content: "不按原規則，將卡牌攤開。導師給出「開心」、「害怕」等詞，請學生挑選一張最能代表該情緒的卡牌。"},
@@ -866,7 +866,7 @@
                         {time: "應用活動：看圖說故事 (20分鐘)", content: "輪流展示自己選的卡牌，用一句話解釋為何這張卡代表該情緒（投射內心感受）。"},
                         {time: "總結及回饋 (10分鐘)", content: "讚賞學生勇於表達，發放代幣。"}
                     ])}
-                    
+
                     ${buildSessionTable(5, "同理心雷達", [
                         {time: "引入：熱身 (10分鐘)", content: "利用 3 張 Dixit 卡牌串連成一個簡單小故事。"},
                         {time: "主題教學：心智解讀 (15分鐘)", content: "導師暗自選一張卡，說出一句模糊的形容詞。學生需猜測導師選了哪張，學習「站在對方角度思考」。"},
@@ -874,7 +874,7 @@
                         {time: "應用活動：正式說書人 (20分鐘)", content: "分發卡牌，正式進行 Dixit 簡化版遊戲。訓練使用形容詞，避免過度直接或過度模糊。"},
                         {time: "總結及回饋 (10分鐘)", content: "討論猜錯時的心情，學習接納。"}
                     ])}
-                    
+
                     ${buildSessionTable(6, "憤怒的火山與降溫", [
                         {time: "引入：尋找憤怒 (10分鐘)", content: "在卡牌中挑選最像「火山爆發」的牌。"},
                         {time: "主題教學：降溫技巧 (15分鐘)", content: "教導 5 秒腹式深呼吸法。練習在憤怒溫度計達到 4 度前，使用「暫停鍵」。"},
@@ -882,7 +882,7 @@
                         {time: "應用活動：Spot it! (20分鐘)", content: "進行《Spot it!》考反應遊戲。過程必須守規則，若太興奮或生氣，可舉起「暫停卡」深呼吸 5 秒再繼續。"},
                         {time: "總結及回饋 (10分鐘)", content: "檢討遊戲中的情緒控制。"}
                     ])}
-                    
+
                     ${buildSessionTable(7, "我的百寶箱 (自我價值)", [
                         {time: "引入：強項大搜查 (10分鐘)", content: "寫出自己的三個優點。"},
                         {time: "主題教學：卡牌投射優點 (15分鐘)", content: "在 Dixit 卡中挑選代表自己優點的牌，並向組員介紹（重建自信與正向自我價值）。"},
@@ -890,7 +890,7 @@
                         {time: "應用活動：互相欣賞 (20分鐘)", content: "將牌傳給旁邊的組員，請對方根據這張牌，說出一個欣賞你的地方。"},
                         {time: "總結及回饋 (10分鐘)", content: "感受被稱讚的喜悅。"}
                     ])}
-                    
+
                     ${buildSessionTable(8, "夢想卡片與畢業", [
                         {time: "引入：未來展望 (10分鐘)", content: "挑選一張代表「未來夢想」或「想成為怎樣的人」的卡片。"},
                         {time: "主題教學：分享與祝福 (15分鐘)", content: "輪流分享卡片故事。導師給予每位學生正面的回饋與祝福。"},
@@ -899,7 +899,7 @@
                         {time: "總結及回饋 (10分鐘)", content: "頒發證書與代幣兌換。拍照留念。"}
                     ])}
                 `;
-            } 
+            }
             else if (type === 'primary_attention') {
                 title = "專注力與執行功能小組 (含 Stroop Effect)";
                 filename = "Tier2_小學專注力與執行功能_詳細教案";
@@ -907,7 +907,7 @@
                     <p><strong>適用對象：</strong> ADHD, SpLD, 組織弱 (小一至小六)</p>
                     <p><strong>小組節數：</strong> 8 節 (每節 60 分鐘)</p>
                     <p><strong>小組訓練目標：</strong> 提升視覺/聽覺專注力、抑制衝動及學習任務拆解。</p>
-                    
+
                     <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; margin-top: 15px;">
                         <h4 style="margin: 0 0 5px 0; color: #4338ca;">所需主要物資清單 (Materials List)：</h4>
                         <ul style="margin: 0; padding-left: 20px; font-size: 11pt;">
@@ -921,7 +921,7 @@
                     </div>
 
                     <h3 style="margin-top: 20px;">每節內容：</h3>
-                    
+
                     ${buildSessionTable(1, "專注力引擎啟動 (安坐與指令)", [
                         {time: "引入：建立常規 (10分鐘)", content: "互相認識。共同制訂小組規則（如：舉手發言）及代幣獎勵制度。"},
                         {time: "主題教學：專注力引擎 (15分鐘)", content: "介紹 Alert Program 概念：大腦就像汽車引擎（太快、太慢、剛剛好）。讓學生分辨自己現在的狀態。"},
@@ -929,7 +929,7 @@
                         {time: "應用活動：123木頭人挑戰 (20分鐘)", content: "進行「123紅綠燈 / 木頭人」遊戲。測試並建立基礎安坐與指令跟從能力。成功靜止可獲代幣。"},
                         {time: "總結及回饋 (10分鐘)", content: "檢討剛才誰的引擎控制得最好。派發代幣。"}
                     ])}
-                    
+
                     ${buildSessionTable(2, "斯特魯普效應 (Stroop Effect) 專注力挑戰", [
                         {time: "引入：色彩大混亂 (10分鐘)", content: "展示印有紅色的字，但字體顏色是藍色的字卡。問學生覺得混亂嗎？"},
                         {time: "主題教學：大腦的干擾 (15分鐘)", content: "介紹 Stroop Effect（斯特魯普效應）：若新的刺激特徵與原先不相同，大腦反應會變慢。教導「停一秒再答」以抑制衝動。"},
@@ -937,7 +937,7 @@
                         {time: "應用活動：PPT 闖關 (20分鐘)", content: "播放 Stroop PPT。Round 1: 照讀字面意義（例如寫著『紅』就讀紅）。Round 2: 只讀顏色不讀字（例如寫著紅但顏色是綠，要讀『綠』）。訓練高階視覺專注與衝動抑制。"},
                         {time: "總結及回饋 (10分鐘)", content: "討論克服大腦干擾的方法。"}
                     ])}
-                    
+
                     ${buildSessionTable(3, "視覺雷達 (舒爾特方格)", [
                         {time: "引入：尋寶大師 (10分鐘)", content: "在雜亂的圖片中鬥快找出隱藏的物品。"},
                         {time: "主題教學：視覺搜尋技巧 (15分鐘)", content: "介紹「舒爾特方格 (Schulte Grid)」。教導不要東張西望，要用眼球「由左至右、由上至下」有系統地掃視。"},
@@ -945,7 +945,7 @@
                         {time: "應用活動：方格大挑戰 (20分鐘)", content: "計時挑戰：在 5x5 的方格中，按順序由 1 點擊至 25。比較兩次嘗試的時間進步。"},
                         {time: "總結及回饋 (10分鐘)", content: "記錄自己的最佳成績。"}
                     ])}
-                    
+
                     ${buildSessionTable(4, "順風耳任務 (聽覺記憶)", [
                         {time: "引入：大聲與小聲 (10分鐘)", content: "導師用極小的聲音說出指令，測試學生是否有留心聽。"},
                         {time: "主題教學：聽覺工作記憶 (15分鐘)", content: "解釋聽覺記憶。教導小技巧：聽完指令後在心中「默唸一次」或「用手指數住」。"},
@@ -953,7 +953,7 @@
                         {time: "應用活動：聽令尋寶 (20分鐘)", content: "導師連續給予 3 個不相關的指令（例如：摸一下黑板、轉個圈、拿藍色筆）。學生需按準確順序完成。"},
                         {time: "總結及回饋 (10分鐘)", content: "分享默唸技巧是否有效。"}
                     ])}
-                    
+
                     ${buildSessionTable(5, "紅綠燈煞車 (心口不一)", [
                         {time: "引入：反向思考 (10分鐘)", content: "老師說「大」，學生要比「小」的手勢。"},
                         {time: "主題教學：前額葉的煞車 (15分鐘)", content: "講解衝動控制。教導當大腦想做 A 時，如何強行煞車改做 B。"},
@@ -961,7 +961,7 @@
                         {time: "應用活動：老師話反轉版 (20分鐘)", content: "玩「老師話 (Simon Says)」。若老師加了「老師話」，學生反而【不要】做該動作。極度考驗抑制能力。"},
                         {time: "總結及回饋 (10分鐘)", content: "檢討失敗的原因（太心急）。"}
                     ])}
-                    
+
                     ${buildSessionTable(6, "時間魔法師 (番茄鐘)", [
                         {time: "引入：時間的感覺 (10分鐘)", content: "讓學生閉眼，覺得過了 1 分鐘就舉手。看看大家對時間的感知差異。"},
                         {time: "主題教學：番茄鐘工作法 (15分鐘)", content: "介紹 Visual Timer (視覺計時器)。教導「專注 15 分鐘、休息 5 分鐘」的高效溫習法。"},
@@ -969,7 +969,7 @@
                         {time: "應用活動：極速抄寫挑戰 (20分鐘)", content: "設定 10 分鐘 Timer，學生需安坐完成抄寫或填色任務。體會時間倒數帶來的推動力。"},
                         {time: "總結及回饋 (10分鐘)", content: "分享看到紅色倒數區越來越少時的感覺。"}
                     ])}
-                    
+
                     ${buildSessionTable(7, "執行大作戰 (清單威力)", [
                         {time: "引入：大頭蝦經歷 (10分鐘)", content: "分享自己曾經忘記帶東西回校的糟糕經歷。"},
                         {time: "主題教學：Checklist 拆解 (15分鐘)", content: "教導執行功能的終極武器：任務拆解清單。將「執書包」拆分為 5 個明確步驟。"},
@@ -977,7 +977,7 @@
                         {time: "應用活動：執書包大賽 (20分鐘)", content: "提供散亂的書本與文具。學生需利用 Checklist，將物品按科目、顏色迅速放進正確的文件夾中。"},
                         {time: "總結及回饋 (10分鐘)", content: "派發精美 Checklist 讓學生帶回家使用。"}
                     ])}
-                    
+
                     ${buildSessionTable(8, "終極特務挑戰與畢業", [
                         {time: "引入：特務準備 (10分鐘)", content: "熱身：再玩一次 Stroop Effect 測試。"},
                         {time: "主題教學：綜合複習 (15分鐘)", content: "重溫過去 7 節學過的技巧：停想做、舒爾特、番茄鐘、Checklist。"},
@@ -993,7 +993,7 @@
                 contentHTML = `
                     <p><strong>適用對象：</strong> ASD, SLI, 社交退縮學生 (小一至小六)</p>
                     <p><strong>小組節數：</strong> 8 節 (每節 60 分鐘)</p>
-                    
+
                     <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; margin-top: 15px;">
                         <h4 style="margin: 0 0 5px 0; color: #4338ca;">所需主要物資清單 (Materials List)：</h4>
                         <ul style="margin: 0; padding-left: 20px; font-size: 11pt;">
@@ -1008,7 +1008,7 @@
                     </div>
 
                     <h3 style="margin-top: 20px;">每節內容：</h3>
-                    
+
                     ${buildSessionTable(1, "破冰與認識彼此", [
                         {time: "引入 (10分鐘)", content: "介紹小組目的，共同訂立「友善發言」規則。"},
                         {time: "主題教學 (15分鐘)", content: "教導自我介紹三大要素：眼望對方、面帶微笑、聲量適中。"},
@@ -1016,7 +1016,7 @@
                         {time: "應用活動 (20分鐘)", content: "運用「破冰九宮格」進行採訪遊戲，找出與自己有共同興趣的組員。"},
                         {time: "總結及回饋 (10分鐘)", content: "檢討眼神接觸的表現。"}
                     ])}
-                    
+
                     ${buildSessionTable(2, "身體語言解碼", [
                         {time: "引入 (10分鐘)", content: "無聲傳話遊戲。"},
                         {time: "主題教學 (15分鐘)", content: "解讀非語言訊息。展示皺眉、抱臂、後退等肢體語言的圖片，探討背後含義。"},
@@ -1080,7 +1080,7 @@
                 contentHTML = `
                     <p><strong>適用對象：</strong> 高中 SEN 學生 (中三至中六)</p>
                     <p><strong>小組節數：</strong> 8 節 (每節 60 分鐘)</p>
-                    
+
                     <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; margin-top: 15px;">
                         <h4 style="margin: 0 0 5px 0; color: #4338ca;">所需主要物資清單 (Materials List)：</h4>
                         <ul style="margin: 0; padding-left: 20px; font-size: 11pt;">
@@ -1155,7 +1155,7 @@
                 contentHTML = `
                     <p><strong>適用對象：</strong> 焦慮、抑鬱傾向、學業壓力大 (中一至中六)</p>
                     <p><strong>小組節數：</strong> 8 節 (每節 60 分鐘)</p>
-                    
+
                     <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; margin-top: 15px;">
                         <h4 style="margin: 0 0 5px 0; color: #4338ca;">所需主要物資清單 (Materials List)：</h4>
                         <ul style="margin: 0; padding-left: 20px; font-size: 11pt;">
@@ -1233,7 +1233,7 @@
                 contentHTML = `
                     <p><strong>適用對象：</strong> ADHD, SpLD, Borderline, 欠缺溫習方法 (中一至中四)</p>
                     <p><strong>小組節數：</strong> 8 節 (每節 60 分鐘)</p>
-                    
+
                     <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; margin-top: 15px;">
                         <h4 style="margin: 0 0 5px 0; color: #4338ca;">所需主要物資清單 (Materials List)：</h4>
                         <ul style="margin: 0; padding-left: 20px; font-size: 11pt;">
@@ -1322,7 +1322,7 @@
                 <div style="font-family: 'Microsoft JhengHei', Arial, sans-serif; color: #000;">
                     <h1 style="text-align: center; font-size: 18pt; border-bottom: 2px solid #000; padding-bottom: 10px;">EDB 測考調適懶人包 (Assessment Accommodations)</h1>
                     <p style="text-align: right; color: #666; font-size: 10pt;">全校特教合規指南 / 內部操作指引</p>
-                    
+
                     <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11pt;" border="1" cellpadding="8">
                         <thead>
                             <tr style="background-color: #e2e8f0; font-weight: bold;">

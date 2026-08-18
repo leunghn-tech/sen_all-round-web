@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎒 針對性學業與生活調適 (Targeted Academic & Life Adaptations)</title>
+    <title>🎒 針對性學業與生活調適 (Targeted Academic &amp; Life Adaptations)</title>
     <!-- 引入 Tailwind CSS 進行精緻視覺排版 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入 Font Awesome 專業圖示 -->
@@ -85,7 +85,7 @@
 
     <!-- 主要內容區 -->
     <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full space-y-8">
-        
+
         <!-- 標題橫幅 -->
         <div class="bg-gradient-to-r from-teal-600 via-emerald-600 to-emerald-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
             <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
@@ -104,23 +104,23 @@
 
         <!-- 三板塊頂部 Tab 切換按鈕 -->
         <div class="flex flex-wrap gap-2.5 bg-white p-2 rounded-2xl shadow-sm border border-slate-100 justify-center">
-            <button id="tab-ef" onclick="switchAcademicTab('ef')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
+            <button type="button" id="tab-ef" onclick="switchAcademicTab('ef')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
                 <i class="fa-solid fa-list-check"></i> 1. 三色文件夾執書包 (EF)
             </button>
-            <button id="tab-vakt" onclick="switchAcademicTab('vakt')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
+            <button type="button" id="tab-vakt" onclick="switchAcademicTab('vakt')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-50">
                 <i class="fa-solid fa-feather-pointed"></i> 2. 讀寫多感官觸覺沙盤 (VAKT)
             </button>
-            <button id="tab-si" onclick="switchAcademicTab('si')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-teal-700 bg-teal-50 border border-teal-100 shadow-sm">
+            <button type="button" id="tab-si" onclick="switchAcademicTab('si')" class="flex items-center gap-2 px-5 py-3 rounded-xl font-black text-xs sm:text-sm transition-all text-teal-700 bg-teal-50 border border-teal-100 shadow-sm">
                 <i class="fa-solid fa-child-reaching"></i> 3. 居家感統調適處方
             </button>
         </div>
 
         <!-- 主體內容：左右兩欄佈局 -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
+
             <!-- 左欄：互動操作區 (12格中佔 8格) -->
             <div class="lg:col-span-8 space-y-6">
-                
+
                 <!-- 模塊一：四色文件夾執書包 (EF) -->
                 <div id="panel-ef" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-6 hidden">
                     <!-- 場景選擇列 (全新引入) -->
@@ -129,13 +129,13 @@
                             <i class="fa-solid fa-mountain-sun text-sm"></i> 選擇訓練場景 (Situational Training Scene)
                         </label>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <button onclick="switchEFScene('regular')" id="btn-scene-regular" class="py-2.5 px-3 rounded-xl font-bold text-xs transition border bg-teal-600 text-white border-teal-500">
-                                📅 場景 A：常規星期一 ( PE & 午膳)
+                            <button type="button" onclick="switchEFScene('regular')" id="btn-scene-regular" class="py-2.5 px-3 rounded-xl font-bold text-xs transition border bg-teal-600 text-white border-teal-500">
+                                📅 場景 A：常規星期一 ( PE &amp; 午膳)
                             </button>
-                            <button onclick="switchEFScene('exam')" id="btn-scene-exam" class="py-2.5 px-3 rounded-xl font-bold text-xs transition border bg-white text-slate-600 border-slate-200">
+                            <button type="button" onclick="switchEFScene('exam')" id="btn-scene-exam" class="py-2.5 px-3 rounded-xl font-bold text-xs transition border bg-white text-slate-600 border-slate-200">
                                 📝 場景 B：考試週半天溫習日
                             </button>
-                            <button onclick="switchEFScene('outing')" id="btn-scene-outing" class="py-2.5 px-3 rounded-xl font-bold text-xs transition border bg-white text-slate-600 border-slate-200">
+                            <button type="button" onclick="switchEFScene('outing')" id="btn-scene-outing" class="py-2.5 px-3 rounded-xl font-bold text-xs transition border bg-white text-slate-600 border-slate-200">
                                 🎒 場景 C：課外活動野餐旅行日
                             </button>
                         </div>
@@ -189,7 +189,7 @@
                     </div>
 
                     <div class="pt-4 flex justify-center">
-                        <button onclick="resetEFDesk()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 px-6 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
+                        <button type="button" onclick="resetEFDesk()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 px-6 rounded-xl text-xs transition flex items-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-arrow-rotate-left"></i> <span>重設當前場景桌面</span>
                         </button>
                     </div>
@@ -209,12 +209,12 @@
                             <span id="current-character-display" class="bg-emerald-100 text-emerald-800 font-black text-lg w-10 h-10 rounded-xl flex items-center justify-center">藍</span>
                         </div>
                         <div class="flex flex-wrap gap-1.5">
-                            <button onclick="selectVaktCharacter('藍')" class="vakt-word-btn bg-emerald-50 border border-emerald-300 text-emerald-800 font-bold py-1.5 px-3 rounded-xl text-xs transition">藍 (繁雜結構)</button>
-                            <button onclick="selectVaktCharacter('廣')" class="vakt-word-btn bg-white border border-slate-200 text-slate-600 font-bold py-1.5 px-3 rounded-xl text-xs transition hover:bg-slate-50">廣 (內外半包圍)</button>
-                            <button onclick="selectVaktCharacter('麗')" class="vakt-word-btn bg-white border border-slate-200 text-slate-600 font-bold py-1.5 px-3 rounded-xl text-xs transition hover:bg-slate-50">麗 (對稱筆畫)</button>
-                            <button onclick="selectVaktCharacter('體')" class="vakt-word-btn bg-white border border-slate-200 text-slate-600 font-bold py-1.5 px-3 rounded-xl text-xs transition hover:bg-slate-50">體 (左右偏旁比例)</button>
-                            <button onclick="selectVaktCharacter('飛')" class="vakt-word-btn bg-white border border-slate-200 text-slate-600 font-bold py-1.5 px-3 rounded-xl text-xs transition hover:bg-slate-50">飛 (特殊空間架構)</button>
-                            <button onclick="clearSand()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold py-1.5 px-3.5 rounded-xl text-xs transition border border-rose-200 flex items-center gap-1 ml-auto">
+                            <button type="button" onclick="selectVaktCharacter('藍')" class="vakt-word-btn bg-emerald-50 border border-emerald-300 text-emerald-800 font-bold py-1.5 px-3 rounded-xl text-xs transition">藍 (繁雜結構)</button>
+                            <button type="button" onclick="selectVaktCharacter('廣')" class="vakt-word-btn bg-white border border-slate-200 text-slate-600 font-bold py-1.5 px-3 rounded-xl text-xs transition hover:bg-slate-50">廣 (內外半包圍)</button>
+                            <button type="button" onclick="selectVaktCharacter('麗')" class="vakt-word-btn bg-white border border-slate-200 text-slate-600 font-bold py-1.5 px-3 rounded-xl text-xs transition hover:bg-slate-50">麗 (對稱筆畫)</button>
+                            <button type="button" onclick="selectVaktCharacter('體')" class="vakt-word-btn bg-white border border-slate-200 text-slate-600 font-bold py-1.5 px-3 rounded-xl text-xs transition hover:bg-slate-50">體 (左右偏旁比例)</button>
+                            <button type="button" onclick="selectVaktCharacter('飛')" class="vakt-word-btn bg-white border border-slate-200 text-slate-600 font-bold py-1.5 px-3 rounded-xl text-xs transition hover:bg-slate-50">飛 (特殊空間架構)</button>
+                            <button type="button" onclick="clearSand()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold py-1.5 px-3.5 rounded-xl text-xs transition border border-rose-200 flex items-center gap-1 ml-auto">
                                 <i class="fa-solid fa-broom"></i> <span>掃平沙盤</span>
                             </button>
                         </div>
@@ -231,48 +231,48 @@
 
                 <!-- 模塊三：居家感統調適處方 (Sensory Diet) -->
                 <div id="panel-si" class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-6">
-                    
+
                     <!-- 步驟一：狀態勾選區 -->
                     <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-3.5">
                         <h4 class="font-extrabold text-slate-700 text-sm flex items-center gap-1.5">
                             <i class="fa-solid fa-magnifying-glass"></i> 第一步：請勾選孩子在做功課/溫習時的當下狀態 (新增處境)
                         </h4>
-                        
+
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <!-- 狀態 A -->
                             <label onclick="switchSensoryState('A')" class="relative flex items-start gap-3 p-4 rounded-xl border-2 transition cursor-pointer bg-white border-teal-500 shadow-sm" id="card-state-A">
                                 <input type="radio" name="sensory-state" id="radio-state-A" checked class="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500 mt-1">
-                                <div>
+                                <span>
                                     <span class="font-black text-slate-800 text-xs sm:text-sm block">處境 A：過度亢奮躁動 (Sought)</span>
                                     <span class="text-[10px] text-slate-400 block mt-0.5">坐立不安、手舞足蹈、情緒高昂難靜止</span>
-                                </div>
+                                </span>
                             </label>
 
                             <!-- 狀態 B -->
                             <label onclick="switchSensoryState('B')" class="relative flex items-start gap-3 p-4 rounded-xl border-2 transition cursor-pointer bg-white border-slate-100" id="card-state-B">
                                 <input type="radio" name="sensory-state" id="radio-state-B" class="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500 mt-1">
-                                <div>
+                                <span>
                                     <span class="font-black text-slate-800 text-xs sm:text-sm block">處境 B：無精打采遊魂 (Hypo)</span>
                                     <span class="text-[10px] text-slate-400 block mt-0.5">恰眼瞓、伏在桌上放空、反應非常緩慢</span>
-                                </div>
+                                </span>
                             </label>
 
                             <!-- 狀態 C -->
                             <label onclick="switchSensoryState('C')" class="relative flex items-start gap-3 p-4 rounded-xl border-2 transition cursor-pointer bg-white border-slate-100" id="card-state-C">
                                 <input type="radio" name="sensory-state" id="radio-state-C" class="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500 mt-1">
-                                <div>
+                                <span>
                                     <span class="font-black text-slate-800 text-xs sm:text-sm block">處境 C：感官過敏崩潰 (Avoidant)</span>
                                     <span class="text-[10px] text-slate-400 block mt-0.5">對擦膠屑、微小翻書或環境音極度煩躁焦慮</span>
-                                </div>
+                                </span>
                             </label>
 
                             <!-- 狀態 D -->
                             <label onclick="switchSensoryState('D')" class="relative flex items-start gap-3 p-4 rounded-xl border-2 transition cursor-pointer bg-white border-slate-100" id="card-state-D">
                                 <input type="radio" name="sensory-state" id="radio-state-D" class="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500 mt-1">
-                                <div>
+                                <span>
                                     <span class="font-black text-slate-800 text-xs sm:text-sm block">處境 D：本體覺遲鈍手軟 (Proprioceptive)</span>
                                     <span class="text-[10px] text-slate-400 block mt-0.5">寫字折斷筆芯、控筆歪斜、手肌極易疲軟</span>
-                                </div>
+                                </span>
                             </label>
                         </div>
                     </div>
@@ -294,7 +294,7 @@
                                 <span class="text-xs font-bold text-slate-400">處方執行計時器：</span>
                                 <span id="timer-display" class="font-mono text-3xl font-black text-amber-400 tracking-wider">02:00</span>
                             </div>
-                            <button id="timer-control-btn" onclick="toggleDietTimer()" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-black py-2.5 px-6 rounded-xl transition shadow-md flex items-center gap-1.5 shrink-0">
+                            <button type="button" id="timer-control-btn" onclick="toggleDietTimer()" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-black py-2.5 px-6 rounded-xl transition shadow-md flex items-center gap-1.5 shrink-0">
                                 <i class="fa-solid fa-play" id="timer-control-icon"></i> <span id="timer-control-text">開始執行</span>
                             </button>
                         </div>
@@ -323,7 +323,7 @@
                         <div class="flex items-start gap-3.5">
                             <div id="feedback-icon" class="text-2xl mt-0.5 shrink-0"></div>
                             <div class="space-y-2">
-                                <h4 id="feedback-title" class="font-black text-sm sm:text-base"></h4>
+                                <h4 id="feedback-title" class="font-black text-sm sm:text-base">載入中…</h4>
                                 <p id="feedback-desc" class="text-xs sm:text-sm leading-relaxed"></p>
                             </div>
                         </div>
@@ -354,7 +354,7 @@
         let currentTab = 'si'; // 默認選中感統調適
         let activeSensoryState = 'A'; // 狀態 A 亢奮 / 狀態 B 疲累 / 狀態 C 感官過敏 / 狀態 D 本體覺遲鈍
         let currentEFScene = 'regular'; // 默認常規周一場景
-        
+
         // 1. 三個不同場景 (EF) 的物件數據庫
         const efDatabaseScenes = {
             regular: [
@@ -388,7 +388,7 @@
                 { id: "ef_28", name: "能量條與不銹鋼水樽", category: "personal", label: "戶外充飢", folder: "green" }
             ]
         };
-        
+
         let efShelfItems = [...efDatabaseScenes.regular];
         let efFolderContents = { blue: [], red: [], yellow: [], green: [] };
         let selectedEfItemId = null;
@@ -503,7 +503,7 @@
 
         function switchEFScene(sceneKey) {
             currentEFScene = sceneKey;
-            
+
             // 更新場景切換按鈕樣式
             const scenesKeys = ['regular', 'exam', 'outing'];
             scenesKeys.forEach(sk => {
@@ -516,12 +516,12 @@
             });
 
             document.getElementById('ef-scene-instruction').innerText = `提示：${efSceneTexts[sceneKey]}`;
-            
+
             // 重設當前場景的書架與文件夾狀態
             efShelfItems = [...efDatabaseScenes[sceneKey]];
             efFolderContents = { blue: [], red: [], yellow: [], green: [] };
             selectedEfItemId = null;
-            
+
             renderEFShelf();
             renderEFFolders();
             showToast(`已成功切換至場景：${sceneKey === 'regular' ? '常規上學' : sceneKey === 'exam' ? '考試準備' : '戶外旅行'}`, "info");
@@ -543,7 +543,7 @@
             efShelfItems.forEach(item => {
                 const card = document.createElement('button');
                 const isSelected = selectedEfItemId === item.id;
-                
+
                 let borderStyle = isSelected ? "border-teal-500 ring-2 ring-teal-400/50 bg-teal-50/10 scale-102" : "border-slate-200 hover:border-teal-300 bg-white hover:bg-slate-50";
 
                 card.className = `p-3 rounded-xl border text-center transition flex flex-col items-center justify-center space-y-1 shadow-sm select-none ${borderStyle}`;
@@ -580,7 +580,7 @@
             const itemIndex = efShelfItems.findIndex(i => i.id === selectedEfItemId);
             if (itemIndex > -1) {
                 const item = efShelfItems[itemIndex];
-                
+
                 if (item.folder === color) {
                     // 正確收納
                     efShelfItems.splice(itemIndex, 1);
@@ -659,7 +659,7 @@
             canvas = document.getElementById('sand-canvas');
             if (!canvas) return;
             ctx = canvas.getContext('2d');
-            
+
             // 響應式適配 Canvas 實體尺寸
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
@@ -704,7 +704,7 @@
             ctx.beginPath();
             ctx.moveTo(lastX, lastY);
             ctx.lineTo(e.offsetX, e.offsetY);
-            
+
             // 設置描砂刻劃效果
             ctx.strokeStyle = '#84521d'; // 模擬底層深色托盤
             ctx.lineWidth = 14;
@@ -712,7 +712,7 @@
             ctx.lineJoin = 'round';
             ctx.shadowBlur = 4;
             ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
-            
+
             ctx.stroke();
             [lastX, lastY] = [e.offsetX, e.offsetY];
 
@@ -750,14 +750,14 @@
             ctx.beginPath();
             ctx.moveTo(lastX, lastY);
             ctx.lineTo(curX, curY);
-            
+
             ctx.strokeStyle = '#84521d';
             ctx.lineWidth = 14;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.shadowBlur = 4;
             ctx.shadowColor = 'rgba(0,0,0,0.2)';
-            
+
             ctx.stroke();
             [lastX, lastY] = [curX, curY];
         }
@@ -825,14 +825,14 @@
         function renderSensoryDiet() {
             const data = sensoryDietData[activeSensoryState];
             const container = document.getElementById('sensory-diet-instruction');
-            
+
             let listHtml = `<h5 class="font-extrabold text-teal-950 text-xs sm:text-sm flex items-center gap-1.5">${data.title}</h5>`;
             data.steps.forEach(st => {
                 listHtml += `<p class="text-xs sm:text-sm text-slate-600 leading-relaxed mt-2.5">${st}</p>`;
             });
 
             container.innerHTML = listHtml;
-            
+
             // 重設計時器時間
             if (!isTimerRunning) {
                 dietTimeRemaining = data.time;
@@ -842,7 +842,7 @@
 
         function switchSensoryState(state) {
             activeSensoryState = state;
-            
+
             // 切換勾選與外觀樣式
             const statesArr = ['A', 'B', 'C', 'D'];
             statesArr.forEach(s => {
@@ -859,11 +859,11 @@
 
             // 終止當時計時器
             if (isTimerRunning) {
-                toggleDietTimer(); 
+                toggleDietTimer();
             }
 
             renderSensoryDiet();
-            
+
             let stateLabel = "";
             if (state === 'A') stateLabel = "過度亢奮";
             else if (state === 'B') stateLabel = "疲累遊魂";
@@ -911,7 +911,7 @@
                         btnIcon.className = "fa-solid fa-play";
                         playTimerEndAlarm();
                         showToast("🎉 太棒了！感統處方執行完成！孩子的大腦神經已被科學調平，開始溫習吧！", "success");
-                        
+
                         // 回歸默認
                         dietTimeRemaining = sensoryDietData[activeSensoryState].time;
                         updateTimerDisplay();
@@ -1018,7 +1018,7 @@
 
             // 更新右欄理論解說
             document.getElementById('right-theory-column').innerHTML = academicTheoryData[tabKey];
-            
+
             // 同步載入該 Tab 專屬的 SEN 思維測驗
             loadTabSpecificQuiz(tabKey);
 
@@ -1101,7 +1101,7 @@
 
             const optionsContainer = document.getElementById('quiz-options');
             const feedbackContainer = document.getElementById('quiz-feedback');
-            
+
             feedbackContainer.classList.add('hidden'); // 切換 Tab 時隱藏舊的反饋
 
             optionsContainer.innerHTML = `
@@ -1154,7 +1154,7 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
-            
+
             let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
             let borderClass = 'border-emerald-100 shadow-emerald-50/50';
             if (type === 'error') {
@@ -1164,16 +1164,16 @@
                 icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
                 borderClass = 'border-blue-100 shadow-blue-50/50';
             }
-            
+
             toast.className += ` ${borderClass}`;
             toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
-            
+
             container.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
             }, 10);
-            
+
             setTimeout(() => {
                 toast.classList.add('translate-y-2', 'opacity-0');
                 setTimeout(() => {
@@ -1185,7 +1185,7 @@
         function syncA11ySettings() {
             const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
             const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
-            
+
             if (cachedContrast === 'true') {
                 document.body.classList.add('a11y-high-contrast');
             }
@@ -1199,7 +1199,7 @@
         // ==========================================
         window.onload = function() {
             syncA11ySettings();
-            
+
             // 默認加載感統 Tab 處方 (Module 3)
             switchAcademicTab('si');
         };

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🌱 成長心理學與階段發展 (Developmental Psychology & Milestones)</title>
+    <title>🌱 成長心理學與階段發展 (Developmental Psychology &amp; Milestones)</title>
     <!-- 引入 Tailwind CSS 進行精緻視覺排版 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入 Font Awesome 專業圖示 -->
@@ -152,7 +152,11 @@
             transition: background-color 0.3s ease;
         }
     </style>
-</head>
+
+        <style id="audit-inline-style-replacements">
+            .audit-parent-psychology-style-1{width: 0%}
+        </style>
+    </head>
 <body class="text-slate-800 flex flex-col min-h-screen text-base pb-12">
 
     <!-- Toast 通知容器 -->
@@ -175,7 +179,7 @@
 
     <!-- 主要內容區 -->
     <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full space-y-8">
-        
+
         <!-- 標題橫幅 -->
         <div class="bg-gradient-to-r from-rose-500 via-coral-500 to-amber-500 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
             <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
@@ -194,28 +198,28 @@
 
         <!-- 發展階段 Tab 切換按鈕 -->
         <div class="flex flex-wrap gap-2.5 bg-white p-2.5 rounded-2xl shadow-sm border border-slate-100 justify-center">
-            <button id="tab-preschool" onclick="switchStageTab('preschool')" class="flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-rose-700 bg-rose-50 border border-rose-100 shadow-sm">
+            <button type="button" id="tab-preschool" onclick="switchStageTab('preschool')" class="flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-rose-700 bg-rose-50 border border-rose-100 shadow-sm">
                 <i class="fa-solid fa-baby text-base"></i> 1. 幼兒探索期 (3-6歲)
             </button>
-            <button id="tab-schoolage" onclick="switchStageTab('schoolage')" class="flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-slate-600 hover:bg-slate-50">
+            <button type="button" id="tab-schoolage" onclick="switchStageTab('schoolage')" class="flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-slate-600 hover:bg-slate-50">
                 <i class="fa-solid fa-children text-base"></i> 2. 學齡勤奮期 (6-12歲)
             </button>
-            <button id="tab-adolescence" onclick="switchStageTab('adolescence')" class="flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-slate-600 hover:bg-slate-50">
+            <button type="button" id="tab-adolescence" onclick="switchStageTab('adolescence')" class="flex items-center gap-2 px-6 py-3.5 rounded-xl font-black text-sm sm:text-base transition-all text-slate-600 hover:bg-slate-50">
                 <i class="fa-solid fa-arrows-to-eye text-base"></i> 3. 青春認同自主期 (12-18歲)
             </button>
         </div>
 
         <!-- 雙欄排版 -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
+
             <!-- 左欄：互動操作區、小遊戲與文章策略 (12格中佔 8格) -->
             <div class="lg:col-span-8 space-y-6">
-                
+
                 <!-- 模塊一：互動心理學小活動/模擬器 (Interactive Psychology Tool) -->
                 <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-4">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                         <h3 class="font-black text-slate-800 text-lg flex items-center gap-2">
-                            <i class="fa-solid fa-gamepad text-rose-600 text-xl"></i> 
+                            <i class="fa-solid fa-gamepad text-rose-600 text-xl"></i>
                             <span id="activity-title" class="text-base sm:text-lg">發展心理學互動探索</span>
                         </h3>
                         <span class="bg-rose-50 text-rose-800 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">實時體驗艙</span>
@@ -252,7 +256,7 @@
                                 </h4>
                                 <p id="mindful-breath-guide-sub" class="text-slate-500 text-xs sm:text-sm">吸氣 (4s) ➔ 屏氣 (4s) ➔ 呼氣 (4s)</p>
                             </div>
-                            <button id="mindful-breath-btn" onclick="toggleMindfulBreathing()" class="bg-gradient-to-r from-rose-500 to-coral-500 hover:from-rose-600 hover:to-coral-600 text-white font-black px-6 py-3 rounded-xl transition duration-300 text-sm shadow-md shadow-rose-100 flex items-center gap-2">
+                            <button type="button" id="mindful-breath-btn" onclick="toggleMindfulBreathing()" class="bg-gradient-to-r from-rose-500 to-coral-500 hover:from-rose-600 hover:to-coral-600 text-white font-black px-6 py-3 rounded-xl transition duration-300 text-sm shadow-md shadow-rose-100 flex items-center gap-2">
                                 <i class="fa-solid fa-play" id="mindful-breath-icon"></i> <span id="mindful-breath-btn-text">開始練習</span>
                             </button>
                         </div>
@@ -262,7 +266,7 @@
                 <!-- 模塊二：深度心理學調適文章/微策略 (Developmental Articles) -->
                 <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-100 space-y-4">
                     <h3 class="font-black text-slate-800 text-base sm:text-lg flex items-center gap-2 border-b border-slate-100 pb-3">
-                        <i class="fa-solid fa-book-open text-rose-600"></i> 
+                        <i class="fa-solid fa-book-open text-rose-600"></i>
                         <span class="text-base sm:text-lg">心靈解碼與介入策略 (點擊卡片即可展開精讀)</span>
                     </h3>
 
@@ -294,7 +298,7 @@
                         <div class="flex items-start gap-4">
                             <div id="feedback-icon" class="text-3xl mt-0.5 shrink-0"></div>
                             <div class="space-y-2">
-                                <h4 id="feedback-title" class="font-black text-base sm:text-lg"></h4>
+                                <h4 id="feedback-title" class="font-black text-base sm:text-lg">載入中…</h4>
                                 <p id="feedback-desc" class="text-sm sm:text-base leading-relaxed text-slate-600"></p>
                             </div>
                         </div>
@@ -322,14 +326,14 @@
                         先照料好自己，才能照亮孩子。邀請您每日給自己 5 個小小的溫柔練習，並記錄在雲端/本地中。
                     </p>
                 </div>
-                <!-- 達成率 & 進度條 -->
+                <!-- 達成率 &amp; 進度條 -->
                 <div class="w-full md:w-60 space-y-2 shrink-0">
                     <div class="flex justify-between text-xs font-bold text-slate-600">
                         <span>今日自護達成率</span>
                         <span id="checklist-progress-text">0/5 完成</span>
                     </div>
                     <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden p-0.5 border border-slate-200">
-                        <div id="checklist-progress-bar" class="bg-gradient-to-r from-rose-400 to-amber-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        <div id="checklist-progress-bar" class="bg-gradient-to-r from-rose-400 to-amber-400 h-full rounded-full transition-all duration-500 audit-parent-psychology-style-1"></div>
                     </div>
                 </div>
             </div>
@@ -338,38 +342,38 @@
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="self-care-checklist-container">
                 <!-- 項目 1 -->
                 <label class="self-care-item border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between space-y-3 cursor-pointer select-none transition-all duration-300">
-                    <div class="flex items-start gap-2.5">
+                    <span class="flex items-start gap-2.5">
                         <input type="checkbox" id="sc-chk-1" onchange="updateSelfCareCheck()" class="accent-rose-500 w-5 h-5 rounded-lg shrink-0 mt-0.5">
                         <span class="text-sm font-bold text-slate-700 leading-relaxed">📋 「我今天有留出至少 5 分鐘，安靜地喝杯茶或放空，單純陪伴自己。」</span>
-                    </div>
+                    </span>
                 </label>
                 <!-- 項目 2 -->
                 <label class="self-care-item border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between space-y-3 cursor-pointer select-none transition-all duration-300">
-                    <div class="flex items-start gap-2.5">
+                    <span class="flex items-start gap-2.5">
                         <input type="checkbox" id="sc-chk-2" onchange="updateSelfCareCheck()" class="accent-rose-500 w-5 h-5 rounded-lg shrink-0 mt-0.5">
                         <span class="text-sm font-bold text-slate-700 leading-relaxed">📋 「當感到焦慮時，我今天有嘗試做 3 次深呼吸來安頓情緒。」</span>
-                    </div>
+                    </span>
                 </label>
                 <!-- 項目 3 -->
                 <label class="self-care-item border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between space-y-3 cursor-pointer select-none transition-all duration-300">
-                    <div class="flex items-start gap-2.5">
+                    <span class="flex items-start gap-2.5">
                         <input type="checkbox" id="sc-chk-3" onchange="updateSelfCareCheck()" class="accent-rose-500 w-5 h-5 rounded-lg shrink-0 mt-0.5">
                         <span class="text-sm font-bold text-slate-700 leading-relaxed">📋 「我今天在心裡真誠地對自己說了一聲：『你已經做得很好了，辛苦了。』」</span>
-                    </div>
+                    </span>
                 </label>
                 <!-- 項目 4 -->
                 <label class="self-care-item border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between space-y-3 cursor-pointer select-none transition-all duration-300">
-                    <div class="flex items-start gap-2.5">
+                    <span class="flex items-start gap-2.5">
                         <input type="checkbox" id="sc-chk-4" onchange="updateSelfCareCheck()" class="accent-rose-500 w-5 h-5 rounded-lg shrink-0 mt-0.5">
                         <span class="text-sm font-bold text-slate-700 leading-relaxed">📋 「我今天有將注意力短暫從孩子身上移開，看了一頁書、聽了一首歌或跟朋友聊聊天。」</span>
-                    </div>
+                    </span>
                 </label>
                 <!-- 項目 5 -->
                 <label class="self-care-item border border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col justify-between space-y-3 cursor-pointer select-none transition-all duration-300">
-                    <div class="flex items-start gap-2.5">
+                    <span class="flex items-start gap-2.5">
                         <input type="checkbox" id="sc-chk-5" onchange="updateSelfCareCheck()" class="accent-rose-500 w-5 h-5 rounded-lg shrink-0 mt-0.5">
                         <span class="text-sm font-bold text-slate-700 leading-relaxed">📋 「我今天有成功拒絕一個非必要的額外負擔，允許自己短暫休息。」</span>
-                    </div>
+                    </span>
                 </label>
             </div>
 
@@ -774,7 +778,7 @@
                         <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
                             <b>探索任務：青春期自主與安全天平。</b>青春期 (12-18 歲) 的核心是建立「自我認同與自主權（Identity vs. Role Confusion）」。請嘗試拉動下方滑桿，調節您在「手機與社交管理」上的控制強度，實時查看其對親子關係與反叛風險的生理預測：
                         </p>
-                        
+
                         <!-- 實時滑動控制器 -->
                         <div class="bg-slate-50 border border-slate-100 p-5 rounded-2xl space-y-4">
                             <div class="flex justify-between items-center text-sm sm:text-base">
@@ -932,7 +936,7 @@
                 playSuccessSound();
                 furnaceStatus.innerText = "✨ 成長思維重塑成功！";
                 furnace.className = "bg-slate-950 border-2 border-emerald-500 rounded-2xl p-5 flex flex-col items-center justify-center space-y-3 transition-all duration-300 shadow-lg shadow-emerald-950/20";
-                
+
                 // 加上淡入和向上推升動畫
                 furnaceResult.classList.add('animate-fade-slide-up');
 
@@ -984,7 +988,7 @@
                 metricConnect.innerText = `${30 + controlWeight}%`;
                 metricConnect.className = "text-xl sm:text-2xl font-black text-amber-600 block mt-1";
                 metricConnectSub.innerText = "缺乏邊界安全感，孩子感到迷茫";
-                
+
                 metricRebel.innerText = `${20 + (30 - controlWeight) * 1.5}%`;
                 metricRebel.className = "text-xl sm:text-2xl font-black text-slate-500 block mt-1";
                 metricRebelSub.innerText = "可能流於放縱、不尊重他人邊界";
@@ -1040,7 +1044,7 @@
                 btnText.innerText = "暫停練習";
                 btnIcon.className = "fa-solid fa-pause";
                 showToast("🧘‍♂️ 正念呼吸引導開始，請放鬆身體...", "success");
-                
+
                 breathSec = 0;
                 runBreathTick();
                 breathTimer = setInterval(runBreathTick, 1000);
@@ -1051,10 +1055,10 @@
             const circle = document.getElementById('mindful-breath-circle');
             const txt = document.getElementById('mindful-breath-text');
             const sub = document.getElementById('mindful-breath-guide-sub');
-            
+
             // 4s 吸氣, 4s 屏氣, 4s 呼氣 = 共 12 秒為一循環
             const cycleSec = breathSec % 12;
-            
+
             if (cycleSec === 0) {
                 // 吸氣開始
                 circle.style.transform = "scale(1.4)";
@@ -1175,15 +1179,15 @@
             // 2. 注入專業發展調適文章 (重構為全方位 JS 互動高亮卡片手風琴，解決細節點選相容性)
             const articlesContainer = document.getElementById('articles-container');
             articlesContainer.innerHTML = '';
-            
+
             db.articles.forEach((art, index) => {
                 const cardEl = document.createElement('div');
                 const borderClass = 'border-slate-150 bg-white';
-                
+
                 cardEl.className = `article-card ${borderClass} border rounded-2xl p-5 hover:border-rose-200 transition-all duration-300 shadow-sm cursor-pointer card-transition`;
                 cardEl.id = `article-card-${index}`;
                 cardEl.setAttribute('onclick', `toggleArticleCard(${index})`);
-                
+
                 cardEl.innerHTML = `
                     <div class="flex items-center justify-between gap-3 select-none">
                         <div class="flex items-center gap-4">
@@ -1238,7 +1242,7 @@
             cards.forEach((card, idx) => {
                 const arrow = card.querySelector('.card-arrow');
                 const content = card.querySelector('.card-content');
-                
+
                 if (idx === index) {
                     const isCurrentlyHidden = content.classList.contains('hidden');
                     if (isCurrentlyHidden) {
@@ -1304,7 +1308,7 @@
             if (!container) return;
             const toast = document.createElement('div');
             toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
-            
+
             let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
             let borderClass = 'border-emerald-100 shadow-emerald-50/50';
             if (type === 'error') {
@@ -1314,16 +1318,16 @@
                 icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
                 borderClass = 'border-blue-100 shadow-blue-50/50';
             }
-            
+
             toast.className += ` ${borderClass}`;
             toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
-            
+
             container.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
             }, 10);
-            
+
             setTimeout(() => {
                 toast.classList.add('translate-y-2', 'opacity-0');
                 setTimeout(() => {
@@ -1335,7 +1339,7 @@
         function syncA11ySettings() {
             const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
             const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
-            
+
             if (cachedContrast === 'true') {
                 document.body.classList.add('a11y-high-contrast');
             }

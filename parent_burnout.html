@@ -65,7 +65,12 @@
             transition: background-color 0.3s ease;
         }
     </style>
-</head>
+
+        <style id="audit-inline-style-replacements">
+            .audit-parent-burnout-style-1{width: 12.5%}
+            .audit-parent-burnout-style-2{-webkit-overflow-scrolling: touch;}
+        </style>
+    </head>
 <body class="text-slate-800 flex flex-col min-h-screen text-sm sm:text-base pb-12">
 
     <!-- Toast 通知容器 -->
@@ -86,7 +91,7 @@
 
     <!-- 主要內容區 -->
     <main class="flex-grow max-w-5xl mx-auto px-4 py-8 w-full space-y-8">
-        
+
         <!-- 標題橫幅 -->
         <div class="bg-gradient-to-r from-orange-500 via-amber-500 to-amber-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
             <div class="absolute right-0 bottom-0 opacity-10 translate-x-10 translate-y-10">
@@ -105,7 +110,7 @@
 
         <!-- 雙欄排版：左邊壓力自評，右邊正念調息球 -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
+
             <!-- 照顧者壓力溫度計 (12格佔7格) -->
             <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-orange-100 space-y-5 flex flex-col justify-between">
                 <div class="space-y-4">
@@ -130,7 +135,7 @@
 
                     <!-- 進度條 -->
                     <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                        <div id="quiz-bar" class="bg-orange-500 h-full transition-all duration-300" style="width: 12.5%"></div>
+                        <div id="quiz-bar" class="bg-orange-500 h-full transition-all duration-300 audit-parent-burnout-style-1"></div>
                     </div>
                 </div>
 
@@ -144,7 +149,7 @@
                         </div>
                     </div>
                     <p id="report-description" class="text-slate-600 text-xs sm:text-sm leading-relaxed"></p>
-                    <button onclick="resetQuiz()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 rounded-xl transition text-xs shadow-sm">
+                    <button type="button" onclick="resetQuiz()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 rounded-xl transition text-xs shadow-sm">
                         🔄 重新評估壓力指數
                     </button>
                 </div>
@@ -180,11 +185,11 @@
 
                 <div class="w-full space-y-3">
                     <!-- Web Audio 實時 432Hz 舒緩海浪和弦音播放 -->
-                    <button onclick="toggleAudio()" id="audio-btn" class="w-full h-12 bg-orange-50 hover:bg-orange-100 text-orange-800 font-bold rounded-2xl transition border border-orange-100 flex items-center justify-center gap-2 text-xs">
+                    <button type="button" onclick="toggleAudio()" id="audio-btn" class="w-full h-12 bg-orange-50 hover:bg-orange-100 text-orange-800 font-bold rounded-2xl transition border border-orange-100 flex items-center justify-center gap-2 text-xs">
                         <i class="fa-solid fa-headphones-simple" id="audio-icon"></i> <span id="audio-btn-txt">播放 432Hz 實時舒緩海浪聲</span>
                     </button>
-                    
-                    <button onclick="toggleBreathing()" id="breathe-btn" class="w-full h-12 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black rounded-2xl transition shadow-md shadow-orange-100 text-xs flex items-center justify-center gap-2">
+
+                    <button type="button" onclick="toggleBreathing()" id="breathe-btn" class="w-full h-12 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-black rounded-2xl transition shadow-md shadow-orange-100 text-xs flex items-center justify-center gap-2">
                         <i class="fa-solid fa-play"></i> <span id="breathe-btn-txt">啟動 5分鐘 正念調息</span>
                     </button>
                 </div>
@@ -200,14 +205,14 @@
                 </h3>
                 <!-- 地區篩選 Tabs -->
                 <div class="flex flex-wrap gap-1.5 bg-slate-100 p-1 rounded-xl">
-                    <button onclick="filterPRC('all')" id="tab-prc-all" class="px-3 py-1.5 rounded-lg text-xs font-black bg-white shadow-sm text-orange-700">全部</button>
-                    <button onclick="filterPRC('hk')" id="tab-prc-hk" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-orange-700">香港島</button>
-                    <button onclick="filterPRC('kln')" id="tab-prc-kln" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-orange-700">九龍</button>
-                    <button onclick="filterPRC('nte')" id="tab-prc-nte" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-orange-700">新界東</button>
-                    <button onclick="filterPRC('ntw')" id="tab-prc-ntw" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-orange-700">新界西</button>
+                    <button type="button" onclick="filterPRC('all')" id="tab-prc-all" class="px-3 py-1.5 rounded-lg text-xs font-black bg-white shadow-sm text-orange-700">全部</button>
+                    <button type="button" onclick="filterPRC('hk')" id="tab-prc-hk" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-orange-700">香港島</button>
+                    <button type="button" onclick="filterPRC('kln')" id="tab-prc-kln" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-orange-700">九龍</button>
+                    <button type="button" onclick="filterPRC('nte')" id="tab-prc-nte" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-orange-700">新界東</button>
+                    <button type="button" onclick="filterPRC('ntw')" id="tab-prc-ntw" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-orange-700">新界西</button>
                 </div>
             </div>
-            
+
             <p class="text-slate-500 text-xs sm:text-sm leading-relaxed max-w-3xl">
                 家長資源中心 (PRC) 是社會福利署資助社福機構設立的<b>專屬 SEN 家長避風港</b>。除提供圖書、玩具租借、諮詢服務外，最核心的是讓您能在此結識同區的「同路人家長群組」，攜手分擔焦慮，互相陪伴。
             </p>
@@ -240,9 +245,9 @@
                 <!-- 右側漸變遮罩提示有更多卡片 -->
                 <div class="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
                 <div class="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-white to-transparent pointer-events-none z-10"></div>
-                
+
                 <!-- 滾動主容器 -->
-                <div class="flex overflow-x-auto gap-5 pb-6 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar" id="reframing-grid" style="-webkit-overflow-scrolling: touch;">
+                <div class="flex overflow-x-auto gap-5 pb-6 pt-2 snap-x snap-mandatory scroll-smooth no-scrollbar audit-parent-burnout-style-2" id="reframing-grid">
                     <!-- CBT 卡片由 JS 動態生成 -->
                 </div>
             </div>
@@ -319,7 +324,7 @@
             const current = quizDatabase[quizState.currentIndex];
             document.getElementById('quiz-progress').innerText = `第 ${quizState.currentIndex + 1} / ${quizDatabase.length} 題`;
             document.getElementById('quiz-question').innerText = current.q;
-            
+
             const optionsContainer = document.getElementById('quiz-options');
             optionsContainer.innerHTML = '';
 
@@ -476,19 +481,19 @@
         // ================= Web Audio API 實時分析頻譜與立體海浪聲合成器 =================
         let breatheInterval = null;
         let isBreathing = false;
-        
+
         let audioCtx = null;
         let oceanNoiseSource = null;
         let oceanFilter = null;
         let oceanGain = null;
-        
+
         let solfeggioOsc1 = null;
         let solfeggioOsc2 = null;
         let solfeggioGain = null;
 
         let analyser = null;
         let dataArray = null;
-        
+
         let isAudioPlaying = false;
         let waveCycleInterval = null;
         let wavePhase = 0;
@@ -540,7 +545,7 @@
                 if (audioCtx.state === 'suspended') {
                     audioCtx.resume();
                 }
-                
+
                 // 必須先將開關設為 true 才能使 drawVisualizer 的繪圖循環不被守衛中斷！
                 isAudioPlaying = true;
                 startAmbientWaves();
@@ -548,7 +553,7 @@
                 btnTxt.innerText = "暫停 432Hz 療癒中...";
                 btn.className = "w-full h-12 bg-orange-600 text-white font-bold rounded-2xl transition border border-orange-500 flex items-center justify-center gap-2 text-xs animate-pulse";
                 icon.className = "fa-solid fa-pause";
-                
+
                 // 檢查是否仍然被掛起
                 setTimeout(() => {
                     if (audioCtx.state === 'suspended') {
@@ -638,7 +643,7 @@
                     oceanGain.gain.linearRampToValueAtTime(dynamicVol, now + 0.9);
                 }
 
-                wavePhase += 0.25; 
+                wavePhase += 0.25;
             }, 500);
 
             // 5. 立即啟動畫布頻譜渲染循環
@@ -697,7 +702,7 @@
             function animate() {
                 // 守衛：如果未播放或分析器斷開，直接終止
                 if (!isAudioPlaying || !analyser) return;
-                
+
                 animationFrameId = requestAnimationFrame(animate);
 
                 // 讀取當前的音訊時域實時波形數據 (Time Domain Wave)
@@ -772,7 +777,7 @@
                 let cycleSec = 0;
                 breatheInterval = setInterval(() => {
                     cycleSec = (cycleSec + 1) % 10;
-                    
+
                     if (cycleSec < 4) {
                         // 0-3s: 吸氣
                         txt.innerText = "吸氣...";
@@ -872,7 +877,7 @@
             filtered.forEach(p => {
                 const card = document.createElement('div');
                 card.className = "bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-3.5";
-                
+
                 let regTag = "香港島";
                 if (p.region === 'kln') regTag = "九龍";
                 else if (p.region === 'nte') regTag = "新界東";
@@ -891,7 +896,7 @@
                         <a href="tel:${p.tel}" class="flex-1 bg-orange-50 hover:bg-orange-100 text-orange-800 font-bold py-2 rounded-xl text-xs text-center transition flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-phone"></i> <span>撥號諮詢</span>
                         </a>
-                        <a href="${p.link}" target="_blank" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2 rounded-xl text-xs text-center transition flex items-center justify-center gap-1.5">
+                        <a href="${p.link}" target="_blank" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2 rounded-xl text-xs text-center transition flex items-center justify-center gap-1.5" rel="noopener noreferrer">
                             <i class="fa-solid fa-globe"></i> <span>訪問官網</span>
                         </a>
                     </div>
@@ -920,7 +925,7 @@
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = "flex items-center gap-2 px-4 py-3 rounded-2xl shadow-lg border text-sm font-bold bg-white pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0 z-50";
-            
+
             let icon = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
             let borderClass = 'border-emerald-100 shadow-emerald-50/50';
             if (type === 'error') {
@@ -930,16 +935,16 @@
                 icon = '<i class="fa-solid fa-circle-info text-blue-500"></i>';
                 borderClass = 'border-blue-100 shadow-blue-50/50';
             }
-            
+
             toast.className += ` ${borderClass}`;
             toast.innerHTML = `${icon} <span class="text-slate-700">${message}</span>`;
-            
+
             container.appendChild(toast);
-            
+
             setTimeout(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
             }, 10);
-            
+
             setTimeout(() => {
                 toast.classList.add('translate-y-2', 'opacity-0');
                 setTimeout(() => {
@@ -952,7 +957,7 @@
         function syncA11ySettings() {
             const cachedContrast = localStorage.getItem('sen_a11y_contrast') || 'false';
             const cachedLargeText = localStorage.getItem('sen_a11y_text') || 'false';
-            
+
             if (cachedContrast === 'true') {
                 document.body.classList.add('a11y-high-contrast');
             }

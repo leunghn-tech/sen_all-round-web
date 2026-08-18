@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 引入 Font Awesome 專業圖標 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap');
         body {
@@ -20,15 +20,15 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
+
         /* 互動卡片 Hover */
         .hover-card { transition: all 0.3s ease; }
         .hover-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        
+
         /* 表格輸入框去邊框 */
         .table-input { width: 100%; border: none; background: transparent; resize: none; outline: none; }
         .table-input:focus { background-color: #f8fafc; border-radius: 4px; }
-        
+
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -76,18 +76,18 @@
                 </a>
                 <div class="flex flex-col justify-center border-l border-violet-800 pl-4">
                     <h1 class="text-xs sm:text-sm font-black tracking-tight leading-none">跨專業個案會議與家校協作平台</h1>
-                    <span class="text-[9px] text-violet-200 font-bold block mt-1 uppercase tracking-widest">Case Conference & Collaboration</span>
+                    <span class="text-[9px] text-violet-200 font-bold block mt-1 uppercase tracking-widest">Case Conference &amp; Collaboration</span>
                 </div>
             </div>
             <div class="flex items-center gap-2">
                 <!-- 🌍 NCS 家長溝通錦囊按鈕 -->
-                <button onclick="toggleNcsModal(true)" class="bg-violet-700 hover:bg-violet-600 text-violet-100 text-[11px] font-bold px-3 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+                <button type="button" onclick="toggleNcsModal(true)" class="bg-violet-700 hover:bg-violet-600 text-violet-100 text-[11px] font-bold px-3 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-globe animate-pulse"></i> 🌍 NCS 家長錦囊
                 </button>
-                <button onclick="exportConferenceWord()" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] sm:text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm shrink-0">
+                <button type="button" onclick="exportConferenceWord()" class="bg-blue-600 hover:bg-blue-700 text-white text-[11px] sm:text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm shrink-0">
                     <i class="fa-solid fa-file-word"></i> 導出會議紀錄
                 </button>
-                <button onclick="exportOnePagerWord()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm shrink-0">
+                <button type="button" onclick="exportOnePagerWord()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm shrink-0">
                     <i class="fa-solid fa-file-invoice"></i> 導出科任 1-Pager
                 </button>
             </div>
@@ -106,7 +106,7 @@
     </div>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 w-full flex-grow space-y-8 no-print">
-        
+
         <!-- 頂部橫幅 -->
         <div class="bg-gradient-to-r from-violet-800 via-purple-700 to-indigo-600 rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
             <i class="fa-solid fa-handshake-angle absolute -right-4 -bottom-4 text-[160px] text-white opacity-10"></i>
@@ -124,7 +124,7 @@
 
             <!-- 左側：會議準備與溝通話術 -->
             <div class="lg:col-span-5 xl:col-span-4 space-y-6">
-                
+
                 <!-- 1. 會議準備清單 (動態聯動) -->
                 <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm">
                     <div class="flex items-center gap-3 border-b border-slate-100 pb-3 mb-4">
@@ -136,7 +136,7 @@
                             <p class="text-[10px] text-slate-500 font-bold mt-0.5">選擇類型，自動同步對應的備查要求</p>
                         </div>
                     </div>
-                    
+
                     <select id="meetingTypeSelect" onchange="updateChecklist()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer shadow-sm">
                         <option value="iep">個別學習計劃 (IEP) 檢討會議</option>
                         <option value="diagnosis">首次診斷報告解說及支援會議</option>
@@ -163,12 +163,12 @@
 
                     <!-- 橫向滑動/Tab 按鈕列 -->
                     <div class="flex gap-1.5 overflow-x-auto pb-2 mb-3 scrollbar-thin">
-                        <button onclick="switchParentTab('denial', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg active transition-all">1. 拒絕標籤</button>
-                        <button onclick="switchParentTab('blaming', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">2. 推卸責任</button>
-                        <button onclick="switchParentTab('demands', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">3. 期望過高</button>
-                        <button onclick="switchParentTab('medical', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">4. 建議醫療/藥物</button>
-                        <button onclick="switchParentTab('helicopter', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">5. 焦慮/直升機</button>
-                        <button onclick="switchParentTab('unresponsive', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">6. 零回應/放棄型</button>
+                        <button type="button" onclick="switchParentTab('denial', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg active transition-all">1. 拒絕標籤</button>
+                        <button type="button" onclick="switchParentTab('blaming', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">2. 推卸責任</button>
+                        <button type="button" onclick="switchParentTab('demands', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">3. 期望過高</button>
+                        <button type="button" onclick="switchParentTab('medical', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">4. 建議醫療/藥物</button>
+                        <button type="button" onclick="switchParentTab('helicopter', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">5. 焦慮/直升機</button>
+                        <button type="button" onclick="switchParentTab('unresponsive', this)" class="parent-tab-btn shrink-0 bg-white hover:bg-rose-100 text-rose-900 border border-rose-200 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all">6. 零回應/放棄型</button>
                     </div>
 
                     <!-- Tab 內容卡片容器 -->
@@ -181,7 +181,7 @@
 
             <!-- 右側：會議紀錄表 (Meeting Minutes) -->
             <div class="lg:col-span-7 xl:col-span-8 space-y-6">
-                
+
                 <div id="printableMinutes" class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm min-h-full relative">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5 no-print">
                         <div class="flex items-center gap-3">
@@ -197,6 +197,7 @@
                     <!-- 表格主體 -->
                     <div class="border border-slate-300 rounded-lg overflow-hidden">
                         <table class="w-full text-xs text-left border-collapse">
+                            <tbody>
                             <!-- 1. 基本資料 -->
                             <tr class="bg-slate-100">
                                 <td colspan="4" class="p-2 border-b border-slate-300 font-black text-slate-800">甲、會議基本資料</td>
@@ -244,7 +245,7 @@
                                 <td class="p-2 border-b border-r border-slate-300 bg-emerald-50/50 font-bold text-emerald-800">學校/教師觀察<br>(學業與行為)：</td>
                                 <td colspan="3" class="p-2 border-b border-slate-300 relative">
                                     <textarea id="mSchoolView" rows="3" class="table-input leading-relaxed pr-24" placeholder="例：阿文成日發脾氣、打人、做唔到功課..."></textarea>
-                                    <button onclick="aiPolish('mSchoolView')" class="absolute bottom-2 right-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm transition flex items-center gap-1 no-print border border-emerald-200">
+                                    <button type="button" onclick="aiPolish('mSchoolView')" class="absolute bottom-2 right-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm transition flex items-center gap-1 no-print border border-emerald-200">
                                         <i class="fa-solid fa-wand-magic-sparkles"></i> AI 專業潤飾
                                     </button>
                                 </td>
@@ -253,7 +254,7 @@
                                 <td class="p-2 border-b border-r border-slate-300 bg-blue-50/50 font-bold text-blue-800">家長意見<br>(居家狀況)：</td>
                                 <td colspan="3" class="p-2 border-b border-slate-300 relative">
                                     <textarea id="mParentView" rows="3" class="table-input leading-relaxed pr-24" placeholder="例：老母話屋企管唔到佢，叫學校幫手..."></textarea>
-                                    <button onclick="aiPolish('mParentView')" class="absolute bottom-2 right-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm transition flex items-center gap-1 no-print border border-blue-200">
+                                    <button type="button" onclick="aiPolish('mParentView')" class="absolute bottom-2 right-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm transition flex items-center gap-1 no-print border border-blue-200">
                                         <i class="fa-solid fa-wand-magic-sparkles"></i> AI 專業潤飾
                                     </button>
                                 </td>
@@ -262,7 +263,7 @@
                                 <td class="p-2 border-b border-r border-slate-300 bg-purple-50/50 font-bold text-purple-800">專家/社工意見<br>(專業建議)：</td>
                                 <td colspan="3" class="p-2 border-b border-slate-300 relative">
                                     <textarea id="mExpertView" rows="3" class="table-input leading-relaxed pr-24" placeholder="例：EP話要加時，同埋要小休..."></textarea>
-                                    <button onclick="aiPolish('mExpertView')" class="absolute bottom-2 right-2 bg-purple-100 hover:bg-purple-200 text-purple-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm transition flex items-center gap-1 no-print border border-purple-200">
+                                    <button type="button" onclick="aiPolish('mExpertView')" class="absolute bottom-2 right-2 bg-purple-100 hover:bg-purple-200 text-purple-700 text-[10px] font-bold px-2 py-1 rounded shadow-sm transition flex items-center gap-1 no-print border border-purple-200">
                                         <i class="fa-solid fa-wand-magic-sparkles"></i> AI 專業潤飾
                                     </button>
                                 </td>
@@ -313,7 +314,8 @@
                                     <div class="flex items-center gap-1.5"><span class="font-bold text-indigo-800 shrink-0">3.</span> <input type="text" id="mOnePagerS3" class="table-input border-b border-slate-200" placeholder="例：允許在極度崩潰時，無聲向老師出示「安心卡」前往冷靜沙發區。"></div>
                                 </td>
                             </tr>
-                        </table>
+
+                            </tbody></table>
                     </div>
 
                 </div>
@@ -333,10 +335,10 @@
                         <p class="text-[10px] text-violet-200">香港學校常見南亞裔及非華語家長會議協作支援</p>
                     </div>
                 </div>
-                <button onclick="toggleNcsModal(false)" class="text-white/80 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" onclick="toggleNcsModal(false)" class="text-white/80 hover:text-white text-lg" aria-label="關閉對話視窗"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="p-6 space-y-5 max-h-[500px] overflow-y-auto text-xs">
-                
+
                 <div class="bg-amber-50 border border-amber-100 p-4 rounded-xl space-y-2">
                     <h4 class="font-bold text-amber-800 flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation"></i> 🕋 穆斯林與南亞裔家長面談文化備忘</h4>
                     <ul class="list-disc pl-4 space-y-1.5 text-amber-950 font-medium">
@@ -350,14 +352,14 @@
                     <h4 class="font-bold text-blue-800 flex items-center gap-1.5"><i class="fa-solid fa-language"></i> 🗣️ 教育局 NCS 免費翻譯及傳譯資源</h4>
                     <p class="text-blue-950 font-medium leading-relaxed">
                         學校可向教育局申請「融和（CHEER）」中心提供的免費電話傳譯或現場傳譯服務（支援烏爾都語、尼泊爾語、旁遮普語等）。<br>
-                        <a href="https://www.edb.gov.hk/tc/student-parents/ncs-students/about-ncs-students/index.html" target="_blank" class="text-violet-700 underline font-black">點擊前往：教育局非華語學生支援網頁 ➔</a>
+                        <a href="https://www.edb.gov.hk/tc/student-parents/ncs-students/about-ncs-students/index.html" target="_blank" class="text-violet-700 underline font-black" rel="noopener noreferrer">點擊前往：教育局非華語學生支援網頁 ➔</a>
                     </p>
                 </div>
 
                 <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2">
                     <div class="flex justify-between items-center">
-                        <h4 class="font-bold text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-file-contract"></i> 📝 English Consent & Confidentiality Template</h4>
-                        <button onclick="copyNcsTemplate()" class="bg-slate-800 hover:bg-slate-900 text-white text-[10px] px-2.5 py-1 rounded font-bold transition">一鍵複製</button>
+                        <h4 class="font-bold text-slate-800 flex items-center gap-1.5"><i class="fa-solid fa-file-contract"></i> 📝 English Consent &amp; Confidentiality Template</h4>
+                        <button type="button" onclick="copyNcsTemplate()" class="bg-slate-800 hover:bg-slate-900 text-white text-[10px] px-2.5 py-1 rounded font-bold transition">一鍵複製</button>
                     </div>
                     <textarea id="ncsTemplateText" readonly class="w-full h-32 bg-white border border-slate-200 rounded-lg p-2 font-mono text-[9px] text-slate-600 focus:outline-none" rows="5">
 Dear Parents,
@@ -527,7 +529,7 @@ Date: ________________________
                     </h4>
                     <p class="text-[10px] text-slate-500 font-bold mb-2">常態表現：${data.complaint}</p>
                     <span class="text-[10px] bg-rose-50 text-rose-700 px-2 py-0.5 rounded font-bold">${data.technique}</span>
-                    
+
                     <div class="mt-3 space-y-0 max-h-[220px] overflow-y-auto pr-1">
                         ${data.dialogue}
                     </div>
@@ -560,7 +562,7 @@ Date: ________________________
 
             el.disabled = true;
             el.value = "✨ AI 正在分析並轉化為專業 EDB 術語，請稍候...";
-            
+
             setTimeout(() => {
                 let polishedText = "";
                 if (originalText.includes("發脾氣") || originalText.includes("打人") || originalText.includes("曳")) {
@@ -606,7 +608,7 @@ Date: ________________________
             const student = document.getElementById('mStudent').value || '陳大文';
             const sClass = document.getElementById('mClass').value || '中二 (S201)';
             const date = document.getElementById('mDate').value || '2026年10月15日';
-            
+
             const triggers = document.getElementById('mOnePagerTriggers').value.replace(/\n/g, '<br>') || '請在系統中填寫行為觸發前兆';
             const s1 = document.getElementById('mOnePagerS1').value || '第一項策略 (請於大表填寫)';
             const s2 = document.getElementById('mOnePagerS2').value || '第二項策略 (請於大表填寫)';
@@ -682,11 +684,11 @@ Date: ________________________
             const action1 = document.getElementById('mAction1').value.replace(/\n/g, '<br>');
             const who1 = document.getElementById('mWho1').value;
             const when1 = document.getElementById('mWhen1').value;
-            
+
             const action2 = document.getElementById('mAction2').value.replace(/\n/g, '<br>');
             const who2 = document.getElementById('mWho2').value;
             const when2 = document.getElementById('mWhen2').value;
-            
+
             const action3 = document.getElementById('mAction3').value.replace(/\n/g, '<br>');
             const who3 = document.getElementById('mWho3').value;
             const when3 = document.getElementById('mWhen3').value;
@@ -785,12 +787,12 @@ Date: ________________________
 
             const blob = new Blob(['\ufeff', sourceHTML], { type: 'application/msword;charset=utf-8' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); 
-            a.href = url; 
+            const a = document.createElement('a');
+            a.href = url;
             a.download = filename + '.doc';
-            document.body.appendChild(a); 
-            a.click(); 
-            document.body.removeChild(a); 
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
             URL.revokeObjectURL(url);
             showToast(`已成功導出「${filename}」文件！`, "success");
         }
@@ -800,7 +802,7 @@ Date: ________________________
             const msgEl = document.getElementById('toastMsg');
             const icon = document.getElementById('toastIcon');
             msgEl.innerText = msg;
-            
+
             if (type === "error") {
                 icon.className = "fa-solid fa-circle-exclamation text-rose-500 text-lg";
             } else {
